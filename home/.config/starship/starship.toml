@@ -1,0 +1,31 @@
+[aws]
+disabled = true
+
+[character]
+format = "🐸"
+success_symbol = "❯❯(bold green) "
+error_symbol = "❯❯(bold red) "
+
+# [directory]
+# format = "[$path]($style)[$read_only]($read_only_style) "
+# truncation_length = 4
+# truncate_to_repo = false
+# truncation_symbol = "…/"
+
+# [git_status]
+# disabled = true
+
+# [hostname]
+# disabled = true
+
+# # Disable the package module, hiding it from the prompt completely
+# [package]
+# disabled = true
+
+# [time]
+# disabled = false
+# time_format = "%Y-%m-%d %H:%M"
+# utc_time_offset = "+9"
+
+# [username]
+# disabled = true

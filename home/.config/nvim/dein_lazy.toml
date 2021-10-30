@@ -1,0 +1,163 @@
+# [[plugins]]
+# repo =  'lambdalisue/fern.vim'
+# hook_add = """
+# let g:fern#renderer = 'nerdfont'
+# " Ctrl+nでファイルツリーを表示/非表示する
+
+# " git操作
+# " g]で前の変更箇所へ移動する
+# nnoremap g[ :GitGutterPrevHunk<CR>
+# " g[で次の変更箇所へ移動する
+# nnoremap g] :GitGutterNextHunk<CR>
+# " ghでdiffをハイライトする
+# nnoremap gh :GitGutterLineHighlightsToggle<CR>
+# " gpでカーソル行のdiffを表示する
+# nnoremap gp :GitGutterPreviewHunk<CR>
+# " 記号の色を変更する
+# highlight GitGutterAdd ctermfg=green
+# highlight GitGutterChange ctermfg=blue
+# highlight GitGutterDelete ctermfg=red
+
+# " 反映時間を短くする(デフォルトは4000ms)
+
+# augroup my-glyph-palette
+#   autocmd! *
+#   autocmd FileType fern call glyph_palette#apply()
+#   autocmd FileType nerdtree,startify call glyph_palette#apply()
+# augroup END
+# set updatetime=250
+
+# """
+
+# [[plugins]]
+# repo = 'lambdalisue/fern-git-status.vim'
+
+# [[plugins]]
+# repo = 'lambdalisue/nerdfont.vim'
+
+# [[plugins]]
+# repo = 'lambdalisue/fern-renderer-nerdfont.vim'
+
+# [[plugins]]
+# repo = 'lambdalisue/glyph-palette.vim'
+
+# [[plugins]]
+# repo = 'airblade/vim-gitgutter'
+
+# [[plugins]]
+# repo = 'ktr0731/tweet.nvim'
+
+[[plugins]]
+repo = 'kevinhwang91/rnvimr'
+
+[[plugins]]
+repo = 'mattn/benchvimrc-vim'
+
+[[plugins]]
+repo = 'miyakogi/seiya.vim'
+
+[[plugins]]
+repo = 'vim-jp/vimdoc-ja'
+
+[[plugins]]
+repo = 'khaveesh/vim-fish-syntax'
+
+[[plugins]]
+repo = 'junegunn/fzf.vim'
+
+# [[plugins]]
+# repo =  'mfussenegger/nvim-dap'
+
+[[plugins]]
+repo = 'SirVer/ultisnips'
+hook_add = '''
+ let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips']
+ let g:UltiSnipsExpandTrigger="<Down>"
+'''
+
+[[plugins]]
+repo = 'w0rp/ale'
+
+[[plugins]]
+repo = 'thinca/vim-quickrun'
+
+[[plugins]]
+repo = 'osyo-manga/vim-over'
+
+[[plugins]]
+repo = 'MichaelMure/mdr'
+
+[[plugins]]
+repo = 'ujihisa/neco-look'
+
+[[plugins]]
+repo = 'kassio/neoterm'
+
+[[plugins]]
+repo = 'tpope/vim-fugitive'
+
+[[plugins]]
+repo = 'scrooloose/nerdtree'
+
+[[plugins]]
+repo = "puremourning/vimspector"
+on_ft = ["python", "javascript"]
+build = "./install_gadget.py --enable-python --force-enable-node"
+hook_add = """
+function! LaunchFileDebug()
+  call vimspector#LaunchWithSettings({'configuration': &filetype.'_file'})
+endfunction
+
+sign define vimspectorBP text=🔴 texthl=Normal
+sign define vimspectorBPDisabled text=🔵 texthl=Normal
+sign define vimspectorPC text=🔶 texthl=SpellBad
+
+"""
+
+[[plugins]]
+repo = 'wakatime/vim-wakatime'
+
+[[plugins]]
+repo = 'github/copilot.vim'
+
+[[plugins]]
+repo = 'Shougo/unite.vim'
+# hook_add = """
+# let g:unite_source_menu_menus = get(g:,'unite_source_menu_menus',{})
+# let g:unite_source_menu_menus.git = {
+#      'description' : '            gestionar repositorios git
+#                                     ⌘ [espacio]g',
+#     }
+# let g:unite_source_menu_menus.git.command_candidates = [
+#     ['▷ tig                                                        ⌘ ,gt',
+#         'normal ,gt'],
+#     ['▷ git status       (Fugitive)                                ⌘ ,gs',
+#         'Gstatus'],
+#     ['▷ git diff         (Fugitive)                                ⌘ ,gd',
+#         'Gdiff'],
+#     ['▷ git commit       (Fugitive)                                ⌘ ,gc',
+#         'Gcommit'],
+#     ['▷ git log          (Fugitive)                                ⌘ ,gl',
+#         'exe "silent Glog | Unite quickfix"'],
+#     ['▷ git blame        (Fugitive)                                ⌘ ,gb',
+#         'Gblame'],
+#     ['▷ git stage        (Fugitive)                                ⌘ ,gw',
+#         'Gwrite'],
+#     ['▷ git checkout     (Fugitive)                                ⌘ ,go',
+#         'Gread'],
+#     ['▷ git rm           (Fugitive)                                ⌘ ,gr',
+#         'Gremove'],
+#     ['▷ git mv           (Fugitive)                                ⌘ ,gm',
+#         'exe "Gmove " input("destino: ")'],
+#     ['▷ git push         (Fugitive, salida por buffer)             ⌘ ,gp',
+#         'Git! push'],
+#     ['▷ git pull         (Fugitive, salida por buffer)             ⌘ ,gP',
+#         'Git! pull'],
+#     ['▷ git prompt       (Fugitive, salida por buffer)             ⌘ ,gi',
+#         'exe "Git! " input("comando git: ")'],
+#     ['▷ git cd           (Fugitive)',
+#         'Gcd'],
+#     ]
+# nnoremap <silent>[menu]g :Unite -silent -start-insert menu:git<CR>
+# """
+
