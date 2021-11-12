@@ -2,14 +2,26 @@
 repo = 'ghifarit53/tokyonight-vim'
 
 [[plugins]]
-repo = 'cespare/vim-toml'
+repo = 'morhetz/gruvbox'
 
 [[plugins]]
-repo = 'neoclide/coc.nvim'
-rev = 'release'
-on_i = 1
-merged = 0
-hook_source = 'call coil398#init#coc#hook_source()'
+repo = 'sainnhe/gruvbox-material'
+
+[[plugins]]
+repo = 'cespare/vim-toml'
+
+# [[plugins]]
+# repo = 'neoclide/coc.nvim'
+# rev = 'release'
+# on_i = 1
+# merged = 0
+# hook_source = 'call coil398#init#coc#hook_source()'
+#
+# [[plugins]]
+# repo = 'neoclide/coc-neco'
+
+[[plugins]]
+repo = 'neoclide/neco-vim'
 
 [[plugins]]
 repo = 'sheerun/vim-polyglot'
@@ -76,8 +88,7 @@ repo = 'Shougo/denite.nvim'
 # "    <Esc>      close Denite-file-buffer-list
 # "    <Space>    select multiple files/buffers
 # "    <CR>       open files/buffers
-# "    o          open files/buffers
-# "    s          open files/buffers in split windows (horizonal)
+# "    o          open files/buffers "    s          open files/buffers in split windows (horizonal)
 # "    v          open files/buffers in split windows (vertical)
 # "    i          filter by string
 # "    ..         move to directory above
@@ -102,4 +113,3 @@ repo = 'Shougo/denite.nvim'
 #                  denite#do_map('move_up_path')
 # endfunction
 # """
-

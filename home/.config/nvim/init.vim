@@ -87,7 +87,8 @@ endif
 
 " :VimspectorReset
 " デバッガーを完全に止める。}}}
-
+cd
+let g:vimsyn_embed='lPr'
 
 set runtimepath+=$HOME/.config/nvim/scripts/
 set runtimepath+=$HOME/ablaze/ablaze.vim
@@ -99,7 +100,6 @@ let mapleader = "\<Space>"
 
 " Neovimの設定
 syntax enable
-" リーダーキーの設定
 
 command Lazy :e ~/.config/nvim/dein_lazy.toml
 command Source source $MYVIMRC" タブ切替
@@ -109,6 +109,7 @@ nnoremap <silent> <C-f> :bd<CR>
 " ハイライトを有効にする
 syntax enable
 colorscheme tokyonight
+colorscheme gruvbox-material
 let g:seiya_auto_enable=1
 
 let g:python_host_prog = expand('~/nvim-python2/bin/python2')
@@ -128,7 +129,8 @@ augroup END
 " autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
 " 隠しファイルを表示する
-let NERDTreeShowHidden = 1
+" let NERDTreeShowHidden = 1
+let NERDTreeShowHidden = 0
 
 " デフォルトでツリーを表示させる
 let g:nerdtree_tabs_open_on_console_startup=1
@@ -219,7 +221,7 @@ command FishConfig e ~/.config/fish/config.fish
 
 "行番号表示
 set number
-
+set spell
 
 nnoremap <c-x> <Del>
 inoremap <c-x> <Del>
@@ -233,6 +235,20 @@ command Scripts e  ~/.config/nvim/cmds.vim
 
 " 自動保存の有効化
 " let g:auto_save = 1
+
+" nmap <silent> gd <Plug>(coc-definition)
+" nmap <silent> gy <Plug>(coc-type-definition)
+" nmap <silent> gi <Plug>(coc-implementation)
+" nmap <silent> gr <Plug>(coc-references)
+" nnoremap <silent> K :call <SID>show_documentation()<CR>
+"
+" function! s:show_documentation()
+"   if (index(['vim','help'], &filetype) >= 0)
+"     execute 'h '.expand('<cword>')
+"   else
+"     call CocAction('doHover')
+"   endif
+" endfunction
 
 " 怒涛のお気に入り設定{{{
 syntax on
@@ -261,33 +277,48 @@ nnoremap <silent> <C-i> :Unite b-auto-preview uffer<CR>
 "    v          open files/buffers in split windows (vertical)
 "    i          filter by string
 "    ..         move to directory above
-nnoremap <silent> <C-o> :<C-u>Denite -auto-resize file buffer file:new<CR>
+nnoremap <silent> <C-o> :<C-u>Denite -auto-resize buffer file:new<CR>"{{{
 autocmd FileType denite call s:denite_my_settings()
 function! s:denite_my_settings() abort
+	      " Quit
         nnoremap <silent><buffer><expr> <Esc>
                 \ denite#do_map('quit')
+
         nnoremap <silent><buffer><expr> <Space>
                 \ denite#do_map('toggle_select').'j'
+
+				" Default Open
         nnoremap <silent><buffer><expr> <CR>
                 \ denite#do_map('do_action')
+
+
         nnoremap <silent><buffer><expr> o
                 \ denite#do_map('do_action')
+
+				" Open Split
         nnoremap <silent><buffer><expr> s
                 \ denite#do_map('do_action', 'split')
+
+        " Open Split
         nnoremap <silent><buffer><expr> v
                 \ denite#do_map('do_action', 'vsplit')
+
+				" Serch source
         nnoremap <silent><buffer><expr> i
                 \ denite#do_map('open_filter_buffer')
+
         nnoremap <silent><buffer><expr> ..
                 \ denite#do_map('move_up_path')
-endfunction
+
+endfunction"}}}
+
 "インサートモード時にカーソル移動する{{{
 imap <c-h> <Left>
 imap <c-j> <Down>
 imap <c-k> <Up>
 imap <c-l> <Right>
 
-nnoremap <Esc><Esc> :noh<CR>
+nnoremap <Esc> <Esc> :noh<CR>
 au FileType vim setlocal foldmethod=marker
 
 nnoremap <Space>a za"{{{
@@ -318,3 +349,7 @@ nnoremap K <Nop>
 " Shiftで空行に移動
 noremap <S-j>   }
 noremap <S-k>   {
+
+
+set nospell
+command TmuxHelp e ~/tmux_help.txt

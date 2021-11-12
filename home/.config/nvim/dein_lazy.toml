@@ -1,4 +1,3 @@
-# [[plugins]]
 # repo =  'lambdalisue/fern.vim'
 # hook_add = """
 # let g:fern#renderer = 'nerdfont'
@@ -29,6 +28,8 @@
 
 # """
 
+# ======================================= Plugins =============================
+
 # [[plugins]]
 # repo = 'lambdalisue/fern-git-status.vim'
 
@@ -48,6 +49,126 @@
 # repo = 'ktr0731/tweet.nvim'
 
 [[plugins]]
+repo = 'prabirshrestha/vim-lsp'
+
+[[plugins]]
+repo = 'mattn/vim-lsp-settings'
+
+[[plugins]]
+repo = 'kdheepak/lazygit.nvim'
+hook_add = """
+let g:lazygit_floating_window_winblend = 0 " transparency of floating window
+let g:lazygit_floating_window_scaling_factor = 0.9 " scaling factor for floating window
+let g:lazygit_floating_window_corner_chars = ['╭', '╮', '╰', '╯'] " customize lazygit popup window corner characters
+let g:lazygit_floating_window_use_plenary = 0 " use plenary.nvim to manage floating window if available
+let g:lazygit_use_neovim_remote = 1 " fallback to 0 if neovim-remote is not installed
+"""
+
+[[plugins]]
+repo = 'junegunn/fzf.vim'
+hook_add = '''
+ nnoremap <silent> <C-.>   :FZF<CR>
+'''
+
+# [[plugins]]
+#  repo = 'neovim/nvim-lspconfig'
+#  on_event = 'BufEnter'
+#  hook_source = '''
+#  lua << EOF
+#  local nvim_lsp = require('lspconfig')
+#  local on_attach = function (client, bufnr)
+#  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+#  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+#
+#  local opts = { noremap=true, silent=true }
+#   buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+#   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+#   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+#   buf_set_keymap('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+#   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+#   buf_set_keymap('n', 'gx', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+#   buf_set_keymap('n', 'g[', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+#   buf_set_keymap('n', 'g]', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+#  end
+#
+#  require'lspconfig'.tsserver.setup{}
+#  require'lspconfig'.solargraph.setup{}
+#
+#  require'lspinstall'.setup()
+#  local servers = require'lspinstall'.installed_servers()
+#  for _, server in pairs(servers) do
+#   require'lspconfig'[server].setup{}
+#  end
+# EOF
+# '''
+
+# [[plugins]]
+# repo = 'kabouzeid/nvim-lspinstall'
+# on_source = 'nvim-lspconfig'
+# hook_source = '''
+# lua require'lspinstall'.setup()
+# require'lspinstall'.setup() -- important
+#
+# local servers = require'lspinstall'.installed_servers()
+# for _, server in pairs(servers) do
+#   require'lspconfig'[server].setup{}
+# end
+#
+# local function setup_servers()
+#   require'lspinstall'.setup()
+#   local servers = require'lspinstall'.installed_servers()
+#   for _, server in pairs(servers) do
+#     require'lspconfig'[server].setup{}
+#   end
+# end
+#
+# setup_servers()
+#
+# -- Automatically reload after `:LspInstall <server>` so we don't have to restart neovim
+# require'lspinstall'.post_install_hook = function ()
+#   setup_servers() -- reload installed servers
+#   vim.cmd("bufdo e") -- this triggers the FileType autocmd that starts the server
+# end
+# '''
+
+# [[plugins]]
+# repo = 'matsui54/ddc-nvim-lsp-doc'
+# on_source = 'ddc.vim'
+# hook_source = '''
+# let g:ddc_nvim_lsp_doc_config = {
+#      \ 'documentation': {
+#      \   'enable': v:true,
+#      \   'border': 'single',
+#      \   'maxWidth': 60,
+#      \   'maxHeight': 30,
+#      \ },
+#      \ 'signature': {
+#      \   'maxHeight': 5,
+#      \ },
+#      \ }
+# call ddc_nvim_lsp_doc#enable()
+# '''
+
+# [[plugins]]
+# repo = 'nvim-lua/completion-nvim'
+# hook_source='''
+# set completeopt=menuone,noinsert,noselect
+# set shortmess+=c
+#
+# lua << EOF
+#     local on_attach = function (client, bufnr)
+#         vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', {noremap = true, silent = true})
+#         vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', {noremap = true, silent = true})
+#         vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', {noremap = true, silent = true})
+#         require('completion').on_attach(client)
+#     end
+#     require('lspconfig').vimls.setup({on_attach = on_attach})
+#     require('lspconfig').tsserver.setup({on_attach = on_attach})
+#     require('lspconfig').intelephense.setup({on_attach = on_attach})
+# EOF
+# '''
+
+[[plugins]]
 repo = 'kevinhwang91/rnvimr'
 
 [[plugins]]
@@ -61,10 +182,6 @@ repo = 'vim-jp/vimdoc-ja'
 
 [[plugins]]
 repo = 'khaveesh/vim-fish-syntax'
-
-[[plugins]]
-repo = 'junegunn/fzf.vim'
-
 # [[plugins]]
 # repo =  'mfussenegger/nvim-dap'
 
@@ -100,25 +217,23 @@ repo = 'tpope/vim-fugitive'
 repo = 'scrooloose/nerdtree'
 
 [[plugins]]
-repo = "puremourning/vimspector"
-on_ft = ["python", "javascript"]
-build = "./install_gadget.py --enable-python --force-enable-node"
-hook_add = """
-function! LaunchFileDebug()
-  call vimspector#LaunchWithSettings({'configuration': &filetype.'_file'})
-endfunction
-
-sign define vimspectorBP text=🔴 texthl=Normal
-sign define vimspectorBPDisabled text=🔵 texthl=Normal
-sign define vimspectorPC text=🔶 texthl=SpellBad
-
-"""
-
-[[plugins]]
 repo = 'wakatime/vim-wakatime'
 
 [[plugins]]
 repo = 'github/copilot.vim'
+
+[[plugins]]
+repo = 'kamykn/spelunker.vim'
+
+[[plugins]]
+repo = 'airblade/vim-gitgutter'
+
+[[plugins]]
+repo = 'skanehira/translate.vim'
+
+[[plugins]]
+repo = 'posva/vim-vue'
+
 
 [[plugins]]
 repo = 'Shougo/unite.vim'
@@ -159,5 +274,18 @@ repo = 'Shougo/unite.vim'
 #         'Gcd'],
 #     ]
 # nnoremap <silent>[menu]g :Unite -silent -start-insert menu:git<CR>
-# """
 
+[[plugins]]
+repo = "puremourning/vimspector"
+on_ft = ["python", "javascript"]
+build = "./install_gadget.py --enable-python --force-enable-node"
+hook_add = """
+function! LaunchFileDebug()
+  call vimspector#LaunchWithSettings({'configuration': &filetype.'_file'})
+endfunction
+
+sign define vimspectorBP text=🔴 texthl=Normal
+sign define vimspectorBPDisabled text=🔵 texthl=Normal
+sign define vimspectorPC text=🔶 texthl=SpellBad
+
+"""
