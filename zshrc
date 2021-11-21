@@ -3,6 +3,9 @@ autoload -Uz compinit && compinit
 fpath=( /path/to/Your-self-made-completion "${fpath[@]}" )
 autoload -Uz your-self-made-completion
 
+export DENO_INSTALL="/home/coma/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
+
 # if [[ ! -n $TMUX ]]; then
 #   ID="`tmux list-sesstions`"
 #   if [[ -z "$ID" ]]; then
@@ -21,6 +24,8 @@ if test $count -eq 0; then
 elif test $count -eq 1; then
     echo `tmux a`
 fi
+
+homeshick check
 
 # === depertment variavle ===
 #

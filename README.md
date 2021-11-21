@@ -23,5 +23,8 @@ This file is package list from packaman.
 
 [Tmux](https://github.com/tmux/tmux) config
 
-## Management Tools⚙
+## Management Tool⚙
+Cange Management Tool
+[rcm]()
+
 [homeshick](https://github.com/andsens/homeshick)
