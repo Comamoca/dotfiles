@@ -1,0 +1,26 @@
+[[plugins]]
+repo = "neoclide/coc.nvim"
+hook_post_source = """
+source ~/.config/nvim/configs/coc.vim
+"""
+
+[[plugins]]
+repo = 'sainnhe/gruvbox-material'
+
+[[plugins]]
+repo = 'miyakogi/seiya.vim'
+
+[[plugins]]
+repo = 'cohama/lexima.vim'
+
+[[plugins]]
+repo = 'tpope/vim-commentary'
+
+[[plugins]]
+repo = 'tyru/eskk.vim'
+
+# [[plugins]]
+# repo = 'tyru/skk.vim'
+
+[[plugins]]
+repo = 'kana/vim-smartword'

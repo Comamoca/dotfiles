@@ -1,0 +1,58 @@
+[[plugins]]
+repo = 'dag/vim-fish'
+
+
+[[plugins]]
+repo = 'morhetz/gruvbox'
+
+[[plugins]]
+repo = 'vim-jp/vimdoc-ja'
+
+[[plugins]]
+repo = 'skanehira/translate.vim'
+
+[[plugins]]
+repo = 'vim-airline/vim-airline-themes'
+
+[[plugins]]
+repo = 'thinca/vim-quickrun'
+
+[[plugins]]
+repo = 'wsdjeg/dein-ui.vim'
+
+[[plugins]]
+repo = 'vim-airline/vim-airline'
+hook_add = """
+AirlineTheme gruvbox_material
+"""
+
+[[plugins]]
+repo = 'simeji/winresizer'
+
+[[plugins]]
+repo = 'previm/previm'
+hook_add = """
+source ~/.config/nvim/configs/tmp/previm.vim
+"""
+
+[[plugins]]
+repo = 'tyru/open-browser.vim'
+
+[[plugins]]
+repo = "Shougo/denite.nvim"
+hook_post_source = """
+source ~/.config/nvim/configs/tmp/denite.vim
+"""
+
+[[plugins]]
+repo = "Shougo/defx.nvim"
+depends = ["defx-git"]
+
+[[plugins]]
+repo ="kristijanhusak/defx-git"
+# hook_post_source = """
+# source ~/.config/nvim/configs/defx-git.vim
+# """
+hook_post_source = """
+source ~/.config/nvim/configs/tmp/defx.vim
+"""
