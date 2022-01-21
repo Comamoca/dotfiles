@@ -104,7 +104,7 @@ function! s:packager_init(packager) abort
   call a:packager.add('turbio/bracey.vim')
   call a:packager.add('alvan/vim-closetag')
   call a:packager.add('maxmellon/vim-jsx-pretty')
-  " call a:packager.add('')
+  call a:packager.add('karoliskoncevicius/moonshine-vim')
   " call a:packager.add('')
   " call a:packager.add('')
   " call a:packager.add('')
