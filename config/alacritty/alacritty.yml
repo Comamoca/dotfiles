@@ -877,13 +877,13 @@ font:
     # family: "PlemolJPconsoleNF"
     family: "PlemolJP35ConsoleNF"
     style: Regular
-  # size: 12
+  # size: 13
 
-shell:
-  program: /usr/bin/fish
-  args:
-    - -c
-    - "/usr/bin/tmux a -t 0 || /usr/bin/tmux"
+# shell:
+#   program: /usr/bin/fish
+#   args:
+#     - -c
+#     - "/usr/bin/tmux a -t 0 || /usr/bin/tmux"
 
 window:
   opacity: 0.8
