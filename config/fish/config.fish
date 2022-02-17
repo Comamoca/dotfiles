@@ -27,6 +27,11 @@ export DENO_INSTALL="/home/coma/.deno"
 export EDITOR=nvim
 export PYTHONPATH=/home/coma/bundler/bundler/lib
 export GOPATH=$HOME/go
+set PATH /home/coma/.cargo/bin $PATH
+export FYNE_FONT=/usr/share/fonts/PlemolJP/PlemolJP-Regular.ttf
+export DENO_INSTALL="/home/coma/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
+
 
 set PATH /home/coma/go/bin $PATH
 starship init fish | source

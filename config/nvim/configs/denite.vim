@@ -1,5 +1,5 @@
-nnoremap <silent><C-o> :<C-u>Denite buffer<CR>
-nnoremap <silent><C-p> :<C-u>Denite file/rec<CR>
+" nnoremap <silent><C-o> :<C-u>Denite buffer -auto-action=preview_bat<CR>
+" nnoremap <silent><C-p> :<C-u>Denite file/rec -auto-action=preview_bat<CR>
 
 " Define mappings
 autocmd FileType denite call s:denite_my_settings()
@@ -18,10 +18,11 @@ function! s:denite_my_settings() abort
   \ denite#do_map('toggle_select').'j'
 endfunction
 
+" Change denite default options
+
 let s:denite_win_width_percent = 0.85
 let s:denite_win_height_percent = 0.7
 
-" Change denite default options
 call denite#custom#option('default', {
     \ 'split': 'floating',
     \ 'winwidth': float2nr(&columns * s:denite_win_width_percent),
@@ -31,7 +32,20 @@ call denite#custom#option('default', {
     \ })
 
 
+" let s:floating_window_width_ratio = 1.0
+" let s:floating_window_height_ratio = 0.7
 
-
-
-
+" call denite#custom#option('default', {
+" \ 'auto_action': 'preview_bat',
+" \ 'floating_preview': v:true,
+" \ 'match_highlight': v:true,
+" \ 'preview_height': float2nr(&lines * s:floating_window_height_ratio),
+" \ 'preview_width': float2nr(&columns * s:floating_window_width_ratio / 2),
+" \ 'prompt': '% ',
+" \ 'split': 'floating',
+" \ 'vertical_preview': v:true,
+" \ 'wincol': float2nr((&columns - (&columns * s:floating_window_width_ratio)) / 2),
+" \ 'winheight': float2nr(&lines * s:floating_window_height_ratio),
+" \ 'winrow': float2nr((&lines - (&lines * s:floating_window_height_ratio)) / 2),
+" \ 'winwidth': float2nr(&columns * s:floating_window_width_ratio / 2),
+" \ })

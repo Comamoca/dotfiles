@@ -7,4 +7,5 @@ set fileencodings=utf-8
 au FileType vim setlocal foldmethod=marker
 set foldmethod=marker
 
-let mapleader = "\<SPACE>"
+nnoremap <Space> <Nop>
+let mapleader = "\<Space>"

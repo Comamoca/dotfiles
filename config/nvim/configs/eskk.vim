@@ -5,7 +5,9 @@
 
 let g:eskk#directory = "~/.config/eskk"
 let g:eskk#dictionary = { 'path': "~/.config/eskk/my_jisyo", 'sorted': 1, 'encoding': 'utf-8',}
-let g:eskk#large_dictionary = {'path': "~/.config/eskk/SKK-JISYO.L", 'sorted': 1, 'encoding': 'utf-8',}
+let g:eskk#large_dictionary = {'path': "~/.config/eskk/SKK-JISYO.L", 'sorted': 1, 'encoding': 'euc-jp',}
+
+
 
 imap <C-d> <Plug>(eskk:toggle)
 cmap <C-d> <Plug>(eskk:toggle)
