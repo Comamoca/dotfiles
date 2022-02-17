@@ -18,6 +18,9 @@ tnoremap <C-[><C-[> <C-\><C-n>
 
 noremap <C-[><C-[> :nohlsearch<CR>
 
+set completeopt=menuone,noinsert
+" 補完表示時のEnterで改行をしない
+inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
 
 
 

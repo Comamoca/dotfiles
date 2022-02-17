@@ -1,14 +1,46 @@
 command Source :source $MYVIMRC
 command Config :e $MYVIMRC
-command EditPlugs :e ~/.config/nvim/dein.toml
-command EditLazyPlugs :e ~/.config/nvim/dein_lazy.toml
+command Configs :call ConfigsReq()
+command Plugins :e ~/.config/nvim/dein.toml
+command PluginLazy :e ~/.config/nvim/dein_lazy.toml
 
-command Configs :Defx ~/.config/nvim/configs/ -columns=git:mark:filename:type
+command ConfigsDefx :Defx ~/.config/nvim/configs
+
 " command! -nargs=1 Configs call OpenConfig(<f-args>)
 
-" let confgs_path = "~/.config/nvim/configs/"
+let s:confgs_path = "~/.config/nvim/configs/"
 
 " function! OpenConfig(config)
 "   echo a:config
 "   :e confgs_path . a:config
 " endfunction
+
+function! ConfigsReq() abort
+	let cwd = getcwd()
+	execute "cd" s:confgs_path
+	:Denite file/rec
+	execute "cd" cwd
+endfunction
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

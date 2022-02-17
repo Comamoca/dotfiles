@@ -1,8 +1,14 @@
+# [[plugins]]
+# repo = "neoclide/coc.nvim"
+# merge = 0
+# rev = "release"
 [[plugins]]
-repo = "neoclide/coc.nvim"
-hook_post_source = """
-source ~/.config/nvim/configs/coc.vim
-"""
+repo = 'neoclide/coc.nvim'
+rev = 'release'
+hook_add = '''
+  let g:coc_global_extensions = ['coc-json', 'coc-css', 'coc-eslint', 'coc-prettier', 'coc-tsserver', 'coc-toml', 'coc-yaml', 'coc-jedi', 'coc-go', 'coc-vimlsp']
+  call coc#util#install()
+'''
 
 [[plugins]]
 repo = 'sainnhe/gruvbox-material'
@@ -15,12 +21,6 @@ repo = 'cohama/lexima.vim'
 
 [[plugins]]
 repo = 'tpope/vim-commentary'
-
-[[plugins]]
-repo = 'tyru/eskk.vim'
-
-# [[plugins]]
-# repo = 'tyru/skk.vim'
 
 [[plugins]]
 repo = 'kana/vim-smartword'

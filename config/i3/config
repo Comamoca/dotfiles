@@ -11,6 +11,9 @@
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
+
+
+
 font pango:monospace 8
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
@@ -56,7 +59,8 @@ bindsym Mod4+Return exec i3-sensible-terminal
 bindsym Mod4+q kill
 
 # start dmenu (a program launcher)
-bindsym Mod4+d exec --no-startup-id dmenu_run
+# bindsym Mod4+d exec --no-startup-id dmenu_run
+bindsym Mod4+d exec --no-startup-id "rofi -show combi"
 # A more modern dmenu replacement is rofi:
 # bindsym Mod4+d exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
