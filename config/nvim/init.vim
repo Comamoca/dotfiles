@@ -45,6 +45,7 @@ if &compatible
   set nocompatible
 endif
 
+
 "function! s:packager_init(packager) abort{{{
 "  call a:packager.add('kristijanhusak/vim-packager', { 'type': 'opt' })"{{{
 "  " call a:packager.add('junegunn/fzf', { 'do': './install --all && ln -s $(pwd) ~/.fzf'})
@@ -145,7 +146,7 @@ endif
 
 call jetpack#begin()
 
-" Jetpack Exsample
+" Jetpack Exsample{{{
 " Jetpack 'junegunn/fzf.vim'
 " Jetpack 'junegunn/fzf', { 'do': {-> fzf#install()} }
 " Jetpack 'neoclide/coc.nvim', { 'branch': 'release' }
@@ -153,10 +154,14 @@ call jetpack#begin()
 " Jetpack 'vlime/vlime', { 'rtp': 'vim' }
 " Jetpack 'dracula/vim', { 'as': 'dracula' }
 " Jetpack 'tpope/vim-fireplace', { 'for': 'clojure' }
-
+"}}}
 Jetpack  'twitvim/twitvim'
 Jetpack  'honza/vim-snippets'
-Jetpack  'neoclide/coc.nvim', { 'branch': 'release' }
+" Jetpack  'neoclide/coc.nvim', { 'branch': 'release' }
+"
+Jetpack  'prabirshrestha/vim-lsp'
+Jetpack  'mattn/vim-lsp-settings'
+
 Jetpack  'sainnhe/gruvbox-material'
 Jetpack  'miyakogi/seiya.vim'
 Jetpack  'cohama/lexima.vim'
@@ -180,7 +185,7 @@ Jetpack  'nvim-treesitter/nvim-treesitter'
 Jetpack  'iberianpig/tig-explorer.vim'
 Jetpack  'easymotion/vim-easymotion'
 Jetpack  'thinca/vim-splash'
-Jetpack  'subnut/nvim-ghost.nvim'
+" Jetpack  'subnut/nvim-ghost.nvim'
 Jetpack  'turbio/bracey.vim'
 Jetpack  'alvan/vim-closetag'
 Jetpack  'maxmellon/vim-jsx-pretty'
@@ -193,10 +198,39 @@ Jetpack  'vim-denops/denops.vim'
 Jetpack  'vim-denops/denops-helloworld.vim'
 Jetpack  'vim-denops/denops-helloworld.vim'
 Jetpack  'kassio/neoterm'
+Jetpack  'arcticicestudio/nord-vim'
+Jetpack  'skanehira/vsession'
+Jetpack  'hisaknown/nanomap.vim'
 
+Jetpack  'vim-denops/denops.vim'
+
+Jetpack  'Shougo/ddu.vim'
+Jetpack  'Shougo/ddu-ui-ff'
+Jetpack  'Shougo/ddu-commands.vim'
+Jetpack  'Shougo/ddu-source-file_rec'
+Jetpack  'Shougo/ddu-kind-file'
+Jetpack  'Shougo/ddu-source-file'
+Jetpack  'shun/ddu-source-rg'
+Jetpack  'yuki-yano/ddu-filter-fzf'
+Jetpack  'liquidz/ddu-source-custom-list'
+Jetpack  'shun/ddu-source-buffer'
+
+Jetpack  'Shougo/ddc.vim'
+Jetpack  'Shougo/ddc-around'
+Jetpack  'Shougo/ddc-matcher_head'
+Jetpack  'Shougo/ddc-sorter_rank'
+Jetpack  'shun/ddc-vim-lsp'
+Jetpack  'Shougo/ddc-converter_remove_overlap'
+
+Jetpack  'Shougo/ddc.vim'
+Jetpack  'vim-denops/denops.vim'
+Jetpack  'Shougo/ddc-around'
+Jetpack  'Shougo/ddc-matcher_head'
+Jetpack  'Shougo/ddc-sorter_rank'
+Jetpack  'shun/ddc-vim-lsp'
+Jetpack  'shun/ddu-source-buffer'
 
 call jetpack#end()
-
 
 
 lua <<EOF
@@ -228,3 +262,10 @@ runtime! configs/*.vim
 
 " execute 'set runtimepath+=' . fnamemodify(s:config_path, ':p')
 " runtime! expand("~/.config/nvim/configs/*.vim")
+
+
+if exists('g:vscode')
+	command! VSCode :echo "VSCode!"
+  runtime! plugsetsl*.vim
+  runtime! configs/*.vim
+endif
