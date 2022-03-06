@@ -12,6 +12,23 @@
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
 
+# Plasma compatibility improvements
+# for_window [window_role="pop-up"] floating enable
+# for_window [window_role="task_dialog"] floating enable
+
+# for_window [class="yakuake"] floating enable
+# for_window [class="systemsettings"] floating enable
+# for_window [class="plasmashell"] floating enable;
+# for_window [class="Plasma"] floating enable; border none
+# for_window [title="plasma-desktop"] floating enable; border none
+# for_window [title="win7"] floating enable; border none
+# for_window [class="krunner"] floating enable; border none
+# for_window [class="Kmix"] floating enable; border none
+# for_window [class="Klipper"] floating enable; border none
+# for_window [class="Plasmoidviewer"] floating enable; border none
+# for_window [class="(?i)*nextcloud*"] floating disable
+# for_window [class="plasmashell" window_type="notification"] border none, move right 700px, move down 450px
+# no_focus [class="plasmashell" window_type="notification"]
 
 
 font pango:monospace 8
@@ -203,6 +220,14 @@ bar {
 
 bindsym 
 
+
+# using plasma's logout screen instead of i3's
+bindsym $mod+Shift+e exec --no-startup-id qdbus-qt5 org.kde.ksmserver /KSMServer org.kde.KSMServerInterface.logout -1 -1 -1
+# bindsym XF86AudioRaiseVolume exec --no-startup-id qdbus org.kde.kglobalaccel /component/kmix invokeShortcut "increase_volume"
+# bindsym XF86AudioLowerVolume exec --no-startup-id qdbus org.kde.kglobalaccel /component/kmix invokeShortcut "decrease_volume"
+# bindsym XF86AudioMute exec --no-startup-id qdbus org.kde.kglobalaccel /component/kmix invokeShortcut "mute"
+# bindsym XF86AudioMicMute exec --no-startup-id qdbus org.kde.kglobalaccel /component/kmix invokeShortcut "mic_mute"
+
 ########################################################################
 ## automatically start i3-config-wizard to offer the user to create a
 ## keysym-based config which used their favorite modifier (alt or windows)
@@ -217,3 +242,4 @@ bindsym
 
 
 
+exec_always --no-startup-id picom -bc

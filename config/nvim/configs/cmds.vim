@@ -16,10 +16,11 @@ let s:confgs_path = "~/.config/nvim/configs/"
 " endfunction
 
 function! ConfigsReq() abort
-	let cwd = getcwd()
-	execute "cd" s:confgs_path
-	:Denite file/rec
-	execute "cd" cwd
+	" let cwd = getcwd()
+	" execute "cd" s:confgs_path
+	" :Denite file/rec
+	" execute "cd" cwd
+	call ddu#start({'sources': [{'name': 'file_rec', 'params': {'path': expand('~/.config/nvim/configs')}}]})
 endfunction
 
 

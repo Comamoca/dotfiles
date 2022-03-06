@@ -47,7 +47,8 @@ call ddu#custom#patch_global({
     \   }
     \ })
 
-" Call default sources
+
+" Call default sources{{{
 " call ddu#start({})
 
 " Set name specific configuration
@@ -66,4 +67,4 @@ call ddu#custom#patch_global({
 " https://github.com/Shougo/ddu-source-file_rec
 " call ddu#start({'sources': [
 "     \ {'name': 'file_rec', 'params': {'path': expand('~')}}
-"     \ ]})
+"     \ ]})}}}

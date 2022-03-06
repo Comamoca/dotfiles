@@ -35,3 +35,6 @@ export PATH="$DENO_INSTALL/bin:$PATH"
 
 set PATH /home/coma/go/bin $PATH
 starship init fish | source
+
+mkdir -p $fish_complete_path[1]
+cp extra/completions/alacritty.fish $fish_complete_path[1]/alacritty.fish
