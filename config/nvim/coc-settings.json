@@ -13,5 +13,6 @@
         "usePlaceholders": true
       }
     }
-  }
+  },
+  "suggest.keepCompleteopt": true
 }

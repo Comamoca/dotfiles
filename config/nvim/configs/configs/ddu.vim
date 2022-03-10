@@ -30,14 +30,14 @@ call ddu#custom#patch_global({
 " Set default sources
 " Note: file source
 " https://github.com/Shougo/ddu-source-file
-call ddu#custom#patch_global({
-    \ 'sources': [{'name': 'file', 'params': {}}],
-    \ })
+" call ddu#custom#patch_global({
+"     \ 'sources': [{'name': 'file', 'params': {}}],
+"     \ })
 
 " Change source options.
-call ddu#custom#patch_global('sourceParams', {
-      \ 'file_rec': {'path': expand('~')},
-      \ })
+" call ddu#custom#patch_global('sourceParams', {
+"       \ 'file_rec': {'path': expand('~')},
+"       \ })
 
 call ddu#custom#patch_global({
     \   'sourceOptions': {
@@ -48,7 +48,7 @@ call ddu#custom#patch_global({
     \ })
 
 
-" Call default sources{{{
+"za Call default sources{{{
 " call ddu#start({})
 
 " Set name specific configuration
