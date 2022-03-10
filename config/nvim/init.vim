@@ -155,18 +155,29 @@ call jetpack#begin()
 " Jetpack 'dracula/vim', { 'as': 'dracula' }
 " Jetpack 'tpope/vim-fireplace', { 'for': 'clojure' }
 "}}}
-Jetpack  'twitvim/twitvim'
-Jetpack  'honza/vim-snippets'
-" Jetpack  'neoclide/coc.nvim', { 'branch': 'release' }
+Jetpack  'SirVer/ultisnips'
+" Jetpack  'honza/vim-snippets'
+" Jetpack  'twitvim/twitvim'
+Jetpack  'neoclide/coc.nvim', { 'branch': 'release' }
 "
-Jetpack  'prabirshrestha/vim-lsp'
-Jetpack  'mattn/vim-lsp-settings'
+" Jetpack  'prabirshrestha/vim-lsp'
+" Jetpack  'mattn/vim-lsp-settings'
+" Jetpack  'shun/ddc-vim-lsp'
+Jetpack  'hrsh7th/vim-vsnip'
+Jetpack  'hrsh7th/vim-vsnip-integ'
+
+" Jetpack  'thomasfaingnaert/vim-lsp-snippets'
+" Jetpack  'thomasfaingnaert/vim-lsp-ultisnips'
 
 Jetpack  'sainnhe/gruvbox-material'
 Jetpack  'miyakogi/seiya.vim'
+" Jetpack  'jceb/vim-orgmode'
+Jetpack  'itchyny/calendar.vim'
+Jetpack  'bun913/min-todo.vim'
 Jetpack  'cohama/lexima.vim'
 Jetpack  'tpope/vim-commentary'
-Jetpack  'tyru/eskk.vim'
+" Jetpack  'tyru/eskk.vim'
+Jetpack  'vim-skk/skkeleton'
 Jetpack  'kana/vim-smartword'
 Jetpack  'dag/vim-fish'
 Jetpack  'morhetz/gruvbox'
@@ -185,7 +196,9 @@ Jetpack  'nvim-treesitter/nvim-treesitter'
 Jetpack  'iberianpig/tig-explorer.vim'
 Jetpack  'easymotion/vim-easymotion'
 Jetpack  'thinca/vim-splash'
+Jetpack  'vimwiki/vimwiki'
 " Jetpack  'subnut/nvim-ghost.nvim'
+"
 Jetpack  'turbio/bracey.vim'
 Jetpack  'alvan/vim-closetag'
 Jetpack  'maxmellon/vim-jsx-pretty'
@@ -193,16 +206,17 @@ Jetpack  'Jetpackkaroliskoncevicius/moonshine-vim'
 Jetpack  'nvim-telescope/telescope.nvim'
 Jetpack  'nvim-lua/plenary.nvim'
 Jetpack  'mopp/layoutplugin.vim'
-Jetpack  'SirVer/ultisnips'
-Jetpack  'vim-denops/denops.vim'
-Jetpack  'vim-denops/denops-helloworld.vim'
-Jetpack  'vim-denops/denops-helloworld.vim'
 Jetpack  'kassio/neoterm'
 Jetpack  'arcticicestudio/nord-vim'
 Jetpack  'skanehira/vsession'
 Jetpack  'hisaknown/nanomap.vim'
+Jetpack  'prabirshrestha/async.vim'
+" Jetpack  'Shougo/deoppet.nvim'
+" Jetpack  'github/copilot.vim'
 
+" Denops Plugins
 Jetpack  'vim-denops/denops.vim'
+Jetpack  'vim-denops/denops-helloworld.vim'
 
 Jetpack  'Shougo/ddu.vim'
 Jetpack  'Shougo/ddu-ui-ff'
@@ -219,16 +233,17 @@ Jetpack  'Shougo/ddc.vim'
 Jetpack  'Shougo/ddc-around'
 Jetpack  'Shougo/ddc-matcher_head'
 Jetpack  'Shougo/ddc-sorter_rank'
-Jetpack  'shun/ddc-vim-lsp'
 Jetpack  'Shougo/ddc-converter_remove_overlap'
 
 Jetpack  'Shougo/ddc.vim'
-Jetpack  'vim-denops/denops.vim'
 Jetpack  'Shougo/ddc-around'
 Jetpack  'Shougo/ddc-matcher_head'
 Jetpack  'Shougo/ddc-sorter_rank'
-Jetpack  'shun/ddc-vim-lsp'
+" Jetpack  'shun/ddc-vim-lsp'
 Jetpack  'shun/ddu-source-buffer'
+Jetpack  'LumaKernel/ddc-file'
+Jetpack  'tani/ddc-path'
+Jetpack  'matsui54/ddc-ultisnips'
 
 call jetpack#end()
 
@@ -251,7 +266,7 @@ EOF
 " 	execute 'source' file
 " endfor
 
-runtime! plugsetsl*.vim
+" runtime! plugsetsl*.vim
 runtime! configs/*.vim
 
 " source ./autoload/jetpack.vim
@@ -259,13 +274,31 @@ runtime! configs/*.vim
 " autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
 
 " let s:config_path = expand("~/.config/nvim/configs")
+"
 
 " execute 'set runtimepath+=' . fnamemodify(s:config_path, ':p')
 " runtime! expand("~/.config/nvim/configs/*.vim")
 
 
+
 if exists('g:vscode')
 	command! VSCode :echo "VSCode!"
-  runtime! plugsetsl*.vim
+ runtime! plugsetsl*.vim
   runtime! configs/*.vim
 endif
+
+:let chk=getftype("/home/coma/.skk/SKK-JISYO.L")
+	:if chk == ""
+		call system('curl -fsSL https://gist.githubusercontent.com/Comamoca/59cd42f5688e8f5ccee293bcd80b43b5/raw/18e713b03d873991c1ad181347c8ba7b3d4ac124/dl_jisyo.sh | sh')
+	:endif
+
+set completeopt=menuone,noinsert
+
+" 補完表示時のEnterで改行をしない
+" inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
+
+set completeopt=menuone,noinsert
+inoremap <expr><C-n> pumvisible() ? "<Down>" : "<C-n>"
+inoremap <expr><C-p> pumvisible() ? "<Up>" : "<C-p>"
+
+inoremap <expr><Tab> pumvisible() ? "<C-n>" : "<Tab>"

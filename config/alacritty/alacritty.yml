@@ -960,11 +960,11 @@ colors:
 
 font:
   normal:
+    size: 13
     # family: PlemolJPconsoleNF
     family: PlemolJP35 Console NF
     # family: Source Code Pro
-    # style: Regular
-  # size: 13
+    # style: Regula
 # shell:
 #   program: /usr/bin/fish
 #   args:
@@ -973,5 +973,3 @@ font:
 
 window:
   opacity: 0.85
-  
-

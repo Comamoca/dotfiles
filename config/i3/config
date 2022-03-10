@@ -242,4 +242,4 @@ bindsym $mod+Shift+e exec --no-startup-id qdbus-qt5 org.kde.ksmserver /KSMServer
 
 
 
-exec_always --no-startup-id picom -bc
+exec_always --no-startup-id picom --config ~/.config/compton/compton.conf
