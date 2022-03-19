@@ -3,15 +3,14 @@
 " autocmd VimEnter * imap <C-j> <Plug>(eskk:toggle)
 " autocmd VimEnter * cmap <C-j> <Plug>(eskk:toggle)
 
+
+" let g:eskk#directory = "~/.config/eskk"
+" let g:eskk#dictionary = { 'path': "~/.config/eskk/my_jisyo", 'sorted': 1, 'encoding': 'utf-8',}
+" let g:eskk#large_dictionary = {'path': "~/.skk/SKK-JISYO.L", 'sorted': 1, 'encoding': 'euc-jp',}
+
 let g:eskk#directory = "~/.config/eskk"
 let g:eskk#dictionary = { 'path': "~/.config/eskk/my_jisyo", 'sorted': 1, 'encoding': 'utf-8',}
 let g:eskk#large_dictionary = {'path': "~/.config/eskk/SKK-JISYO.L", 'sorted': 1, 'encoding': 'euc-jp',}
-
-
-
-imap <C-d> <Plug>(eskk:toggle)
-cmap <C-d> <Plug>(eskk:toggle)
-
 
 let g:eskk#kakutei_when_unique_candidate = 1 "漢字変換した時に候補が1つの場合、自動的に確定する
 let g:eskk#enable_completion = 0             "neocompleteを入れないと、1にすると動作しなくなるため0推奨
@@ -23,6 +22,9 @@ augroup vimrc_eskk
   autocmd!
   autocmd User eskk-enable-post lmap <buffer> l <Plug>(eskk:disable)
 augroup END
+
+" imap <C-j> <Plug>(eskk:toggle)
+" cmap <C-j> <Plug>(eskk:toggle)
 
 imap jk <Plug>(eskk:toggle)
 cmap jk <Plug>(eskk:toggle)
