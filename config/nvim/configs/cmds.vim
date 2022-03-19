@@ -5,15 +5,25 @@ command! Configs :call ConfigsRec()
 command! Plugins :e ~/.config/nvim/dein.toml
 command! PluginLazy :e ~/.config/nvim/dein_lazy.toml
 command! ConfigsDefx :Defx ~/.config/nvim/configs
-command! Black :!black %
 command! Org :Defx ~/org
 command! Todo :tabe ~/todo.md<CR>
+command! -nargs=1 Q call QSearch((<f-args>))
+command! Black :call Pyformat()
+
+" augroup auto_black
+" 	autocmd!
+" 	autocmd bufWritePost *.py :call Pyformat()
+" augroup END
+
+function! QSearch(word)
+	execute "vimgrep" a:word expand("%") "| cw"
+endfunction
 
 
-augroup auto_style
-  autocmd!
-  " autocmd bufWritePost *.py :call Pyformat()
-augroup END
+" augroup auto_style
+"   autocmd!
+"   " autocmd bufWritePost *.py :call Pyformat()
+" augroup END
 
 " command! -nargs=1 Configs call OpenConfig(<f-args>)
 
@@ -32,5 +42,5 @@ function! ConfigsRec() abort
 endfunction
 
 function! Pyformat() abort
-	let job = jobstart('black %')
+	:!black %
 endfunction

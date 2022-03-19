@@ -4,7 +4,7 @@ return {
   color_scheme = "nord",
   use_ime = true, -- wezは日本人じゃないのでこれがないとIME動かない
   font_size = 12.5,
-  font = wezterm.font("Cica"),
+  font = wezterm.font("PlemolJP35 Console NF"),
   window_background_opacity = 0.85,
 
   -- disable_default_key_bindings = true,

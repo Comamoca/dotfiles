@@ -1,1 +1,0 @@
-/home/coma/dotfiles/config/nvim/configs/easymoation.vim

@@ -168,6 +168,7 @@ Jetpack  'hrsh7th/vim-vsnip-integ'
 
 " Jetpack  'thomasfaingnaert/vim-lsp-snippets'
 " Jetpack  'thomasfaingnaert/vim-lsp-ultisnips'
+" Jetpack  'dense-analysis/ale'
 
 Jetpack  'sainnhe/gruvbox-material'
 Jetpack  'miyakogi/seiya.vim'
@@ -176,8 +177,11 @@ Jetpack  'itchyny/calendar.vim'
 Jetpack  'bun913/min-todo.vim'
 Jetpack  'cohama/lexima.vim'
 Jetpack  'tpope/vim-commentary'
-" Jetpack  'tyru/eskk.vim'
-Jetpack  'vim-skk/skkeleton'
+Jetpack  'qbbr/vim-twig'
+
+" Jetpack  'vim-skk/skkeleton'
+Jetpack  'vim-skk/eskk.vim'
+
 Jetpack  'kana/vim-smartword'
 Jetpack  'dag/vim-fish'
 Jetpack  'morhetz/gruvbox'
@@ -211,6 +215,7 @@ Jetpack  'arcticicestudio/nord-vim'
 Jetpack  'skanehira/vsession'
 Jetpack  'hisaknown/nanomap.vim'
 Jetpack  'prabirshrestha/async.vim'
+Jetpack  'mattn/emmet-vim'
 " Jetpack  'Shougo/deoppet.nvim'
 " Jetpack  'github/copilot.vim'
 
@@ -287,10 +292,10 @@ if exists('g:vscode')
   runtime! configs/*.vim
 endif
 
-:let chk=getftype("/home/coma/.skk/SKK-JISYO.L")
-	:if chk == ""
-		call system('curl -fsSL https://gist.githubusercontent.com/Comamoca/59cd42f5688e8f5ccee293bcd80b43b5/raw/18e713b03d873991c1ad181347c8ba7b3d4ac124/dl_jisyo.sh | sh')
-	:endif
+let chk=getftype("/home/coma/.skk/SKK-JISYO.L")
+if chk == ""
+    call system('curl -fsSL https://gist.githubusercontent.com/Comamoca/59cd42f5688e8f5ccee293bcd80b43b5/raw/18e713b03d873991c1ad181347c8ba7b3d4ac124/dl_jisyo.sh | sh')
+endif
 
 set completeopt=menuone,noinsert
 

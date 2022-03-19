@@ -70,7 +70,7 @@ set $right semicolon
 floating_modifier Mod4
 
 # start a terminal
-bindsym Mod4+Return exec i3-sensible-terminal
+bindsym Mod4+Return exec wezterm
 
 # kill focused window
 bindsym Mod4+q kill
@@ -183,7 +183,10 @@ bindsym Mod4+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym Mod4+Shift+r restart
 # exit i3 (logs you out of your X session)
-bindsym Mod4+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+# bindsym Mod4+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+
+bindsym Mod4+Shift+e exec --no-startup-id \
+        "i3-nagbar -t warning -m 'Do you really want to exit i3?' -b 'Shutdown' 'systemctl poweroff' -b 'Reboot' 'systemctl reboot' -b 'Logout' 'i3-msg exit'"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -218,11 +221,8 @@ bar {
         status_command i3status
 }
 
-bindsym 
-
-
 # using plasma's logout screen instead of i3's
-bindsym $mod+Shift+e exec --no-startup-id qdbus-qt5 org.kde.ksmserver /KSMServer org.kde.KSMServerInterface.logout -1 -1 -1
+# bindsym $mod+Shift+e exec --no-startup-id qdbus-qt5 org.kde.ksmserver /KSMServer org.kde.KSMServerInterface.logout -1 -1 -1
 # bindsym XF86AudioRaiseVolume exec --no-startup-id qdbus org.kde.kglobalaccel /component/kmix invokeShortcut "increase_volume"
 # bindsym XF86AudioLowerVolume exec --no-startup-id qdbus org.kde.kglobalaccel /component/kmix invokeShortcut "decrease_volume"
 # bindsym XF86AudioMute exec --no-startup-id qdbus org.kde.kglobalaccel /component/kmix invokeShortcut "mute"
@@ -241,5 +241,15 @@ bindsym $mod+Shift+e exec --no-startup-id qdbus-qt5 org.kde.ksmserver /KSMServer
 #exec i3-config-wizard
 
 
+# bindsym Print exec maim -i $(xdotool getactivewindow) | xclip -selection clipboard -t image/png
+bindsym Print exec maim | xclip -selection clipboard -t image/png
 
-exec_always --no-startup-id picom --config ~/.config/compton/compton.conf
+
+bindsym Mod4+Shift+s exec maim | xclip -selection clipboard -t image/png
+
+exec_always --no-startup-id picom
+exec feh --bg-scale ~/MyPictures/wallpapelar/nonnon1.jpg
+exec --no-startup-id fcitx-autostart
+# exec --no-startup-id clipit
+# exec --no-startup-id xclip
+exec --no-startup-id sandsmark-notificationd

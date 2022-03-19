@@ -24,10 +24,6 @@ set completeopt=menuone,noinsert
 inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
 
 nnoremap <silent><C-o> :<c-u>call ddu#start({'sources': [{'name': 'buffer'}]})<cr>
-nnoremap <silent><C-p> :<c-u>call ddu#start({'sources': [{'name': 'file_rec', 'params': {'path': expand(getcwd())}}]})<cr>
-
-
-
-
-
-
+nnoremap <silent><C-o> :<c-u>Denite buffer<cr>
+" nnoremap <silent><C-p> :<c-u>call ddu#start({'sources': [{'name': 'file_rec', 'params': {'path': expand(getcwd())}}]})<cr>
+nnoremap <silent><C-p> :<c-u>Denite file/rec<CR>
