@@ -11,9 +11,9 @@ eval (gh completion -s fish| source)
 # starship init fish | source
 zoxide init fish | source
 
-if test -z $TMUX
-  tmux new-session
-end
+# if test -z $TMUX
+#   tmux new-session
+# end
 
 # theme_gruvbox dark soft
 
@@ -37,4 +37,4 @@ set PATH /home/coma/go/bin $PATH
 starship init fish | source
 
 mkdir -p $fish_complete_path[1]
-cp extra/completions/alacritty.fish $fish_complete_path[1]/alacritty.fish
+# cp extra/completions/alacritty.fish $fish_complete_path[1]/alacritty.fish
