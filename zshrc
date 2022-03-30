@@ -17,6 +17,7 @@ alias urxvt_setconf='xrdb -merge $HOME/.Xresources'
 
 alias zenn='npx zenn'
 alias composer='/home/coma/composer.phar'
+alias ..='cd ..'
 
 # mkdir -p ${ZDOTDIR:-~}/.zsh_functions
 # echo 'fpath+=${ZDOTDIR:-~}/.zsh_functions' >> ${ZDOTDIR:-~}/.zshrc

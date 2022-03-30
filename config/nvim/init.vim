@@ -178,6 +178,7 @@ Jetpack  'bun913/min-todo.vim'
 Jetpack  'cohama/lexima.vim'
 Jetpack  'tpope/vim-commentary'
 Jetpack  'qbbr/vim-twig'
+Jetpack  'glench/vim-jinja2-syntax'
 
 " Jetpack  'vim-skk/skkeleton'
 Jetpack  'vim-skk/eskk.vim'
@@ -292,15 +293,14 @@ if exists('g:vscode')
   runtime! configs/*.vim
 endif
 
-let chk=getftype("/home/coma/.skk/SKK-JISYO.L")
-if chk == ""
-    call system('curl -fsSL https://gist.githubusercontent.com/Comamoca/59cd42f5688e8f5ccee293bcd80b43b5/raw/18e713b03d873991c1ad181347c8ba7b3d4ac124/dl_jisyo.sh | sh')
-endif
+" let chk=getftype("/home/coma/.skk/SKK-JISYO.L")
+" if chk == ""
+"     call system('curl -fsSL https://gist.githubusercontent.com/Comamoca/59cd42f5688e8f5ccee293bcd80b43b5/raw/18e713b03d873991c1ad181347c8ba7b3d4ac124/dl_jisyo.sh | sh')
+" endif
 
-set completeopt=menuone,noinsert
 
 " 補完表示時のEnterで改行をしない
-" inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
+inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
 
 set completeopt=menuone,noinsert
 inoremap <expr><C-n> pumvisible() ? "<Down>" : "<C-n>"
