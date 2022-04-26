@@ -1,4 +1,3 @@
-colorscheme gruvbox-material
 set number
 set noautoindent
 set smartindent

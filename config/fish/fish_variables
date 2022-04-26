@@ -1,9 +1,24 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
-SETUVAR __fish_initialized:3100
+SETUVAR FZF_DEFAULT_OPTS:\x2d\x2dheight\x2040\x25
+SETUVAR FZF_DISABLE_KEYBINDINGS:0
+SETUVAR FZF_LEGACY_KEYBINDINGS:1
+SETUVAR FZF_PREVIEW_DIR_CMD:ls
+SETUVAR FZF_PREVIEW_FILE_CMD:head\x20\x2dn\x2010
+SETUVAR FZF_TMUX_HEIGHT:40\x25
+SETUVAR ZO_CMD:zo
+SETUVAR Z_CMD:z
+SETUVAR Z_DATA:/home/coma/\x2elocal/share/z/data
+SETUVAR Z_DATA_DIR:/home/coma/\x2elocal/share/z
+SETUVAR Z_EXCLUDE:\x5e/home/coma\x24
+SETUVAR __fish_initialized:3400
+SETUVAR _fisher_decors_2F_fish_2D_ghq_files:/home/coma/\x2econfig/fish/functions/__ghq_repository_search\x2efish\x1e/home/coma/\x2econfig/fish/conf\x2ed/ghq_key_bindings\x2efish\x1e/home/coma/\x2econfig/fish/completions/ghq\x2efish
+SETUVAR _fisher_halostatue_2F_fish_2D_fzf_files:/home/coma/\x2econfig/fish/functions/fbr\x2efish\x1e/home/coma/\x2econfig/fish/functions/fco\x2efish\x1e/home/coma/\x2econfig/fish/functions/fe\x2efish\x1e/home/coma/\x2econfig/fish/functions/fkill\x2efish\x1e/home/coma/\x2econfig/fish/functions/fo\x2efish\x1e/home/coma/\x2econfig/fish/functions/fshow\x2efish\x1e/home/coma/\x2econfig/fish/functions/fstash\x2efish\x1e/home/coma/\x2econfig/fish/conf\x2ed/halostatue_fish_fzf\x2efish
+SETUVAR _fisher_jethrokuan_2F_fzf_files:/home/coma/\x2econfig/fish/functions/__fzf_cd\x2efish\x1e/home/coma/\x2econfig/fish/functions/__fzf_complete\x2efish\x1e/home/coma/\x2econfig/fish/functions/__fzf_complete_preview\x2efish\x1e/home/coma/\x2econfig/fish/functions/__fzf_find_file\x2efish\x1e/home/coma/\x2econfig/fish/functions/__fzf_get_dir\x2efish\x1e/home/coma/\x2econfig/fish/functions/__fzf_open\x2efish\x1e/home/coma/\x2econfig/fish/functions/__fzf_parse_commandline\x2efish\x1e/home/coma/\x2econfig/fish/functions/__fzf_reverse_isearch\x2efish\x1e/home/coma/\x2econfig/fish/functions/__fzfcmd\x2efish\x1e/home/coma/\x2econfig/fish/conf\x2ed/fzf\x2efish
+SETUVAR _fisher_jethrokuan_2F_z_files:/home/coma/\x2econfig/fish/functions/__z\x2efish\x1e/home/coma/\x2econfig/fish/functions/__z_add\x2efish\x1e/home/coma/\x2econfig/fish/functions/__z_clean\x2efish\x1e/home/coma/\x2econfig/fish/functions/__z_complete\x2efish\x1e/home/coma/\x2econfig/fish/conf\x2ed/z\x2efish
 SETUVAR _fisher_jomik_2F_fish_2D_gruvbox_files:/home/coma/\x2econfig/fish/functions/theme_gruvbox\x2efish
 SETUVAR _fisher_jorgebucaran_2F_fisher_files:/home/coma/\x2econfig/fish/functions/fisher\x2efish\x1e/home/coma/\x2econfig/fish/completions/fisher\x2efish
-SETUVAR _fisher_plugins:jorgebucaran/fisher\x1ejomik/fish\x2dgruvbox
+SETUVAR _fisher_plugins:jomik/fish\x2dgruvbox\x1ejorgebucaran/fisher\x1ejethrokuan/fzf\x1ejethrokuan/z\x1edecors/fish\x2dghq\x1ehalostatue/fish\x2dfzf
 SETUVAR fish_color_autosuggestion:7c6f64\x1ebrblack
 SETUVAR fish_color_cancel:\x2dr
 SETUVAR fish_color_command:076678
@@ -31,4 +46,5 @@ SETUVAR fish_pager_color_completion:\x1d
 SETUVAR fish_pager_color_description:B3A06D\x1eyellow
 SETUVAR fish_pager_color_prefix:458588\x1e\x2d\x2dbold\x1e\x2d\x2dunderline
 SETUVAR fish_pager_color_progress:brwhite\x1e\x2d\x2dbackground\x3dcyan
-SETUVAR fish_user_paths:/home/coma/\x2epoetry/bin
+SETUVAR fish_pager_color_selected_background:\x2dr
+SETUVAR --export fish_user_paths:/home/coma/\x2erbenv/shims\x1e/home/coma/\x2erbenv/shims\x1e/home/coma/\x2epoetry/bin\x1e/home/coma/\x2enimble/bin

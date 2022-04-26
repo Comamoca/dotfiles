@@ -1,8 +1,9 @@
 local wezterm = require 'wezterm';
 
 return {
-	-- window_background_image = "~/MyPictures/toutoi/95693475_p0_master1200.jpg",
-	window_background_image = "/home/coma/MyPictures/toutoi/95693475_p0_master1200.jpg",
+	window_background_image = "/home/coma/ghq/MyPictures/wallpapelar/nonnon3.jpg",
+	-- window_background_image = "/home/coma/ghq/MyPictures/wallpapelar/67010409_p0_master1200.jpg",
+	-- window_background_image = "/home/coma/Downloads/FRAmxpLaMAECKr_.png",
 	window_background_image_hsb = {
 		-- Darken the background image by reducing it to 1/3rd
 		brightness = 0.15,
@@ -18,8 +19,9 @@ return {
 	-- disable_default_key_bindings = true,
 	color_scheme = "nord",
 	use_ime = true,
-	font_size = 12.5,
+	font_size = 12.3,
 	font = wezterm.font("UDEVGothicLG-Regular"),
+	-- font = wezterm.font("/home/coma/Downloads/"),
 	Window_background_opacity = 0.85,
 
 	hide_tab_bar_if_only_one_tab = true,
