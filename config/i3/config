@@ -239,6 +239,7 @@ bar {
 ## Please remove the following exec line:
 ########################################################################
 #exec i3-config-wizard
+# exec --no-startup-id exec sh  ~/.screenlayout/screen.sh
 
 
 # bindsym Print exec maim -i $(xdotool getactivewindow) | xclip -selection clipboard -t image/png
@@ -250,8 +251,14 @@ bindsym Mod4+b exec firefox
 exec_always --no-startup-id picom
 # exec feh --bg-scale ~/MyPictures/wallpapelar/nonnon3.jpg
 # exec --no-startup-id feh --bg-scale ~/MyPictures/wallpapelar/nonnon5-1.jpg
-exec --no-startup-id feh --bg-scale ~/MyPictures/toutoi/95693475_p0_master1200.jpg
+# exec --no-startup-id feh --bg-fill ~/ghq/MyPictures/toutoi/95693475_p0_master1200.jpg
+# exec --no-startup-id feh --bg-fill /home/MyPictures/wallpapelar/
+# exec --no-startup-id feh --bg-scale ~/MyPictures/toutoi/index.png
+# exec feh --bg-scale ~/MyPictures/toutoi/97187797_p0_master1200.jpg
+exec sh  ~/.fehbg &
 exec --no-startup-id fcitx-autostart
 # exec --no-startup-id clipit
 # exec --no-startup-id xclip
 exec --no-startup-id sandsmark-notificationd
+
+exec wezterm

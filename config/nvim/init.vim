@@ -1,5 +1,4 @@
-"dein Scripts-----------------------------{{{
-"if &compatible
+"dein Scripts-----------------------------{{{if &compatible
 "  set nocompatible               " Be iMproved
 "endif
 
@@ -8,7 +7,6 @@
 
 "" Required:
 "call dein#begin('/home/coma/.cache/dein')
-
 "" Let dein manage dein
 "" Required:
 "call dein#add('/home/coma/.cache/dein/repos/github.com/Shougo/dein.vim')
@@ -37,7 +35,6 @@
 "endif
 
 ""End dein Scripts-------------------------}}}
-
 
 set encoding=utf-8 
 
@@ -155,6 +152,17 @@ call jetpack#begin()
 " Jetpack 'dracula/vim', { 'as': 'dracula' }
 " Jetpack 'tpope/vim-fireplace', { 'for': 'clojure' }
 "}}}
+
+"{{{
+" Jetpack  'onsails/lspkind.nvim'
+" Jetpack  'neovim/nvim-lspconfig'
+" Jetpack  'williamboman/nvim-lsp-installer'
+" Jetpack  'hrsh7th/nvim-cmp'
+" Jetpack  'hrsh7th/cmp-nvim-lsp'
+" Jetpack  'hrsh7th/cmp-vsnip'
+" Jetpack  'hrsh7th/cmp-buffer'}}}
+
+" =========== Lsp Utils ===========
 Jetpack  'SirVer/ultisnips'
 " Jetpack  'honza/vim-snippets'
 " Jetpack  'twitvim/twitvim'
@@ -163,14 +171,25 @@ Jetpack  'neoclide/coc.nvim', { 'branch': 'release' }
 " Jetpack  'prabirshrestha/vim-lsp'
 " Jetpack  'mattn/vim-lsp-settings'
 " Jetpack  'shun/ddc-vim-lsp'
-Jetpack  'hrsh7th/vim-vsnip'
-Jetpack  'hrsh7th/vim-vsnip-integ'
+" Jetpack  'hrsh7th/vim-vsnip'
+" Jetpack  'hrsh7th/vim-vsnip-integ'
 
 " Jetpack  'thomasfaingnaert/vim-lsp-snippets'
 " Jetpack  'thomasfaingnaert/vim-lsp-ultisnips'
-" Jetpack  'dense-analysis/ale'
+Jetpack  'dense-analysis/ale'
+Jetpack  'scrooloose/syntastic'
+Jetpack  'Shougo/deol.nvim'
 
+" =========== colorscheme ===========
 Jetpack  'sainnhe/gruvbox-material'
+Jetpack  'morhetz/gruvbox'
+Jetpack  'sainnhe/everforest'
+Jetpack  'folke/tokyonight.nvim'
+Jetpack  'tckmn/hotdog.vim'
+Jetpack  'sainnhe/sonokai'
+
+" =========== Tools =========== 
+Jetpack  'tpope/vim-surround'
 Jetpack  'miyakogi/seiya.vim'
 " Jetpack  'jceb/vim-orgmode'
 Jetpack  'itchyny/calendar.vim'
@@ -179,13 +198,13 @@ Jetpack  'cohama/lexima.vim'
 Jetpack  'tpope/vim-commentary'
 Jetpack  'qbbr/vim-twig'
 Jetpack  'glench/vim-jinja2-syntax'
+Jetpack  'baabelfish/nvim-nim'
 
 " Jetpack  'vim-skk/skkeleton'
 Jetpack  'vim-skk/eskk.vim'
 
 Jetpack  'kana/vim-smartword'
 Jetpack  'dag/vim-fish'
-Jetpack  'morhetz/gruvbox'
 Jetpack  'vim-jp/vimdoc-ja'
 Jetpack  'skanehira/translate.vim'
 Jetpack  'vim-airline/vim-airline-themes'
@@ -217,13 +236,16 @@ Jetpack  'skanehira/vsession'
 Jetpack  'hisaknown/nanomap.vim'
 Jetpack  'prabirshrestha/async.vim'
 Jetpack  'mattn/emmet-vim'
+Jetpack  'vim-syntastic/syntastic'
 " Jetpack  'Shougo/deoppet.nvim'
 " Jetpack  'github/copilot.vim'
 
-" Denops Plugins
+" =========== Denops Plugins =========== 
 Jetpack  'vim-denops/denops.vim'
 Jetpack  'vim-denops/denops-helloworld.vim'
 
+
+" =========== ddu Plugins =========== 
 Jetpack  'Shougo/ddu.vim'
 Jetpack  'Shougo/ddu-ui-ff'
 Jetpack  'Shougo/ddu-commands.vim'
@@ -253,6 +275,8 @@ Jetpack  'matsui54/ddc-ultisnips'
 
 call jetpack#end()
 
+runtime! plugsetsl*.vim
+runtime! configs/*.vim
 
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
@@ -289,8 +313,6 @@ runtime! configs/*.vim
 
 if exists('g:vscode')
 	command! VSCode :echo "VSCode!"
- runtime! plugsetsl*.vim
-  runtime! configs/*.vim
 endif
 
 " let chk=getftype("/home/coma/.skk/SKK-JISYO.L")
@@ -307,3 +329,15 @@ inoremap <expr><C-n> pumvisible() ? "<Down>" : "<C-n>"
 inoremap <expr><C-p> pumvisible() ? "<Up>" : "<C-p>"
 
 inoremap <expr><Tab> pumvisible() ? "<C-n>" : "<Tab>"
+
+" set pumblend=30
+" hi NormalFloat guifg=#2e3440 guibg=#a3be8c
+
+augroup vimrc
+				autocmd VimEnter * inoremap <expr><Tab> pumvisible() ? "<C-n>" : "<Tab>"
+				autocmd BufRead * :syntax enable
+				autocmd BufEnter *.nim  set ts=2
+				autocmd BufEnter *.nim  syntax enable
+augroup END
+
+colorscheme gruvbox-material

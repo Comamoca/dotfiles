@@ -1,18 +1,17 @@
 {
-  "languageserver": {
-    "nim": {
-      "command": "nimlsp",
-      "filetypes": ["nim"],
-      "trace.server": "verbose"
-    },
-    "golang": {
-      "command": "gopls",
-      "rootPatterns": ["go.mod", ".vim/", ".git/", ".hg/"],
-      "filetypes": ["go"],
-      "initializationOptions": {
-        "usePlaceholders": true
-      }
-    }
-  },
-  "suggest.keepCompleteopt": true
+	"languageserver": {
+		"nim": {
+			"command": "nimlsp",
+			"filetypes": ["nim"]
+		}
+	},
+	"golang": {
+		"command": "gopls",
+		"rootPatterns": ["go.mod", ".vim/", ".git/", ".hg/"],
+		"filetypes": ["go"],
+		"initializationOptions": {
+			"usePlaceholders": true
+		}
+	},
+	"suggest.keepCompleteopt": true
 }
