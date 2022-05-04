@@ -338,6 +338,6 @@ augroup vimrc
 				autocmd BufRead * :syntax enable
 				autocmd BufEnter *.nim  set ts=2
 				autocmd BufEnter *.nim  syntax enable
+				autocmd BufEnter * set foldmethod=marker
 augroup END
-
 colorscheme gruvbox-material

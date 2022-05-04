@@ -13,6 +13,7 @@ command! -nargs=1 Q call QSearch((<f-args>))
 command! Black :call Pyformat()
 command! NimLint :call RunNimlint()
 command! Ranger :call Ranger()
+command! Xmod :!xmodmap ~/.Xmodmap
 
 
 augroup auto_black
