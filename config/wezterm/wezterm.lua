@@ -1,7 +1,7 @@
 local wezterm = require 'wezterm';
 
 return {
-	window_background_image = "/home/coma/ghq/MyPictures/wallpapelar/nonnon3.jpg",
+	window_background_image = "/home/coma/ghq/MyPictures/wallpapelar/nonnon1.jpg",
 	-- window_background_image = "/home/coma/ghq/MyPictures/wallpapelar/67010409_p0_master1200.jpg",
 	-- window_background_image = "/home/coma/Downloads/FRAmxpLaMAECKr_.png",
 	window_background_image_hsb = {

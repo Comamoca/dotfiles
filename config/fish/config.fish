@@ -42,6 +42,8 @@ alias fzhq='cd (string  join / (ghq root) (ghq list | fzf --preview "bat --color
 export EDITOR=nvim
 export PYTHONPATH=/home/coma/bundler/bundler/lib
 export GOPATH=$HOME/go
+export PATH="$HOME/.nimble/bin:$PATH"
+
 set PATH /home/coma/.cargo/bin $PATH
 export FYNE_FONT=/usr/share/fonts/PlemolJP/PlemolJP-Regular.ttf
 export DENO_INSTALL="/home/coma/.deno"
@@ -53,6 +55,7 @@ export PATH="/home/coma/local/:$PATH"
 #set PATH /home/coma/go/bin $PATH
 starship init fish | source
 set -ga fish_user_paths /home/coma/.nimble/bin
+set -ga fish_user_paths /home/coma/.nimble/pkgs
 
 #mkdir -p $fish_complete_path[1]
 ## cp extra/completions/alacritty.fish $fish_complete_path[1]/alacritty.fish
