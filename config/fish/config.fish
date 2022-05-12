@@ -50,6 +50,7 @@ export DENO_INSTALL="/home/coma/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
 export PATH="/home/coma/.bin:$PATH"
 export PATH="/home/coma/local/:$PATH"
+export BAT_THEME="gruvbox-dark"
 
 
 #set PATH /home/coma/go/bin $PATH

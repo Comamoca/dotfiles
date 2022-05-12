@@ -207,9 +207,11 @@ Jetpack  'kana/vim-smartword'
 Jetpack  'dag/vim-fish'
 Jetpack  'vim-jp/vimdoc-ja'
 Jetpack  'skanehira/translate.vim'
-Jetpack  'vim-airline/vim-airline-themes'
+" Jetpack  'vim-airline/vim-airline-themes'
 Jetpack  'thinca/vim-quickrun'
-Jetpack  'vim-airline/vim-airline'
+" Jetpack  'vim-airline/vim-airline'
+Jetpack  'itchyny/lightline.vim'
+Jetpack  'airblade/vim-gitgutter'
 Jetpack  'simeji/winresizer'
 Jetpack  'previm/previm'
 Jetpack  'tyru/open-browser.vim'
@@ -334,10 +336,22 @@ inoremap <expr><Tab> pumvisible() ? "<C-n>" : "<Tab>"
 " hi NormalFloat guifg=#2e3440 guibg=#a3be8c
 
 augroup vimrc
-				autocmd VimEnter * inoremap <expr><Tab> pumvisible() ? "<C-n>" : "<Tab>"
-				autocmd BufRead * :syntax enable
-				autocmd BufEnter *.nim  set ts=2
-				autocmd BufEnter *.nim  syntax enable
-				autocmd BufEnter * set foldmethod=marker
+	autocmd VimEnter * inoremap <expr><Tab> pumvisible() ? "<C-n>" : "<Tab>"
+	autocmd BufRead * :syntax enable
+	autocmd BufRead,BufNewFile *.nim  set ts=2
+	autocmd BufRead,BufNewFile *.nim  set shiftwidth=2
+	autocmd BufRead,BufNewFile *.nim  syntax enable
+	autocmd BufRead,BufNewFile *.nim  set filetype=nim
+	autocmd BufEnter * set foldmethod=marker
 augroup END
-colorscheme gruvbox-material
+colorscheme gruvbox
+
+set laststatus=2
+set noshowmode
+
+" function! LightlineUpdate()
+" 	:Source
+" 	:call lightline#toggle()
+" endfunction
+
+" nnoremap <C-q> :call LightlineUpdate()<CR>
