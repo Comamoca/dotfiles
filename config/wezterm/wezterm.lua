@@ -1,13 +1,17 @@
 local wezterm = require 'wezterm';
 
 return {
-	window_background_image = "/home/coma/ghq/MyPictures/wallpapelar/nonnon1.jpg",
+	-- window_background_image = "/home/coma/ghq/MyPictures/wallpapelar/nonnon1.jpg",
 	-- window_background_image = "/home/coma/ghq/MyPictures/wallpapelar/67010409_p0_master1200.jpg",
-	-- window_background_image = "/home/coma/Downloads/FRAmxpLaMAECKr_.png",
+	-- window_background_image = "/home/coma/Pictures/wallpapelar/FRAmxpLaMAECKr_gimp.png",
+	-- window_background_image = "/home/coma/Pictures/wallpapelar/67767892_p2.png",
+	-- window_background_image = "/home/coma/Pictures/wallpapelar/atul-vinayak-hZioHCEWSAE-unsplash.jpg",
+	-- window_background_image = "/home/coma/Pictures/wallpapelar/iroha_waiipapeler.png",
+	window_background_image = "/home/coma/Pictures/wallpapelar/FUzoPiTakAAZMbU.jpg",
+        -- window_background_opacity = 0.85,
 	window_background_image_hsb = {
 		-- Darken the background image by reducing it to 1/3rd
 		brightness = 0.15,
-
 		-- You can adjust the hue by scaling its value.
 		-- a multiplier of 1.0 leaves the value unchanged.
 		-- hue = 1.0,
@@ -20,9 +24,9 @@ return {
 	color_scheme = "nord",
 	use_ime = true,
 	font_size = 12.3,
+	-- font = wezterm.font("UDEVGothicLG-Regular"),
 	font = wezterm.font("UDEVGothicLG-Regular"),
 	-- font = wezterm.font("/home/coma/Downloads/"),
-	Window_background_opacity = 0.85,
 
 	hide_tab_bar_if_only_one_tab = true,
 	adjust_window_size_when_changing_font_size = false,
@@ -40,6 +44,9 @@ return {
 		{ key = "h", mods = "ALT|CTRL", action = wezterm.action({ MoveTabRelative = -1 }) },
 		{ key = "l", mods = "ALT|CTRL", action = wezterm.action({ ActivateTabRelative = 1 }) },
 		{ key = "y", mods = "ALT|CTRL", action = "ActivateCopyMode" },
+		
+
+
 		{ key = "p", mods = "ALT|CTRL", action = wezterm.action({ PasteFrom = "PrimarySelection" }) },
 
 		{ key = "1", mods = "ALT", action = wezterm.action({ ActivateTab = 0 }) },
@@ -53,7 +60,7 @@ return {
 		{ key = "9", mods = "ALT", action = wezterm.action({ ActivateTab = 8 }) },
 
 		{ key = "-", mods = "ALT", action = wezterm.action({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
-		{ key = "|", mods = "ALT", action = wezterm.action({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
+		{ key = "|", mods = "ALT|SHIFT", action = wezterm.action({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
 
 		{ key = "e", mods = "ALT", action = wezterm.action({ SpawnTab = "CurrentPaneDomain" }) },
 		{ key = "q", mods = "ALT", action = wezterm.action({ CloseCurrentTab = { confirm = false } }) },

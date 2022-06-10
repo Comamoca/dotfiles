@@ -2,6 +2,7 @@ command! Source :source $MYVIMRC
 command! Config :e $MYVIMRC
 " command! Configs :call ddu#start({'sources': [{'name': 'file_rec', 'params': {'path': expand('~/.config/nvim/configs')}}]})
 command! Configs :call ConfigsRec("~/.config/nvim/configs/")
+command! Plugs :call ConfigsRec("~/.config/nvim/plugs/")
 " command! ConfigsLinux :call ConfigsRec("~/.config/", 'directory_rec')
 command! ConfigsLinux :Defx ~/.config
 command! Plugins :e ~/.config/nvim/dein.toml
