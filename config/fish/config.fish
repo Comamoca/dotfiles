@@ -1,4 +1,4 @@
-#set PATH /usr/local/bin $PATH
+set PATH /usr/local/bin $PATH
 #export PATH=/home/coma/.config/fish/functions/ $PATH
 
 
@@ -19,6 +19,7 @@
 ## ~/.config/fish/config.fish
 
 eval (gh completion -s fish| source)
+eval (fzenn completion fish | source)
 
 
 ## starship init fish | source
@@ -31,6 +32,7 @@ zoxide init fish | source
 ## theme_gruvbox dark soft
 
 alias v='nvim'
+alias g='git'
 alias ide="~/.scripts/tmux_layout.sh"
 alias wallpapelar='feh --bg-fill'
 alias ls='lsd'
@@ -38,20 +40,30 @@ alias server='python -m http.server'
 alias fzf='fzf --preview "bat  --color=always --style=header,grid --line-range :100 {}"'
 alias fzvim='nvim (fzf)'
 alias fzhq='cd (string  join / (ghq root) (ghq list | fzf --preview "bat --color=always --style=header,grid --line-range :80 $(ghq root)/{}/README.*"))'
+alias frea='freasearcher'
+alias ghostscript='gs'
+
+alias gs='g status'
+alias gph='g push'
+alias gpl='g pull'
+alias gad='g add'
+alias gcl='g clone'
 
 export EDITOR=nvim
 export PYTHONPATH=/home/coma/bundler/bundler/lib
 export GOPATH=$HOME/go
-export PATH="$HOME/.nimble/bin:$PATH"
+# export PATH="$HOME/.nimble/bin:$PATH"
+export PATH="$HOME/.nimble/.bin/git-tasukete:$PATH"
 
 set PATH /home/coma/.cargo/bin $PATH
+set GH_BINPATH /home/coma/.bin/
 export FYNE_FONT=/usr/share/fonts/PlemolJP/PlemolJP-Regular.ttf
 export DENO_INSTALL="/home/coma/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
 export PATH="/home/coma/.bin:$PATH"
+export PATH="/home/coma/go/bin:$PATH"
 export PATH="/home/coma/local/:$PATH"
 export BAT_THEME="gruvbox-dark"
-
 
 #set PATH /home/coma/go/bin $PATH
 starship init fish | source
@@ -77,4 +89,3 @@ set -Ux fish_user_paths $HOME/.rbenv/bin $fish_user_paths
 set -Ux fish_user_paths $HOME/.rbenv/shims $fish_user_paths
 set rg $FZF_FIND_FILE_COMMAND
 bind \cg __fzhq
-xmodmap ~/.Xmodmap

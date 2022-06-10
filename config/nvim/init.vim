@@ -141,6 +141,8 @@ if empty(glob(data_dir . '/autoload/jetpack.vim'))
   autocmd VimEnter * JetpackSync | source $MYVIMRC
 endif
 
+let g:jetpack#optimization = 1
+
 call jetpack#begin()
 
 " Jetpack Exsample{{{
@@ -167,6 +169,7 @@ Jetpack  'SirVer/ultisnips'
 " Jetpack  'honza/vim-snippets'
 " Jetpack  'twitvim/twitvim'
 Jetpack  'neoclide/coc.nvim', { 'branch': 'release' }
+Jetpack  'integralist/vim-mypy'
 "
 " Jetpack  'prabirshrestha/vim-lsp'
 " Jetpack  'mattn/vim-lsp-settings'
@@ -181,24 +184,32 @@ Jetpack  'scrooloose/syntastic'
 Jetpack  'Shougo/deol.nvim'
 
 " =========== colorscheme ===========
-Jetpack  'sainnhe/gruvbox-material'
+" Jetpack  'sainnhe/gruvbox-material'
 Jetpack  'morhetz/gruvbox'
 Jetpack  'sainnhe/everforest'
 Jetpack  'folke/tokyonight.nvim'
 Jetpack  'tckmn/hotdog.vim'
-Jetpack  'sainnhe/sonokai'
+" Jetpack  'sainnhe/sonokai'
+" Jetpack  'arcticicestudio/nord-vim'
 
 " =========== Tools =========== 
+Jetpack  'yuttie/comfortable-motion.vim'
+Jetpack  'lewis6991/gitsigns.nvim'
+Jetpack  'echasnovski/mini.nvim', { 'branch': 'stable' }
 Jetpack  'tpope/vim-surround'
 Jetpack  'miyakogi/seiya.vim'
 " Jetpack  'jceb/vim-orgmode'
 Jetpack  'itchyny/calendar.vim'
 Jetpack  'bun913/min-todo.vim'
 Jetpack  'cohama/lexima.vim'
-Jetpack  'tpope/vim-commentary'
-Jetpack  'qbbr/vim-twig'
+" Jetpack  'tpope/vim-commentary'
+" Jetpack  'qbbr/vim-twig'
 Jetpack  'glench/vim-jinja2-syntax'
 Jetpack  'baabelfish/nvim-nim'
+" Jetpack  'puremourning/vimspector', {'do': './install_gadget.py --all --force-all'}
+Jetpack  'p00f/nvim-ts-rainbow'
+" Jetpack  'SkyLeach/pudb.vim'
+Jetpack  'mattn/vim-molder'
 
 " Jetpack  'vim-skk/skkeleton'
 Jetpack  'vim-skk/eskk.vim'
@@ -209,43 +220,53 @@ Jetpack  'vim-jp/vimdoc-ja'
 Jetpack  'skanehira/translate.vim'
 " Jetpack  'vim-airline/vim-airline-themes'
 Jetpack  'thinca/vim-quickrun'
+Jetpack  'statiolake/vim-quickrun-runner-nvimterm'
 " Jetpack  'vim-airline/vim-airline'
-Jetpack  'itchyny/lightline.vim'
-Jetpack  'airblade/vim-gitgutter'
+" Jetpack  'itchyny/lightline.vim'
+" Jetpack  'airblade/vim-gitgutter'
 Jetpack  'simeji/winresizer'
-Jetpack  'previm/previm'
+" Jetpack  'previm/previm'
 Jetpack  'tyru/open-browser.vim'
 Jetpack  'Shougo/denite.nvim'
 Jetpack  'Shougo/defx.nvim'
 Jetpack  'kristijanhusak/defx-git'
 Jetpack  'nvim-treesitter/nvim-treesitter'
-Jetpack  'iberianpig/tig-explorer.vim'
+" Jetpack  'iberianpig/tig-explorer.vim'
 Jetpack  'easymotion/vim-easymotion'
-Jetpack  'thinca/vim-splash'
-Jetpack  'vimwiki/vimwiki'
+" Jetpack  'thinca/vim-splash'
+" Jetpack  'vimwiki/vimwiki'
 " Jetpack  'subnut/nvim-ghost.nvim'
 "
-Jetpack  'turbio/bracey.vim'
+" Jetpack  'turbio/bracey.vim'
 Jetpack  'alvan/vim-closetag'
 Jetpack  'maxmellon/vim-jsx-pretty'
 Jetpack  'Jetpackkaroliskoncevicius/moonshine-vim'
 Jetpack  'nvim-telescope/telescope.nvim'
 Jetpack  'nvim-lua/plenary.nvim'
 Jetpack  'mopp/layoutplugin.vim'
-Jetpack  'kassio/neoterm'
-Jetpack  'arcticicestudio/nord-vim'
+" Jetpack  'kassio/neoterm'
 Jetpack  'skanehira/vsession'
 Jetpack  'hisaknown/nanomap.vim'
 Jetpack  'prabirshrestha/async.vim'
 Jetpack  'mattn/emmet-vim'
 Jetpack  'vim-syntastic/syntastic'
+" Jetpack  'pechorin/any-jump.vim'
+Jetpack  'nathanaelkane/vim-indent-guides'
 " Jetpack  'Shougo/deoppet.nvim'
 " Jetpack  'github/copilot.vim'
+
+" =========== MarkDown Support =========== 
+Jetpack  'tpope/vim-markdown'
+Jetpack  'skanehira/preview-markdown.vim'
+Jetpack  'previm/previm'
+Jetpack  'tyru/open-browser.vim'
 
 " =========== Denops Plugins =========== 
 Jetpack  'vim-denops/denops.vim'
 Jetpack  'vim-denops/denops-helloworld.vim'
 
+" =========== Denops Settings =========== 
+let g:denops_server_addr = '127.0.0.1:32123'
 
 " =========== ddu Plugins =========== 
 Jetpack  'Shougo/ddu.vim'
@@ -259,33 +280,48 @@ Jetpack  'yuki-yano/ddu-filter-fzf'
 Jetpack  'liquidz/ddu-source-custom-list'
 Jetpack  'shun/ddu-source-buffer'
 
-Jetpack  'Shougo/ddc.vim'
-Jetpack  'Shougo/ddc-around'
-Jetpack  'Shougo/ddc-matcher_head'
-Jetpack  'Shougo/ddc-sorter_rank'
-Jetpack  'Shougo/ddc-converter_remove_overlap'
+" =========== ddc Plugins =========== 
+" Jetpack  'Shougo/ddc.vim'
+" Jetpack  'Shougo/ddc-around'
+" Jetpack  'Shougo/ddc-matcher_head'
+" Jetpack  'Shougo/ddc-sorter_rank'
+" Jetpack  'Shougo/ddc-converter_remove_overlap'
 
-Jetpack  'Shougo/ddc.vim'
-Jetpack  'Shougo/ddc-around'
-Jetpack  'Shougo/ddc-matcher_head'
-Jetpack  'Shougo/ddc-sorter_rank'
-" Jetpack  'shun/ddc-vim-lsp'
-Jetpack  'shun/ddu-source-buffer'
-Jetpack  'LumaKernel/ddc-file'
-Jetpack  'tani/ddc-path'
-Jetpack  'matsui54/ddc-ultisnips'
+" Jetpack  'Shougo/ddc.vim'
+" Jetpack  'Shougo/ddc-around'
+" Jetpack  'Shougo/ddc-matcher_head'
+" Jetpack  'Shougo/ddc-sorter_rank'
+" " Jetpack  'shun/ddc-vim-lsp'
+" Jetpack  'shun/ddu-source-buffer'
+" Jetpack  'LumaKernel/ddc-file'
+" Jetpack  'tani/ddc-path'
+" Jetpack  'matsui54/ddc-ultisnips'
+
+
+" ================= My Plugins =================
+" Jetpack  'file:///home/coma/ghq/github.com/coma/deolrun'
 
 call jetpack#end()
 
+
 runtime! plugsetsl*.vim
 runtime! configs/*.vim
+runtime! plugs/*.vim
 
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
-  highlight = {
-    enable = true,
-  }
-}
+    highlight = {
+	enable = true,
+	},
+    rainbow = {
+	enable = true,
+	-- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
+	extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+	max_file_lines = nil, -- Do not enable for files with more than n lines, int
+	-- colors = {}, -- table of hex strings
+	-- termcolors = {} -- table of colour name strings
+	}
+    }
 EOF
 
 
@@ -300,6 +336,7 @@ EOF
 
 " runtime! plugsetsl*.vim
 runtime! configs/*.vim
+" runtime! configs/*.lua
 
 " source ./autoload/jetpack.vim
 
@@ -337,12 +374,22 @@ inoremap <expr><Tab> pumvisible() ? "<C-n>" : "<Tab>"
 
 augroup vimrc
 	autocmd VimEnter * inoremap <expr><Tab> pumvisible() ? "<C-n>" : "<Tab>"
+	" autocmd VimEnter * let g:indent_guides_enable_on_vim_startup = 0
+	" autocmd BufRead,BufNewFile * let g:indent_guides_enable_on_vim_startup = 1
+	" autocmd VimEnter * GitGutterDisable
 	autocmd BufRead * :syntax enable
 	autocmd BufRead,BufNewFile *.nim  set ts=2
 	autocmd BufRead,BufNewFile *.nim  set shiftwidth=2
 	autocmd BufRead,BufNewFile *.nim  syntax enable
 	autocmd BufRead,BufNewFile *.nim  set filetype=nim
+
+	autocmd BufRead,BufNewFile *.ts  set shiftwidth=2
 	autocmd BufEnter * set foldmethod=marker
+
+	autocmd BufRead, BufEnter *.vim imap <buffer> <CR> <Plug>(smart_back_slash_linefeed)
+	autocmd BufRead, BufEnter *.vim imap <buffer> <C-CR> <Plug>(back_slash_linefeed)
+	autocmd BufRead,BufNewFile *.vim  set shiftwidth=4
+	autocmd BufRead,BufNewFile *.lua  set shiftwidth=2
 augroup END
 colorscheme gruvbox
 
@@ -355,3 +402,22 @@ set noshowmode
 " endfunction
 
 " nnoremap <C-q> :call LightlineUpdate()<CR>
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_guide_size = 1
+
+" g:vimspector_configurations = "$HOME/.config/nvim/vimspector.json"
+
+let g:quickrun_config = {}
+let g:quickrun_config._ = {}
+if has('nvim')
+    let g:quickrun_config._['runner'] = 'nvimterm'
+endif
+
+" let g:instant_markdown_autostart = 0
+
+let g:previm_open_cmd = "firefox"
+
+let g:comfortable_motion_no_default_key_mappings = 1
+let g:comfortable_motion_impulse_multiplier = 1  " Feel free to increase/decrease this value.
+nnoremap <silent> <C-j> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * 4)<CR>
+nnoremap <silent> <C-k> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * -4)<CR>

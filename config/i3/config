@@ -218,6 +218,7 @@ bindsym Mod4+r mode "resize"
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
+        # status_command i3status
         status_command i3status
 }
 
@@ -243,9 +244,11 @@ bar {
 
 
 # bindsym Print exec maim -i $(xdotool getactivewindow) | xclip -selection clipboard -t image/png
-bindsym Print exec maim | xclip -selection clipboard -t image/png
+# bindsym Print exec maim | xclip -selection clipboard -t image/png
 
-bindsym Mod4+Shift+s exec maim | xclip -selection clipboard -t image/png
+bindsym Mod4+Shift+s exec xfce4-screenshooter
+bindsym Print exec xfce4-screenshooter
+# bindsym Mod4+Shift+s exec xfce4-screenshooter --fullscreen --mouse --save /dev/stdout | xclip -i -selection clipboard -t image/png
 bindsym Mod4+b exec firefox
 
 exec_always --no-startup-id picom
@@ -262,3 +265,9 @@ exec --no-startup-id fcitx-autostart
 exec --no-startup-id sandsmark-notificationd
 
 exec wezterm
+exec xmodmap ~/.Xmodmap
+
+# exec_always --no-startup-id $HOME/.config/polybar/launch.sh --shapes
+# exec_always --no-startup-id polybar
+exec_always --no-startup-id xfce4-clipman
+exec_always --no-startup-id deno run -A --unstable --no-check ~/.local/share/nvim/site/pack/jetpack/src/denops.vim/denops/@denops-private/cli.ts --hostname 127.0.0.1 --port 32123 --mode &
