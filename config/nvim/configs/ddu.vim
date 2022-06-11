@@ -1,15 +1,36 @@
 call ddu#custom#patch_global({
     \   'ui': 'ff',
-    \   'sources': [{'name':'file','params':{}},{'name':'mr'},{'name':'register'},{'name':'buffer'}],
+    \   'sources': 
+    \   [{'name':'file','params':{}},
+    \   {'name':'mr'},
+    \   {'name':'register'},
+    \   {'name':'buffer'}],
     \   'sourceOptions': {
     \     '_': {
     \       'matchers': ['matcher_substring'],
+    \       'file_rec': {'path': expand("~")},
     \     },
     \   },
     \   'kindOptions': {
     \     'file': {
     \       'defaultAction': 'open',
+    \   },
+    \   'ui': 'filer',
+    \   'actionOptions': {
+    \     'narrow': {
+    \       'quit': v:false,
     \     },
+    \     'filterParams': {
+    \     'matcher_substring': {
+    \       'highlightMatched': 'Search',
+    \     },
+    \   'sourceParams' : {
+    \     'rg' : {
+    \       'args': ['--column', '--no-heading', '--color', 'never'],
+    \     },
+    \   },
+    \   }
+    \   },
     \   },
     \ })
 
