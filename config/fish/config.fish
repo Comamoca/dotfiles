@@ -48,6 +48,7 @@ alias gph='g push'
 alias gpl='g pull'
 alias gad='g add'
 alias gcl='g clone'
+alias gcz='g cz'
 
 export EDITOR=nvim
 export PYTHONPATH=/home/coma/bundler/bundler/lib
