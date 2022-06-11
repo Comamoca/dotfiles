@@ -1,40 +1,3 @@
-"dein Scripts-----------------------------{{{if &compatible
-"  set nocompatible               " Be iMproved
-"endif
-
-"" Required:
-"set runtimepath+=/home/coma/.cache/dein/repos/github.com/Shougo/dein.vim
-
-"" Required:
-"call dein#begin('/home/coma/.cache/dein')
-"" Let dein manage dein
-"" Required:
-"call dein#add('/home/coma/.cache/dein/repos/github.com/Shougo/dein.vim')
-
-"call dein#load_toml("~/.config/nvim/dein.toml",      {'lazy': 0})
-"call dein#load_toml("~/.config/nvim/dein_lazy.toml", {'lazy': 1})
-
-"" Add or remove your plugins here like this:
-""call dein#add('Shougo/neosnippet.vim')
-""call dein#add('Shougo/neosnippet-snippets')
-
-"" call dein#add('skanehira/translate.vim')
-"" call dein#add('sainnhe/gruvbox-material')
-"" call dein#add('wsdjeg/dein-ui.vim')
-
-"" Required:
-"call dein#end()
-
-"" Required:
-"filetype plugin indent on
-"syntax enable
-
-"" If you want to install not installed plugins on startup.
-"if dein#check_install()
-"  call dein#install()
-"endif
-
-""End dein Scripts-------------------------}}}
 
 set encoding=utf-8 
 
@@ -270,15 +233,31 @@ let g:denops_server_addr = '127.0.0.1:32123'
 
 " =========== ddu Plugins =========== 
 Jetpack  'Shougo/ddu.vim'
+
+" =========== ddu UI =========== 
 Jetpack  'Shougo/ddu-ui-ff'
-Jetpack  'Shougo/ddu-commands.vim'
+Jetpack  'Shougo/ddu-ui-ff'
+
+" =========== ddu Filter =========== 
+Jetpack  'yuki-yano/ddu-filter-fzf'
+
+" =========== ddu Matcher =========== 
+Jetpack  'Shougo/ddu-filter-matcher_substring'
+
+" =========== ddu Source =========== 
+Jetpack  'liquidz/ddu-source-custom-list'
 Jetpack  'Shougo/ddu-source-file_rec'
-Jetpack  'Shougo/ddu-kind-file'
 Jetpack  'Shougo/ddu-source-file'
 Jetpack  'shun/ddu-source-rg'
-Jetpack  'yuki-yano/ddu-filter-fzf'
-Jetpack  'liquidz/ddu-source-custom-list'
 Jetpack  'shun/ddu-source-buffer'
+Jetpack  'shun/ddu-source-rg'
+Jetpack  'Shougo/ddu-source-line'
+
+" =========== ddu Kind =========== 
+Jetpack  'Shougo/ddu-kind-file'
+
+
+Jetpack  'Shougo/ddu-commands.vim'
 
 " =========== ddc Plugins =========== 
 " Jetpack  'Shougo/ddc.vim'
@@ -419,5 +398,5 @@ let g:previm_open_cmd = "firefox"
 
 let g:comfortable_motion_no_default_key_mappings = 1
 let g:comfortable_motion_impulse_multiplier = 1  " Feel free to increase/decrease this value.
-nnoremap <silent> <C-j> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * 4)<CR>
-nnoremap <silent> <C-k> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * -4)<CR>
+nnoremap <silent> <C-j> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * 2)<CR>
+nnoremap <silent> <C-k> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * -2)<CR>

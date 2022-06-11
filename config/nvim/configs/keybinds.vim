@@ -54,3 +54,5 @@ function! Close() abort
 		:bd
 	endtry
 endfunction
+
+nnoremap <silent><C-l> :<C-u>Ddu line<CR>

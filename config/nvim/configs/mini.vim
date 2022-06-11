@@ -207,8 +207,8 @@ require('mini.comment').setup(
 -- }
 )
 
-require('mini.jump').setup(
---{
+-- require('mini.jump').setup(
+-- {
 --   -- Module mappings. Use `''` (empty string) to disable one.
 --   mappings = {
 --     forward = 'f',
@@ -228,5 +228,5 @@ require('mini.jump').setup(
 --     idle_stop = 10000000,
 --   },
 -- }
-)
+-- )
 EOF
