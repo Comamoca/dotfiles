@@ -3,6 +3,8 @@ command! Config :e $MYVIMRC
 " command! Configs :call ddu#start({'sources': [{'name': 'file_rec', 'params': {'path': expand('~/.config/nvim/configs')}}]})
 command! Configs :call ConfigsRec("~/.config/nvim/configs/")
 command! Plugs :call ConfigsRec("~/.config/nvim/plugs/")
+command! Dein :call Open("~/.config/nvim/dein.toml")
+command! Lazy :call Open("~/.config/nvim/dein_lazy.toml")
 " command! ConfigsLinux :call ConfigsRec("~/.config/", 'directory_rec')
 command! ConfigsLinux :Defx ~/.config
 command! Plugins :e ~/.config/nvim/dein.toml
@@ -61,15 +63,25 @@ endfunction
 
 function! FloatTerm() abort
 	" 空のバッファを作る
+	set nonumber
 	let buf = nvim_create_buf(v:false, v:true)
 	" そのバッファを使って floating windows を開く
-	call nvim_open_win(buf, v:true, {'relative': 'win', 'height': 20, 'width': 80, 'col': 40, 'row': 8})
+	call nvim_open_win(buf, v:true, {'relative': 'win', 'height': 20, 'width': 80, 'col': 35, 'row': 8})
 	tnoremap <C-f> <C-\><C-n>:<C-u>bw!<CR>
 terminal
+endfunction
+
+function! DeolFloat() abort
+        :Deol -split=floating -winheight=25 -winwidth=90 -winrow=4 -wincol=30
 endfunction
 
 function! Ranger() abort
 	:enew
 	:term ranger
 	tnoremap q 
+endfunction
+
+function! Open(path) abort
+    let toml = expand(a:path)
+    execute "e" toml
 endfunction
