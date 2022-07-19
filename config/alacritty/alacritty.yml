@@ -960,9 +960,9 @@ colors:
 
 font:
   normal:
-    size: 13
+    size: 20
     # family: PlemolJPconsoleNF
-    family: PlemolJP35 Console NF
+    family: UDEV Gothic NF
     # family: Source Code Pro
     # style: Regula
 # shell:
@@ -973,3 +973,5 @@ font:
 
 window:
   opacity: 0.85
+
+background_image: /home/coma/Pictures/kazama_iroha_members/202202_ファルまろ様.jpg

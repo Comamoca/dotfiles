@@ -2,7 +2,7 @@
 	"languageserver": {
 		"nim": {
 			"command": "nimlsp",
-			"filetypes": ["nim"]
+			"filetypes": ["nim", "nims"]
 		}
 	},
 	"golang": {

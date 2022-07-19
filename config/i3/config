@@ -70,7 +70,7 @@ set $right semicolon
 floating_modifier Mod4
 
 # start a terminal
-bindsym Mod4+Return exec wezterm
+bindsym Mod4+Return exec terminology
 
 # kill focused window
 bindsym Mod4+q kill
@@ -240,7 +240,6 @@ bar {
 ## Please remove the following exec line:
 ########################################################################
 #exec i3-config-wizard
-# exec --no-startup-id exec sh  ~/.screenlayout/screen.sh
 
 
 # bindsym Print exec maim -i $(xdotool getactivewindow) | xclip -selection clipboard -t image/png
@@ -264,10 +263,13 @@ exec --no-startup-id fcitx-autostart
 # exec --no-startup-id xclip
 exec --no-startup-id sandsmark-notificationd
 
-exec wezterm
+exec terminology
 exec xmodmap ~/.Xmodmap
+exec bluetoothctl -- power on
 
 # exec_always --no-startup-id $HOME/.config/polybar/launch.sh --shapes
 # exec_always --no-startup-id polybar
 exec_always --no-startup-id xfce4-clipman
-exec_always --no-startup-id deno run -A --unstable --no-check ~/.local/share/nvim/site/pack/jetpack/src/denops.vim/denops/@denops-private/cli.ts --hostname 127.0.0.1 --port 32123 --mode &
+# exec_always --no-startup-id deno run -A --no-check ~/.cache/dein/repos/github.com/vim-denops/denops.vim/denops/@denops-private/cli.ts &
+exec launch_denops.sh &
+exec --no-startup-id exec sh  ~/.screenlayout/layout.sh

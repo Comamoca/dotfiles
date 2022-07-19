@@ -15,7 +15,6 @@ call ddu#custom#patch_global({
     \     'file': {
     \       'defaultAction': 'open',
     \   },
-    \   'ui': 'filer',
     \   'actionOptions': {
     \     'narrow': {
     \       'quit': v:false,

@@ -1,58 +1,147 @@
-[[plugins]]
-repo = 'dag/vim-fish'
-
+# カラースチーム
 
 [[plugins]]
-repo = 'morhetz/gruvbox'
+repo = 'sainnhe/everforest'
+on_func = ['colorscheme']
 
 [[plugins]]
-repo = 'vim-jp/vimdoc-ja'
+repo = 'folke/tokyonight.nvim'
+on_func = ['colorscheme']
+
+[[plugins]]
+repo = 'tckmn/hotdog.vim'
+on_func = ['colorscheme']
+
+
+
+# 使用頻度が低いプラグイン
+# 毎回使わないようなプラグインはここ
+
+[[plugins]]
+repo = 'sakhnik/nvim-gdb'
+
+[[plugins]]
+repo = 'tpope/vim-surround'
+
+[[plugins]]
+repo = 'bun913/min-todo.vim'
+
+[[plugins]]
+repo = 'itchyny/calendar.vim'
+[[plugins]]
+repo = 'vim-denops/denops-helloworld.vim'
 
 [[plugins]]
 repo = 'skanehira/translate.vim'
+on_event = ['VimEnter']
 
 [[plugins]]
-repo = 'vim-airline/vim-airline-themes'
+repo = 'skanehira/denops-twihi.vim'
 
-[[plugins]]
-repo = 'thinca/vim-quickrun'
-
-[[plugins]]
-repo = 'wsdjeg/dein-ui.vim'
-
-[[plugins]]
-repo = 'vim-airline/vim-airline'
-hook_add = """
-AirlineTheme gruvbox_material
-"""
-
-[[plugins]]
-repo = 'simeji/winresizer'
+# マークダウン
 
 [[plugins]]
 repo = 'previm/previm'
-hook_add = """
-source ~/.config/nvim/configs/tmp/previm.vim
-"""
+on_cmd = ['PrevimOpen']
+
+[[plugins]]
+repo = 'skanehira/preview-markdown.vim'
+
+[[plugins]]
+repo = 'tpope/vim-markdown'
 
 [[plugins]]
 repo = 'tyru/open-browser.vim'
 
+
+
+# ファイル固有
+# on_ft推奨
+
 [[plugins]]
-repo = "Shougo/denite.nvim"
-hook_post_source = """
-source ~/.config/nvim/configs/tmp/denite.vim
+repo = 'maxmellon/vim-jsx-pretty'
+
+[[plugins]]
+repo = 'integralist/vim-mypy'
+
+[[plugins]]
+repo = 'habamax/vim-rst'
+on_ft = ["rst"]
+
+[[plugins]]
+repo = 'glench/vim-jinja2-syntax'
+
+[[plugins]]
+repo = 'dag/vim-fish'
+on_ft = ["fish"]
+
+[[plugins]]
+repo = 'hisaknown/nanomap.vim'
+
+[[plugins]]
+repo = "peterhoeg/vim-qml"
+on_ft = ["qml"]
+
+[[plugins]]
+repo = "mattn/emmet-vim"
+on_ft = ["html"]
+
+# [[plugins]]
+# repo = 'shun/ddu-source-rg'
+#
+# [[plugins]]
+# repo = 'shun/ddu-source-buffer'
+#
+# [[plugins]]
+# repo = 'Shougo/ddu-source-line'
+#
+# [[plugins]]
+# repo = 'Shougo/ddu-kind-file'
+#
+[[plugins]]
+repo = 'prabirshrestha/async.vim'
+
+# [[plugins]]
+# repo = 'lewis6991/gitsigns.nvim'
+
+[[plugins]]
+repo = 'mopp/layoutplugin.vim'
+
+[[plugins]]
+repo = 'alvan/vim-closetag'
+on_event = ['VimEnter']
+
+[[plugins]]
+repo = 'jmcantrell/vim-virtualenv'
+on_ft = ['python']
+
+[[plugins]]
+repo = 'Shougo/defx.nvim'
+on_cmd = ['Defx']
+hook_add = """
+let path = expand("~/.config/nvim/configs/defx.vim")
+execute "source" path
 """
 
 [[plugins]]
-repo = "Shougo/defx.nvim"
-depends = ["defx-git"]
+repo = 'Shougo/denite.nvim'
+on_cmd = ['Denite']
+hook_add = """
+let path = expand("~/.config/nvim/configs/denite.vim")
+execute "source" path
+"""
 
 [[plugins]]
-repo ="kristijanhusak/defx-git"
-# hook_post_source = """
-# source ~/.config/nvim/configs/defx-git.vim
-# """
-hook_post_source = """
-source ~/.config/nvim/configs/tmp/defx.vim
+repo = 'thinca/vim-quickrun'
+on_cmd = ['Quickrun']
+hook_add = """
+let path = expand("~/.config/nvim/configs/quickrun.vim")
+execute "source" path
 """
+
+[[plugins]]
+repo = 'statiolake/vim-quickrun-runner-nvimterm'
+
+[[plugins]]
+repo = 'skanehira/vsession'
+on_cmd = ['SaveSession', 'LoadSession', 'DeleteSession']

@@ -1,5 +1,6 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
+SETUVAR --export BUN_INSTALL:/home/coma/\x2ebun
 SETUVAR FZF_DEFAULT_OPTS:\x2d\x2dheight\x2040\x25
 SETUVAR FZF_DISABLE_KEYBINDINGS:0
 SETUVAR FZF_LEGACY_KEYBINDINGS:1
@@ -12,13 +13,19 @@ SETUVAR Z_DATA:/home/coma/\x2elocal/share/z/data
 SETUVAR Z_DATA_DIR:/home/coma/\x2elocal/share/z
 SETUVAR Z_EXCLUDE:\x5e/home/coma\x24
 SETUVAR __fish_initialized:3400
+SETUVAR _fish_abbr_ta:tmux\x20attach\x20\x2dt
+SETUVAR _fish_abbr_tad:tmux\x20attach\x20\x2dd\x20\x2dt
+SETUVAR _fish_abbr_tkss:tmux\x20kill\x2dsession\x20\x2dt
+SETUVAR _fish_abbr_tksv:tmux\x20kill\x2dserver
+SETUVAR _fish_abbr_tl:tmux\x20list\x2dsessions
+SETUVAR _fish_abbr_ts:tmux\x20new\x2dsession\x20\x2ds
 SETUVAR _fisher_decors_2F_fish_2D_ghq_files:/home/coma/\x2econfig/fish/functions/__ghq_repository_search\x2efish\x1e/home/coma/\x2econfig/fish/conf\x2ed/ghq_key_bindings\x2efish\x1e/home/coma/\x2econfig/fish/completions/ghq\x2efish
 SETUVAR _fisher_halostatue_2F_fish_2D_fzf_files:/home/coma/\x2econfig/fish/functions/fbr\x2efish\x1e/home/coma/\x2econfig/fish/functions/fco\x2efish\x1e/home/coma/\x2econfig/fish/functions/fe\x2efish\x1e/home/coma/\x2econfig/fish/functions/fkill\x2efish\x1e/home/coma/\x2econfig/fish/functions/fo\x2efish\x1e/home/coma/\x2econfig/fish/functions/fshow\x2efish\x1e/home/coma/\x2econfig/fish/functions/fstash\x2efish\x1e/home/coma/\x2econfig/fish/conf\x2ed/halostatue_fish_fzf\x2efish
 SETUVAR _fisher_jethrokuan_2F_fzf_files:/home/coma/\x2econfig/fish/functions/__fzf_cd\x2efish\x1e/home/coma/\x2econfig/fish/functions/__fzf_complete\x2efish\x1e/home/coma/\x2econfig/fish/functions/__fzf_complete_preview\x2efish\x1e/home/coma/\x2econfig/fish/functions/__fzf_find_file\x2efish\x1e/home/coma/\x2econfig/fish/functions/__fzf_get_dir\x2efish\x1e/home/coma/\x2econfig/fish/functions/__fzf_open\x2efish\x1e/home/coma/\x2econfig/fish/functions/__fzf_parse_commandline\x2efish\x1e/home/coma/\x2econfig/fish/functions/__fzf_reverse_isearch\x2efish\x1e/home/coma/\x2econfig/fish/functions/__fzfcmd\x2efish\x1e/home/coma/\x2econfig/fish/conf\x2ed/fzf\x2efish
 SETUVAR _fisher_jethrokuan_2F_z_files:/home/coma/\x2econfig/fish/functions/__z\x2efish\x1e/home/coma/\x2econfig/fish/functions/__z_add\x2efish\x1e/home/coma/\x2econfig/fish/functions/__z_clean\x2efish\x1e/home/coma/\x2econfig/fish/functions/__z_complete\x2efish\x1e/home/coma/\x2econfig/fish/conf\x2ed/z\x2efish
 SETUVAR _fisher_jomik_2F_fish_2D_gruvbox_files:/home/coma/\x2econfig/fish/functions/theme_gruvbox\x2efish
 SETUVAR _fisher_jorgebucaran_2F_fisher_files:/home/coma/\x2econfig/fish/functions/fisher\x2efish\x1e/home/coma/\x2econfig/fish/completions/fisher\x2efish
-SETUVAR _fisher_plugins:jomik/fish\x2dgruvbox\x1ejorgebucaran/fisher\x1ejethrokuan/fzf\x1ejethrokuan/z\x1edecors/fish\x2dghq\x1ehalostatue/fish\x2dfzf
+SETUVAR _fisher_plugins:jomik/fish\x2dgruvbox\x1ejorgebucaran/fisher\x1ejethrokuan/fzf\x1ejethrokuan/z\x1ehalostatue/fish\x2dfzf\x1edecors/fish\x2dghq
 SETUVAR fish_color_autosuggestion:7c6f64\x1ebrblack
 SETUVAR fish_color_cancel:\x2dr
 SETUVAR fish_color_command:076678
