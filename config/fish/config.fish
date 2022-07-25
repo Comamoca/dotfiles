@@ -94,7 +94,8 @@ set -Ux fish_user_paths $HOME/.rbenv/bin $fish_user_paths
 set -Ux fish_user_paths $HOME/.rbenv/shims $fish_user_paths
 # set rg $FZF_FIND_FILE_COMMAND
 # bind \cg __fzhq
-bind \cf 'fzf --preview "bat  --color=always --style=header,grid --line-range :100 {}"'
+
+bind \cf fzf_prev_open
 
 # Bun
 set -Ux BUN_INSTALL "/home/coma/.bun"
