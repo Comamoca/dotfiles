@@ -72,7 +72,7 @@ terminal
 endfunction
 
 function! DeolFloat() abort
-        :Deol -split=floating -winheight=25 -winwidth=90 -winrow=4 -wincol=30
+        :Deol -split=floating -winheight=25 -winwidth=90 -winrow=4 -wincol=40
 endfunction
 
 function! Ranger() abort
