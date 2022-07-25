@@ -18,17 +18,63 @@ let g:loaded_tutor_mode_plugin  = 1
 let g:loaded_zipPlugin          = 1
 let g:skip_loading_mswin        = 1
 
+let g:configspath = expand('~/.config/nvim/configs')
 
 " set runtimepath^=~/.config/nvim/plugin/jetpack.vim
 
 " =========== Denops Settings =========== 
 " let g:denops_server_addr = '127.0.0.1:32123'
 
-let dein = expand('~/.config/nvim/dein.vim')
-execute 'source' dein
+" let dein = expand('~/.config/nvim/dein.vim')
+" execute 'source ' . dein
 
 " let jetpack = expand('~/.config/nvim/jetpack.vim')
 " execute 'source' jetpack
+
+
+
+
+
+"dein Scripts-----------------------------
+if &compatible
+  set nocompatible               " Be iMproved
+endif
+
+" Required:
+set runtimepath+=/home/coma/.cache/dein/repos/github.com/Shougo/dein.vim
+
+" Required:
+call dein#begin('/home/coma/.cache/dein')
+
+" Let dein manage dein
+" Required:
+call dein#add('/home/coma/.cache/dein/repos/github.com/Shougo/dein.vim')
+
+" Add or remove your plugins here like this:
+"call dein#add('Shougo/neosnippet.vim')
+"call dein#add('Shougo/neosnippet-snippets')
+
+ call dein#load_toml('/home/coma/.config/nvim/dein.toml',      {'lazy': 0})
+ call dein#load_toml('/home/coma/.config/nvim/dein_lazy.toml', {'lazy': 1})
+
+" Required:
+call dein#end()
+
+" Required:
+filetype plugin indent on
+syntax enable
+
+" If you want to install not installed plugins on startup.
+"if dein#check_install()
+"  call dein#install()
+"endif
+
+"End dein Scripts-------------------------
+
+
+
+
+
 
 set encoding=utf-8 
 
@@ -37,7 +83,7 @@ if &compatible
 endif
 
 runtime! plugsetsl*.vim
-" runtime! configs/*.vim
+runtime! configs/*.vim
 runtime! plugs/*.vim
 
 " lua <<EOF
@@ -67,7 +113,7 @@ runtime! plugs/*.vim
 " endfor
 
 " runtime! plugsetsl*.vim
-runtime! configs/*.vim
+"runtime! configs/*.vim
 " runtime! configs/*.lua
 
 " source ./autoload/jetpack.vim
