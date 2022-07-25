@@ -25,7 +25,7 @@ SETUVAR _fisher_jethrokuan_2F_fzf_files:/home/coma/\x2econfig/fish/functions/__f
 SETUVAR _fisher_jethrokuan_2F_z_files:/home/coma/\x2econfig/fish/functions/__z\x2efish\x1e/home/coma/\x2econfig/fish/functions/__z_add\x2efish\x1e/home/coma/\x2econfig/fish/functions/__z_clean\x2efish\x1e/home/coma/\x2econfig/fish/functions/__z_complete\x2efish\x1e/home/coma/\x2econfig/fish/conf\x2ed/z\x2efish
 SETUVAR _fisher_jomik_2F_fish_2D_gruvbox_files:/home/coma/\x2econfig/fish/functions/theme_gruvbox\x2efish
 SETUVAR _fisher_jorgebucaran_2F_fisher_files:/home/coma/\x2econfig/fish/functions/fisher\x2efish\x1e/home/coma/\x2econfig/fish/completions/fisher\x2efish
-SETUVAR _fisher_plugins:jomik/fish\x2dgruvbox\x1ejorgebucaran/fisher\x1ejethrokuan/fzf\x1ejethrokuan/z\x1ehalostatue/fish\x2dfzf\x1edecors/fish\x2dghq
+SETUVAR _fisher_plugins:jomik/fish\x2dgruvbox\x1ejorgebucaran/fisher\x1ejethrokuan/z\x1ehalostatue/fish\x2dfzf\x1edecors/fish\x2dghq\x1ejethrokuan/fzf
 SETUVAR fish_color_autosuggestion:7c6f64\x1ebrblack
 SETUVAR fish_color_cancel:\x2dr
 SETUVAR fish_color_command:076678
