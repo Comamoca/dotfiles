@@ -132,16 +132,5 @@ execute "source" path
 """
 
 [[plugins]]
-repo = 'thinca/vim-quickrun'
-on_cmd = ['Quickrun']
-hook_add = """
-let path = expand("~/.config/nvim/configs/quickrun.vim")
-execute "source" path
-"""
-
-[[plugins]]
-repo = 'statiolake/vim-quickrun-runner-nvimterm'
-
-[[plugins]]
 repo = 'skanehira/vsession'
 on_cmd = ['SaveSession', 'LoadSession', 'DeleteSession']

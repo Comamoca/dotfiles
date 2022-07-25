@@ -1,14 +1,16 @@
-# [[plugins]]
-# repo = "neoclide/coc.nvim"
-# merge = 0
-# rev = "release"
 [[plugins]]
 repo = 'neoclide/coc.nvim'
 rev = 'release'
 hook_add = '''
-  let g:coc_global_extensions = ['coc-json', 'coc-css', 'coc-eslint', 'coc-prettier', 'coc-tsserver', 'coc-toml', 'coc-yaml', 'coc-jedi', 'coc-go', 'coc-vimlsp']
-  call coc#util#install()
+  let g:coc_global_extensions = ['coc-json', 'coc-css', 'coc-eslint', 'coc-prettier', 'coc-tsserver', 'coc-toml', 'coc-yaml', 'coc-jedi', 'coc-go', 'coc-vimlsp', 'coc-emoji']
+" call coc#util#install()
+
+" excute 'source ' . g:configspath
 '''
+
+[[plugins]]
+repo ='echasnovski/mini.nvim'
+rev = 'stable'
 
 [[plugins]]
 repo = 'sainnhe/gruvbox-material'
@@ -23,4 +25,124 @@ repo = 'cohama/lexima.vim'
 repo = 'tpope/vim-commentary'
 
 [[plugins]]
-repo = 'kana/vim-smartword'
+repo = 'SirVer/ultisnips'
+
+[[plugins]]
+repo ='dense-analysis/ale'
+
+[[plugins]]
+repo ='Shougo/deol.nvim'
+
+[[plugins]]
+repo ='morhetz/gruvbox'
+
+[[plugins]]
+repo ='yuttie/comfortable-motion.vim'
+
+[[plugins]]
+repo ='lewis6991/gitsigns.nvim'
+
+[[plugins]]
+repo ='baabelfish/nvim-nim'
+
+[[plugins]]
+repo ='p00f/nvim-ts-rainbow'
+
+[[plugins]]
+repo ='mattn/vim-molder'
+
+[[plugins]]
+repo ='vim-skk/eskk.vim'
+
+[[plugins]]
+repo ='kana/vim-smartword'
+
+[[plugins]]
+repo ='vim-jp/vimdoc-ja'
+
+[[plugins]]
+repo ='simeji/winresizer'
+
+[[plugins]]
+repo ='nvim-treesitter/nvim-treesitter'
+
+[[plugins]]
+repo ='easymotion/vim-easymotion'
+hook_add = """
+let path = expand("~/.config/nvim/configs/easymoation.vim")
+execute "source" path
+"""
+
+[[plugins]]
+repo ='Jetpackkaroliskoncevicius/moonshine-vim'
+
+[[plugins]]
+repo ='nvim-telescope/telescope.nvim'
+
+[[plugins]]
+repo ='nvim-lua/plenary.nvim'
+
+[[plugins]]
+repo ='vim-syntastic/syntastic'
+
+[[plugins]]
+repo ='nathanaelkane/vim-indent-guides'
+
+[[plugins]]
+repo ='vim-denops/denops.vim'
+
+[[plugins]]
+repo ='Shougo/ddu.vim'
+
+[[plugins]]
+repo ='Shougo/ddu-ui-ff'
+
+[[plugins]]
+repo ='yuki-yano/ddu-filter-fzf'
+
+[[plugins]]
+repo ='Shougo/ddu-filter-matcher_substring'
+
+[[plugins]]
+repo ='liquidz/ddu-source-custom-list'
+
+[[plugins]]
+repo ='Shougo/ddu-source-file_rec'
+
+[[plugins]]
+repo ='Shougo/ddu-source-file'
+
+[[plugins]]
+repo ='shun/ddu-source-rg'
+
+[[plugins]]
+repo ='shun/ddu-source-buffer'
+
+[[plugins]]
+repo ='Shougo/ddu-source-line'
+
+[[plugins]]
+repo ='Shougo/ddu-kind-file'
+
+[[plugins]]
+repo ='Shougo/ddu-commands.vim'
+
+[[plugins]]
+repo = 'wakatime/vim-wakatime'
+
+[[plugins]]
+repo = 'twitvim/twitvim'
+
+[[plugins]]
+repo = 'statiolake/vim-quickrun-runner-nvimterm'
+
+[[plugins]]
+repo = 'thinca/vim-quickrun'
+# on_cmd = ['Quickrun']
+hook_add = """
+let path = expand("~/.config/nvim/configs/quickrun.vim")
+execute "source" path
+"""
+
+[[plugins]]
+repo = 'sebdah/vim-delve'
