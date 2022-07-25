@@ -7,7 +7,8 @@ return {
 	-- window_background_image = "/home/coma/Pictures/wallpapelar/67767892_p2.png",
 	-- window_background_image = "/home/coma/Pictures/wallpapelar/atul-vinayak-hZioHCEWSAE-unsplash.jpg",
 	-- window_background_image = "/home/coma/Pictures/wallpapelar/iroha_waiipapeler.png",
-	window_background_image = "/home/coma/Pictures/wallpapelar/FUzoPiTakAAZMbU.jpg",
+	-- window_background_image = "/home/coma/Pictures/wallpapelar/FUzoPiTakAAZMbU.jpg",
+	window_background_image = "/home/coma/Pictures/wallpapelar/1500x500.jpg",
         -- window_background_opacity = 0.85,
 	window_background_image_hsb = {
 		-- Darken the background image by reducing it to 1/3rd
