@@ -7,10 +7,10 @@
 	},
 	"golang": {
 		"command": "gopls",
-		"rootPatterns": ["go.mod", ".vim/", ".git/", ".hg/"],
+		"rootpatterns": ["go.mod", ".vim/", ".git/", ".hg/"],
 		"filetypes": ["go"],
-		"initializationOptions": {
-			"usePlaceholders": true
+		"initializationoptions": {
+			"useplaceholders": true
 		}
 	},
   "efm": {
@@ -18,5 +18,5 @@
     "args": [],
     "filetypes": ["markdown"]
   },
-	"suggest.keepCompleteopt": true
+	"suggest.keepcompleteopt": true
 }

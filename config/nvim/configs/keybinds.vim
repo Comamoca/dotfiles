@@ -27,7 +27,7 @@ noremap <silent><C-o> :Denite buffer<CR>
 
 set completeopt=menuone,noinsert
 " 補完表示時のEnterで改行をしない
-inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
+" inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
 
 " nnoremap <silent><C-o> :<c-u>call ddu#start({'sources': [{'name': 'buffer'}]})<cr>
 " nnoremap <silent><C-o> :<c-u>Denite buffer<cr>
@@ -62,4 +62,4 @@ function! VartDeol() abort
 		:Deol
 endfunction
 
-nnoremap sd :call VartDeol()<CR>
+" nnoremap sd :call VartDeol()<CR>
