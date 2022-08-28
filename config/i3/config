@@ -67,10 +67,10 @@ set $left j
 set $right semicolon
 
 # use Mouse+Mod4 to drag floating windows to their wanted position
-floating_modifier Mod4
+#floating_modifier Mod4
 
 # start a terminal
-bindsym Mod4+Return exec terminology
+bindsym Mod4+Return exec wezterm
 
 # kill focused window
 bindsym Mod4+q kill
@@ -263,13 +263,14 @@ exec --no-startup-id fcitx-autostart
 # exec --no-startup-id xclip
 exec --no-startup-id sandsmark-notificationd
 
-exec terminology
+# exec terminology
 exec xmodmap ~/.Xmodmap
 exec bluetoothctl -- power on
 
 # exec_always --no-startup-id $HOME/.config/polybar/launch.sh --shapes
 # exec_always --no-startup-id polybar
 exec_always --no-startup-id xfce4-clipman
-# exec_always --no-startup-id deno run -A --no-check ~/.cache/dein/repos/github.com/vim-denops/denops.vim/denops/@denops-private/cli.ts &
-exec launch_denops.sh &
+exec_always --no-startup-id wezterm
+exec_always --no-startup-id deno run -A --no-check ~/.cache/dein/repos/github.com/vim-denops/denops.vim/denops/@denops-private/cli.ts &
+# exec launch_denops.sh &
 exec --no-startup-id exec sh  ~/.screenlayout/layout.sh

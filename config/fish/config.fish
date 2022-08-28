@@ -25,6 +25,7 @@ zoxide init fish | source
 
 ## theme_gruvbox dark soft
 
+alias vlang='v'
 alias v='nvim'
 alias g='git'
 alias ide="~/.scripts/tmux_layout.sh"
@@ -46,7 +47,13 @@ alias gcl='g clone'
 alias gcz='g cz'
 alias grm='g rm'
 
+alias vimdiff='nvim -d'
+
+alias README='cp ~/ghq/github.com/coma/baserepo/README.md ~/ghq/github.com/coma/baserepo/README.ja.md .'
+
 alias lg='lazygit'
+
+alias ablaze_repos='gh repo list Ablaze-MIRAI'
 
 export EDITOR=nvim
 export PYTHONPATH=/home/coma/bundler/bundler/lib
@@ -64,6 +71,11 @@ export PATH="$DENO_INSTALL/bin:$PATH"
 export PATH="/home/coma/go/bin:$PATH"
 export PATH="/home/coma/local/:$PATH"
 export BAT_THEME="gruvbox-dark"
+
+set PATH /home/coma/.konryu/bin $PATH
+set PATH /home/coma/.konryu/versions $PATH
+
+set PATH /home/coma/.konryu/cotowali/bin $PATH
 
 #set PATH /home/coma/go/bin $PATH
 starship init fish | source
@@ -93,7 +105,7 @@ eval (fzenn completion fish | source)
 set -Ux fish_user_paths $HOME/.rbenv/bin $fish_user_paths
 set -Ux fish_user_paths $HOME/.rbenv/shims $fish_user_paths
 # set rg $FZF_FIND_FILE_COMMAND
-# bind \cg __fzhq
+bind \cg __fzhq
 
 bind \cf fzf_prev_open
 

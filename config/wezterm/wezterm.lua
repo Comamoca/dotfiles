@@ -5,11 +5,13 @@ return {
 	-- window_background_image = "/home/coma/ghq/MyPictures/wallpapelar/67010409_p0_master1200.jpg",
 	-- window_background_image = "/home/coma/Pictures/wallpapelar/FRAmxpLaMAECKr_gimp.png",
 	-- window_background_image = "/home/coma/Pictures/wallpapelar/67767892_p2.png",
-	-- window_background_image = "/home/coma/Pictures/wallpapelar/atul-vinayak-hZioHCEWSAE-unsplash.jpg",
 	-- window_background_image = "/home/coma/Pictures/wallpapelar/iroha_waiipapeler.png",
+	-- window_background_image = "/home/coma/Pictures/wallpapelar/202202_ファルまろ様.jpg",
 	-- window_background_image = "/home/coma/Pictures/wallpapelar/FUzoPiTakAAZMbU.jpg",
-	window_background_image = "/home/coma/Pictures/wallpapelar/1500x500.jpg",
-        -- window_background_opacity = 0.85,
+  -- window_background_image = "/home/coma/Pictures/wallpapelar/1500x500.jpg",
+  window_background_image = "/home/coma/Pictures/wallpapelar/genshin_wallpapelar_klee.jpg",
+	-- window_background_image = "/home/coma/Pictures/wallpapelar/atul-vinayak-hZioHCEWSAE-unsplash.jpg",
+	-- window_background_opacity = 0.85,
 	window_background_image_hsb = {
 		-- Darken the background image by reducing it to 1/3rd
 		brightness = 0.15,
@@ -22,7 +24,7 @@ return {
 	},
 
 	-- disable_default_key_bindings = true,
-	color_scheme = "nord",
+	color_scheme = "Afterglow",
 	use_ime = true,
 	font_size = 12.3,
 	-- font = wezterm.font("UDEVGothicLG-Regular"),

@@ -1,3 +1,4 @@
+
 # カラースチーム
 
 [[plugins]]
@@ -11,7 +12,6 @@ on_func = ['colorscheme']
 [[plugins]]
 repo = 'tckmn/hotdog.vim'
 on_func = ['colorscheme']
-
 
 
 # 使用頻度が低いプラグイン
@@ -134,3 +134,30 @@ execute "source" path
 [[plugins]]
 repo = 'skanehira/vsession'
 on_cmd = ['SaveSession', 'LoadSession', 'DeleteSession']
+
+[[plugins]]
+repo = 'alaviss/nim.nvim'
+on_ft = ['nim', 'nims', 'nimble']
+
+[[plugins]]
+repo = 'twitvim/twitvim'
+on_cmd = [
+  "TwitVimResetHmacMethod",
+  "TwitVimResetMethod",
+  "TwitVimShowBufstack",
+  "TwitVimShowCurbuffer",
+  "TwitVimShowHmacMethod",
+  "TwitVimShowInfoBufstack",
+  "TwitVimShowInfobuffer",
+  "TwitVimShowMethod",
+  "TwitVimVersion",
+  "FriendsTwitter"
+  ]
+
+[[plugins]]
+repo = 'kdheepak/lazygit.nvim'
+on_cmd = ["LazyGit", "LazyGitConfig", "LazyGitFilter", "LazyGitFilterCurrentFile"]
+
+[[plugins]]
+repo = "evanleck/vim-svelte"
+on_ft = ["svelte"]

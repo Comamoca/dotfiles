@@ -9,7 +9,7 @@ let g:loaded_gzip               = 1
 let g:loaded_man                = 1
 let g:loaded_matchit            = 1
 let g:loaded_matchparen         = 1
-let g:loaded_netrwPlugin        = 1
+let g:loaed_netrwPlugin        = 1
 " let g:loaded_remote_plugins     = 1
 let g:loaded_shada_plugin       = 1
 let g:loaded_spellfile_plugin   = 1
@@ -23,17 +23,13 @@ let g:configspath = expand('~/.config/nvim/configs')
 " set runtimepath^=~/.config/nvim/plugin/jetpack.vim
 
 " =========== Denops Settings =========== 
-" let g:denops_server_addr = '127.0.0.1:32123'
+let g:denops_server_addr = '127.0.0.1:32123'
 
 " let dein = expand('~/.config/nvim/dein.vim')
 " execute 'source ' . dein
 
 " let jetpack = expand('~/.config/nvim/jetpack.vim')
 " execute 'source' jetpack
-
-
-
-
 
 "dein Scripts-----------------------------
 if &compatible
@@ -71,11 +67,6 @@ syntax enable
 
 "End dein Scripts-------------------------
 
-
-
-
-
-
 set encoding=utf-8 
 
 if &compatible
@@ -83,24 +74,26 @@ if &compatible
 endif
 
 runtime! plugsetsl*.vim
-runtime! configs/*.vim
+" runtime! configs/*.vim
 runtime! plugs/*.vim
 
-" lua <<EOF
-" require'nvim-treesitter.configs'.setup {
-"     highlight = {
-"         enable = true,
-"         },
-"         rainbow = {
-"             enable = true,
-"             -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
-"             extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
-"             max_file_lines = nil, -- Do not enable for files with more than n lines, int
-"             -- colors = {}, -- table of hex strings
-"             -- termcolors = {} -- table of colour name strings
-"         }
-"     }
-" EOF
+source "/home/coma/.configs/nvim/configs/coc.vim"
+
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+    highlight = {
+        enable = true,
+        },
+        rainbow = {
+            enable = true,
+            -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
+            extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+            max_file_lines = nil, -- Do not enable for files with more than n lines, int
+            -- colors = {}, -- table of hex strings
+            -- termcolors = {} -- table of colour name strings
+        }
+    }
+EOF
 
 
 "source ~/.config/nvim/configs/plugs.vim
@@ -112,9 +105,9 @@ runtime! plugs/*.vim
 " 	execute 'source' file
 " endfor
 
-" runtime! plugsetsl*.vim
-"runtime! configs/*.vim
-" runtime! configs/*.lua
+runtime! plugsetsl*.vim
+runtime! configs/*.vim
+runtime! configs/*.lua
 
 " source ./autoload/jetpack.vim
 
@@ -145,35 +138,37 @@ endif
 inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
 
 set completeopt=menuone,noinsert
-inoremap <expr><C-n> pumvisible() ? "<Down>" : "<C-n>"
-inoremap <expr><C-p> pumvisible() ? "<Up>" : "<C-p>"
+" inoremap <expr><C-n> pumvisible() ? "<Down>" : "<C-n>"
+" inoremap <expr><C-p> pumvisible() ? "<Up>" : "<C-p>"
 
-inoremap <expr><Tab> pumvisible() ? "<C-n>" : "<Tab>"
+" inoremap <expr><Tab> pumvisible() ? "<C-n>" : "<Tab>"
 
 " set pumblend=30
 " hi NormalFloat guifg=#2e3440 guibg=#a3be8c
 
 augroup vimrc
-	autocmd VimEnter * inoremap <expr><Tab> pumvisible() ? "<C-n>" : "<Tab>"
+	" autocmd VimEnter * inoremap <expr><Tab> pumvisible() ? "<C-n>" : "<Tab>"
 	" autocmd VimEnter * let g:indent_guides_enable_on_vim_startup = 0
 	" autocmd BufRead,BufNewFile * let g:indent_guides_enable_on_vim_startup = 1
+	autocmd BufRead,BufNewFile * set foldmethod=marker
 	" autocmd VimEnter * GitGutterDisable
-	autocmd BufRead * :syntax enable
-	autocmd BufRead,BufNewFile *.nim  set ts=2
-	autocmd BufRead,BufNewFile *.nim  set shiftwidth=2
+	" autocmd BufRead * :syntax enable
+	" autocmd BufRead,BufNewFile *.nim  set ts=2
+	" autocmd BufRead,BufNewFile *.nim  set shiftwidth=2
 	autocmd BufRead,BufNewFile *.nim  syntax enable
 	autocmd BufRead,BufNewFile *.nim  set filetype=nim
+	" autocmd BufRead,BufNewFile *.nims  set shiftwidth=2
 
 	autocmd BufRead,BufNewFile *.ts  set shiftwidth=2
-	autocmd BufEnter * set foldmethod=marker
+	" autocmd BufEnter * set foldmethod=marker
 
 	autocmd BufRead, BufEnter *.vim imap <buffer> <CR> <Plug>(smart_back_slash_linefeed)
 	autocmd BufRead, BufEnter *.vim imap <buffer> <C-CR> <Plug>(back_slash_linefeed)
 	autocmd BufRead,BufNewFile *.vim  set shiftwidth=4
 	autocmd BufRead,BufNewFile *.lua  set shiftwidth=2
-	autocmd BufRead,BufNewFile *.nims  set shiftwidth=2
-	autocmd BufRead,BufNewFile *.nim  set shiftwidth=2
 	autocmd BufRead,BufNewFile *.qml  set filetype=qml
+
+	autocmd BufRead,BufNewFile *.tsx set filetype=typescript.tsx
 	" autocmd BufRead,BufNewFile *.html  set filetype=html
 	" autocmd BufRead,BufNewFile *.html  set shiftwidth=2
 augroup END
@@ -218,10 +213,17 @@ set softtabstop=2 "連続した空白に対してタブキーやバックスペ�
 set autoindent "改行時に前の行のインデントを継続する
 set smartindent "改行時に入力された行の末尾に合わせて次の行のインデントを増減する
 
-" let g:denops_server_addr = '127.0.0.1:32123'
-" call jobstart(
-" \	'deno run -A --no-check ' . dein#get('denops.vim').path . '/denops/@denops-private/cli.ts',
-" \	{'detach': v:true}
-" \)
+set clipboard=unnamedplus
 
-" call dein#update()
+" set pumblend=30
+set autoindent
+
+let g:UltiSnipsExpandTrigger="<c-e>"
+let g:UltiSnipsJumpForwardTrigger="<c-p>"
+let g:UltiSnipsJumpBackwardTrigger="<c-n>"
+let g:UltiSnipsEditSplit="vertical"
+
+" let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips',$HOME.'/.vim/bundle/vim-snippets/UltiSnips']
+let g:UltiSnipsSnippetDirectories=[$HOME.'/.cache/dein/repos/github.com/honza/vim-snippets/UltiSnips']
+
+set runtimepath^=~/ghq/github.com/coma/emojino
