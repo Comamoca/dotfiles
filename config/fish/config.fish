@@ -46,14 +46,12 @@ alias gad='g add'
 alias gcl='g clone'
 alias gcz='g cz'
 alias grm='g rm'
-
 alias vimdiff='nvim -d'
-
 alias README='cp ~/ghq/github.com/coma/baserepo/README.md ~/ghq/github.com/coma/baserepo/README.ja.md .'
-
 alias lg='lazygit'
-
 alias ablaze_repos='gh repo list Ablaze-MIRAI'
+alias wk='wikitool'
+alias zenn="npx zenn"
 
 export EDITOR=nvim
 export PYTHONPATH=/home/coma/bundler/bundler/lib
@@ -70,20 +68,28 @@ export DENO_INSTALL="/home/coma/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
 export PATH="/home/coma/go/bin:$PATH"
 export PATH="/home/coma/local/:$PATH"
-export BAT_THEME="gruvbox-dark"
 
 set PATH /home/coma/.konryu/bin $PATH
 set PATH /home/coma/.konryu/versions $PATH
 
 set PATH /home/coma/.konryu/cotowali/bin $PATH
 
+set BAT_THEME "gruvbox-dark" $PATH
+set PATH /home/coma/$CARGO_HOME/bin/ $PATH
+
 #set PATH /home/coma/go/bin $PATH
 starship init fish | source
 set -ga fish_user_paths /home/coma/.nimble/bin
 set -ga fish_user_paths /home/coma/.nimble/pkgs
 
+set -gx PNPM_HOME "/home/coma/.local/share/pnpm"
+set -gx PATH "$PNPM_HOME" $PATH
+
 eval (gh completion -s fish| source)
 eval (fzenn completion fish | source)
+source (vr completions fish | psub)
+
+fish_add_path /home/coma/.ghcup/bin
 
 #mkdir -p $fish_complete_path[1]
 ## cp extra/completions/alacritty.fish $fish_complete_path[1]/alacritty.fish
@@ -105,6 +111,7 @@ eval (fzenn completion fish | source)
 set -Ux fish_user_paths $HOME/.rbenv/bin $fish_user_paths
 set -Ux fish_user_paths $HOME/.rbenv/shims $fish_user_paths
 # set rg $FZF_FIND_FILE_COMMAND
+
 bind \cg __fzhq
 
 bind \cf fzf_prev_open
@@ -115,3 +122,9 @@ set -px --path PATH "/home/coma/.bun/bin"
 # alias emoji=''
 # to copy to xclip system keyboard (on mac use pbcopy) after selecting
 # emoj | xclip -selection c
+
+set -gx PNPM_HOME "/home/coma/.local/share/pnpm"
+set -gx PATH "$PNPM_HOME" $PATH
+dagger completion fish > ~/.config/fish/completions/dagger.fish
+
+tmux

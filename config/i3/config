@@ -70,7 +70,8 @@ set $right semicolon
 #floating_modifier Mod4
 
 # start a terminal
-bindsym Mod4+Return exec wezterm
+# bindsym Mod4+Return exec xfce4-terminal
+bindsym Mod4+Return exec tym
 
 # kill focused window
 bindsym Mod4+q kill
@@ -258,7 +259,7 @@ exec_always --no-startup-id picom
 # exec --no-startup-id feh --bg-scale ~/MyPictures/toutoi/index.png
 # exec feh --bg-scale ~/MyPictures/toutoi/97187797_p0_master1200.jpg
 exec sh  ~/.fehbg &
-exec --no-startup-id fcitx-autostart
+exec --no-startup-id fcitx5
 # exec --no-startup-id clipit
 # exec --no-startup-id xclip
 exec --no-startup-id sandsmark-notificationd
@@ -270,7 +271,10 @@ exec bluetoothctl -- power on
 # exec_always --no-startup-id $HOME/.config/polybar/launch.sh --shapes
 # exec_always --no-startup-id polybar
 exec_always --no-startup-id xfce4-clipman
-exec_always --no-startup-id wezterm
+# exec_always --no-startup-id wezterm
+# exec_always --no-startup-id xfce4-terminal
+exec_always --no-startup-id tym
 exec_always --no-startup-id deno run -A --no-check ~/.cache/dein/repos/github.com/vim-denops/denops.vim/denops/@denops-private/cli.ts &
 # exec launch_denops.sh &
 exec --no-startup-id exec sh  ~/.screenlayout/layout.sh
+# bindsym $mod+d exec --no-startup-id "rofi -show drun -font \\"DejaVu 9\\" -run-shell-command '{terminal} -e \\" {cmd}; read -n 1 -s\\"'"

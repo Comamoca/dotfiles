@@ -11,7 +11,7 @@ command! Plugins :e ~/.config/nvim/dein.toml
 command! PluginLazy :e ~/.config/nvim/dein_lazy.toml
 command! ConfigsDefx :Defx ~/.config/nvim/configs
 command! Org :Defx ~/org
-command! Todo :tabe ~/todo.md<CR>
+command! Todo :e ~/todo.md
 command! -nargs=1 Q call QSearch((<f-args>))
 command! Black :call Pyformat()
 command! NimLint :call RunNimlint()
@@ -85,3 +85,10 @@ function! Open(path) abort
     let toml = expand(a:path)
     execute "e" toml
 endfunction
+
+command! -nargs=* -bang Dex silent only! | botright 12 split |
+    \ execute 'terminal' (has('nvim') ? '' : '++curwin') 'dex'
+    \   (<bang>0 ? '--clear ' : '') <q-args> ' ' expand('%:p') |
+    \ stopinsert | execute 'normal! G' | set bufhidden=wipe |
+    \ execute 'autocmd BufEnter <buffer> if winnr("$") == 1 | quit! | endif' |
+    \ wincmd k

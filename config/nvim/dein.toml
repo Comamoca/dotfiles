@@ -165,56 +165,62 @@ repo = 'honza/vim-snippets'
 [[plugins]]
 repo = 'SirVer/ultisnips'
 
-[[plugins]]
-repo = 'prabirshrestha/asyncomplete.vim'
-
-[[plugins]]
-repo = 'prabirshrestha/asyncomplete-lsp.vim'
-
-[[plugins]]
-repo = 'prabirshrestha/asyncomplete-ultisnips.vim'
-
-[[plugins]]
-repo = 'prabirshrestha/asyncomplete-emoji.vim'
-
-[[plugins]]
-repo = "prabirshrestha/asyncomplete-file.vim"
+# [[plugins]]
+# repo = 'prabirshrestha/asyncomplete.vim'
 
 # [[plugins]]
-# repo = 'quangnguyen30191/cmp-nvim-ultisnips'
+# repo = 'prabirshrestha/asyncomplete-lsp.vim'
+
+# [[plugins]]
+# repo = 'prabirshrestha/asyncomplete-ultisnips.vim'
+
+# [[plugins]]
+# repo = 'prabirshrestha/asyncomplete-emoji.vim'
+
+# [[plugins]]
+# repo = "prabirshrestha/asyncomplete-file.vim"
 
 # [[plugins]]
 # repo = 'rafamadriz/friendly-snippets'
 
-# [[plugins]]
-# repo = 'neovim/nvim-lspconfig'
+[[plugins]]
+repo = 'neovim/nvim-lspconfig'
 
-# [[plugins]]
-# repo = 'williamboman/mason.nvim'
-# hook_add = """
-# source /home/coma/.config/nvim/configs/mason.vim
-# """
+[[plugins]]
+repo = 'williamboman/mason.nvim'
+hook_add = """
+source /home/coma/.config/nvim/configs/mason.vim
+"""
 
-# [[plugins]]
-# repo= 'williamboman/mason-lspconfig.nvim'
+[[plugins]]
+repo= 'williamboman/mason-lspconfig.nvim'
 
-# [[plugins]]
-# repo = "hrsh7th/nvim-cmp"
-#
+[[plugins]]
+repo = "hrsh7th/nvim-cmp"
+
 # [[plugins]]
 # repo = 'dmitmel/cmp-vim-lsp'
 
-# [[plugins]]
-# repo = "hrsh7th/cmp-nvim-lsp"
+[[plugins]]
+repo = "hrsh7th/cmp-nvim-lsp"
 
-# [[plugins]]
-# repo = 'hrsh7th/cmp-buffer'
-#
-# [[plugins]]
-# repo = 'hrsh7th/cmp-path'
-#
-# [[plugins]]
-# repo = 'hrsh7th/cmp-cmdline'
+[[plugins]]
+repo = 'hrsh7th/cmp-buffer'
+
+[[plugins]]
+repo = 'hrsh7th/cmp-path'
+
+[[plugins]]
+repo = 'hrsh7th/cmp-cmdline'
+
+[[plugins]]
+repo = 'hrsh7th/cmp-emoji'
+
+[[plugins]]
+repo = "quangnguyen30192/cmp-nvim-ultisnips"
+
+[[plugins]]
+repo = "f3fora/cmp-spell"
 
 [[plugins]]
 repo ='echasnovski/mini.nvim'
@@ -326,6 +332,9 @@ repo ='Shougo/ddu-kind-file'
 repo ='Shougo/ddu-commands.vim'
 
 [[plugins]]
+repo = "Shougo/ddu-ui-filer"
+
+[[plugins]]
 repo = 'wakatime/vim-wakatime'
 
 [[plugins]]
@@ -342,26 +351,11 @@ execute "source" path
 [[plugins]]
 repo = 'sebdah/vim-delve'
 
-[[plugins]]
-repo = 'rlane/pounce.nvim'
-hook_add = """
-nnoremap s :<c-u>Pounce<CR>
+# [[plugins]]
+# repo = 'prabirshrestha/vim-lsp'
 
-lua << EOF
-require'pounce'.setup{
-  accept_keys = "JFKDLSAHGNUVRBYTMICEOXWPQZ",
-  accept_best_key = "<enter>",
-  multi_window = true,
-  debug = false,
-}
-EOF
-"""
-
-[[plugins]]
-repo = 'prabirshrestha/vim-lsp'
-
-[[plugins]]
-repo = 'mattn/vim-lsp-settings'
+# [[plugins]]
+# repo = 'mattn/vim-lsp-settings'
 
 # # ddc.vim
 # [[plugins]]
@@ -391,3 +385,60 @@ repo = 'mattn/vim-lsp-settings'
 [[plugins]]
 repo = "zah/nim.vim"
 # on_ft = ['nim', 'nims', 'nimble']
+
+[[plugins]]
+repo = "phaazon/hop.nvim"
+hook_add = """
+lua << EOF
+require'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
+EOF
+
+nnoremap <Space>k :<c-u>HopLineBC<CR>
+nnoremap <Space>j :<c-u>HopLineAC<CR>
+
+nnoremap <Space><Space> :<c-u>HopWord<CR>
+nnoremap s :<c-u>HopPattern<CR>
+"""
+
+[[plugins]]
+repo = 'segeljakt/vim-silicon'
+
+[[plugins]]
+repo = "ajmwagar/vim-deus"
+
+[[plugins]]
+repo = "dbb/vim-gummybears-colorscheme"
+
+[[plugins]]
+repo = "srcery-colors/srcery-vim"
+
+[[plugins]]
+repo = 'wuelnerdotexe/vim-astro'
+hook_add = """
+let g:astro_typescript = 'enable'
+let g:astro_stylus = 'enable'
+"""
+
+[[plugins]]
+repo = "jjo/vim-cue"
+
+[[plugins]]
+repo = "iloginow/vim-stylus"
+
+[[plugins]]
+repo = "elm-tooling/elm-vim"
+
+[[plugins]]
+repo = "andweeb/presence.nvim"
+
+[[plugins]]
+repo = "uki00a/vim-deno"
+
+[[plugins]]
+repo = "kchmck/vim-coffee-script"
+
+[[plugins]]
+repo = "vim-scripts/vim-auto-save"
+
+[[plugins]]
+repo = 'Allianaab2m/vimskey'
