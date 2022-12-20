@@ -24,9 +24,6 @@ repo = 'sakhnik/nvim-gdb'
 repo = 'tpope/vim-surround'
 
 [[plugins]]
-repo = 'bun913/min-todo.vim'
-
-[[plugins]]
 repo = 'itchyny/calendar.vim'
 [[plugins]]
 repo = 'vim-denops/denops-helloworld.vim'
@@ -161,3 +158,15 @@ on_cmd = ["LazyGit", "LazyGitConfig", "LazyGitFilter", "LazyGitFilterCurrentFile
 [[plugins]]
 repo = "evanleck/vim-svelte"
 on_ft = ["svelte"]
+
+[[plugins]]
+repo = "ziglang/zig.vim"
+on_ft = ["zig"]
+
+[[plugins]]
+repo = "gf3/peg.vim"
+on_ft = ["peg", "pegjs"]
+
+[[plugins]]
+repo = "imsnif/kdl.vim"
+on_ft = ["kdl"]

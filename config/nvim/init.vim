@@ -20,10 +20,9 @@ let g:skip_loading_mswin        = 1
 
 let g:configspath = expand('~/.config/nvim/configs')
 
-" set runtimepath^=~/.config/nvim/plugin/jetpack.vim
 
-" =========== Denops Settings =========== 
-let g:denops_server_addr = '127.0.0.1:32123'
+let mapleader = "<Space>"
+" set runtimepath^=~/.config/nvim/plugin/jetpack.vim
 
 " let dein = expand('~/.config/nvim/dein.vim')
 " execute 'source ' . dein
@@ -120,10 +119,6 @@ runtime! configs/*.lua
 " runtime! expand("~/.config/nvim/configs/*.vim")
 
 
-" load local Plugins
-set runtimepath^=~/denops.vim
-
-
 if exists('g:vscode')
 	command! VSCode :echo "VSCode!"
 endif
@@ -138,8 +133,8 @@ endif
 inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
 
 set completeopt=menuone,noinsert
-" inoremap <expr><C-n> pumvisible() ? "<Down>" : "<C-n>"
-" inoremap <expr><C-p> pumvisible() ? "<Up>" : "<C-p>"
+inoremap <expr><C-n> pumvisible() ? "<Down>" : "<C-n>"
+inoremap <expr><C-p> pumvisible() ? "<Up>" : "<C-p>"
 
 " inoremap <expr><Tab> pumvisible() ? "<C-n>" : "<Tab>"
 
@@ -167,12 +162,18 @@ augroup vimrc
 	autocmd BufRead,BufNewFile *.vim  set shiftwidth=4
 	autocmd BufRead,BufNewFile *.lua  set shiftwidth=2
 	autocmd BufRead,BufNewFile *.qml  set filetype=qml
+	autocmd BufRead,BufNewFile *.er  set filetype=erg
+	autocmd BufRead,BufNewFile *.peg  set filetype=peg
+	autocmd BufRead,BufNewFile *.pegjs  set filetype=peg
+	autocmd BufRead,BufNewFile *.kdl  set filetype=kdl
+	" autocmd BufRead,BufNewFile *.astro  set filetype=astro
 
 	autocmd BufRead,BufNewFile *.tsx set filetype=typescript.tsx
 	" autocmd BufRead,BufNewFile *.html  set filetype=html
 	" autocmd BufRead,BufNewFile *.html  set shiftwidth=2
 augroup END
 colorscheme gruvbox
+" colorscheme deus
 
 set laststatus=2
 set noshowmode
@@ -226,4 +227,17 @@ let g:UltiSnipsEditSplit="vertical"
 " let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips',$HOME.'/.vim/bundle/vim-snippets/UltiSnips']
 let g:UltiSnipsSnippetDirectories=[$HOME.'/.cache/dein/repos/github.com/honza/vim-snippets/UltiSnips']
 
-set runtimepath^=~/ghq/github.com/coma/emojino
+" call dein#local("")
+
+let g:ale_linters = {}
+" let g:ale_linters['typescript'] = ['deno', 'deno-tsserver']
+
+set runtimepath^=~/ghq/github.com/coma/sandbox/denops-misskey
+" let g:denops#debug = 1
+
+" load local Plugins
+" set runtimepath^=~/denops.vim
+" runtime! ~/ghq/github.com/coma/sandbox/denops
+
+" =========== Denops Settings =========== 
+" let g:denops_server_addr = '127.0.0.1:32123'
