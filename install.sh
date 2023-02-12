@@ -1,1 +1,0 @@
-pacman -S $(cat pkglist)
