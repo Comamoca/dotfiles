@@ -55,14 +55,13 @@ alias gad='g add'
 alias gcl='g clone'
 alias gcz='g cz'
 alias grm='g rm'
-
 alias vimdiff='nvim -d'
 
 alias README='cp ~/ghq/github.com/Comamoca/baserepo/README.md ~/ghq/github.com/Comamoca/baserepo/README.ja.md .'
-
 alias lg='lazygit'
-
 alias ablaze_repos='gh repo list Ablaze-MIRAI'
+alias wk='wikitool'
+alias zenn="npx zenn"
 
 export EDITOR=nvim
 export PYTHONPATH=/home/coma/bundler/bundler/lib
@@ -79,17 +78,22 @@ export DENO_INSTALL="/home/coma/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
 export PATH="/home/coma/go/bin:$PATH"
 export PATH="/home/coma/local/:$PATH"
-export BAT_THEME="gruvbox-dark"
 
 set PATH /home/coma/.konryu/bin $PATH
 set PATH /home/coma/.konryu/versions $PATH
 
 set PATH /home/coma/.konryu/cotowali/bin $PATH
 
+set BAT_THEME "gruvbox-dark" $PATH
+set PATH /home/coma/$CARGO_HOME/bin/ $PATH
+
 #set PATH /home/coma/go/bin $PATH
 starship init fish | source
 set -ga fish_user_paths /home/coma/.nimble/bin
 set -ga fish_user_paths /home/coma/.nimble/pkgs
+
+set -gx PNPM_HOME "/home/coma/.local/share/pnpm"
+set -gx PATH "$PNPM_HOME" $PATH
 
 eval (gh completion -s fish| source)
 
@@ -119,6 +123,7 @@ set SoundDriver PULSEAUDIO:JACK:ALSA:OSS
 set -Ux fish_user_paths $HOME/.rbenv/bin $fish_user_paths
 set -Ux fish_user_paths $HOME/.rbenv/shims $fish_user_paths
 # set rg $FZF_FIND_FILE_COMMAND
+
 bind \cg run_recker
 bind \cc __fish_cancel_commandline
 
