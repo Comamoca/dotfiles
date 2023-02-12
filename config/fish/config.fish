@@ -1,4 +1,12 @@
 set PATH /usr/local/bin $PATH
+set PATH ~/.local/bin $PATH
+
+set PATH ~/ghq/github.com/emscripten-core/emsdk $PATH
+set PATH ~/ghq/github.com/emscripten-core/emsdk/node/14.18.2_64bit/bin $PATH
+set PATH ~/ghq/github.com/emscripten-core/emsdk/upstream/emscripten $PATH
+
+ # export PULSE_SERVER=tcp:$(grep nameserver /etc/resolv.conf | awk ''\''{print $2}'\'')
+
 #export PATH=/home/coma/.config/fish/functions/ $PATH
 
 # function ghq_fzf_repo -d 'Repository search'
@@ -31,10 +39,11 @@ alias g='git'
 alias ide="~/.scripts/tmux_layout.sh"
 alias wallpapelar='feh --bg-fill'
 alias ls='lsd'
+alias rm='rip'
 alias server='python -m http.server'
-alias fzvim='nvim (fzf)'
-alias fzhq='cd (string  join / (ghq root) (ghq list | fzf --preview "bat --color=always --style=header,grid --line-range :80 $(ghq root)/{}/README.*"))'
-alias frea='freasearcher'
+# alias fzvim='nvim (fzf)'
+# alias fzhq='cd (string  join / (ghq root) (ghq list | fzf --preview "bat --color=always --style=header,grid --line-range :80 $(ghq root)/{}/README.*"))'
+# alias frea='freasearcher'
 alias ghostscript='gs'
 
 alias gts='g status'
@@ -49,7 +58,7 @@ alias grm='g rm'
 
 alias vimdiff='nvim -d'
 
-alias README='cp ~/ghq/github.com/coma/baserepo/README.md ~/ghq/github.com/coma/baserepo/README.ja.md .'
+alias README='cp ~/ghq/github.com/Comamoca/baserepo/README.md ~/ghq/github.com/Comamoca/baserepo/README.ja.md .'
 
 alias lg='lazygit'
 
@@ -83,7 +92,10 @@ set -ga fish_user_paths /home/coma/.nimble/bin
 set -ga fish_user_paths /home/coma/.nimble/pkgs
 
 eval (gh completion -s fish| source)
-eval (fzenn completion fish | source)
+
+set EMSDK_QUIET = 1
+
+# eval (fzenn completion fish | source)
 
 #mkdir -p $fish_complete_path[1]
 ## cp extra/completions/alacritty.fish $fish_complete_path[1]/alacritty.fish
@@ -102,12 +114,17 @@ eval (fzenn completion fish | source)
 
 # set -x FZF_DEFAULT_COMMAND 'rg --files --hidden --follow --glob "!.git/*"'
 
+set SoundDriver PULSEAUDIO:JACK:ALSA:OSS
+
 set -Ux fish_user_paths $HOME/.rbenv/bin $fish_user_paths
 set -Ux fish_user_paths $HOME/.rbenv/shims $fish_user_paths
 # set rg $FZF_FIND_FILE_COMMAND
-bind \cg __fzhq
+bind \cg run_recker
+bind \cc __fish_cancel_commandline
 
-bind \cf fzf_prev_open
+# bind \cf zi
+
+# bind \cf fzf_prev_open
 
 # Bun
 set -Ux BUN_INSTALL "/home/coma/.bun"
@@ -115,3 +132,7 @@ set -px --path PATH "/home/coma/.bun/bin"
 # alias emoji=''
 # to copy to xclip system keyboard (on mac use pbcopy) after selecting
 # emoj | xclip -selection c
+
+# pnpm
+set -gx PNPM_HOME "/home/coma/.local/share/pnpm"
+set -gx PATH "$PNPM_HOME" $PATH

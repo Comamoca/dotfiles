@@ -9,7 +9,7 @@ return {
 	-- window_background_image = "/home/coma/Pictures/wallpapelar/202202_ファルまろ様.jpg",
 	-- window_background_image = "/home/coma/Pictures/wallpapelar/FUzoPiTakAAZMbU.jpg",
   -- window_background_image = "/home/coma/Pictures/wallpapelar/1500x500.jpg",
-  window_background_image = "/home/coma/Pictures/wallpapelar/genshin_wallpapelar_klee.jpg",
+  window_background_image = "C:/Users/Coma/Pictures/VRChat/2022-12/VRChat_2022-12-26_04-47-14.530_1920x1080.png",
 	-- window_background_image = "/home/coma/Pictures/wallpapelar/atul-vinayak-hZioHCEWSAE-unsplash.jpg",
 	-- window_background_opacity = 0.85,
 	window_background_image_hsb = {
@@ -47,7 +47,6 @@ return {
 		{ key = "h", mods = "ALT|CTRL", action = wezterm.action({ MoveTabRelative = -1 }) },
 		{ key = "l", mods = "ALT|CTRL", action = wezterm.action({ ActivateTabRelative = 1 }) },
 		{ key = "y", mods = "ALT|CTRL", action = "ActivateCopyMode" },
-		
 
 
 		{ key = "p", mods = "ALT|CTRL", action = wezterm.action({ PasteFrom = "PrimarySelection" }) },

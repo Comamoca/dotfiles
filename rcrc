@@ -1,2 +1,2 @@
 EXCLLUDES="README.md"
-DOTFILES_DIRS="$HOME/dotfiles"
+DOTFILES_DIRS="ghq/github.com/Comamoca/dotfiles"

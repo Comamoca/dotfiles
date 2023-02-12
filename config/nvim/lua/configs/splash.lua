@@ -1,0 +1,1 @@
+-- vim.g["splash#path"]= vim.fn.expand("~/.splash.txt")
