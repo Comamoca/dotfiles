@@ -1,6 +1,34 @@
+[[plugins]]
+repo = 'https://github.com/akinsho/flutter-tools.nvim'
+on_ft = ["dart"]
+lua_source = """
+require("flutter-tools").setup{}
+"""
+
+[[plugins]]
+repo = 'skanehira/command.vim'
+on_cmd = ["CommandBufferOpen"]
+
+[[plugins]]
+repo = 'andweeb/presence.nvim'
+on_event = ["VimEnter"]
+
+[[plugins]]
+repo ='p00f/nvim-ts-rainbow'
+on_event = ["VimEnter"]
+
+[[plugins]]
+repo = 'tpope/vim-commentary'
+on_event = ["VimEnter"]
+
+[[plugins]]
+repo= 'folke/noice.nvim'
+
+[[plugins]]
+repo = 'nathanaelkane/vim-indent-guides'
+on_event = ["VimEnter"]
 
 # カラースチーム
-
 [[plugins]]
 repo = 'sainnhe/everforest'
 on_func = ['colorscheme']
@@ -10,13 +38,11 @@ repo = 'folke/tokyonight.nvim'
 on_func = ['colorscheme']
 
 [[plugins]]
-repo = 'tckmn/hotdog.vim'
-on_func = ['colorscheme']
-
+repo = 'bfredl/nvim-luadev'
+on_cmd = ['Luadev']
 
 # 使用頻度が低いプラグイン
 # 毎回使わないようなプラグインはここ
-
 [[plugins]]
 repo = 'sakhnik/nvim-gdb'
 
@@ -25,15 +51,10 @@ repo = 'tpope/vim-surround'
 
 [[plugins]]
 repo = 'itchyny/calendar.vim'
-[[plugins]]
-repo = 'vim-denops/denops-helloworld.vim'
 
 [[plugins]]
 repo = 'skanehira/translate.vim'
 on_event = ['VimEnter']
-
-[[plugins]]
-repo = 'skanehira/denops-twihi.vim'
 
 # マークダウン
 
@@ -83,50 +104,9 @@ on_ft = ["qml"]
 repo = "mattn/emmet-vim"
 on_ft = ["html"]
 
-# [[plugins]]
-# repo = 'shun/ddu-source-rg'
-#
-# [[plugins]]
-# repo = 'shun/ddu-source-buffer'
-#
-# [[plugins]]
-# repo = 'Shougo/ddu-source-line'
-#
-# [[plugins]]
-# repo = 'Shougo/ddu-kind-file'
-#
-[[plugins]]
-repo = 'prabirshrestha/async.vim'
-
-# [[plugins]]
-# repo = 'lewis6991/gitsigns.nvim'
-
-[[plugins]]
-repo = 'mopp/layoutplugin.vim'
-
 [[plugins]]
 repo = 'alvan/vim-closetag'
 on_event = ['VimEnter']
-
-[[plugins]]
-repo = 'jmcantrell/vim-virtualenv'
-on_ft = ['python']
-
-[[plugins]]
-repo = 'Shougo/defx.nvim'
-on_cmd = ['Defx']
-hook_add = """
-let path = expand("~/.config/nvim/configs/defx.vim")
-execute "source" path
-"""
-
-[[plugins]]
-repo = 'Shougo/denite.nvim'
-on_cmd = ['Denite']
-hook_add = """
-let path = expand("~/.config/nvim/configs/denite.vim")
-execute "source" path
-"""
 
 [[plugins]]
 repo = 'skanehira/vsession'
@@ -139,16 +119,8 @@ on_ft = ['nim', 'nims', 'nimble']
 [[plugins]]
 repo = 'twitvim/twitvim'
 on_cmd = [
-  "TwitVimResetHmacMethod",
-  "TwitVimResetMethod",
-  "TwitVimShowBufstack",
-  "TwitVimShowCurbuffer",
-  "TwitVimShowHmacMethod",
-  "TwitVimShowInfoBufstack",
-  "TwitVimShowInfobuffer",
-  "TwitVimShowMethod",
-  "TwitVimVersion",
   "FriendsTwitter"
+  "PostToTwitter"
   ]
 
 [[plugins]]
@@ -156,17 +128,100 @@ repo = 'kdheepak/lazygit.nvim'
 on_cmd = ["LazyGit", "LazyGitConfig", "LazyGitFilter", "LazyGitFilterCurrentFile"]
 
 [[plugins]]
+repo = 'https://github.com/Shougo/deol.nvim'
+on_cmd = ["Deol"]
+
+[[plugins]]
 repo = "evanleck/vim-svelte"
 on_ft = ["svelte"]
 
 [[plugins]]
-repo = "ziglang/zig.vim"
-on_ft = ["zig"]
+repo = "https://github.com/azadkuh/vim-cmus"
+on_cmd = ["Cmus", "CmusCurrent", "CmusPrevious", "CmusPlay", "CmusPause", "CmusStop", "CmusNext"]
 
 [[plugins]]
-repo = "gf3/peg.vim"
-on_ft = ["peg", "pegjs"]
+repo = "https://github.com/ErichDonGubler/vim-nushell"
+on_ft = ["nushell"]
+
 
 [[plugins]]
-repo = "imsnif/kdl.vim"
-on_ft = ["kdl"]
+repo = 'nvim-telescope/telescope-file-browser.nvim'
+# on_event = ["VimEnter"]
+on_source = ["telescope.nvim"]
+
+[[plugins]]
+repo ='nvim-telescope/telescope.nvim'
+on_event = ["VimEnter"]
+# on_source = ["telescope-file-browser.nvim"]
+lua_source = """
+-- To get telescope-file-browser loaded and working with telescope,
+-- you need to call load_extension, somewhere after setup function:
+require("telescope").load_extension("file_browser")
+require("telescope").setup({
+		extensions = {
+			file_browser = {
+				-- theme = "ivy",
+				-- disables netrw and use telescope-file-browser in its place
+				hijack_netrw = true,
+				mappings = {
+					["i"] = {
+						-- your custom insert mode mappings
+					},
+					["n"] = {
+						-- your custom normal mode mappings
+					},
+				},
+			},
+		},
+	})
+"""
+
+# ddu.vim
+[[plugins]]
+repo = 'Shougo/ddu.vim'
+on_event = ["VimEnter"]
+
+[[plugins]]
+repo = 'Shougo/ddu-commands.vim'
+on_source = ["ddu.vim"]
+
+# ui
+[[plugins]]
+repo = 'Shougo/ddu-ui-ff'
+on_source = ["ddu.vim"]
+
+[[plugins]]
+repo = 'Shougo/ddu-ui-filer'
+on_source = ["ddu.vim"]
+
+# source
+[[plugins]]
+repo = 'Shougo/ddu-source-file_rec'
+on_source = ["ddu.vim"]
+
+[[plugins]]
+repo = 'shun/ddu-source-rg'
+on_source = ["ddu.vim"]
+
+[[plugins]]
+repo = 'shun/ddu-source-buffer'
+on_source = ["ddu.vim"]
+
+[[plugins]]
+repo = 'Shougo/ddu-source-file'
+on_source = ["ddu.vim"]
+
+[[plugins]]
+repo = 'liquidz/ddu-source-custom-list'
+on_source = ["ddu.vim"]
+
+# matcher
+[[plugins]]
+repo = 'Shougo/ddu-filter-matcher_substring'
+on_source = ["ddu.vim"]
+
+# kind
+[[plugins]]
+repo = 'Shougo/ddu-kind-file'
+on_source = ["ddu.vim"]
+
