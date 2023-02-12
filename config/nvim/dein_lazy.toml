@@ -50,9 +50,6 @@ repo = 'sakhnik/nvim-gdb'
 repo = 'tpope/vim-surround'
 
 [[plugins]]
-repo = 'bun913/min-todo.vim'
-
-[[plugins]]
 repo = 'itchyny/calendar.vim'
 
 [[plugins]]
@@ -227,3 +224,4 @@ on_source = ["ddu.vim"]
 [[plugins]]
 repo = 'Shougo/ddu-kind-file'
 on_source = ["ddu.vim"]
+
