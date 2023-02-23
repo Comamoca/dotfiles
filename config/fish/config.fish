@@ -126,6 +126,7 @@ set -Ux fish_user_paths $HOME/.rbenv/shims $fish_user_paths
 
 bind \cg run_recker
 bind \cc __fish_cancel_commandline
+bind \ct __boost
 
 # bind \cf zi
 
@@ -140,4 +141,16 @@ set -px --path PATH "/home/coma/.bun/bin"
 
 # pnpm
 set -gx PNPM_HOME "/home/coma/.local/share/pnpm"
+<<<<<<< HEAD
 set -gx PATH "$PNPM_HOME" $PATH
+
+__chatgpt
+
+if test (pwd) = "/mnt/c/Users/Coma"
+cd ~
+end
+
+# cd ~
+=======
+set -gx PATH "$PNPM_HOME" $PATH
+>>>>>>> 9671ff90a2750532256d277499aa52434a46bcb8
