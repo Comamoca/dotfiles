@@ -1,3 +1,45 @@
+# Themes
+[[plugins]]
+repo = 'https://github.com/ellisonleao/gruvbox.nvim'
+
+[[plugins]]
+repo = 'https://github.com/sainnhe/gruvbox-material'
+
+[[plugins]]
+repo ='nvim-treesitter/nvim-treesitter'
+lua_source = """
+--tree-sitter
+require("nvim-treesitter.configs").setup({
+	-- ensure_installed = "all",
+	sync_install = false,
+	auto_install = true,
+	highlight = {
+		enable = true,
+	},
+	rainbow = {
+		enable = true,
+		-- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
+		extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+		max_file_lines = nil, -- Do not enable for files with more than n lines, int
+		-- colors = {}, -- table of hex strings
+		-- termcolors = {} -- table of colour name strings
+	},
+	indent = {
+		enable = true,
+	},
+	incremental_selection = {
+		enable = true,
+	},
+})
+"""
+# on_event = ["BufRead"]
+
+[[plugins]]
+repo = "https://github.com/lambdalisue/butler.vim"
+
+[[plugins]]
+repo = 'lambdalisue/kensaku.vim'
+
 [[plugins]]
 repo = "https://github.com/rlane/pounce.nvim"
 
@@ -15,75 +57,19 @@ repo ='catppuccin/nvim'
 repo = 'wsdjeg/dein-ui.vim'
 
 [[plugins]]
-repo = 'jose-elias-alvarez/null-ls.nvim'
-
-[[plugins]]
-repo = 'https://github.com/jay-babu/mason-null-ls.nvim'
-
-[[plugins]]
 repo = 'https://github.com/thinca/vim-splash'
-
-[[plugins]]
-repo = 'https://github.com/nvim-lualine/lualine.nvim'
+lua_source = """
+require("configs/splash")
+"""
 
 # [[plugins]]
 # repo = 'https://github.com/s1n7ax/nvim-react'
 
-[[plugins]]
-repo = 'lewis6991/gitsigns.nvim'
-
 # [[plugins]]
 # repo = 'lukas-reineke/indent-blankline.nvim'
 
-[[plugins]]
-repo = 'honza/vim-snippets'
-
-[[plugins]]
-repo = 'SirVer/ultisnips'
-
-[[plugins]]
-repo = 'codota/tabnine-nvim'
-
 # [[plugins]]
 # repo = "tzachar/cmp-tabnine"
-
-# nvim-cmp
-[[plugins]]
-repo = "hrsh7th/nvim-cmp"
-
-[[plugins]]
-repo = "hrsh7th/cmp-nvim-lsp"
-
-[[plugins]]
-repo = 'hrsh7th/cmp-buffer'
-
-[[plugins]]
-repo = 'hrsh7th/cmp-path'
-
-[[plugins]]
-repo = 'hrsh7th/cmp-cmdline'
-
-[[plugins]]
-repo = 'quangnguyen30192/cmp-nvim-ultisnips'
-
-[[plugins]]
-repo = 'rinx/cmp-skkeleton'
-
-# lsp
-[[plugins]]
-repo = 'neovim/nvim-lspconfig'
-
-[[plugins]]
-repo = 'williamboman/mason.nvim'
-
-[[plugins]]
-repo= 'williamboman/mason-lspconfig.nvim'
-
-[[plugins]]
-repo= 'j-hui/fidget.nvim'
-
-[[plugins]]
-repo= 'onsails/lspkind.nvim'
 
 [[plugins]]
 repo ='echasnovski/mini.nvim'
@@ -97,10 +83,6 @@ repo = 'cohama/lexima.vim'
 
 # [[plugins]]
 # repo ='dense-analysis/ale'
-
-# Themes
-[[plugins]]
-repo ='morhetz/gruvbox'
 
 [[plugins]]
 repo ='yuttie/comfortable-motion.vim'
@@ -120,9 +102,6 @@ repo ='vim-jp/vimdoc-ja'
 
 [[plugins]]
 repo ='simeji/winresizer'
-
-[[plugins]]
-repo ='nvim-treesitter/nvim-treesitter'
 
 # fonts
 [[plugins]]
@@ -152,13 +131,6 @@ repo = "zah/nim.vim"
 on_ft = ['nim', 'nims', 'nimble']
 
 [[plugins]]
-repo = "https://github.com/segeljakt/vim-silicon"
-
-# theme
-[[plugins]]
-repo = 'sainnhe/gruvbox-material'
-
-[[plugins]]
 repo = 'vim-denops/denops-helloworld.vim'
 
 [[plugins]]
@@ -179,3 +151,7 @@ call skkeleton#config({
 
 # [[plugins]]
 # repo = ''
+
+[[plugins]]
+repo = "hrsh7th/cmp-nvim-lsp"
+on_source = ["nvim-cmp"]
