@@ -10,6 +10,9 @@ call ddu#custom#patch_global({
     \       'matchers': ['matcher_substring'],
     \       'file_rec': {'path': expand("~")},
     \     },
+    \     "file": {
+    \     'ui': 'filer',
+    \     }
     \   },
     \   'kindOptions': {
     \     'file': {
@@ -32,6 +35,7 @@ call ddu#custom#patch_global({
     \   },
     \   },
     \ })
+
 
 "ddu-key-setting
 autocmd FileType ddu-ff call s:ddu_my_settings()

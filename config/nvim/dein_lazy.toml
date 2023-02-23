@@ -96,9 +96,6 @@ repo = 'sakhnik/nvim-gdb'
 repo = 'tpope/vim-surround'
 
 [[plugins]]
-repo = 'bun913/min-todo.vim'
-
-[[plugins]]
 repo = 'itchyny/calendar.vim'
 
 [[plugins]]
@@ -415,6 +412,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] =
 """
 
 [[plugins]]
+<<<<<<< HEAD
 repo= 'onsails/lspkind.nvim'
 on_source = ["nvim-cmp"]
 lua_source = """
@@ -452,3 +450,8 @@ on_source = ["nvim-cmp"]
 [[plugins]]
 repo= 'williamboman/mason-lspconfig.nvim'
 on_source = ["nvim-lspconfig"]
+=======
+repo = 'Shougo/ddu-kind-file'
+on_source = ["ddu.vim"]
+
+>>>>>>> 9671ff90a2750532256d277499aa52434a46bcb8
