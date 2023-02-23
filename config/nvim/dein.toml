@@ -68,6 +68,75 @@ require("configs/splash")
 # [[plugins]]
 # repo = 'lukas-reineke/indent-blankline.nvim'
 
+<<<<<<< HEAD
+=======
+[[plugins]]
+repo = 'honza/vim-snippets'
+
+# [[plugins]]
+# repo = 'prabirshrestha/asyncomplete.vim'
+
+# [[plugins]]
+# repo = 'prabirshrestha/asyncomplete-lsp.vim'
+
+# [[plugins]]
+# repo = 'prabirshrestha/asyncomplete-ultisnips.vim'
+
+# [[plugins]]
+# repo = 'prabirshrestha/asyncomplete-emoji.vim'
+
+# [[plugins]]
+# repo = "prabirshrestha/asyncomplete-file.vim"
+
+# [[plugins]]
+# repo = 'rafamadriz/friendly-snippets'
+
+[[plugins]]
+repo = 'neovim/nvim-lspconfig'
+
+[[plugins]]
+repo = 'williamboman/mason.nvim'
+hook_add = """
+source /home/coma/.config/nvim/configs/mason.vim
+"""
+
+[[plugins]]
+repo= 'williamboman/mason-lspconfig.nvim'
+
+[[plugins]]
+repo = "hrsh7th/nvim-cmp"
+
+# [[plugins]]
+# repo = 'dmitmel/cmp-vim-lsp'
+
+[[plugins]]
+repo = "hrsh7th/cmp-nvim-lsp"
+
+[[plugins]]
+repo = 'hrsh7th/cmp-buffer'
+
+[[plugins]]
+repo = 'hrsh7th/cmp-path'
+
+[[plugins]]
+repo = 'hrsh7th/cmp-cmdline'
+
+[[plugins]]
+repo = 'hrsh7th/cmp-emoji'
+
+[[plugins]]
+repo = "quangnguyen30192/cmp-nvim-ultisnips"
+
+[[plugins]]
+repo = "f3fora/cmp-spell"
+
+[[plugins]]
+repo = 'SirVer/ultisnips'
+
+[[plugins]]
+repo = 'codota/tabnine-nvim'
+
+>>>>>>> 9671ff90a2750532256d277499aa52434a46bcb8
 # [[plugins]]
 # repo = "tzachar/cmp-tabnine"
 
@@ -131,10 +200,25 @@ repo = "zah/nim.vim"
 on_ft = ['nim', 'nims', 'nimble']
 
 [[plugins]]
+<<<<<<< HEAD
+=======
+repo = "https://github.com/segeljakt/vim-silicon"
+repo = "Shougo/ddu-ui-filer"
+
+[[plugins]]
+repo = 'wakatime/vim-wakatime'
+
+# theme
+[[plugins]]
+repo = 'sainnhe/gruvbox-material'
+
+[[plugins]]
+>>>>>>> 9671ff90a2750532256d277499aa52434a46bcb8
 repo = 'vim-denops/denops-helloworld.vim'
 
 [[plugins]]
 repo = 'simnalamburt/vim-mundo'
+
 
 # SKK
 [[plugins]]
@@ -146,6 +230,7 @@ cmap <C-j> <Plug>(skkeleton-toggle)
 call skkeleton#config({
 \'eggLikeNewline':v:true
 \})
+<<<<<<< HEAD
 """
 
 
@@ -155,3 +240,6 @@ call skkeleton#config({
 [[plugins]]
 repo = "hrsh7th/cmp-nvim-lsp"
 on_source = ["nvim-cmp"]
+=======
+"""
+>>>>>>> 9671ff90a2750532256d277499aa52434a46bcb8
