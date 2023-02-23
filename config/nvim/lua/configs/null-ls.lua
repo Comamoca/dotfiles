@@ -51,6 +51,10 @@ require("null-ls").setup({
 
 		-- Dart
 		null_ls.builtins.formatting.dart_format,
+
+		-- Elixir
+		null_ls.builtins.diagnostics.credo,
+		null_ls.builtins.formatting.mix,
 	},
 	on_attach = function(client, bufnr)
 		if client.supports_method("textDocument/formatting") then

@@ -1,4 +1,4 @@
-vim.cmd([[
+-- vim.cmd([[
 call ddu#custom#patch_local('filer', {
 \   'ui': 'filer',
 \   'sources': [
