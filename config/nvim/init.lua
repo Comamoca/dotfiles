@@ -19,19 +19,25 @@ if vim.call("dein#load_state", dein_dir) == 1 then
 	vim.call("dein#begin", dein_dir)
 	vim.call("dein#load_toml", dein_toml, { lazy = 0 })
 	vim.call("dein#load_toml", dein_toml_lazy, { lazy = 1 })
-	-- vim.call("dein#add", "~/ghq/github.com/Allianaab2m/vimskey")
-	vim.call("dein#add", "~/ghq/github.com/coma/ddu-path-file")
+	vim.call("dein#load_toml", dein_toml_dir .. "ddu.toml", { lazy = 1 })
+	vim.call("dein#load_toml", dein_toml_dir .. "lsp.toml", { lazy = 0 })
+	vim.call("dein#add", "~/ghq/github.com/Allianaab2m/vimskey")
+	vim.call("dein#add", "~/ghq/github.com/coma/ddu-configs")
+	vim.call("dein#add", "~/ghq/github.com/coma/gpt.vim")
 	vim.call("dein#end")
 	vim.call("dein#save_state")
 end
 -- }}}
 
-require("configs/loader").loadConf()
-require("comatools").setup()
+-- require("configs/loader").loadConf()
+require("configs/cmds")
+require("configs/keybind")
+require("configs/splash")
+-- require("comatools").setup()
 
 -- base
 vim.scriptencoding = "utf-8"
--- vim.wo.number = true
+vim.wo.number = true
 
 -- vim.cmd "colorscheme gruvbox"
 -- vim.cmd "highlight Normal ctermbg=none"
@@ -50,19 +56,17 @@ set clipboard&
 set clipboard^=unnamedplus
 ]])
 
-vim.g.UltiSnipsSnippetDirectories = { "/home/coma/.config/nvim/ultisnip" }
-
-vim.g.UltiSnipsJumpForwardTrigger = "<c-j>"
-vim.g.UltiSnipsJumpBackwardTrigger = "<c-k>"
-vim.g.gruvbox_material_transparent_background = 1
-
 vim.cmd([[
 set foldmethod=marker
 set foldcolumn=3
 ]])
 
-vim.opt.laststatus = 3
--- vim.cmd.colorscheme "catppuccin"
-vim.cmd.colorscheme("gruvbox-material")
+vim.cmd("set scrolloff=9999")
 
-vim.cmd("set runtimepath^=~/ghq/github.com/Allianaab2m/vimskey")
+vim.opt.laststatus = 3
+
+vim.cmd("let $OPENAI_API_KEY = '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'")
+
+-- vim.cmd.colorscheme("catppuccin")
+vim.cmd.colorscheme("gruvbox-material")
+vim.g.seiya_auto_enable = 1
