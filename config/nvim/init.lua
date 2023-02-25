@@ -20,53 +20,59 @@ if vim.call("dein#load_state", dein_dir) == 1 then
 	vim.call("dein#load_toml", dein_toml, { lazy = 0 })
 	vim.call("dein#load_toml", dein_toml_lazy, { lazy = 1 })
 	vim.call("dein#load_toml", dein_toml_dir .. "ddu.toml", { lazy = 1 })
-	vim.call("dein#load_toml", dein_toml_dir .. "lsp.toml", { lazy = 0 })
+	vim.call("dein#load_toml", dein_toml_dir .. "lsp.toml", { lazy = 1 })
+
 	vim.call("dein#add", "~/ghq/github.com/Allianaab2m/vimskey")
 	vim.call("dein#add", "~/ghq/github.com/coma/ddu-configs")
-	vim.call("dein#add", "~/ghq/github.com/coma/gpt.vim")
+	-- vim.call("dein#add", "~/ghq/github.com/vim-denops/denops.vim")
+	-- vim.call("dein#add", "~/ghq/github.com/coma/gpt.vim")
+
 	vim.call("dein#end")
 	vim.call("dein#save_state")
 end
 -- }}}
 
--- require("configs/loader").loadConf()
 require("configs/cmds")
 require("configs/keybind")
 require("configs/splash")
--- require("comatools").setup()
 
+require("comatools/lazyload")
 -- base
 vim.scriptencoding = "utf-8"
 vim.wo.number = true
 
--- vim.cmd "colorscheme gruvbox"
--- vim.cmd "highlight Normal ctermbg=none"
-vim.cmd("set nocompatible")
-vim.cmd("set wildmenu")
-vim.cmd("set ignorecase")
-vim.cmd("set runtimepath+=~/.config/nvim/lua")
+vim.cmd([[
+        set foldmethod=marker
+        set foldcolumn=3
+]])
+
 vim.cmd("let g:python3_host_prog = '/usr/sbin/python3'")
--- vim.cmd("let g:denops#deno = '/home/coma/.deno/bin/deno'")
 
-vim.cmd("let g:comfortable_motion_no_default_key_mappings = 1")
-vim.opt.ambiwidth = "single"
+LazyLoad("BufRead", function()
+	vim.cmd([[
+	set clipboard&
+	set clipboard^=unnamedplus
 
-vim.cmd([[
-set clipboard&
-set clipboard^=unnamedplus
-]])
+        "let $OPENAI_API_KEY = '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'"
+	]])
 
-vim.cmd([[
-set foldmethod=marker
-set foldcolumn=3
-]])
+	vim.cmd("set wildmenu")
 
-vim.cmd("set scrolloff=9999")
+	vim.keymap.set("n", "C-f", ":clo" .. "<CR>", { noremap = true, silent = true })
+end)
 
-vim.opt.laststatus = 3
+LazyLoad("VimEnter", function()
+	vim.cmd.colorscheme("gruvbox-material")
+	vim.cmd("set nocompatible")
+	vim.cmd("set ignorecase")
+	vim.cmd("let g:comfortable_motion_no_default_key_mappings = 1")
 
-vim.cmd("let $OPENAI_API_KEY = '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'")
+	vim.opt.ambiwidth = "single"
+	vim.opt.laststatus = 3
+	vim.g.seiya_auto_enable = 1
 
--- vim.cmd.colorscheme("catppuccin")
-vim.cmd.colorscheme("gruvbox-material")
-vim.g.seiya_auto_enable = 1
+	vim.g.gruvbox_material_transparent_background = 1
+end)
+
+-- vim.cmd("let g:denops_server_addr = '127.0.0.1:32123'")
+-- vim.cmd("let g:denops#debug = 1")
