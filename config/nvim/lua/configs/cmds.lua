@@ -25,6 +25,7 @@ vim.api.nvim_create_user_command("ConfigWezterm", "e /mnt/c/Users/Coma/.config/w
 
 vim.api.nvim_create_user_command("DeinInstall", "call dein#install()", {})
 vim.api.nvim_create_user_command("DeinReCache", "call dein#recache_runtimepath()", {})
+vim.api.nvim_create_user_command("DeinUpdate", "call dein#update()", {})
 
 vim.api.nvim_create_user_command("ConfigFish", "e ~/.config/fish/config.fish", {})
 vim.api.nvim_create_user_command("FishFunctions", "e ~/.config/fish/functions", {})
