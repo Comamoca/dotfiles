@@ -1,42 +1,43 @@
 [[plugins]]
-repo= 'https://github.com/lilydjwg/colorizer'
+repo= 'lilydjwg/colorizer'
 on_event = ["BufRead"]
 
 [[plugins]]
-repo = 'https://github.com/nvim-lualine/lualine.nvim'
+repo = 'nvim-lualine/lualine.nvim'
 on_event = ["VimEnter"]
 lua_source = """
-require("configs/lualine")
+-- require("configs/lualine")
 """
 
 [[plugins]]
-on_event = ["InsertEnter"]
+# on_event = ["InsertEnter"]
+on_event = ["VimEnter"]
 repo = 'jose-elias-alvarez/null-ls.nvim'
 lua_source = """
 require("configs/null-ls")
 """
 
 [[plugins]]
-repo = 'https://github.com/jay-babu/mason-null-ls.nvim'
+repo = 'jay-babu/mason-null-ls.nvim'
 on_source = ["null-ls.nvim"]
 
 [[plugins]]
-repo = "https://github.com/segeljakt/vim-silicon"
+repo = "segeljakt/vim-silicon"
 on_cmd = ["Silicon"]
 lua_source = """
 require("configs/silicon")
 """
 
 [[plugins]]
-repo = "https://github.com/mattn/vim-chatgpt"
+repo = "mattn/vim-chatgpt"
 on_cmd = ["chatgpt", "codereviewplease"]
 
 [[plugins]]
-repo = "https://github.com/lambdalisue/kensaku-command.vim"
+repo = "lambdalisue/kensaku-command.vim"
 on_cmd = ["Kensaku"]
 
 [[plugins]]
-repo = 'https://github.com/mhanberg/elixir.nvim'
+repo = 'mhanberg/elixir.nvim'
 on_ft = ["elixir"]
 lua_source = """
 -- require("elixir").setup({
@@ -45,11 +46,11 @@ lua_source = """
 """
 
 [[plugins]]
-repo = 'https://github.com/elixir-editors/vim-elixir'
+repo = 'elixir-editors/vim-elixir'
 on_ft = ["elixir"]
 
 [[plugins]]
-repo = 'https://github.com/akinsho/flutter-tools.nvim'
+repo = 'akinsho/flutter-tools.nvim'
 on_ft = ["dart"]
 lua_source = """
 require("flutter-tools").setup{}
@@ -60,7 +61,8 @@ repo = 'skanehira/command.vim'
 on_cmd = ["CommandBufferOpen"]
 
 [[plugins]]
-repo ='p00f/nvim-ts-rainbow'
+repo= 'https://github.com/nvim-treesitter/nvim-treesitter'
+#on_event = ["BufRead"]
 on_event = ["VimEnter"]
 
 [[plugins]]
@@ -96,9 +98,6 @@ repo = 'sakhnik/nvim-gdb'
 repo = 'tpope/vim-surround'
 
 [[plugins]]
-repo = 'itchyny/calendar.vim'
-
-[[plugins]]
 repo = 'skanehira/translate.vim'
 on_event = ['VimEnter']
 
@@ -113,11 +112,6 @@ repo = 'skanehira/preview-markdown.vim'
 
 [[plugins]]
 repo = 'tpope/vim-markdown'
-
-[[plugins]]
-repo = 'tyru/open-browser.vim'
-
-
 
 # ファイル固有
 # on_ft推奨
@@ -233,194 +227,58 @@ require("telescope").setup({
 	})
 """
 
-# nvim-cmp
+
 [[plugins]]
-repo = "hrsh7th/nvim-cmp"
+repo= 'https://github.com/syouzan420/tatevim'
+on_cmd = ["Tate"]
+
+[[plugins]]
+repo = 'itchyny/calendar.vim'
+
+[[plugins]]
+repo = 'https://github.com/dstein64/vim-startuptime'
+on_cmd = ["StartupTime"]
+
+[[plugins]]
+repo= 'https://github.com/yuttie/comfortable-motion.vim'
 on_event = ["BufRead"]
-lua_source = """
-require("cmp_nvim_ultisnips").setup({})
-local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
-local cmp = require("cmp")
-local lspkind = require("lspkind")
 
-cmp.setup({
-	snippet = {
-		expand = function(args)
-			vim.fn["UltiSnips#Anon"](args.body)
-		end,
-	},
-	sources = {
-		{ name = "nvim_lsp" },
-		{ name = "skkeleton" },
-		{ name = "path" },
-		-- { name = "buffer" },
-	},
-	mapping = cmp.mapping.preset.insert({
-		["<C-p>"] = cmp.mapping.select_prev_item(),
-		["<C-n>"] = cmp.mapping.select_next_item(),
-		["<C-l>"] = cmp.mapping.complete(),
-		["<C-e>"] = cmp.mapping.abort(),
-		["<CR>"] = cmp.mapping.confirm({
-			select = true,
-		}),
-		["<Tab>"] = cmp.mapping(function(fallback)
-			cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
-		end, {
-			"i",
-			"s", --[[ "c" (to enable the mapping in command mode) ]]
-		}),
-		["<S-Tab>"] = cmp.mapping(function(fallback)
-			cmp_ultisnips_mappings.jump_backwards(fallback)
-		end, {
-			"i",
-			"s", --[[ "c" (to enable the mapping in command mode) ]]
-		}),
-	}),
-	formatting = {
-		format = lspkind.cmp_format({
-			mode = "symbol", -- show only symbol annotations
-			maxwidth = 60, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
-			ellipsis_char = "...", -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
-			-- The function below will be called before any actual modifications from lspkind
-			-- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
-		}),
-	},
-	experimental = {
-		ghost_text = true,
-	},
-	view = {
-		entries = "native",
-	},
-})
+[[plugins]]
+repo= 'j-hui/fidget.nvim'
+
+[[plugins]]
+repo = 'codota/tabnine-nvim'
+
+[[plugins]]
+repo= 'https://github.com/beauwilliams/statusline.lua'
+on_event = ["VimEnter"]
+lua_source = """
+local statusline = require('statusline')
+statusline.tabline = false
+statusline.lsp_diagnostics = true
+statusline.ale_diagnostics = false
+
+vim.o.laststatus=3
 """
 
 [[plugins]]
-repo = 'hrsh7th/cmp-buffer'
-on_source = ["nvim-cmp"]
+repo = 'https://github.com/mhinz/vim-sayonara'
+on_cmd = ["Sayonara", "Sayonara!"]
 
 [[plugins]]
-repo = 'hrsh7th/cmp-path'
-on_source = ["nvim-cmp"]
+repo = 'cohama/lexima.vim'
+on_event = ["InsertEnter"]
 
 [[plugins]]
-repo = 'hrsh7th/cmp-cmdline'
-on_source = ["nvim-cmp"]
+repo = 'vim-denops/denops-helloworld.vim'
+on_cmd = ["DenopsHello", "DenopsGrep"]
 
 [[plugins]]
-repo = 'quangnguyen30192/cmp-nvim-ultisnips'
-on_source = ["nvim-cmp"]
+repo = 'https://github.com/p00f/nvim-ts-rainbow'
+on_event = ["BufRead"]
 
 [[plugins]]
-repo = 'rinx/cmp-skkeleton'
-on_source = ["nvim-cmp"]
-
-[[plugins]]
-repo = 'williamboman/mason.nvim'
-on_source = ["nvim-cmp"]
-lua_source = """
-require("mason").setup()
-local nvim_lsp = require("lspconfig")
-
-nvim_lsp.dartls.setup({})
-
-local node_root_dir = nvim_lsp.util.root_pattern("package.json")
-local is_node_repo = node_root_dir(vim.api.nvim_buf_get_name(0)) ~= nil
-
-local opts = {}
-
-if is_node_repo then
-	nvim_lsp["tsserver"].setup({
-		root_dir = nvim_lsp.util.root_pattern("package.json"),
-	})
-else
-	nvim_lsp["denols"].setup({
-		root_dir = nvim_lsp.util.root_pattern("deno.json"),
-		init_options = {
-			lint = true,
-			unstable = true,
-			suggest = {
-				imports = {
-					hosts = {
-						["https://deno.land"] = true,
-						["https://cdn.nest.land"] = true,
-						["https://crux.land"] = true,
-					},
-				},
-			},
-		},
-	})
-end
-
-require("mason-lspconfig").setup_handlers({
-	function(server)
-		local opt = {
-			capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
-		}
-		require("lspconfig")[server].setup(opt)
-
-		local node_root_dir = nvim_lsp.util.root_pattern("package.json")
-		local is_node_repo = node_root_dir(vim.api.nvim_buf_get_name(0)) ~= nil
-
-		if server == "elixirls" then
-			require("lspconfig").elixirls.setup({
-				-- Unix
-				cmd = { "/home/coma/.local/share/nvim/mason/bin/elixir-ls" },
-			})
-		elseif server == "tsserver" then
-			return
-		elseif server == "denols" then
-			return
-		elseif server == "lua-language-server" then
-			require("lspconfig").sumneko_lua.setup({
-				settings = {
-					Lua = {
-						runtime = { version = "LuaJIT", path = vim.split(package.path, ";") },
-						diagnostics = {
-							-- Get the language server to recognize the `vim` global
-							enable = true,
-							globals = { "vim" },
-						},
-					},
-				},
-			})
-		end
-	end,
-})
-
--- keyboard shortcut
-vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
-vim.keymap.set("n", "gf", "<cmd>lua vim.lsp.buf.formatting()<CR>")
-vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
-vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
-vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>")
-vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")
-vim.keymap.set("n", "gt", "<cmd>lua vim.lsp.buf.type_definition()<CR>")
-vim.keymap.set("n", "gn", "<cmd>lua vim.lsp.buf.rename()<CR>")
-vim.keymap.set("n", "ga", "<cmd>lua vim.lsp.buf.code_action()<CR>")
-vim.keymap.set("n", "ge", "<cmd>lua vim.diagnostic.open_float()<CR>")
-vim.keymap.set("n", "g]", "<cmd>lua vim.diagnostic.goto_next()<CR>")
-vim.keymap.set("n", "g[", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
-
--- LSP handlers
-vim.lsp.handlers["textDocument/publishDiagnostics"] =
-    vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, { virtual_text = true })
-
--- vim.cmd([[
--- highlight LspDiagnosticsSignError ctermbg=9 ctermfg=15
--- highlight LspDiagnosticsSignHint ctermbg=142 ctermfg=15
--- ]])
-"""
-
-[[plugins]]
-<<<<<<< HEAD
-repo= 'onsails/lspkind.nvim'
-on_source = ["nvim-cmp"]
-lua_source = """
-require("configs/lspkind")
-"""
-
-[[plugins]]
-repo= 'folke/neodev.nvim'
+repo = "folke/neodev.nvim"
 on_source = ["nvim-cmp"]
 lua_source = """
 -- IMPORTANT: make sure to setup neodev BEFORE lspconfig
@@ -444,14 +302,9 @@ lspconfig.lua_ls.setup({
 """
 
 [[plugins]]
-repo = 'neovim/nvim-lspconfig'
-on_source = ["nvim-cmp"]
+repo = 'sainnhe/gruvbox-material'
+on_event = ["VimEnter"]
 
 [[plugins]]
-repo= 'williamboman/mason-lspconfig.nvim'
-on_source = ["nvim-lspconfig"]
-=======
-repo = 'Shougo/ddu-kind-file'
-on_source = ["ddu.vim"]
-
->>>>>>> 9671ff90a2750532256d277499aa52434a46bcb8
+repo = 'nvim-lua/plenary.nvim'
+on_event = ["VimEnter"]
