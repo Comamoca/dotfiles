@@ -1,5 +1,3 @@
-local mibuf = require("mini.bufremove").setup({})
-
 local opts = { noremap = true, silent = true }
 local term_opts = { silent = true }
 
@@ -23,7 +21,7 @@ keymap("n", "<S-j>", "}", opts)
 
 keymap("t", "<ESC>", "<C-\\><C-n>", opts)
 
-runCmd("<C-f>", ":clo")
+runCmd("<C-f>", ":Sayonara")
 
 -- runCmd("<C-o>", ":Telescope find_files")
 -- runCmd("<C-i>", ":Telescope buffers")

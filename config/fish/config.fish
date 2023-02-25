@@ -141,16 +141,12 @@ set -px --path PATH "/home/coma/.bun/bin"
 
 # pnpm
 set -gx PNPM_HOME "/home/coma/.local/share/pnpm"
-<<<<<<< HEAD
 set -gx PATH "$PNPM_HOME" $PATH
 
-__chatgpt
+source /opt/asdf-vm/asdf.fish
 
 if test (pwd) = "/mnt/c/Users/Coma"
 cd ~
 end
 
-# cd ~
-=======
-set -gx PATH "$PNPM_HOME" $PATH
->>>>>>> 9671ff90a2750532256d277499aa52434a46bcb8
+source /opt/asdf-vm/asdf.fish
