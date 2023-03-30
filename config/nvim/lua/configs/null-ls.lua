@@ -37,17 +37,39 @@ local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 require("null-ls").setup({
 	-- you can reuse a shared lspconfig on_attach callback here
 	sources = {
-		null_ls.builtins.formatting.stylua,
+		null_ls.builtins.diagnostics.semgrep,
+		-- null_ls.builtins.diagnostics.cspell,
+		-- null_ls.builtins.code_actions.cspell,
+
+		-- Lua
 		null_ls.builtins.formatting.deno_fmt,
+
+		-- Rust
 		null_ls.builtins.formatting.rustfmt,
+
+		-- Nim
 		null_ls.builtins.formatting.nimpretty,
+
 		-- Go
 		null_ls.builtins.formatting.gofumpt,
 		null_ls.builtins.formatting.golines,
+		null_ls.builtins.diagnostics.revive,
+
 		-- Python
-		null_ls.builtins.formatting.isort,
+		null_ls.builtins.diagnostics.mypy,
+		null_ls.builtins.diagnostics.pycodestyle,
+		null_ls.builtins.diagnostics.pydocstyle,
+		null_ls.builtins.diagnostics.ruff,
+		null_ls.builtins.diagnostics.vulture,
+
 		null_ls.builtins.formatting.ruff,
 		null_ls.builtins.formatting.yapf,
+		null_ls.builtins.formatting.autoflake,
+		null_ls.builtins.formatting.black,
+		null_ls.builtins.formatting.djhtml,
+		null_ls.builtins.formatting.fprettify,
+		null_ls.builtins.formatting.pyflyby,
+		null_ls.builtins.formatting.reorder_python_imports,
 
 		-- Dart
 		null_ls.builtins.formatting.dart_format,
@@ -55,6 +77,16 @@ require("null-ls").setup({
 		-- Elixir
 		null_ls.builtins.diagnostics.credo,
 		null_ls.builtins.formatting.mix,
+
+		--Ruby
+		null_ls.builtins.diagnostics.rubocop,
+		null_ls.builtins.diagnostics.standardrb,
+		null_ls.builtins.formatting.standardrb,
+		null_ls.builtins.formatting.erb_format,
+		null_ls.builtins.formatting.erb_lint,
+
+		-- Crystal
+		null_ls.builtins.formatting.crystal_format,
 	},
 	on_attach = function(client, bufnr)
 		if client.supports_method("textDocument/formatting") then
