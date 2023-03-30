@@ -11,6 +11,7 @@ vim.api.nvim_create_user_command("Dein", 'call v:lua.Open("~/.config/nvim/dein.t
 vim.api.nvim_create_user_command("Lazy", 'call v:lua.Open("~/.config/nvim/dein_lazy.toml")', {})
 vim.api.nvim_create_user_command("DduToml", 'call v:lua.Open("~/.config/nvim/ddu.toml")', {})
 vim.api.nvim_create_user_command("Lsp", 'call v:lua.Open("~/.config/nvim/lsp.toml")', {})
+vim.api.nvim_create_user_command("Ft", 'call v:lua.Open("~/.config/nvim/ft.toml")', {})
 
 vim.api.nvim_create_user_command("ConfigsLinux", "call ConfigsRec('~/.config/', 'directory_rec')", {})
 vim.api.nvim_create_user_command("ConfigsLinux", "Defx ~/.config", {})

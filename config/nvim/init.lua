@@ -1,3 +1,5 @@
+if vim.loader then vim.loader.enable() end
+
 -- dein.vim loading script
 -- {{{
 local dein_dir = vim.env.HOME .. "/.cache/dein"
@@ -21,6 +23,8 @@ if vim.call("dein#load_state", dein_dir) == 1 then
 	vim.call("dein#load_toml", dein_toml_lazy, { lazy = 1 })
 	vim.call("dein#load_toml", dein_toml_dir .. "ddu.toml", { lazy = 1 })
 	vim.call("dein#load_toml", dein_toml_dir .. "lsp.toml", { lazy = 1 })
+	vim.call("dein#load_toml", dein_toml_dir .. "ft.toml", { lazy = 1 })
+	vim.call("dein#load_toml", dein_toml_dir .. "openai.toml", { lazy = 1 })
 
 	vim.call("dein#add", "~/ghq/github.com/Allianaab2m/vimskey")
 	vim.call("dein#add", "~/ghq/github.com/coma/ddu-configs")
@@ -41,6 +45,18 @@ require("comatools/lazyload")
 vim.scriptencoding = "utf-8"
 vim.wo.number = true
 
+vim.g.gruvbox_material_transparent_background = 1
+vim.cmd.colorscheme("gruvbox-material")
+-- vim.cmd.colorscheme("gruvbox")
+-- vim.cmd.colorscheme("habamax")
+-- vim.cmd.colorscheme("torte")
+
+vim.opt.termguicolors = true
+
+vim.opt.list = true
+vim.opt.listchars:append "space:⋅"
+vim.opt.listchars:append "eol:↴"
+
 vim.cmd([[
         set foldmethod=marker
         set foldcolumn=3
@@ -52,8 +68,6 @@ LazyLoad("BufRead", function()
 	vim.cmd([[
 	set clipboard&
 	set clipboard^=unnamedplus
-
-        "let $OPENAI_API_KEY = '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'"
 	]])
 
 	vim.cmd("set wildmenu")
@@ -62,17 +76,34 @@ LazyLoad("BufRead", function()
 end)
 
 LazyLoad("VimEnter", function()
-	vim.cmd.colorscheme("gruvbox-material")
 	vim.cmd("set nocompatible")
 	vim.cmd("set ignorecase")
 	vim.cmd("let g:comfortable_motion_no_default_key_mappings = 1")
 
 	vim.opt.ambiwidth = "single"
 	vim.opt.laststatus = 3
-	vim.g.seiya_auto_enable = 1
 
-	vim.g.gruvbox_material_transparent_background = 1
 end)
+
+vim.g.seiya_auto_enable = 1
+
+vim.api.nvim_create_augroup( 'lua', {} )
+vim.api.nvim_create_autocmd( {"FileType  *.go"}, {
+  group = 'lua',
+  callback = function() vim.opt.wrap = false end
+})
+
+vim.api.nvim_create_augroup("crystal", {})
+
+vim.cmd([[
+" au BufRead,BufNewFile *.ex,*.exs set filetype=elixir
+au BufRead,BufNewFile *.eex,*.heex,*.leex,*.sface,*.lexs set filetype=eelixir
+au BufRead,BufNewFile mix.lock set filetype=elixir
+]])
+
+-- vim.cmd [[highlight IndentBlanklineChar guifg=#56B6C2 gui=nocombine]]
 
 -- vim.cmd("let g:denops_server_addr = '127.0.0.1:32123'")
 -- vim.cmd("let g:denops#debug = 1")
+
+vim.cmd [[autocmd FileType vue setlocal filetype=vue.html.javascript.css]]

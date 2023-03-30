@@ -9,3 +9,36 @@ repo = 'vim-denops/denops.vim'
 
 [[plugins]]
 repo = 'https://github.com/miyakogi/seiya.vim'
+
+[[plugins]]
+repo = "https://github.com/vim-crystal/vim-crystal"
+
+[[plugins]]
+repo = "vim-skk/skkeleton"
+
+#theme
+[[plugins]]
+repo = 'sainnhe/gruvbox-material'
+
+[[plugins]]
+repo = "https://github.com/morhetz/gruvbox"
+
+[[plugins]]
+repo = "lukas-reineke/indent-blankline.nvim"
+# on_event = ["BufRead"]
+# source_lua = """
+# require("indent_blankline").setup {
+#     space_char_blankline = " ",
+#     show_current_context = true,
+#     show_current_context_start = true,
+
+#     char_highlight_list = {
+#         "IndentBlanklineIndent1",
+#         "IndentBlanklineIndent2",
+#         "IndentBlanklineIndent3",
+#         "IndentBlanklineIndent4",
+#         "IndentBlanklineIndent5",
+#         "IndentBlanklineIndent6",
+#     },
+# }
+# """

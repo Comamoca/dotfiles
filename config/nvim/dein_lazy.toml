@@ -10,8 +10,7 @@ lua_source = """
 """
 
 [[plugins]]
-# on_event = ["InsertEnter"]
-on_event = ["VimEnter"]
+on_event = ["BufRead"]
 repo = 'jose-elias-alvarez/null-ls.nvim'
 lua_source = """
 require("configs/null-ls")
@@ -37,33 +36,8 @@ repo = "lambdalisue/kensaku-command.vim"
 on_cmd = ["Kensaku"]
 
 [[plugins]]
-repo = 'mhanberg/elixir.nvim'
-on_ft = ["elixir"]
-lua_source = """
--- require("elixir").setup({
---   cmd = "/home/coma/ghq/github.com/elixir-lsp/elixir-ls/release/language_server.sh",
--- })
-"""
-
-[[plugins]]
-repo = 'elixir-editors/vim-elixir'
-on_ft = ["elixir"]
-
-[[plugins]]
-repo = 'akinsho/flutter-tools.nvim'
-on_ft = ["dart"]
-lua_source = """
-require("flutter-tools").setup{}
-"""
-
-[[plugins]]
 repo = 'skanehira/command.vim'
 on_cmd = ["CommandBufferOpen"]
-
-[[plugins]]
-repo= 'https://github.com/nvim-treesitter/nvim-treesitter'
-#on_event = ["BufRead"]
-on_event = ["VimEnter"]
 
 [[plugins]]
 repo = 'tpope/vim-commentary'
@@ -75,6 +49,30 @@ repo= 'folke/noice.nvim'
 [[plugins]]
 repo = 'nathanaelkane/vim-indent-guides'
 on_event = ["VimEnter"]
+lua_source = """
+vim.cmd [[highlight IndentBlanklineIndent1 guifg=#E06C75 gui=nocombine]]
+vim.cmd [[highlight IndentBlanklineIndent2 guifg=#E5C07B gui=nocombine]]
+vim.cmd [[highlight IndentBlanklineIndent3 guifg=#98C379 gui=nocombine]]
+vim.cmd [[highlight IndentBlanklineIndent4 guifg=#56B6C2 gui=nocombine]]
+vim.cmd [[highlight IndentBlanklineIndent5 guifg=#61AFEF gui=nocombine]]
+vim.cmd [[highlight IndentBlanklineIndent6 guifg=#C678DD gui=nocombine]]
+
+vim.opt.list = true
+vim.opt.listchars:append "space:⋅"
+vim.opt.listchars:append "eol:↴"
+
+require("indent_blankline").setup {
+    space_char_blankline = " ",
+    char_highlight_list = {
+        "IndentBlanklineIndent1",
+        "IndentBlanklineIndent2",
+        "IndentBlanklineIndent3",
+        "IndentBlanklineIndent4",
+        "IndentBlanklineIndent5",
+        "IndentBlanklineIndent6",
+    },
+}
+"""
 
 # カラースチーム
 [[plugins]]
@@ -93,73 +91,23 @@ on_cmd = ['Luadev']
 # 毎回使わないようなプラグインはここ
 [[plugins]]
 repo = 'sakhnik/nvim-gdb'
+on_event = ["BufRead"]
 
 [[plugins]]
 repo = 'tpope/vim-surround'
+on_event = ["BufRead"]
 
 [[plugins]]
 repo = 'skanehira/translate.vim'
-on_event = ['VimEnter']
-
-# マークダウン
-
-[[plugins]]
-repo = 'previm/previm'
-on_cmd = ['PrevimOpen']
-
-[[plugins]]
-repo = 'skanehira/preview-markdown.vim'
-
-[[plugins]]
-repo = 'tpope/vim-markdown'
-
-# ファイル固有
-# on_ft推奨
-
-[[plugins]]
-repo = 'maxmellon/vim-jsx-pretty'
-
-[[plugins]]
-repo = 'integralist/vim-mypy'
-
-[[plugins]]
-repo = 'habamax/vim-rst'
-on_ft = ["rst"]
-
-
-[[plugins]]
-repo = 'glench/vim-jinja2-syntax'
-
-[[plugins]]
-repo = 'dag/vim-fish'
-on_ft = ["fish"]
-
-[[plugins]]
-repo = 'https://github.com/gleam-lang/gleam.vim'
-on_ft = ["gleam"]
-
-[[plugins]]
-repo = 'hisaknown/nanomap.vim'
-
-[[plugins]]
-repo = "peterhoeg/vim-qml"
-on_ft = ["qml"]
-
-[[plugins]]
-repo = "mattn/emmet-vim"
-on_ft = ["html"]
+on_event = ["BufRead"]
 
 [[plugins]]
 repo = 'alvan/vim-closetag'
-on_event = ['VimEnter']
+on_event = ['BufRead']
 
 [[plugins]]
 repo = 'skanehira/vsession'
 on_cmd = ['SaveSession', 'LoadSession', 'DeleteSession']
-
-[[plugins]]
-repo = 'alaviss/nim.nvim'
-on_ft = ['nim', 'nims', 'nimble']
 
 [[plugins]]
 repo = 'twitvim/twitvim'
@@ -175,23 +123,15 @@ on_cmd = ["LazyGit", "LazyGitConfig", "LazyGitFilter", "LazyGitFilterCurrentFile
 [[plugins]]
 repo = 'https://github.com/Shougo/deol.nvim'
 on_cmd = ["Deol"]
-
-[[plugins]]
-repo = "evanleck/vim-svelte"
-on_ft = ["svelte"]
+# source_lua = """
+# """
 
 [[plugins]]
 repo = "https://github.com/azadkuh/vim-cmus"
 on_cmd = ["Cmus", "CmusCurrent", "CmusPrevious", "CmusPlay", "CmusPause", "CmusStop", "CmusNext"]
 
 [[plugins]]
-repo = "https://github.com/ErichDonGubler/vim-nushell"
-on_ft = ["nushell"]
-
-
-[[plugins]]
 repo = 'nvim-telescope/telescope-file-browser.nvim'
-# on_event = ["VimEnter"]
 on_source = ["telescope.nvim"]
 
 [[plugins]]
@@ -234,6 +174,7 @@ on_cmd = ["Tate"]
 
 [[plugins]]
 repo = 'itchyny/calendar.vim'
+on_cmd = ["Calendar"]
 
 [[plugins]]
 repo = 'https://github.com/dstein64/vim-startuptime'
@@ -242,12 +183,6 @@ on_cmd = ["StartupTime"]
 [[plugins]]
 repo= 'https://github.com/yuttie/comfortable-motion.vim'
 on_event = ["BufRead"]
-
-[[plugins]]
-repo= 'j-hui/fidget.nvim'
-
-[[plugins]]
-repo = 'codota/tabnine-nvim'
 
 [[plugins]]
 repo= 'https://github.com/beauwilliams/statusline.lua'
@@ -274,37 +209,78 @@ repo = 'vim-denops/denops-helloworld.vim'
 on_cmd = ["DenopsHello", "DenopsGrep"]
 
 [[plugins]]
-repo = 'https://github.com/p00f/nvim-ts-rainbow'
+repo = 'nvim-lua/plenary.nvim'
+on_event = ["VimEnter"]
+
+[[plugins]]
+repo = 'https://github.com/mattreduce/vim-mix'
+on_cmd = ["Mix", "Mclean", "Mcompile", "Mdeps", "Mtest"]
+
+[[plugins]]
+repo = 'https://github.com/vim-test/vim-test'
+on_cmd = ["TestNearest", "TestFile", "TestSuite", "TestLast", "TestVisit"]
+
+[[plugins]]
+repo = "https://github.com/wakatime/vim-wakatime"
 on_event = ["BufRead"]
 
 [[plugins]]
-repo = "folke/neodev.nvim"
-on_source = ["nvim-cmp"]
+repo = "https://github.com/HiPhish/nvim-ts-rainbow2"
+on_event = ["BufRead"]
 lua_source = """
--- IMPORTANT: make sure to setup neodev BEFORE lspconfig
-require("neodev").setup({
-  -- add any options here, or leave empty to use the default settings
-})
-
--- then setup your lsp server as usual
-local lspconfig = require('lspconfig')
-
--- example to setup lua_ls and enable call snippets
-lspconfig.lua_ls.setup({
-  settings = {
-    Lua = {
-      completion = {
-        callSnippet = "Replace"
-      }
-    }
+require('nvim-treesitter.configs').setup {
+  rainbow = {
+    enable = true,
+    query = 'rainbow-parens',
+    strategy = require('ts-rainbow').strategy.global,
   }
-})
+}
 """
 
 [[plugins]]
-repo = 'sainnhe/gruvbox-material'
-on_event = ["VimEnter"]
+repo = "https://github.com/JoosepAlviste/nvim-ts-context-commentstring"
+on_event = ["BufRead"]
+lua_source = """
+require'nvim-treesitter.configs'.setup {
+  context_commentstring = {
+    enable = true
+  }
+}
+"""
 
 [[plugins]]
-repo = 'nvim-lua/plenary.nvim'
-on_event = ["VimEnter"]
+repo= 'https://github.com/nvim-treesitter/nvim-treesitter'
+on_event = ["BufEnter"]
+lua_source = """
+require'nvim-treesitter.configs'.setup {
+  -- ensure_installed = { "c", "lua", "vim", "help", "query" },
+  sync_install = false,
+  auto_install = true,
+
+  -- ignore_install = { "javascript" },
+
+  highlight = {
+    enable = true,
+
+    disable = function(lang, buf)
+        local max_filesize = 100 * 1024 -- 100 KB
+        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+        if ok and stats and stats.size > max_filesize then
+            return true
+        end
+    end,
+
+    additional_vim_regex_highlighting = false,
+  },
+}
+"""
+
+[[plugins]]
+repo = "https://github.com/zbirenbaum/copilot.lua"
+on_event = ["BufRead"]
+lua_source = """
+require("copilot").setup({
+  suggestion = { enabled = false },
+  panel = { enabled = false },
+})
+"""

@@ -25,10 +25,10 @@ runCmd("<C-f>", ":Sayonara")
 
 -- runCmd("<C-o>", ":Telescope find_files")
 -- runCmd("<C-i>", ":Telescope buffers")
--- runCmd("<C-u>", ":Telescope")
+runCmd("<C-u>", ":Telescope commands")
 -- runCmd("<C-g>", ":Telescope live_grep")
 
-runCmd("<C-o>", ":Ddu file_rec")
+runCmd("<C-o>", ":Ddu file")
 runCmd("<C-i>", ":Ddu buffer")
 
 runCmd("sp", ":split")
@@ -43,4 +43,4 @@ runCmd("<ESC><ESC>", ":noh")
 
 runCmd("<C-p>", ":call comfortable_motion#flick(-70)" .. cr)
 runCmd("<C-n>", ":call comfortable_motion#flick(70)" .. cr)
-runCmd("<C-t>", ":Deol" .. cr)
+runCmd("<C-t>", ":Deol -split=floating -winheight=20 -winwidth=80" .. cr)
