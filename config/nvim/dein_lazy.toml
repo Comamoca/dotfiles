@@ -3,13 +3,6 @@ repo= 'lilydjwg/colorizer'
 on_event = ["BufRead"]
 
 [[plugins]]
-repo = 'nvim-lualine/lualine.nvim'
-on_event = ["VimEnter"]
-lua_source = """
--- require("configs/lualine")
-"""
-
-[[plugins]]
 on_event = ["BufRead"]
 repo = 'jose-elias-alvarez/null-ls.nvim'
 lua_source = """
@@ -47,7 +40,7 @@ on_event = ["VimEnter"]
 repo= 'folke/noice.nvim'
 
 [[plugins]]
-repo = 'nathanaelkane/vim-indent-guides'
+repo = "lukas-reineke/indent-blankline.nvim"
 on_event = ["VimEnter"]
 lua_source = """
 vim.cmd [[highlight IndentBlanklineIndent1 guifg=#E06C75 gui=nocombine]]
@@ -75,10 +68,6 @@ require("indent_blankline").setup {
 """
 
 # カラースチーム
-[[plugins]]
-repo = 'sainnhe/everforest'
-on_func = ['colorscheme']
-
 [[plugins]]
 repo = 'folke/tokyonight.nvim'
 on_func = ['colorscheme']
@@ -185,18 +174,6 @@ repo= 'https://github.com/yuttie/comfortable-motion.vim'
 on_event = ["BufRead"]
 
 [[plugins]]
-repo= 'https://github.com/beauwilliams/statusline.lua'
-on_event = ["VimEnter"]
-lua_source = """
-local statusline = require('statusline')
-statusline.tabline = false
-statusline.lsp_diagnostics = true
-statusline.ale_diagnostics = false
-
-vim.o.laststatus=3
-"""
-
-[[plugins]]
 repo = 'https://github.com/mhinz/vim-sayonara'
 on_cmd = ["Sayonara", "Sayonara!"]
 
@@ -283,4 +260,107 @@ require("copilot").setup({
   suggestion = { enabled = false },
   panel = { enabled = false },
 })
+"""
+
+[[plugins]]
+repo = "https://github.com/vim-skk/skkeleton"
+on_event = ["BufRead"]
+lua_source = """
+vim.fn["skkeleton#config"]({ globalJisyo = '~/.skk/SKK-JISYO.L' })
+
+vim.keymap.set("i", "<C-j>", "<Plug>(skkeleton-enable)", {})
+vim.keymap.set("c", "<C-j>", "<Plug>(skkeleton-enable)", {})
+
+vim.keymap.set("i", "jk", "<Plug>(skkeleton-disable)", {})
+vim.keymap.set("c", "jk", "<Plug>(skkeleton-disable)", {})
+"""
+
+[[plugins]]
+repo = "https://github.com/phaazon/hop.nvim"
+on_event = ["BufRead"]
+lua_source = """
+require'hop'.setup( { keys = 'etovxqpdygfblzhckisuran' })
+"""
+
+[[plugins]]
+repo = 'nvim-tree/nvim-web-devicons'
+on_event = ["VimEnter"]
+
+[[plugins]]
+repo = 'https://github.com/miyakogi/seiya.vim'
+on_event = ["VimEnter"]
+
+[[plugins]]
+repo = 'nvim-lualine/lualine.nvim'
+on_event = ["VimEnter"]
+lua_source = """
+require("configs/lualine")
+"""
+
+[[plugins]]
+repo = "https://github.com/SmiteshP/nvim-navic"
+on_event = ["VimEnter"]
+lua_source = """
+local navic = require("nvim-navic")
+
+navic.setup {
+    icons = {
+        File          = " ",
+        Module        = " ",
+        Namespace     = " ",
+        Package       = " ",
+        Class         = " ",
+        Method        = " ",
+        Property      = " ",
+        Field         = " ",
+        Constructor   = " ",
+        Enum          = "練",
+        Interface     = "練",
+        Function      = " ",
+        Variable      = " ",
+        Constant      = " ",
+        String        = " ",
+        Number        = " ",
+        Boolean       = "◩ ",
+        Array         = " ",
+        Object        = " ",
+        Key           = " ",
+        Null          = "ﳠ ",
+        EnumMember    = " ",
+        Struct        = " ",
+        Event         = " ",
+        Operator      = " ",
+        TypeParameter = " ",
+    },
+    lsp = {
+        auto_attach = false,
+        preference = nil,
+    },
+    highlight = false,
+    separator = " > ",
+    depth_limit = 0,
+    depth_limit_indicator = "..",
+    safe_output = true
+}
+
+"""
+
+
+[[plugins]]
+repo = "https://github.com/nvim-treesitter/nvim-treesitter-context"
+on_event = ["BufRead"]
+lua_source = """
+require'treesitter-context'.setup{
+  enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+  max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+  min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+  line_numbers = true,
+  multiline_threshold = 20, -- Maximum number of lines to collapse for a single context line
+  trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+  mode = 'cursor',  -- Line used to calculate context. Choices: 'cursor', 'topline'
+  -- Separator between context and content. Should be a single character string, like '-'.
+  -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+  separator = nil,
+  zindex = 20, -- The Z-index of the context window
+}
 """
