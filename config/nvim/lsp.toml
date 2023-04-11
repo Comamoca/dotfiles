@@ -1,0 +1,299 @@
+[[plugins]]
+repo = 'williamboman/mason.nvim'
+on_source = ["nvim-cmp"]
+lua_source = """
+-- 1. LSP Sever management
+require("mason").setup()
+local nvim_lsp = require("lspconfig")
+
+nvim_lsp.dartls.setup({})
+
+local node_root_dir = nvim_lsp.util.root_pattern("package.json")
+local is_node_repo = node_root_dir(vim.api.nvim_buf_get_name(0)) ~= nil
+
+local opts = {}
+
+if is_node_repo then
+	nvim_lsp["tsserver"].setup({
+		root_dir = nvim_lsp.util.root_pattern("package.json"),
+	})
+else
+	nvim_lsp["denols"].setup({
+		root_dir = nvim_lsp.util.root_pattern("deno.json"),
+		init_options = {
+			lint = true,
+			unstable = true,
+			suggest = {
+				imports = {
+					hosts = {
+						["https://deno.land"] = true,
+						["https://cdn.nest.land"] = true,
+						["https://crux.land"] = true,
+					},
+				},
+			},
+		},
+	})
+end
+
+require("mason-lspconfig").setup_handlers({
+	function(server)
+		local opt = {
+			capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
+		}
+		require("lspconfig")[server].setup(opt)
+
+		local node_root_dir = nvim_lsp.util.root_pattern("package.json")
+		local is_node_repo = node_root_dir(vim.api.nvim_buf_get_name(0)) ~= nil
+
+		if server == "elixirls" then
+			require("lspconfig").elixirls.setup({
+				-- Unix
+				cmd = { "/home/coma/.local/share/nvim/mason/bin/elixir-ls" },
+			})
+		elseif server == "tsserver" then
+			return
+		elseif server == "denols" then
+			return
+		elseif server == "lua-language-server" then
+			require("lspconfig").sumneko_lua.setup({
+				settings = {
+					Lua = {
+						runtime = { version = "LuaJIT", path = vim.split(package.path, ";") },
+						diagnostics = {
+							-- Get the language server to recognize the `vim` global
+							enable = true,
+							globals = { "vim" },
+						},
+					},
+				},
+			})
+		end
+	end,
+})
+
+-- keyboard shortcut
+vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
+vim.keymap.set("n", "gf", "<cmd>lua vim.lsp.buf.formatting()<CR>")
+vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
+vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
+vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>")
+vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")
+vim.keymap.set("n", "gt", "<cmd>lua vim.lsp.buf.type_definition()<CR>")
+vim.keymap.set("n", "gn", "<cmd>lua vim.lsp.buf.rename()<CR>")
+vim.keymap.set("n", "ga", "<cmd>lua vim.lsp.buf.code_action()<CR>")
+vim.keymap.set("n", "ge", "<cmd>lua vim.diagnostic.open_float()<CR>")
+vim.keymap.set("n", "g]", "<cmd>lua vim.diagnostic.goto_next()<CR>")
+vim.keymap.set("n", "g[", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
+
+-- LSP handlers
+vim.lsp.handlers["textDocument/publishDiagnostics"] =
+    vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, { virtual_text = true })
+
+-- vim.cmd([[
+-- highlight LspDiagnosticsSignError ctermbg=9 ctermfg=15
+-- highlight LspDiagnosticsSignHint ctermbg=142 ctermfg=15
+-- ]])
+"""
+
+[[plugins]]
+repo = 'SirVer/ultisnips'
+on_source = ["nvim-cmp"]
+lua_source = """
+vim.g.UltiSnipsSnippetDirectories = { "/home/coma/.config/nvim/ultisnip" }
+
+vim.g.UltiSnipsJumpForwardTrigger = "<c-j>"
+vim.g.UltiSnipsJumpBackwardTrigger = "<c-k>"
+vim.g.gruvbox_material_transparent_background = 1
+"""
+
+[[plugins]]
+repo = 'honza/vim-snippets'
+on_source = ["ultisnips"]
+
+[[plugins]]
+repo= 'onsails/lspkind.nvim'
+on_source = ["nvim-cmp"]
+lua_source = """
+require("configs/lspkind")
+"""
+
+[[plugins]]
+repo = 'https://github.com/hrsh7th/cmp-nvim-lsp'
+on_source = ["nvim-cmp"]
+
+[[plugins]]
+repo= 'williamboman/mason-lspconfig.nvim'
+on_source = ["nvim-lspconfig"]
+
+# nvim-cmp
+[[plugins]]
+repo = "hrsh7th/nvim-cmp"
+# on_event = ["BufRead"]
+on_event = ["BufRead"]
+lua_source = """
+require("cmp_nvim_ultisnips").setup({})
+local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
+local cmp = require("cmp")
+local lspkind = require("lspkind")
+
+cmp.setup({
+	snippet = {
+		expand = function(args)
+			vim.fn["UltiSnips#Anon"](args.body)
+		end,
+	},
+	sources = {
+		{ name = "nvim_lsp" },
+		{ name = "skkeleton" },
+		{ name = "path" },
+		-- { name = "buffer" },
+		{ name = 'cmp_tabnine' }
+	},
+	mapping = cmp.mapping.preset.insert({
+		["<C-p>"] = cmp.mapping.select_prev_item(),
+		["<C-n>"] = cmp.mapping.select_next_item(),
+		["<C-l>"] = cmp.mapping.complete(),
+		["<C-e>"] = cmp.mapping.abort(),
+		["<CR>"] = cmp.mapping.confirm({
+			select = true,
+		}),
+		["<Tab>"] = cmp.mapping(function(fallback)
+			cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
+		end, {
+			"i",
+			"s", --[[ "c" (to enable the mapping in command mode) ]]
+		}),
+		["<S-Tab>"] = cmp.mapping(function(fallback)
+			cmp_ultisnips_mappings.jump_backwards(fallback)
+		end, {
+			"i",
+			"s", --[[ "c" (to enable the mapping in command mode) ]]
+		}),
+	}),
+	formatting = {
+		format = lspkind.cmp_format({
+			mode = "symbol", -- show only symbol annotations
+			maxwidth = 60, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+			ellipsis_char = "...", -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
+			-- The function below will be called before any actual modifications from lspkind
+			-- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
+		}),
+	},
+	experimental = {
+		ghost_text = true,
+	},
+	view = {
+		entries = "native",
+	},
+})
+"""
+
+[[plugins]]
+repo = 'hrsh7th/cmp-buffer'
+on_source = ["nvim-cmp"]
+
+[[plugins]]
+repo = 'hrsh7th/cmp-path'
+on_source = ["nvim-cmp"]
+
+[[plugins]]
+repo = 'hrsh7th/cmp-cmdline'
+on_source = ["nvim-cmp"]
+
+[[plugins]]
+repo = 'quangnguyen30192/cmp-nvim-ultisnips'
+on_source = ["nvim-cmp"]
+
+[[plugins]]
+repo = 'rinx/cmp-skkeleton'
+on_source = ["nvim-cmp"]
+lua_source = """
+require('cmp').setup {
+  sources = {
+    { name = 'skkeleton' }
+  },
+  view = {
+    entries = 'native'
+  }
+}
+"""
+
+[[plugins]]
+repo = 'neovim/nvim-lspconfig'
+on_event = ["BufRead"]
+
+[[plugins]]
+repo = "folke/neodev.nvim"
+on_source = ["nvim-cmp"]
+lua_source = """
+-- IMPORTANT: make sure to setup neodev BEFORE lspconfig
+require("neodev").setup({
+  -- add any options here, or leave empty to use the default settings
+})
+
+-- then setup your lsp server as usual
+local lspconfig = require('lspconfig')
+
+-- example to setup lua_ls and enable call snippets
+lspconfig.lua_ls.setup({
+  settings = {
+    Lua = {
+      completion = {
+        callSnippet = "Replace"
+      }
+    }
+  }
+})
+"""
+
+[[plugins]]
+repo= 'j-hui/fidget.nvim'
+lua_source = """
+require"fidget".setup{}
+"""
+on_event = ["VimEnter"]
+
+[[plugins]]
+repo = "https://github.com/zbirenbaum/copilot-cmp"
+on_source = ["nvim-cmp"]
+lua_source = """
+require("copilot_cmp").setup()
+"""
+
+[[plugins]]
+repo = "https://github.com/codota/tabnine-nvim"
+on_event = ["BufRead"]
+do = "./dl_binaries.sh"
+lua_source = """
+require('tabnine').setup({
+  disable_auto_comment=false,
+  accept_keymap="<Tab>",
+  dismiss_keymap = "<C-]>",
+  debounce_ms = 800,
+  suggestion_color = {gui = "#ffba75", cterm = 244},
+  exclude_filetypes = {"TelescopePrompt"}
+})
+"""
+
+[[plugins]]
+repo = "https://github.com/tzachar/cmp-tabnine"
+on_source = ["nvim-cmp"]
+do = "./install.sh"
+lua_source = """
+local tabnine = require('cmp_tabnine.config')
+
+tabnine:setup({
+	max_lines = 1000,
+	max_num_results = 20,
+	sort = true,
+	run_on_every_keystroke = true,
+	snippet_placeholder = '..',
+	ignored_file_types = {
+		-- default is not to ignore
+		-- uncomment to ignore in lua:
+		-- lua = true
+	},
+	show_prediction_strength = false
+})
+"""
