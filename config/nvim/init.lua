@@ -1,4 +1,7 @@
-if vim.loader then vim.loader.enable() end
+if vim.loader then
+	vim.loader.enable()
+end
+vim.g.loaded_luv = true
 
 -- dein.vim loading script
 -- {{{
@@ -47,15 +50,16 @@ vim.wo.number = true
 
 vim.g.gruvbox_material_transparent_background = 1
 vim.cmd.colorscheme("gruvbox-material")
+-- vim.cmd.colorscheme("everforest")
 -- vim.cmd.colorscheme("gruvbox")
 -- vim.cmd.colorscheme("habamax")
 -- vim.cmd.colorscheme("torte")
 
-vim.opt.termguicolors = true
+-- vim.opt.termguicolors = true
 
 vim.opt.list = true
-vim.opt.listchars:append "space:⋅"
-vim.opt.listchars:append "eol:↴"
+vim.opt.listchars:append("space:⋅")
+vim.opt.listchars:append("eol:↴")
 
 vim.cmd([[
         set foldmethod=marker
@@ -81,29 +85,50 @@ LazyLoad("VimEnter", function()
 	vim.cmd("let g:comfortable_motion_no_default_key_mappings = 1")
 
 	vim.opt.ambiwidth = "single"
-	vim.opt.laststatus = 3
-
+	vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
 end)
+vim.opt.laststatus = 0
 
 vim.g.seiya_auto_enable = 1
 
-vim.api.nvim_create_augroup( 'lua', {} )
-vim.api.nvim_create_autocmd( {"FileType  *.go"}, {
-  group = 'lua',
-  callback = function() vim.opt.wrap = false end
-})
+-- vim.api.nvim_create_augroup("lua", {})
+-- vim.api.nvim_create_autocmd({ "FileType  *.go" }, {
+-- 	group = "lua",
+-- 	callback = function()
+-- 		vim.opt.wrap = false
+-- 	end,
+-- })
 
-vim.api.nvim_create_augroup("crystal", {})
+-- vim.api.nvim_create_augroup("crystal", {})
 
 vim.cmd([[
 " au BufRead,BufNewFile *.ex,*.exs set filetype=elixir
 au BufRead,BufNewFile *.eex,*.heex,*.leex,*.sface,*.lexs set filetype=eelixir
 au BufRead,BufNewFile mix.lock set filetype=elixir
+au BufRead,FileType  *.go set wrap
+au BufRead,FileType  *.lark set filetype=lark
+au BufRead,FileType  *.er set filetype=erg
+
+au FileType vue syntax sync fromstart
+autocmd TermOpen * setlocal norelativenumber
+autocmd TermOpen * setlocal nonumber
 ]])
 
 -- vim.cmd [[highlight IndentBlanklineChar guifg=#56B6C2 gui=nocombine]]
 
 -- vim.cmd("let g:denops_server_addr = '127.0.0.1:32123'")
 -- vim.cmd("let g:denops#debug = 1")
+-- vim.cmd("let g:denops_server_addr = '127.0.0.1:32123'")
+-- vim.cmd("let g:denops#debug = 1")
 
-vim.cmd [[autocmd FileType vue setlocal filetype=vue.html.javascript.css]]
+if vim.g.neovide then
+	vim.o.guifont = "UDEV Gothic NFLG Regular:h12"
+
+	local alpha = function()
+		return string.format("%x", math.floor(255 * vim.g.transparency or 0.8))
+	end
+	-- g:neovide_transparency should be 0 if you want to unify transparency of content and title bar.
+	vim.g.neovide_transparency = 0.8
+	vim.g.transparency = 0.8
+	vim.g.neovide_background_color = "#0f1117" .. alpha()
+end
