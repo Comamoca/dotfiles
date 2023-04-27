@@ -64,6 +64,9 @@ local config = {
 		lualine_c = {},
 		lualine_x = {},
 	},
+	lualine_c = {
+		'lsp_progress'
+	},
 }
 
 -- Inserts a component in lualine_c at left section
