@@ -37,12 +37,31 @@ local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 require("null-ls").setup({
 	-- you can reuse a shared lspconfig on_attach callback here
 	sources = {
-		null_ls.builtins.diagnostics.semgrep,
+		-- null_ls.builtins.diagnostics.semgrep,
+		null_ls.builtins.code_actions.proselint,
+		-- null_ls.builtins.diagnostics.markdownlint,
+		-- null_ls.builtins.diagnostics.textlint,
+		null_ls.builtins.diagnostics.vale,
+		-- null_ls.builtins.diagnostics.write_good,
+
+		null_ls.builtins.formatting.cbfmt,
 		-- null_ls.builtins.diagnostics.cspell,
 		-- null_ls.builtins.code_actions.cspell,
 
 		-- Lua
-		null_ls.builtins.formatting.deno_fmt,
+		null_ls.builtins.formatting.stylua,
+
+		-- Deno
+		null_ls.builtins.formatting.deno_fmt.with({
+			filetypes = {
+				"javascript",
+				"javascriptreact",
+				"json",
+				"jsonc",
+				"typescript",
+				"typescriptreact",
+			},
+		}),
 
 		-- Rust
 		null_ls.builtins.formatting.rustfmt,
@@ -87,6 +106,10 @@ require("null-ls").setup({
 
 		-- Crystal
 		null_ls.builtins.formatting.crystal_format,
+
+		-- CSS
+		null_ls.builtins.formatting.stylelint,
+		null_ls.builtins.formatting.rustywind,
 	},
 	on_attach = function(client, bufnr)
 		if client.supports_method("textDocument/formatting") then
