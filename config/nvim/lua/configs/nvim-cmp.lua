@@ -1,4 +1,4 @@
--- -- cmp_nvim_lsp.update_capabilities is deprecated, use cmp_nvim_lsp.default_capabilities instead. See :h deprecated
+-- -- cmp_nvim_lsp.update_capabilities is deprecated, use cmp_nvim_lsp.default_capabilities instead. See :h deprecated{{{
 -- require("cmp_nvim_ultisnips").setup({})
 -- local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
 -- local cmp = require("cmp")
@@ -65,4 +65,70 @@
 -- --   sources = {
 -- --     { name = "cmdline" },
 -- --   },
--- -- })
+-- -- })}}}
+
+require("cmp_nvim_ultisnips").setup({})
+local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
+local cmp = require("cmp")
+local lspkind = require("lspkind")
+
+cmp.setup({
+	snippet = {
+		expand = function(args)
+			vim.fn["UltiSnips#Anon"](args.body)
+		end,
+	},
+	sources = {
+		{ name = "nvim_lsp" },
+		{ name = "skkeleton" },
+		{ name = "path" },
+		-- { name = "buffer" },
+		-- { name = "cmp_tabnine" },
+		{ name = "codeium" },
+	},
+	mapping = {
+		["<C-p>"] = cmp.mapping.select_prev_item(),
+		["<C-n>"] = cmp.mapping.select_next_item(),
+		["<C-d>"] = cmp.mapping.scroll_docs(-4),
+		["<C-f>"] = cmp.mapping.scroll_docs(4),
+		["<C-Space>"] = cmp.mapping.complete(),
+		["<C-e>"] = cmp.mapping.close(),
+		["<CR>"] = cmp.mapping.confirm({
+			behavior = cmp.ConfirmBehavior.Replace,
+			select = true,
+		}),
+		["<Tab>"] = function(fallback)
+			if cmp.visible() then
+				cmp.select_next_item()
+			else
+				fallback()
+			end
+		end,
+		["<S-Tab>"] = function(fallback)
+			if cmp.visivle() then
+				cmp.select_prev_item()
+			else
+				fallback()
+			end
+		end,
+	},
+	formatting = {
+		-- format = lspkind.cmp_format({
+		-- 	mode = "symbol",
+		-- 	maxwidth = 60,
+		-- 	ellipsis_char = "...",
+		-- }),
+		format = require("lspkind").cmp_format({
+			mode = "symbol",
+			maxwidth = 50,
+			ellipsis_char = "...",
+			symbol_map = { Codeium = "" },
+		}),
+	},
+	experimental = {
+		ghost_text = true,
+	},
+	view = {
+		entries = "native",
+	},
+})
