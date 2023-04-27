@@ -2,8 +2,9 @@ set PATH /usr/local/bin $PATH
 set PATH ~/.local/bin $PATH
 
 set PATH ~/ghq/github.com/emscripten-core/emsdk $PATH
-set PATH ~/ghq/github.com/emscripten-core/emsdk/node/14.18.2_64bit/bin $PATH
+#set PATH ~/ghq/github.com/emscripten-core/emsdk/node/14.18.2_64bit/bin $PATH
 set PATH ~/ghq/github.com/emscripten-core/emsdk/upstream/emscripten $PATH
+set PATH ~/.codon/bin $PATH
 
  # export PULSE_SERVER=tcp:$(grep nameserver /etc/resolv.conf | awk ''\''{print $2}'\'')
 
@@ -62,6 +63,7 @@ alias lg='lazygit'
 alias ablaze_repos='gh repo list Ablaze-MIRAI'
 alias wk='wikitool'
 alias zenn="npx zenn"
+alias bt="boost"
 
 export EDITOR=nvim
 export PYTHONPATH=/home/coma/bundler/bundler/lib
@@ -126,7 +128,6 @@ set -Ux fish_user_paths $HOME/.rbenv/shims $fish_user_paths
 
 bind \cg run_recker
 bind \cc __fish_cancel_commandline
-bind \ct __boost
 
 # bind \cf zi
 
@@ -142,6 +143,7 @@ set -px --path PATH "/home/coma/.bun/bin"
 # pnpm
 set -gx PNPM_HOME "/home/coma/.local/share/pnpm"
 set -gx PATH "$PNPM_HOME" $PATH
+set CODON_PYTHON /usr/lib/libpython3.10.so
 
 source /opt/asdf-vm/asdf.fish
 
@@ -149,4 +151,15 @@ if test (pwd) = "/mnt/c/Users/Coma"
 cd ~
 end
 
-source /opt/asdf-vm/asdf.fish
+__chatgpt
+
+# source /opt/asdf-vm/asdf.fish
+# config.fish
+rtx activate fish | source
+rtx hook-env -s fish | source  # プラグインのパスを追加する
+rtx complete -s fish | source
+
+/home/coma/.local/share/rtx/bin/rtx activate -s fish | source
+
+#set -q GHCUP_INSTALL_BASE_PREFIX[1]; or set GHCUP_INSTALL_BASE_PREFIX $HOME ; set -gx PATH $HOME/.cabal/bin /home/coma/.ghcup/bin $PATH # ghcup-env
+set -q GHCUP_INSTALL_BASE_PREFIX[1]; or set GHCUP_INSTALL_BASE_PREFIX $HOME ; set -gx PATH $HOME/.cabal/bin /home/coma/.ghcup/bin $PATH # ghcup-env
