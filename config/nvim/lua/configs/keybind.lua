@@ -9,12 +9,14 @@ local runCmd = function(map, cmd)
 end
 
 local cr = "<CR>"
+vim.g.mapleader = " "
 
 --Remap space as leader key
 keymap("", "<Space>", "<Nop>", opts)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+keymap("n", "s", "<C-w>", opts)
 keymap("i", "jj", "<ESC>", opts)
 keymap("n", "<S-k>", "{", opts)
 keymap("n", "<S-j>", "}", opts)
@@ -43,4 +45,24 @@ runCmd("<ESC><ESC>", ":noh")
 
 runCmd("<C-p>", ":call comfortable_motion#flick(-70)" .. cr)
 runCmd("<C-n>", ":call comfortable_motion#flick(70)" .. cr)
+
 runCmd("<C-t>", ":Deol -split=floating -winheight=20 -winwidth=80" .. cr)
+
+keymap("n", "<C-c>", '"+y', opts)
+keymap("v", "<C-c>", '"+y', opts)
+keymap("n", "<C-v>", '"+p', opts)
+keymap("i", "<C-v>", "<C-r>+", opts)
+keymap("c", "<C-v>", "<C-r>+", opts)
+keymap("i", "<C-r>", "<C-v>", opts)
+
+runCmd("<Leader>r", ":Quickrun" .. cr)
+
+runCmd("<C-u>", ":Fq" .. cr)
+-- runCmd("", "" .. cr)
+-- runCmd("", "" .. cr)
+
+-- :HopPattern: パターンと一致する部分にラベルをつける(/と同じ)
+-- :HopChar1: 単一の文字を検索し、その部分にラベルをつける
+-- :HopChar2: 2文字を検索し、その部分にラベルをつける
+-- :HopLine: 行にラベルをつける
+-- :HopLneStart: 行の最初の非空白文字にラベルをつける
