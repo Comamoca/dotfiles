@@ -6,6 +6,7 @@ vim.api.nvim_create_user_command(
 	{}
 )
 vim.api.nvim_create_user_command("Configs", 'call v:lua.Open("~/.config/nvim/lua/configs")', {})
+vim.api.nvim_create_user_command("ComaTools", 'call v:lua.Open("~/.config/nvim/lua/comatools")', {})
 vim.api.nvim_create_user_command("Plugs", 'call ConfigsRec("~/.config/nvim/plugs/")', {})
 vim.api.nvim_create_user_command("Dein", 'call v:lua.Open("~/.config/nvim/dein.toml")', {})
 vim.api.nvim_create_user_command("Lazy", 'call v:lua.Open("~/.config/nvim/dein_lazy.toml")', {})
@@ -39,3 +40,10 @@ end
 function launchCmus()
 	vim.cmd(":terminal cmus")
 end
+
+vim.cmd([[
+command! -nargs=0 Fq call fzf#run({
+\ 'source': 'ghq list --full-path',
+\ 'sink': 'cd'
+\ })
+]])
