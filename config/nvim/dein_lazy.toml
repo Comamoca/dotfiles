@@ -1,6 +1,6 @@
 [[plugins]]
 repo= 'lilydjwg/colorizer'
-on_event = ["BufRead"]
+on_event = ["BufEnter"]
 
 [[plugins]]
 on_event = ["BufRead"]
@@ -34,7 +34,7 @@ on_cmd = ["CommandBufferOpen"]
 
 [[plugins]]
 repo = 'https://github.com/numToStr/Comment.nvim'
-on_event = ["BufRead", "BufNewFile", "BufEnter"]
+on_event = ["BufRead"]
 lua_source = """
 require('Comment').setup()
 """
@@ -44,30 +44,9 @@ repo= 'folke/noice.nvim'
 
 [[plugins]]
 repo = "lukas-reineke/indent-blankline.nvim"
-on_event = ["VimEnter"]
+# on_event = ["VimEnter"]
 lua_source = """
-vim.cmd [[highlight IndentBlanklineIndent1 guifg=#E06C75 gui=nocombine]]
-vim.cmd [[highlight IndentBlanklineIndent2 guifg=#E5C07B gui=nocombine]]
-vim.cmd [[highlight IndentBlanklineIndent3 guifg=#98C379 gui=nocombine]]
-vim.cmd [[highlight IndentBlanklineIndent4 guifg=#56B6C2 gui=nocombine]]
-vim.cmd [[highlight IndentBlanklineIndent5 guifg=#61AFEF gui=nocombine]]
-vim.cmd [[highlight IndentBlanklineIndent6 guifg=#C678DD gui=nocombine]]
-
-vim.opt.list = true
-vim.opt.listchars:append "space:⋅"
-vim.opt.listchars:append "eol:↴"
-
-require("indent_blankline").setup {
-    space_char_blankline = " ",
-    char_highlight_list = {
-        "IndentBlanklineIndent1",
-        "IndentBlanklineIndent2",
-        "IndentBlanklineIndent3",
-        "IndentBlanklineIndent4",
-        "IndentBlanklineIndent5",
-        "IndentBlanklineIndent6",
-    },
-}
+require("configs/blankline")
 """
 
 # カラースチーム
@@ -83,26 +62,34 @@ on_cmd = ['Luadev']
 # 毎回使わないようなプラグインはここ
 [[plugins]]
 repo = 'sakhnik/nvim-gdb'
-on_event = ["BufRead"]
+on_cmd = [
+"GdbStart",
+"GdbStartPDB",
+"GdbStartBashDB",
+"GdbStartRR",
+"GdbBreakpointToggle",
+"GdbUntil",
+"GdbContinue",
+"GdbNext",
+"GdbStep"
+"GdbFinish",
+"GdbFrameUp",
+"GdbFrameDown"]
 
 [[plugins]]
 repo = 'kylechui/nvim-surround'
-on_event = ["BufRead"]
+on_event = ["InsertEnter"]
 lua_source = """
 require("nvim-surround").setup({})
 """
 
 [[plugins]]
 repo = 'skanehira/translate.vim'
-on_event = ["BufRead"]
+on_cmd = ["Translate"]
 
 [[plugins]]
 repo = 'alvan/vim-closetag'
-on_event = ['BufRead']
-
-[[plugins]]
-repo = 'skanehira/vsession'
-on_cmd = ['SaveSession', 'LoadSession', 'DeleteSession']
+on_event = ["InsertEnter"]
 
 [[plugins]]
 repo = 'twitvim/twitvim'
@@ -192,10 +179,6 @@ repo = 'vim-denops/denops-helloworld.vim'
 on_cmd = ["DenopsHello", "DenopsGrep"]
 
 [[plugins]]
-repo = 'nvim-lua/plenary.nvim'
-on_event = ["VimEnter"]
-
-[[plugins]]
 repo = 'https://github.com/mattreduce/vim-mix'
 on_cmd = ["Mix", "Mclean", "Mcompile", "Mdeps", "Mtest"]
 
@@ -222,7 +205,7 @@ require('nvim-treesitter.configs').setup {
 
 [[plugins]]
 repo = "https://github.com/JoosepAlviste/nvim-ts-context-commentstring"
-on_event = ["BufRead"]
+on_event = ["InsertEnter"]
 lua_source = """
 require'nvim-treesitter.configs'.setup {
   context_commentstring = {
@@ -233,69 +216,93 @@ require'nvim-treesitter.configs'.setup {
 
 [[plugins]]
 repo= 'https://github.com/nvim-treesitter/nvim-treesitter'
-on_event = ["BufEnter"]
-lua_source = """
-require'nvim-treesitter.configs'.setup {
-  -- ensure_installed = { "c", "lua", "vim", "help", "query" },
-  sync_install = false,
-  auto_install = true,
-
-  -- ignore_install = { "javascript" },
-
-  highlight = {
-    enable = true,
-
-    disable = function(lang, buf)
-        local max_filesize = 100 * 1024 -- 100 KB
-        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-        if ok and stats and stats.size > max_filesize then
-            return true
-        end
-    end,
-
-    additional_vim_regex_highlighting = false,
-  },
-}
-"""
-
-[[plugins]]
-repo = "https://github.com/zbirenbaum/copilot.lua"
 on_event = ["BufRead"]
 lua_source = """
-require("copilot").setup({
-  suggestion = { enabled = false },
-  panel = { enabled = false },
-})
+require("configs/treesitter")
 """
 
 [[plugins]]
 repo = "https://github.com/vim-skk/skkeleton"
-on_event = ["BufRead"]
+on_event = ["InsertEnter"]
 lua_source = """
 require("configs/skkeleton")
 """
 
 [[plugins]]
 repo = "https://github.com/phaazon/hop.nvim"
-on_event = ["BufRead"]
+on_event = ["BufEnter"]
 lua_source = """
 require("configs/hop")
 """
 
 [[plugins]]
 repo = 'nvim-tree/nvim-web-devicons'
-on_event = ["VimEnter"]
+on_event = ["BufRead"]
 
 [[plugins]]
 repo = 'https://github.com/miyakogi/seiya.vim'
-on_event = ["VimEnter"]
+on_event = ["BufRead"]
 
 [[plugins]]
-repo = 'nvim-lualine/lualine.nvim'
+repo = "https://github.com/nvim-treesitter/nvim-treesitter-context"
+on_event = ["BufRead"]
+lua_source = """
+require'treesitter-context'.setup{
+  enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+  max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+  min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+  line_numbers = true,
+  multiline_threshold = 20, -- Maximum number of lines to collapse for a single context line
+  trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+  mode = 'cursor',  -- Line used to calculate context. Choices: 'cursor', 'topline'
+  -- Separator between context and content. Should be a single character string, like '-'.
+  -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+  separator = nil,
+  zindex = 20, -- The Z-index of the context window
+}
+"""
+
+[[plugins]]
+repo = "https://github.com/lambdalisue/fern.vim"
+on_cmd = ["Fern"]
+lua_source = """
+vim.cmd("let g:fern#renderer = 'nerdfont'")
+"""
+
+[[plugins]]
+repo = "lambdalisue/fern-renderer-nerdfont.vim"
+on_source = ["fern.vim"]
+
+[[plugins]]
+repo = "lambdalisue/nerdfont.vim"
+on_source = ["fern.vim"]
+
+[[plugins]]
+repo = "~/ghq/github.com/coma/runit.nvim"
+on_event = ["BufRead"]
+lua_source = """
+require("configs/runit")
+"""
+
+[[plugins]]
+repo = "https://github.com/Shougo/dda.vim"
+on_event = ["BufRead"]
+
+[[plugins]]
+repo = "junegunn/fzf.vim"
+on_cmd = ["Fq"]
+
+[[plugins]]
+repo = 'simrat39/symbols-outline.nvim'
 on_event = ["VimEnter"]
 lua_source = """
-require("configs/lualine")
+require("configs/outline")
+vim.cmd("au BufRead * :SymbolsOutlineOpen")
 """
+
+[[plugins]]
+repo = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects"
+on_source = ["nvim-treesitter"]
 
 [[plugins]]
 repo = "https://github.com/SmiteshP/nvim-navic"
@@ -345,41 +352,21 @@ navic.setup {
 
 """
 
-
 [[plugins]]
-repo = "https://github.com/nvim-treesitter/nvim-treesitter-context"
-on_event = ["BufRead"]
-lua_source = """
-require'treesitter-context'.setup{
-  enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
-  max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
-  min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
-  line_numbers = true,
-  multiline_threshold = 20, -- Maximum number of lines to collapse for a single context line
-  trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
-  mode = 'cursor',  -- Line used to calculate context. Choices: 'cursor', 'topline'
-  -- Separator between context and content. Should be a single character string, like '-'.
-  -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
-  separator = nil,
-  zindex = 20, -- The Z-index of the context window
-}
-"""
-
-[[plugins]]
-repo = "https://github.com/lambdalisue/fern.vim"
-on_cmd = ["Fern"]
-
-[[plugins]]
-repo = "~/ghq/github.com/coma/runit.nvim"
-on_event = ["BufRead"]
-lua_source = """
-require("configs/runit")
-"""
-
-[[plugins]]
-repo = "https://github.com/Shougo/dda.vim"
-on_event = ["BufRead"]
-
-[[plugins]]
-repo = "junegunn/fzf.vim"
+repo = 'nvim-lualine/lualine.nvim'
 on_event = ["VimEnter"]
+lua_source = """
+require("configs/lualine")
+"""
+
+[[plugins]]
+repo = 'https://github.com/simeji/winresizer'
+on_event = ["BufEnter"]
+
+[[plugins]]
+repo = 'https://github.com/utilyre/barbecue.nvim'
+on_source = ["nvim-navic"]
+# on_event = ["BufEnter"]
+lua_source = """
+require("configs/barbecue")
+"""
