@@ -23,15 +23,15 @@ keymap("n", "<S-j>", "}", opts)
 
 keymap("t", "<ESC>", "<C-\\><C-n>", opts)
 
-runCmd("<C-f>", ":Sayonara")
+-- runCmd("<C-f>", ":Sayonara")
 
 -- runCmd("<C-o>", ":Telescope find_files")
 -- runCmd("<C-i>", ":Telescope buffers")
-runCmd("<C-u>", ":Telescope commands")
+-- runCmd("<C-u>", ":Telescope commands")
 -- runCmd("<C-g>", ":Telescope live_grep")
 
-runCmd("<C-o>", ":Ddu file")
 runCmd("<C-i>", ":Ddu buffer")
+runCmd("<C-o>", ":Ddu file")
 
 runCmd("sp", ":split")
 runCmd("sv", ":vs")
@@ -48,16 +48,23 @@ runCmd("<C-n>", ":call comfortable_motion#flick(70)" .. cr)
 
 runCmd("<C-t>", ":Deol -split=floating -winheight=20 -winwidth=80" .. cr)
 
-keymap("n", "<C-c>", '"+y', opts)
-keymap("v", "<C-c>", '"+y', opts)
-keymap("n", "<C-v>", '"+p', opts)
-keymap("i", "<C-v>", "<C-r>+", opts)
-keymap("c", "<C-v>", "<C-r>+", opts)
-keymap("i", "<C-r>", "<C-v>", opts)
+if vim.g.neovide then
+	keymap("n", "<C-c>", '"+y', opts)
+	keymap("v", "<C-c>", '"+y', opts)
+
+	keymap("n", "<C-v>", '"+p', opts)
+	keymap("i", "<C-v>", "<C-r>+", opts)
+	keymap("c", "<C-v>", "<C-r>+", opts)
+	keymap("i", "<C-r>", "<C-v>", opts)
+end
 
 runCmd("<Leader>r", ":Quickrun" .. cr)
 
 runCmd("<C-u>", ":Fq" .. cr)
+
+keymap("i", "<C-s>", "<C-o>:w" .. "<CR>", opts)
+runCmd("<Leader>s", ":SymbolsOutline" .. cr)
+runCmd("<Leader>f", ":Fern . -reveal=% -drawer -toggle -width=30" .. cr)
 -- runCmd("", "" .. cr)
 -- runCmd("", "" .. cr)
 
