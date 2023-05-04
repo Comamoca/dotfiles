@@ -65,7 +65,7 @@ local config = {
 		lualine_x = {},
 	},
 	lualine_c = {
-		'lsp_progress'
+		"lsp_progress",
 	},
 }
 
