@@ -92,3 +92,7 @@ on_ft = ["python"]
 [[plugins]]
 repo = 'https://github.com/lark-parser/vim-lark-syntax'
 on_ft = ["lark"]
+
+[[plugins]]
+repo = 'rust-lang/rust.vim'
+on_ft = ["rust"]
