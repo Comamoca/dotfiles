@@ -2,28 +2,8 @@ set PATH /usr/local/bin $PATH
 set PATH ~/.local/bin $PATH
 
 set PATH ~/ghq/github.com/emscripten-core/emsdk $PATH
-#set PATH ~/ghq/github.com/emscripten-core/emsdk/node/14.18.2_64bit/bin $PATH
 set PATH ~/ghq/github.com/emscripten-core/emsdk/upstream/emscripten $PATH
 set PATH ~/.codon/bin $PATH
-
- # export PULSE_SERVER=tcp:$(grep nameserver /etc/resolv.conf | awk ''\''{print $2}'\'')
-
-#export PATH=/home/coma/.config/fish/functions/ $PATH
-
-# function ghq_fzf_repo -d 'Repository search'
-#   select = (ghq list | fzf --preview "bat --color=always --style=header,grid --line-range :80 $(ghq root)/{}/README.*")
-#   [ -n "$select" ]; and cd "$select"
-#   echo string join (ghq root) " $select "
-#   commandline -f repaint
-# end
-
-# fish key bindings
-# function fish_user_key_bindings
-#   bind \cg ghq_fzf_repo
-# end
-
-
-## ~/.config/fish/config.fish
 
 ## starship init fish | source
 zoxide init fish | source
@@ -34,7 +14,7 @@ zoxide init fish | source
 
 ## theme_gruvbox dark soft
 
-alias vlang='v'
+alias vlang='/usr/sbin/v'
 alias v='nvim'
 alias g='git'
 alias ide="~/.scripts/tmux_layout.sh"
@@ -68,7 +48,7 @@ alias bt="boost"
 export EDITOR=nvim
 export PYTHONPATH=/home/coma/bundler/bundler/lib
 export GOPATH=$HOME/go
-# export PATH="$HOME/.nimble/bin:$PATH"
+export PATH="$HOME/.nimble/bin:$PATH"
 export PATH="$HOME/.nimble/.bin/git-tasukete:$PATH"
 export PATH=" $HOME/.local/kitty.app/bin/:$PATH"
 export PATH="$HOME/.bin/:$PATH"
@@ -81,10 +61,6 @@ export PATH="$DENO_INSTALL/bin:$PATH"
 export PATH="/home/coma/go/bin:$PATH"
 export PATH="/home/coma/local/:$PATH"
 
-set PATH /home/coma/.konryu/bin $PATH
-set PATH /home/coma/.konryu/versions $PATH
-
-set PATH /home/coma/.konryu/cotowali/bin $PATH
 
 set BAT_THEME "gruvbox-dark" $PATH
 set PATH /home/coma/$CARGO_HOME/bin/ $PATH
@@ -98,6 +74,7 @@ set -gx PNPM_HOME "/home/coma/.local/share/pnpm"
 set -gx PATH "$PNPM_HOME" $PATH
 
 eval (gh completion -s fish| source)
+# eval (konryu init)
 
 set EMSDK_QUIET = 1
 
@@ -147,14 +124,11 @@ set CODON_PYTHON /usr/lib/libpython3.10.so
 
 source /opt/asdf-vm/asdf.fish
 
-if test (pwd) = "/mnt/c/Users/Coma"
-cd ~
-end
-
 __chatgpt
 
 # source /opt/asdf-vm/asdf.fish
 # config.fish
+
 rtx activate fish | source
 rtx hook-env -s fish | source  # プラグインのパスを追加する
 rtx complete -s fish | source
@@ -163,3 +137,8 @@ rtx complete -s fish | source
 
 #set -q GHCUP_INSTALL_BASE_PREFIX[1]; or set GHCUP_INSTALL_BASE_PREFIX $HOME ; set -gx PATH $HOME/.cabal/bin /home/coma/.ghcup/bin $PATH # ghcup-env
 set -q GHCUP_INSTALL_BASE_PREFIX[1]; or set GHCUP_INSTALL_BASE_PREFIX $HOME ; set -gx PATH $HOME/.cabal/bin /home/coma/.ghcup/bin $PATH # ghcup-env
+
+
+if test (pwd) = "/mnt/c/Users/Coma"
+	cd ~
+end
