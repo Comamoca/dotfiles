@@ -16,10 +16,7 @@ vim.api.nvim_create_user_command("Ft", 'call v:lua.Open("~/.config/nvim/ft.toml"
 vim.api.nvim_create_user_command("Dap", 'call v:lua.Open("~/.config/nvim/dap.toml")', {})
 
 vim.api.nvim_create_user_command("ConfigsLinux", "call ConfigsRec('~/.config/', 'directory_rec')", {})
-vim.api.nvim_create_user_command("Plugins", "e ~/.config/nvim/dein.toml", {})
-vim.api.nvim_create_user_command("PluginLazy", "e ~/.config/nvim/dein_lazy.toml", {})
 vim.api.nvim_create_user_command("Todo", "e ~/todo.md", {})
-vim.api.nvim_create_user_command("ConfigLua", "e ~/.config/nvim/lua", {})
 
 vim.api.nvim_create_user_command("ConfigWezterm", "e /mnt/c/Users/Coma/.config/wezterm/wezterm.lua", {})
 
