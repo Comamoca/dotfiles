@@ -38,7 +38,6 @@ on_source = ["nvim-lspconfig"]
 # nvim-cmp
 [[plugins]]
 repo = "hrsh7th/nvim-cmp"
-# on_event = ["BufRead"]
 on_event = ["BufRead"]
 lua_source = """
 require("configs/nvim-cmp")
@@ -85,6 +84,7 @@ lua_source = """
 -- IMPORTANT: make sure to setup neodev BEFORE lspconfig
 require("neodev").setup({
   -- add any options here, or leave empty to use the default settings
+  library = { plugins = { "nvim-dap-ui" }, types = true },
 })
 
 -- then setup your lsp server as usual
@@ -102,12 +102,12 @@ lspconfig.lua_ls.setup({
 })
 """
 
-[[plugins]]
-repo= 'j-hui/fidget.nvim'
-lua_source = """
-require"fidget".setup{}
-"""
-on_event = ["VimEnter"]
+# [[plugins]]
+# repo= 'j-hui/fidget.nvim'
+# lua_source = """
+# require"fidget".setup{}
+# """
+# on_event = ["BufRead"]
 
 # [[plugins]]
 # repo = "https://github.com/jcdickinson/codeium.nvim"
@@ -118,7 +118,7 @@ on_event = ["VimEnter"]
 
 [[plugins]]
 repo = "https://github.com/Exafunction/codeium.vim"
-on_event = ["BufRead", "BufEnter"]
+on_cmd = ["Codeium", "CodeiumAuto", "CodeiumManual", "CodeiumEnable"]
 lua_source = """
 vim.g.codeium_disable_bindings = 1
 
