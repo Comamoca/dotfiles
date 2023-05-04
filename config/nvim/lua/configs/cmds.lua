@@ -13,12 +13,13 @@ vim.api.nvim_create_user_command("Lazy", 'call v:lua.Open("~/.config/nvim/dein_l
 vim.api.nvim_create_user_command("DduToml", 'call v:lua.Open("~/.config/nvim/ddu.toml")', {})
 vim.api.nvim_create_user_command("Lsp", 'call v:lua.Open("~/.config/nvim/lsp.toml")', {})
 vim.api.nvim_create_user_command("Ft", 'call v:lua.Open("~/.config/nvim/ft.toml")', {})
+vim.api.nvim_create_user_command("Dap", 'call v:lua.Open("~/.config/nvim/dap.toml")', {})
 
 vim.api.nvim_create_user_command("ConfigsLinux", "call ConfigsRec('~/.config/', 'directory_rec')", {})
 vim.api.nvim_create_user_command("ConfigsLinux", "Defx ~/.config", {})
 vim.api.nvim_create_user_command("Plugins", "e ~/.config/nvim/dein.toml", {})
 vim.api.nvim_create_user_command("PluginLazy", "e ~/.config/nvim/dein_lazy.toml", {})
-vim.api.nvim_create_user_command("ConfigsDefx ", "Defx ~/.config/nvim/configs", {})
+vim.api.nvim_create_user_command("ConfigsDefx", "Defx ~/.config/nvim/configs", {})
 vim.api.nvim_create_user_command("Org", "Defx ~/org", {})
 vim.api.nvim_create_user_command("Todo", "e ~/todo.md", {})
 vim.api.nvim_create_user_command("ConfigLua", "e ~/.config/nvim/lua", {})
@@ -31,6 +32,7 @@ vim.api.nvim_create_user_command("DeinUpdate", "call dein#update()", {})
 
 vim.api.nvim_create_user_command("ConfigFish", "e ~/.config/fish/config.fish", {})
 vim.api.nvim_create_user_command("FishFunctions", "e ~/.config/fish/functions", {})
+vim.api.nvim_create_user_command("Lualine", ": lua require('lualine').setup()", {})
 
 function Open(path)
 	local file = vim.fn.expand(path)
@@ -40,10 +42,3 @@ end
 function launchCmus()
 	vim.cmd(":terminal cmus")
 end
-
-vim.cmd([[
-command! -nargs=0 Fq call fzf#run({
-\ 'source': 'ghq list --full-path',
-\ 'sink': 'cd'
-\ })
-]])
