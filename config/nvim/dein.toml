@@ -1,8 +1,8 @@
-[[plugins]]
-repo = 'thinca/vim-splash'
-on_lua = """
-require("configs/splash")
-"""
+# [[plugins]]
+# repo = 'thinca/vim-splash'
+# lua_source = """
+# -- require("configs/splash")
+# """
 
 [[plugins]]
 repo = 'vim-denops/denops.vim'
@@ -19,3 +19,6 @@ repo = 'https://github.com/sainnhe/everforest'
 
 [[plugins]]
 repo = "https://github.com/morhetz/gruvbox"
+
+[[plugins]]
+repo = 'nvim-lua/plenary.nvim'
