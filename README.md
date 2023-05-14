@@ -10,7 +10,7 @@
 
 # Dotfiles
 
-This is Comamoca's template repository.
+This is Comamoca's dotfiles repository.
 
 <br>
 <br>
