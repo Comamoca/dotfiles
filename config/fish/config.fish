@@ -14,8 +14,10 @@ zoxide init fish | source
 
 ## theme_gruvbox dark soft
 
-alias vlang='/usr/sbin/v'
-alias v='nvim'
+alias zx='/home/coma/go/bin/z'
+# alias vlang='/usr/sbin/v'
+alias nv='nvim'
+alias git='gix'
 alias g='git'
 alias ide="~/.scripts/tmux_layout.sh"
 alias wallpapelar='feh --bg-fill'
@@ -73,8 +75,11 @@ set -ga fish_user_paths /home/coma/.nimble/pkgs
 set -gx PNPM_HOME "/home/coma/.local/share/pnpm"
 set -gx PATH "$PNPM_HOME" $PATH
 
+set -x PATH "$HOME/.konryu/bin" $PATH
+set -x PATH "$HOME/.konryu/cotowali/bin/" $PATH
+
 eval (gh completion -s fish| source)
-# eval (konryu init)
+eval (konryu init)
 
 set EMSDK_QUIET = 1
 
@@ -121,6 +126,9 @@ set -px --path PATH "/home/coma/.bun/bin"
 set -gx PNPM_HOME "/home/coma/.local/share/pnpm"
 set -gx PATH "$PNPM_HOME" $PATH
 set CODON_PYTHON /usr/lib/libpython3.10.so
+
+set -x FLYCTL_INSTALL "/home/coma/.fly"
+set -x PATH "$FLYCTL_INSTALL/bin:$PATH"
 
 source /opt/asdf-vm/asdf.fish
 
