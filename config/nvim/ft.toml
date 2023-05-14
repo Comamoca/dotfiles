@@ -38,7 +38,14 @@ on_ft = ["qml"]
 
 [[plugins]]
 repo = "mattn/emmet-vim"
-on_ft = ["html"]
+on_ft = ["html", "css"]
+lua_source = """
+-- vim.g.user_emmet_leader_key='<Leader>'
+
+vim.g.user_emmet_settings = {
+  variables = {lang = 'ja'},
+}
+"""
 
 [[plugins]]
 repo = 'alaviss/nim.nvim'
@@ -96,3 +103,11 @@ on_ft = ["lark"]
 [[plugins]]
 repo = 'rust-lang/rust.vim'
 on_ft = ["rust"]
+
+[[plugins]]
+repo = 'https://github.com/cotowali/vim-cotowali'
+on_ft = ["cotowali"]
+
+[[plugins]]
+repo = 'ollykel/v-vim'
+on_ft = ["cotowali"]

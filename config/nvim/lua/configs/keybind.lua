@@ -73,3 +73,9 @@ runCmd("<Leader>f", ":Fern . -reveal=% -drawer -toggle -width=30" .. cr)
 -- :HopChar2: 2文字を検索し、その部分にラベルをつける
 -- :HopLine: 行にラベルをつける
 -- :HopLneStart: 行の最初の非空白文字にラベルをつける
+
+keymap("n", "<Leader><Leader>", ":FuzzyMotion" .. cr)
+keymap("n", "<F4>", ":MundoToggle" .. cr)
+
+-- vim.keymap.set("c", "<Leader>", "<Plug>(kensaku-search-replace)" .. cr)
+vim.cmd("cnoremap <C-y> <Plug>(kensaku-search-replace)<CR>")

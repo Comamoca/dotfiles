@@ -85,6 +85,7 @@ cmp.setup({
 		-- { name = "buffer" },
 		-- { name = "cmp_tabnine" },
 		{ name = "codeium" },
+		{ name = "emmet_vim" },
 	},
 	mapping = {
 		["<C-p>"] = cmp.mapping.select_prev_item(),

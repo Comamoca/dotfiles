@@ -25,8 +25,16 @@ repo = "mattn/vim-chatgpt"
 on_cmd = ["chatgpt", "codereviewplease"]
 
 [[plugins]]
+repo = 'lambdalisue/kensaku.vim'
+on_event = ["BufRead"]
+
+[[plugins]]
 repo = "lambdalisue/kensaku-command.vim"
-on_cmd = ["Kensaku"]
+on_source = ["kensaku.vim"]
+
+[[plugins]]
+repo = 'lambdalisue/kensaku-search.vim'
+on_source = ["kensaku.vim"]
 
 [[plugins]]
 repo = 'skanehira/command.vim'
@@ -44,7 +52,7 @@ repo= 'folke/noice.nvim'
 
 [[plugins]]
 repo = "lukas-reineke/indent-blankline.nvim"
-# on_event = ["VimEnter"]
+on_event = ["BufEnter"]
 lua_source = """
 require("configs/blankline")
 """
@@ -78,7 +86,7 @@ on_cmd = [
 
 [[plugins]]
 repo = 'kylechui/nvim-surround'
-on_event = ["InsertEnter"]
+on_event = ["BufRead"]
 lua_source = """
 require("nvim-surround").setup({})
 """
@@ -88,14 +96,29 @@ repo = 'skanehira/translate.vim'
 on_cmd = ["Translate"]
 
 [[plugins]]
-repo = 'alvan/vim-closetag'
-on_event = ["InsertEnter"]
+repo = 'https://github.com/windwp/nvim-ts-autotag'
+on_source = ["nvim-treesitter"]
+lua_source = """
+require("nvim-ts-autotag").setup()
+
+require'nvim-treesitter.configs'.setup {
+  autotag = {
+    enable = true,
+  }
+}
+"""
 
 [[plugins]]
 repo = 'twitvim/twitvim'
 on_cmd = [
-  "FriendsTwitter"
-  "PosttoTwitter"
+  "FriendsTwitter",
+  "PosttoTwitter",
+  "BPosttoTwitter",
+  "UserTwitte",
+  "MentionsTwitter "
+  "PublicTwitter",
+  "DMTwitter",
+  "SearchTwitte"
   ]
 
 [[plugins]]
@@ -151,10 +174,6 @@ require("telescope").setup({
 
 
 [[plugins]]
-repo= 'https://github.com/syouzan420/tatevim'
-on_cmd = ["Tate"]
-
-[[plugins]]
 repo = 'itchyny/calendar.vim'
 on_cmd = ["Calendar"]
 
@@ -171,8 +190,18 @@ repo = 'https://github.com/mhinz/vim-sayonara'
 on_cmd = ["Sayonara", "Sayonara!"]
 
 [[plugins]]
-repo = 'cohama/lexima.vim'
-on_event = ["InsertEnter"]
+repo = 'windwp/nvim-autopairs'
+on_source = ["nvim-cmp"]
+lua_source = """
+require("nvim-autopairs").setup()
+
+local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+local cmp = require('cmp')
+cmp.event:on(
+  'confirm_done',
+  cmp_autopairs.on_confirm_done()
+)
+"""
 
 [[plugins]]
 repo = 'vim-denops/denops-helloworld.vim'
@@ -205,7 +234,7 @@ require('nvim-treesitter.configs').setup {
 
 [[plugins]]
 repo = "https://github.com/JoosepAlviste/nvim-ts-context-commentstring"
-on_event = ["InsertEnter"]
+on_event = ["BufRead"]
 lua_source = """
 require'nvim-treesitter.configs'.setup {
   context_commentstring = {
@@ -236,12 +265,12 @@ require("configs/hop")
 """
 
 [[plugins]]
-repo = 'nvim-tree/nvim-web-devicons'
-on_event = ["BufRead"]
-
-[[plugins]]
 repo = 'https://github.com/miyakogi/seiya.vim'
-on_event = ["BufRead"]
+on_event = ["VimEnter"]
+lua_source = """
+vim.g.seiya_auto_enable=1
+vim.cmd("let g:seiya_target_groups = has('nvim') ? ['guibg'] : ['ctermbg']")
+"""
 
 [[plugins]]
 repo = "https://github.com/nvim-treesitter/nvim-treesitter-context"
@@ -360,6 +389,13 @@ require("configs/lualine")
 """
 
 [[plugins]]
+repo = 'https://github.com/nvim-tree/nvim-web-devicons'
+on_source = ["lualine"]
+lua_source = """
+require('nvim-web-devicons').setup()
+"""
+
+[[plugins]]
 repo = 'https://github.com/simeji/winresizer'
 on_event = ["BufEnter"]
 
@@ -370,3 +406,15 @@ on_source = ["nvim-navic"]
 lua_source = """
 require("configs/barbecue")
 """
+
+[[plugins]]
+repo = 'https://github.com/yuki-yano/fuzzy-motion.vim'
+on_cmd = ["FuzzyMotion"]
+lua_source = """
+vim.keymap.set("n", "S", "<cmd>FuzzyMotion<CR>")
+vim.g.fuzzy_motion_matchers = { "kensaku", "fzf" }
+"""
+
+[[plugins]]
+repo = 'https://github.com/simnalamburt/vim-mundo'
+on_cmd = ["MundoToggle"]

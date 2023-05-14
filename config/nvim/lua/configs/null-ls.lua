@@ -38,13 +38,13 @@ require("null-ls").setup({
 	-- you can reuse a shared lspconfig on_attach callback here
 	sources = {
 		-- null_ls.builtins.diagnostics.semgrep,
-		null_ls.builtins.code_actions.proselint,
+		-- null_ls.builtins.code_actions.proselint,
 		-- null_ls.builtins.diagnostics.markdownlint,
 		-- null_ls.builtins.diagnostics.textlint,
-		null_ls.builtins.diagnostics.vale,
+		-- null_ls.builtins.diagnostics.vale,
 		-- null_ls.builtins.diagnostics.write_good,
 
-		null_ls.builtins.formatting.cbfmt,
+		-- null_ls.builtins.formatting.cbfmt,
 		-- null_ls.builtins.diagnostics.cspell,
 		-- null_ls.builtins.code_actions.cspell,
 
@@ -85,8 +85,27 @@ require("null-ls").setup({
 		null_ls.builtins.formatting.yapf,
 		null_ls.builtins.formatting.autoflake,
 		null_ls.builtins.formatting.black,
-		null_ls.builtins.formatting.djhtml,
-		null_ls.builtins.formatting.fprettify,
+		-- null_ls.builtins.formatting.djhtml,
+		null_ls.builtins.formatting.prettierd.with({
+			filetypes = {
+				"javascript",
+				"javascriptreact",
+				"typescript",
+				"typescriptreact",
+				"vue",
+				"css",
+				"scss",
+				"less",
+				"html",
+				"json",
+				"jsonc",
+				"yaml",
+				-- "markdown",
+				-- "markdown.mdx",
+				"graphql",
+				"handlebars",
+			},
+		}),
 		null_ls.builtins.formatting.pyflyby,
 		null_ls.builtins.formatting.reorder_python_imports,
 

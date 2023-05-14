@@ -48,6 +48,7 @@ require("configs/keybind")
 require("comatools/lazyload")
 require("comatools/kit")
 require("comatools/cloma")
+-- require("comatools/color")
 -- base
 vim.scriptencoding = "utf-8"
 -- vim.wo.number = true
@@ -55,7 +56,8 @@ vim.scriptencoding = "utf-8"
 vim.g.gruvbox_material_transparent_background = 1
 
 if not vim.g.vscode then
-	vim.cmd.colorscheme("gruvbox-material")
+	-- vim.cmd.colorscheme("gruvbox-material")
+	vim.cmd.colorscheme("labcoat")
 end
 
 -- vim.cmd.colorscheme("everforest")
@@ -91,10 +93,14 @@ LazyLoad("VimEnter", function()
 	vim.cmd("set nocompatible")
 	vim.cmd("set ignorecase")
 	vim.cmd("let g:comfortable_motion_no_default_key_mappings = 1")
-
 	vim.opt.ambiwidth = "single"
 	vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
 end)
+
+-- LazyLoad("FileType  cotowali", function()
+-- 	require("configs/kuqi")
+-- end)
+
 vim.opt.laststatus = 0
 
 vim.g.seiya_auto_enable = 1
@@ -116,6 +122,8 @@ au BufRead,BufNewFile mix.lock set filetype=elixir
 au BufRead,FileType  *.go set wrap
 au BufRead,FileType  *.lark set filetype=lark
 au BufRead,FileType  *.er set filetype=erg
+au BufRead,FileType  *.li set filetype=cotowali
+au BufRead,FileType  *.v set filetype=v
 
 au FileType vue syntax sync fromstart
 autocmd TermOpen * setlocal norelativenumber
@@ -142,3 +150,5 @@ if vim.g.neovide then
 	vim.g.neovide_background_color = "#0f1117" .. alpha()
 	-- vim.wo.number = true
 end
+
+vim.cmd("set winblend=30")
