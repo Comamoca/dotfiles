@@ -56,6 +56,10 @@ repo = 'hrsh7th/cmp-cmdline'
 on_source = ["nvim-cmp"]
 
 [[plugins]]
+repo ='dcampos/cmp-emmet-vim'
+on_source = ["nvim-cmp"]
+
+[[plugins]]
 repo = 'quangnguyen30192/cmp-nvim-ultisnips'
 on_source = ["nvim-cmp"]
 

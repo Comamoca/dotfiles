@@ -2,19 +2,45 @@ local lualine = require("lualine")
 
 -- Color table for highlights
 -- stylua: ignore
+-- local colors = {{{{
+-- 	bg       = '#202328',
+-- 	fg       = '#bbc2cf',
+-- 	yellow   = '#ECBE7B',
+-- 	cyan     = '#008080',
+-- 	darkblue = '#081633',
+-- 	green    = '#98be65',
+-- 	orange   = '#FF8800',
+-- 	violet   = '#a9a1e1',
+-- 	magenta  = '#c678dd',
+-- 	blue     = '#51afef',
+-- 	red      = '#ec5f67',
+-- }}}}
+
+-- #52A8F2 #62A1D9 #82B0D9 #54B5BF #F2F2EB
 local colors = {
-	bg       = '#202328',
-	fg       = '#bbc2cf',
+	bg       = '#2d506e',
+	fg       = '#F2F2EB',
 	yellow   = '#ECBE7B',
-	cyan     = '#008080',
+	cyan     = '#82B0D9',
 	darkblue = '#081633',
-	green    = '#98be65',
+	green    = '#54B5BF',
 	orange   = '#FF8800',
 	violet   = '#a9a1e1',
 	magenta  = '#c678dd',
-	blue     = '#51afef',
+	blue     = '#62A1D9 ',
 	red      = '#ec5f67',
 }
+
+local filename = require("lualine.components.filename"):extend()
+filename.apply_icon = require("lualine.components.filetype").apply_icon
+
+-- require("lualine").setup({
+-- 	lualine_c = { { filename, colored = true } },
+-- })
+
+-- local icon = {
+-- 	left = "",
+-- }
 
 local conditions = {
 	buffer_not_empty = function()
@@ -33,7 +59,7 @@ local conditions = {
 -- Config
 local config = {
 	options = {
-		-- Disable sections and component separators
+		icons_enabled = true,
 		globalstatus = true,
 		component_separators = "",
 		section_separators = "",
@@ -61,7 +87,9 @@ local config = {
 		lualine_b = {},
 		lualine_y = {},
 		lualine_z = {},
-		lualine_c = {},
+		lualine_c = {
+			{ filename, colored = true },
+		},
 		lualine_x = {},
 	},
 	lualine_c = {
@@ -84,14 +112,14 @@ ins_left({
 	function()
 		return "▊"
 	end,
-	color = { fg = colors.green }, -- Sets highlighting of component
+	color = { fg = "#62A1D9" }, -- Sets highlighting of component
 	padding = { left = 0, right = 1 }, -- We don't need space before this
 })
 
 ins_left({
 	-- mode component
 	function()
-		return ""
+		return require("lualine.components.filetype").apply_icon()
 	end,
 	color = function()
 		-- auto change color according to neovims mode

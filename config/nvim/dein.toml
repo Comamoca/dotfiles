@@ -12,7 +12,13 @@ repo = "https://github.com/vim-crystal/vim-crystal"
 
 #theme
 [[plugins]]
+repo = 'https://github.com/pierrechevalier83/labcoat.nvim'
+
+[[plugins]]
 repo = 'sainnhe/gruvbox-material'
+
+[[plugins]]
+repo = 'https://github.com/echasnovski/mini.nvim'
 
 [[plugins]]
 repo = 'https://github.com/sainnhe/everforest'
