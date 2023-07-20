@@ -129,6 +129,15 @@ require("null-ls").setup({
 		-- CSS
 		null_ls.builtins.formatting.stylelint,
 		null_ls.builtins.formatting.rustywind,
+
+		-- Haxe
+		null_ls.builtins.formatting.haxe_formatter,
+
+		-- Teal
+		null_ls.builtins.diagnostics.teal,
+
+		-- Haskel
+		null_ls.builtins.formatting.fourmolu,
 	},
 	on_attach = function(client, bufnr)
 		if client.supports_method("textDocument/formatting") then

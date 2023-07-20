@@ -7,19 +7,9 @@ SETUVAR Z_DATA:/home/coma/\x2elocal/share/z/data
 SETUVAR Z_DATA_DIR:/home/coma/\x2elocal/share/z
 SETUVAR Z_EXCLUDE:\x5e/home/coma\x24
 SETUVAR __fish_initialized:3400
-SETUVAR _fish_abbr_ta:tmux\x20attach\x20\x2dt
-SETUVAR _fish_abbr_tad:tmux\x20attach\x20\x2dd\x20\x2dt
-SETUVAR _fish_abbr_tkss:tmux\x20kill\x2dsession\x20\x2dt
-SETUVAR _fish_abbr_tksv:tmux\x20kill\x2dserver
-SETUVAR _fish_abbr_tl:tmux\x20list\x2dsessions
-SETUVAR _fish_abbr_ts:tmux\x20new\x2dsession\x20\x2ds
-SETUVAR _fisher_decors_2F_fish_2D_ghq_files:/home/coma/\x2econfig/fish/functions/__ghq_repository_search\x2efish\x1e/home/coma/\x2econfig/fish/conf\x2ed/ghq_key_bindings\x2efish\x1e/home/coma/\x2econfig/fish/completions/ghq\x2efish
-SETUVAR _fisher_halostatue_2F_fish_2D_fzf_files:/home/coma/\x2econfig/fish/functions/fbr\x2efish\x1e/home/coma/\x2econfig/fish/functions/fco\x2efish\x1e/home/coma/\x2econfig/fish/functions/fe\x2efish\x1e/home/coma/\x2econfig/fish/functions/fkill\x2efish\x1e/home/coma/\x2econfig/fish/functions/fo\x2efish\x1e/home/coma/\x2econfig/fish/functions/fshow\x2efish\x1e/home/coma/\x2econfig/fish/functions/fstash\x2efish\x1e/home/coma/\x2econfig/fish/conf\x2ed/halostatue_fish_fzf\x2efish
-SETUVAR _fisher_jethrokuan_2F_z_files:/home/coma/\x2econfig/fish/functions/__z\x2efish\x1e/home/coma/\x2econfig/fish/functions/__z_add\x2efish\x1e/home/coma/\x2econfig/fish/functions/__z_clean\x2efish\x1e/home/coma/\x2econfig/fish/functions/__z_complete\x2efish\x1e/home/coma/\x2econfig/fish/conf\x2ed/z\x2efish
-SETUVAR _fisher_jomik_2F_fish_2D_gruvbox_files:/home/coma/\x2econfig/fish/functions/theme_gruvbox\x2efish
+SETUVAR _fisher_PatrickF1_2F_fzf_2E_fish_files:/home/coma/\x2econfig/fish/functions/_fzf_configure_bindings_help\x2efish\x1e/home/coma/\x2econfig/fish/functions/_fzf_extract_var_info\x2efish\x1e/home/coma/\x2econfig/fish/functions/_fzf_preview_changed_file\x2efish\x1e/home/coma/\x2econfig/fish/functions/_fzf_preview_file\x2efish\x1e/home/coma/\x2econfig/fish/functions/_fzf_report_diff_type\x2efish\x1e/home/coma/\x2econfig/fish/functions/_fzf_report_file_type\x2efish\x1e/home/coma/\x2econfig/fish/functions/_fzf_search_directory\x2efish\x1e/home/coma/\x2econfig/fish/functions/_fzf_search_git_log\x2efish\x1e/home/coma/\x2econfig/fish/functions/_fzf_search_git_status\x2efish\x1e/home/coma/\x2econfig/fish/functions/_fzf_search_history\x2efish\x1e/home/coma/\x2econfig/fish/functions/_fzf_search_processes\x2efish\x1e/home/coma/\x2econfig/fish/functions/_fzf_search_variables\x2efish\x1e/home/coma/\x2econfig/fish/functions/_fzf_wrapper\x2efish\x1e/home/coma/\x2econfig/fish/functions/fzf_configure_bindings\x2efish\x1e/home/coma/\x2econfig/fish/conf\x2ed/fzf\x2efish\x1e/home/coma/\x2econfig/fish/completions/fzf_configure_bindings\x2efish
 SETUVAR _fisher_jorgebucaran_2F_fisher_files:/home/coma/\x2econfig/fish/functions/fisher\x2efish\x1e/home/coma/\x2econfig/fish/completions/fisher\x2efish
-SETUVAR _fisher_mnowotnik_2F_fzshell_files:/home/coma/\x2econfig/fish/conf\x2ed/fzshell\x2efish
-SETUVAR _fisher_plugins:jomik/fish\x2dgruvbox\x1ejorgebucaran/fisher\x1ejethrokuan/z\x1ehalostatue/fish\x2dfzf\x1edecors/fish\x2dghq\x1emnowotnik/fzshell
+SETUVAR _fisher_plugins:jorgebucaran/fisher\x1ePatrickF1/fzf\x2efish
 SETUVAR fish_color_autosuggestion:7c6f64\x1ebrblack
 SETUVAR fish_color_cancel:\x2dr
 SETUVAR fish_color_command:076678
@@ -49,4 +39,4 @@ SETUVAR fish_pager_color_prefix:458588\x1e\x2d\x2dbold\x1e\x2d\x2dunderline
 SETUVAR fish_pager_color_progress:brwhite\x1e\x2d\x2dbackground\x3dcyan
 SETUVAR fish_pager_color_selected_background:\x2dr
 SETUVAR --export fish_user_paths:/home/coma/\x2erbenv/shims\x1e/home/coma/\x2erbenv/shims\x1e/home/coma/\x2easdf/shims\x1e/opt/asdf\x2dvm/bin\x1e/home/coma/\x2erbenv/bin\x1e/home/coma/\x2elocal/share/rtx/bin\x1e/home/coma/\x2enimble/bin\x1e/home/coma/\x2enimble/pkgs
-SETUVAR fzshell_data:/home/coma/\x2elocal/share/fzshell
+SETUVAR fzshell_data:\x1d

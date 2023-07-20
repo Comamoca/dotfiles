@@ -4,6 +4,8 @@ repo = 'Shougo/ddu.vim'
 on_source = ["denops.vim"]
 lua_source = """
 require("configs/ddu")
+require("configs/ddu-kind")
+require("configs/ddu-source")
 """
 
 # ui
@@ -43,6 +45,14 @@ on_source = ["ddu.vim"]
 repo = 'liquidz/ddu-source-custom-list'
 on_source = ["ddu.vim"]
 
+[[plugins]]
+repo = "https://github.com/kuuote/ddu-source-git_diff"
+on_source = ["ddu.vim"]
+
+[[plugins]]
+repo = "https://github.com/kuuote/ddu-source-mr"
+on_source = ["ddu.vim"]
+
 # matcher
 [[plugins]]
 repo = 'Shougo/ddu-filter-matcher_substring'
@@ -52,3 +62,5 @@ on_source = ["ddu.vim"]
 [[plugins]]
 repo = 'Shougo/ddu-kind-file'
 on_source = ["ddu.vim"]
+
+

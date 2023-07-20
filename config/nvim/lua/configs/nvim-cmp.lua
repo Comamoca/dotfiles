@@ -71,18 +71,23 @@ require("cmp_nvim_ultisnips").setup({})
 local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
 local cmp = require("cmp")
 local lspkind = require("lspkind")
+local luasnip = require("luasnip")
 
 cmp.setup({
 	snippet = {
+		-- expand = function(args)
+		-- 	vim.fn["UltiSnips#Anon"](args.body)
+		-- end,
 		expand = function(args)
-			vim.fn["UltiSnips#Anon"](args.body)
+			require("luasnip").lsp_expand(args.body)
 		end,
 	},
 	sources = {
 		{ name = "nvim_lsp" },
 		{ name = "skkeleton" },
 		{ name = "path" },
-		-- { name = "buffer" },
+		{ name = "luasnip" },
+		{ name = "buffer" },
 		-- { name = "cmp_tabnine" },
 		{ name = "codeium" },
 		{ name = "emmet_vim" },
@@ -112,6 +117,13 @@ cmp.setup({
 				fallback()
 			end
 		end,
+		["<C-k>"] = cmp.mapping(function(fallback)
+			if luasnip.expand_or_jumpable() then
+				luasnip.expand_or_jump()
+			else
+				fallback()
+			end
+		end, { "i", "s" }),
 	},
 	formatting = {
 		-- format = lspkind.cmp_format({

@@ -7,9 +7,6 @@
 [[plugins]]
 repo = 'vim-denops/denops.vim'
 
-[[plugins]]
-repo = "https://github.com/vim-crystal/vim-crystal"
-
 #theme
 [[plugins]]
 repo = 'https://github.com/pierrechevalier83/labcoat.nvim'
@@ -18,13 +15,59 @@ repo = 'https://github.com/pierrechevalier83/labcoat.nvim'
 repo = 'sainnhe/gruvbox-material'
 
 [[plugins]]
-repo = 'https://github.com/echasnovski/mini.nvim'
+repo = 'folke/tokyonight.nvim'
 
 [[plugins]]
-repo = 'https://github.com/sainnhe/everforest'
+repo = 'https://github.com/EdenEast/nightfox.nvim'
 
 [[plugins]]
-repo = "https://github.com/morhetz/gruvbox"
+repo = 'whatyouhide/vim-gotham'
+
+[[plugins]]
+repo = 'https://github.com/VDuchauffour/neodark.nvim'
+
+# [[plugins]]
+# repo = 'https://github.com/echasnovski/mini.nvim'
+
+# [[plugins]]
+# repo = 'https://github.com/sainnhe/everforest'
+
+# [[plugins]]
+# repo = "https://github.com/morhetz/gruvbox"
 
 [[plugins]]
 repo = 'nvim-lua/plenary.nvim'
+
+# [[plugins]]
+# repo = 'glacambre/firenvim'
+# hook_post_update = """
+# firenvim#install(0)
+# """
+# source = """
+# let g:firenvim_config = {
+#     \ 'localSettings': {
+#         \ '.*': {
+#             \ 'selector': '',
+#             \ 'priority': 0,
+#         \ },
+#         \ 'github\.com': {
+#             \ 'selector': 'textarea',
+#             \ 'priority': 1,
+#         \ },
+#     \ }
+# \ }
+#
+# let g:firenvim_font = 'UDEV Gothic NFLG'
+# function! Set_Font(font) abort
+#   execute 'set guifont=' . a:font . ':h14'
+# endfunction
+#
+# augroup Firenvim
+#   au BufEnter github.com_*.txt set filetype=markdown | call Set_Font(g:firenvim_font)
+#   au BufEnter play.rust-lang.org_*.txt set filetype=rust | call Set_Font(g:firenvim_font)
+#   au BufEnter play.golang.org_*.txt set filetype=go |call Set_Font(g:firenvim_font)
+# augroup END
+# """
+
+[[plugins]]
+repo ='MunifTanjim/nui.nvim'
