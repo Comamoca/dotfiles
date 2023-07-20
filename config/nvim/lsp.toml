@@ -21,6 +21,30 @@ repo = 'honza/vim-snippets'
 on_source = ["ultisnips"]
 
 [[plugins]]
+repo = 'quangnguyen30192/cmp-nvim-ultisnips'
+on_source = ["nvim-cmp"]
+
+[[plugins]]
+repo = "L3MON4D3/LuaSnip"
+on_source = ["nvim-cmp"]
+lua_source = """
+require("luasnip.loaders.from_vscode").lazy_load()
+require("configs/luasnip")
+-- require("comatools/snips")
+"""
+
+[[plugins]]
+repo = "rafamadriz/friendly-snippets"
+on_source = ["luasnip"]
+
+[[plugins]]
+repo = 'saadparwaiz1/cmp_luasnip'
+on_source = ["nvim-cmp"]
+lua_source = """
+require("configs/luasnip")
+"""
+
+[[plugins]]
 repo= 'onsails/lspkind.nvim'
 on_source = ["nvim-cmp"]
 lua_source = """
@@ -58,10 +82,31 @@ on_source = ["nvim-cmp"]
 [[plugins]]
 repo ='dcampos/cmp-emmet-vim'
 on_source = ["nvim-cmp"]
-
-[[plugins]]
-repo = 'quangnguyen30192/cmp-nvim-ultisnips'
-on_source = ["nvim-cmp"]
+on_source = """
+require 'cmp'.setup {
+  sources = {
+    {
+        name = 'emmet_vim',
+        option = {
+            filetypes = {
+	    'html',
+	    'xml',
+	    'typescriptreact',
+	    'javascriptreact',
+	    'css',
+	    'sass',
+	    'scss',
+	    'less',
+	    'heex',
+	    'tsx',
+	    'jsx',
+	    'astro'
+	    },
+        }
+    }
+  }
+}
+"""
 
 [[plugins]]
 repo = 'rinx/cmp-skkeleton'
@@ -80,6 +125,9 @@ require('cmp').setup {
 [[plugins]]
 repo = 'neovim/nvim-lspconfig'
 on_event = ["BufRead"]
+lua_source = """
+require("config/lsp")
+"""
 
 [[plugins]]
 repo = "folke/neodev.nvim"

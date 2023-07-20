@@ -1,22 +1,8 @@
-local keymap = vim.keymap.set
+local sugar = require("comatools/sugar")
 
--- keymap("", "<Space>", "<Nop>", opts)
-
-local function nmap(map, cmd)
-	keymap("n", map, cmd .. "<CR>", {})
-end
-
-local function imap(map, cmd)
-	keymap("i", map, cmd .. "<CR>", {})
-end
-
--- local function kmap(key, expr)
--- 	kmap("n", key, expr)
--- end
-
-local function ddu_patch_global(opt)
-	vim.call("ddu#custom#patch_global", opt)
-end
+local ddu_patch_global = sugar.ddu_patch_global
+local imap = sugar.imap
+local nmap = sugar.nmap
 
 ddu_patch_global({
 	ui = "ff",
@@ -24,99 +10,32 @@ ddu_patch_global({
 		ff = {
 			previewFloating = true,
 			previewFloatingBorder = "single",
-			-- previewVertical = true,
-			-- split = {
-			-- 	"floating",
-			-- },
-			-- previewHeight = lines / 8 * 7,
-			-- previewWidth = columns / 8 * 4,
+			split = "floating",
 		},
 	},
 })
 
-ddu_patch_global({
-	uiParams = {
-		filer = {
-			split = {
-				"floating",
-			},
-		},
-	},
-})
+-- ddu_patch_global({
+-- 	uiParams = {
+-- 		filer = {
+-- 			split = "floating",
+-- 		},
+-- 	},
+-- })
 
-ddu_patch_global({
-	ui = "filer",
-	sources = {
-		name = "file",
-		params = {},
-	},
-	sourceOptions = {
-		_ = {
-			-- columns = {'filename'},
-		},
-	},
-	kindOptions = {
-		file = {
-			defaultAction = "open",
-		},
-	},
-})
-
-ddu_patch_global({
-	kindOptions = {
-		file = {
-			defaultAction = "open",
-		},
-	},
-})
-
-ddu_patch_global({
-	sourceOptions = {
-		_ = {
-			matchers = { "matcher_substring" },
-		},
-	},
-})
-
-ddu_patch_global({
-	sources = {
-		name = "file",
-		ui = "ff",
-		params = {},
-	},
-})
-
-ddu_patch_global({
-	sourceParams = {
-		rg = {
-			args = { "--column", "--no-heading", "--color", "never" },
-		},
-	},
-})
-
-ddu_patch_global({
-	kindOptions = {
-		file = {
-			defaultAction = "open",
-		},
-	},
-})
-
-ddu_patch_global({
-	kindOptions = {
-		file = {
-			defaultAction = "open",
-		},
-	},
-})
-
-ddu_patch_global({
-	kindOptions = {
-		["custom-list"] = {
-			defaultAction = "callback",
-		},
-	},
-})
+-- ddu_patch_global({
+-- 	ui = "filer",
+-- 	sourceOptions = {
+-- 		_ = {
+-- 			-- columns = {'filename'},
+-- 		},
+-- 	},
+-- 	kindOptions = {
+-- 		file = {
+-- 			defaultAction = "open",
+-- 		},
+-- 	},
+-- })
 
 -- call ddu#start({'sources': [
 --     \  {'name': 'custom-list',
@@ -165,23 +84,8 @@ function ddu_my_settings(args)
 	nmap("q", "<Cmd>call ddu#ui#ff#do_action('quit')<CR>")
 end
 
--- vim.cmd("autocmd FileType ddu-ff call v:lua.ddu_my_settings()")
--- vim.cmd("autocmd FileType ddu-ff-filter call v:lua.ddu_filter_my_settings()")
-
--- vim.api.nvim_create_autocmd("FileType", {
--- 	group = "ddu",
--- 	pattern = { "ddu-ff" },
--- 	callback = ddu_my_settings,
--- })
-
--- vim.api.nvim_create_autocmd("FileType", {
--- 	group = "ddu",
--- 	pattern = { "ddu-ff-filter" },
--- 	callback = ddu_filter_my_settings,
--- })
-
 vim.cmd([[
-function! s:ddu_my_settings() abort
+function! s:ddu_ff_settings() abort
   nnoremap <buffer><silent> <CR>
         \ <Cmd>call ddu#ui#ff#do_action('itemAction')<CR>
   nnoremap <buffer><silent> <Space>
@@ -197,14 +101,14 @@ endfunction
 function! s:ddu_filter_my_settings() abort
   nnoremap <buffer> <CR>
   \ <Cmd>call ddu#ui#ff#do_action('itemAction')<CR>
-  nnoremap <buffer><silent> q
-  \ <Cmd>call ddu#ui#ff#do_action('quit')<CR>
   inoremap <buffer> <CR>
   \ <Cmd>call ddu#ui#ff#do_action('itemAction')<CR>
   inoremap <buffer> <C-j>
   \ <Cmd>call ddu#ui#ff#execute("call cursor(line('.')+1,0)")<CR>
   inoremap <buffer> <C-k>
   \ <Cmd>call ddu#ui#ff#execute("call cursor(line('.')-1,0)")<CR>
+  nnoremap <buffer><silent> q
+  \ <Cmd>call ddu#ui#ff#do_action('quit')<CR>
 endfunction
 
 function! s:ddu_filer_my_settings() abort
@@ -219,7 +123,7 @@ function! s:ddu_filer_my_settings() abort
         \ <Cmd>call ddu#ui#filer#do_action('quit')<CR>
 endfunction
 
-autocmd FileType ddu-ff call s:ddu_my_settings()
 autocmd FileType ddu-ff-filter call s:ddu_filter_my_settings()
+autocmd FileType ddu-ff call s:ddu_ff_settings()
 autocmd FileType ddu-filer call s:ddu_filer_my_settings()
 ]])

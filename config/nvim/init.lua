@@ -32,6 +32,8 @@ if vim.call("dein#load_state", dein_dir) == 1 then
 
 	vim.call("dein#add", "~/ghq/github.com/Allianaab2m/vimskey")
 	vim.call("dein#add", "~/ghq/github.com/coma/ddu-configs")
+	vim.call("dein#add", "~/ghq/github.com/Comamoca/sandbox/sample_picker")
+	vim.call("dein#add", "~/ghq/github.com/coma/mr-telescope")
 	-- vim.call("dein#add", "~/ghq/github.com/vim-denops/denops.vim")
 	-- vim.call("dein#add", "~/ghq/github.com/coma/gpt.vim")
 
@@ -57,13 +59,35 @@ vim.g.gruvbox_material_transparent_background = 1
 
 if not vim.g.vscode then
 	-- vim.cmd.colorscheme("gruvbox-material")
-	vim.cmd.colorscheme("labcoat")
+	-- vim.cmd.colorscheme("labcoat")
+	vim.cmd.colorscheme("neodark")
+	-- vim.cmd.colorscheme("terafox")
+	-- vim.cmd.colorscheme("nordfox")
+	-- vim.cmd.colorscheme("gotham")
 end
+
+-- require("base16-colorscheme").setup({
+-- 	base00 = "#3B3228",
+-- 	base01 = "#534636",
+-- 	base02 = "#645240",
+-- 	base03 = "#7e705a",
+-- 	base04 = "#b8afad",
+-- 	base05 = "#d0c8c6",
+-- 	base06 = "#e9e1dd",
+-- 	base07 = "#f5eeeb",
+-- 	base08 = "#cb6077",
+-- 	base09 = "#d28b71",
+-- 	base0A = "#f4bc87",
+-- 	base0B = "#beb55b",
+-- 	base0C = "#7bbda4",
+-- 	base0D = "#8ab3b5",
+-- 	base0E = "#a89bb9",
+-- 	base0F = "#bb9584",
+-- })
 
 -- vim.cmd.colorscheme("everforest")
 -- vim.cmd.colorscheme("gruvbox")
 -- vim.cmd.colorscheme("habamax")
--- vim.cmd.colorscheme("torte")
 
 vim.opt.termguicolors = true
 
@@ -123,7 +147,12 @@ au BufRead,FileType  *.go set wrap
 au BufRead,FileType  *.lark set filetype=lark
 au BufRead,FileType  *.er set filetype=erg
 au BufRead,FileType  *.li set filetype=cotowali
+au BufRead,FileType  *.cr set filetype=crystal
 au BufRead,FileType  *.v set filetype=v
+au BufRead,FileType  *.hx set filetype=haxe
+au BufRead,FileType  *.vsh set filetype=vsh
+
+au BufRead,FileType  *.nim set foldmethod=marker
 
 au FileType vue syntax sync fromstart
 autocmd TermOpen * setlocal norelativenumber
@@ -151,4 +180,21 @@ if vim.g.neovide then
 	-- vim.wo.number = true
 end
 
-vim.cmd("set winblend=30")
+-- vim.cmd("set winblend=30")
+vim.cmd(":set foldmethod=marker")
+vim.cmd("let g:UltiSnipsSnippetDirectories = [$HOME.'/.config/nvim/ultisnip/']")
+
+function dump(o)
+	if type(o) == "table" then
+		local s = "{ "
+		for k, v in pairs(o) do
+			if type(k) ~= "number" then
+				k = '"' .. k .. '"'
+			end
+			s = s .. "[" .. k .. "] = " .. dump(v) .. ","
+		end
+		return s .. "} "
+	else
+		return tostring(o)
+	end
+end

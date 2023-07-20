@@ -28,6 +28,8 @@ vim.api.nvim_create_user_command("ConfigFish", "e ~/.config/fish/config.fish", {
 vim.api.nvim_create_user_command("FishFunctions", "e ~/.config/fish/functions", {})
 vim.api.nvim_create_user_command("Lualine", ": lua require('lualine').setup()", {})
 
+vim.api.nvim_create_user_command("Snippets", ":e ~/.config/nvim/luasnip/", {})
+
 function Open(path)
 	local file = vim.fn.expand(path)
 	vim.cmd(":e " .. file)

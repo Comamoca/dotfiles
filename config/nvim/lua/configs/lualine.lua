@@ -159,7 +159,15 @@ ins_left({
 ins_left({
 	"filename",
 	cond = conditions.buffer_not_empty,
-	color = { fg = colors.magenta, gui = "bold" },
+	color = { fg = colors.cyan, gui = "bold" },
+})
+
+ins_left({
+	function()
+		return require("lualine.components.filetype").apply_icon()
+	end,
+	cond = conditions.buffer_not_empty,
+	color = { fg = colors.blue, gui = "bold" },
 })
 
 ins_left({ "location" })

@@ -16,9 +16,9 @@ on_source = ["null-ls.nvim"]
 [[plugins]]
 repo = "segeljakt/vim-silicon"
 on_cmd = ["Silicon"]
-lua_source = """
-require("configs/silicon")
-"""
+# lua_source = """
+# require("configs/silicon")
+# """
 
 [[plugins]]
 repo = "mattn/vim-chatgpt"
@@ -57,11 +57,6 @@ lua_source = """
 require("configs/blankline")
 """
 
-# カラースチーム
-[[plugins]]
-repo = 'folke/tokyonight.nvim'
-on_func = ['colorscheme']
-
 [[plugins]]
 repo = 'bfredl/nvim-luadev'
 on_cmd = ['Luadev']
@@ -83,13 +78,6 @@ on_cmd = [
 "GdbFinish",
 "GdbFrameUp",
 "GdbFrameDown"]
-
-[[plugins]]
-repo = 'kylechui/nvim-surround'
-on_event = ["BufRead"]
-lua_source = """
-require("nvim-surround").setup({})
-"""
 
 [[plugins]]
 repo = 'skanehira/translate.vim'
@@ -132,10 +120,6 @@ on_cmd = ["Deol"]
 # """
 
 [[plugins]]
-repo = "https://github.com/azadkuh/vim-cmus"
-on_cmd = ["Cmus", "CmusCurrent", "CmusPrevious", "CmusPlay", "CmusPause", "CmusStop", "CmusNext"]
-
-[[plugins]]
 repo = 'nvim-telescope/telescope-file-browser.nvim'
 on_source = ["telescope.nvim"]
 
@@ -146,30 +130,10 @@ on_source = ["telescope.nvim"]
 [[plugins]]
 repo ='nvim-telescope/telescope.nvim'
 on_cmd = ["Telescope"]
+# on_event = ["BufRead"]
 # on_source = ["telescope-file-browser.nvim"]
 lua_source = """
--- To get telescope-file-browser loaded and working with telescope,
--- you need to call load_extension, somewhere after setup function:
-require("telescope").load_extension("file_browser")
-require("telescope").load_extension("kensaku")
-
-require("telescope").setup({
-		extensions = {
-			file_browser = {
-				-- theme = "ivy",
-				-- disables netrw and use telescope-file-browser in its place
-				hijack_netrw = true,
-				mappings = {
-					["i"] = {
-						-- your custom insert mode mappings
-					},
-					["n"] = {
-						-- your custom normal mode mappings
-					},
-				},
-			},
-		},
-	})
+require("configs/telescope")
 """
 
 
@@ -184,10 +148,6 @@ on_cmd = ["StartupTime"]
 [[plugins]]
 repo= 'https://github.com/yuttie/comfortable-motion.vim'
 on_event = ["BufRead"]
-
-[[plugins]]
-repo = 'https://github.com/mhinz/vim-sayonara'
-on_cmd = ["Sayonara", "Sayonara!"]
 
 [[plugins]]
 repo = 'windwp/nvim-autopairs'
@@ -210,10 +170,6 @@ on_cmd = ["DenopsHello", "DenopsGrep"]
 [[plugins]]
 repo = 'https://github.com/mattreduce/vim-mix'
 on_cmd = ["Mix", "Mclean", "Mcompile", "Mdeps", "Mtest"]
-
-[[plugins]]
-repo = 'https://github.com/vim-test/vim-test'
-on_cmd = ["TestNearest", "TestFile", "TestSuite", "TestLast", "TestVisit"]
 
 [[plugins]]
 repo = "https://github.com/wakatime/vim-wakatime"
@@ -384,13 +340,14 @@ navic.setup {
 [[plugins]]
 repo = 'nvim-lualine/lualine.nvim'
 on_event = ["VimEnter"]
+# on_source = ["nvim-web-devicons"]
 lua_source = """
 require("configs/lualine")
 """
 
 [[plugins]]
 repo = 'https://github.com/nvim-tree/nvim-web-devicons'
-on_source = ["lualine"]
+on_source = ["VimEnter"]
 lua_source = """
 require('nvim-web-devicons').setup()
 """
@@ -418,3 +375,75 @@ vim.g.fuzzy_motion_matchers = { "kensaku", "fzf" }
 [[plugins]]
 repo = 'https://github.com/simnalamburt/vim-mundo'
 on_cmd = ["MundoToggle"]
+
+# [[plugins]]
+# repo = 'https://github.com/mhinz/vim-sayonara'
+# on_cmd = ["Sayonara", "Sayonara!"]
+
+# [[plugins]]
+# repo = 'https://github.com/vim-test/vim-test'
+# on_cmd = ["TestNearest", "TestFile", "TestSuite", "TestLast", "TestVisit"]
+
+[[plugins]]
+repo = 'kylechui/nvim-surround'
+on_event = ["BufRead"]
+lua_source = """
+require("nvim-surround").setup()
+"""
+
+[[plugins]]
+repo = "https://github.com/lambdalisue/mr.vim"
+on_event = ["VimEnter"]
+lua_source = """
+require("nvim-surround").setup({})
+"""
+
+[[plugins]]
+repo = "https://github.com/Comamoca/mr-telescope"
+on_source = ["telescope.nvim"]
+lua_source = """
+-- require("nvim-surround").setup({})
+"""
+
+[[plugins]]
+repo = "https://github.com/tomasky/bookmarks.nvim"
+on_source = ["telescope.nvim"]
+lua_source = """
+require('bookmarks').setup {
+  -- sign_priority = 8,  --set bookmark sign priority to cover other sign
+  save_file = vim.fn.expand "$HOME/.bookmarks", -- bookmarks save file path
+  keywords =  {
+    ["@t"] = "☑️ ", -- mark annotation startswith @t ,signs this icon as `Todo`
+    ["@w"] = "⚠️ ", -- mark annotation startswith @w ,signs this icon as `Warn`
+    ["@f"] = "⛏ ", -- mark annotation startswith @f ,signs this icon as `Fix`
+    ["@n"] = " ", -- mark annotation startswith @n ,signs this icon as `Note`
+  },
+  on_attach = function(bufnr)
+    local bm = require "bookmarks"
+    local map = vim.keymap.set
+    map("n","mm",bm.bookmark_toggle) -- add or remove bookmark at current line
+    map("n","mi",bm.bookmark_ann) -- add or edit mark annotation at current line
+    map("n","mc",bm.bookmark_clean) -- clean all marks in local buffer
+    map("n","mn",bm.bookmark_next) -- jump to next mark in local buffer
+    map("n","mp",bm.bookmark_prev) -- jump to previous mark in local buffer
+    map("n","ml",bm.bookmark_list) -- show marked file list in quickfix window
+  end
+}
+
+require('telescope').load_extension('bookmarks')
+"""
+
+# [[plugins]]
+# repo = 'Bekaboo/dropbar.nvim'
+# on_event = ["BufRead"]
+# lua_source = """
+# -- require("dropbar.nvim").setup()
+# """
+
+[[plugins]]
+repo = "https://github.com/vim-jp/vimdoc-ja"
+on_cmd = ["help"]
+
+[[plugins]]
+repo = "https://github.com/kyoh86/vim-ripgrep"
+on_event = ["BufEnter"]

@@ -31,7 +31,7 @@ keymap("t", "<ESC>", "<C-\\><C-n>", opts)
 -- runCmd("<C-g>", ":Telescope live_grep")
 
 runCmd("<C-i>", ":Ddu buffer")
-runCmd("<C-o>", ":Ddu file")
+runCmd("<C-o>", ":Ddu file_rec")
 
 runCmd("sp", ":split")
 runCmd("sv", ":vs")
@@ -58,7 +58,7 @@ if vim.g.neovide then
 	keymap("i", "<C-r>", "<C-v>", opts)
 end
 
-runCmd("<Leader>r", ":Quickrun" .. cr)
+runCmd("<Leader>r", ":RunIt" .. cr)
 
 runCmd("<C-u>", ":Fq" .. cr)
 
@@ -68,14 +68,9 @@ runCmd("<Leader>f", ":Fern . -reveal=% -drawer -toggle -width=30" .. cr)
 -- runCmd("", "" .. cr)
 -- runCmd("", "" .. cr)
 
--- :HopPattern: パターンと一致する部分にラベルをつける(/と同じ)
--- :HopChar1: 単一の文字を検索し、その部分にラベルをつける
--- :HopChar2: 2文字を検索し、その部分にラベルをつける
--- :HopLine: 行にラベルをつける
--- :HopLneStart: 行の最初の非空白文字にラベルをつける
-
 keymap("n", "<Leader><Leader>", ":FuzzyMotion" .. cr)
 keymap("n", "<F4>", ":MundoToggle" .. cr)
+keymap("n", "<Leader>t", ":lua require'mr-telescope'.mr()" .. cr)
 
 -- vim.keymap.set("c", "<Leader>", "<Plug>(kensaku-search-replace)" .. cr)
 vim.cmd("cnoremap <C-y> <Plug>(kensaku-search-replace)<CR>")
