@@ -15,7 +15,7 @@ mason.setup({
 	},
 })
 
-nvim_lsp.dartls.setup({})
+-- nvim_lsp.dartls.setup({})
 
 -- if is_node_repo then{{{
 -- 	nvim_lsp["tsserver"].setup({
@@ -96,6 +96,7 @@ mason_lspconfig.setup_handlers({
 					},
 				},
 			}
+			opts.cmd = { "deno", "lsp", "--unstable" }
 		elseif server_name == "elixirls" then
 			require("lspconfig").elixirls.setup({
 				-- Unix

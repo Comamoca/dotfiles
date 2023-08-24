@@ -62,7 +62,10 @@ on_source = ["nvim-lspconfig"]
 # nvim-cmp
 [[plugins]]
 repo = "hrsh7th/nvim-cmp"
-on_event = ["BufRead"]
+on_source = ["nvim-lspconfig"]
+# on_event = ["VimEnter"]
+# on_event = ["BufEnter"]
+# on_event = ["InsertEnter"]
 lua_source = """
 require("configs/nvim-cmp")
 """
@@ -124,9 +127,13 @@ require('cmp').setup {
 
 [[plugins]]
 repo = 'neovim/nvim-lspconfig'
-on_event = ["BufRead"]
+# on_event = ["VimEnter"]
+on_event = ["BufEnter"]
+# on_event = ["BufRead"]
+# on_event = ["InsertEnter"]
+# on_source = ["nvim-cmp"]
 lua_source = """
-require("config/lsp")
+require("configs/lsp")
 """
 
 [[plugins]]
@@ -180,3 +187,19 @@ vim.keymap.set('i', '<c-]>', function() return vim.fn['codeium#CycleCompletions'
 vim.keymap.set('i', '<c-x>', function() return vim.fn['codeium#Clear']() end, { expr = true })
 
 """
+
+# [[plugins]]
+# repo = 'https://github.com/tzachar/cmp-ai'
+# on_source = ["nvim-cmp"]
+# lua_source = """
+# require('cmp_ai.config'):setup({
+#     max_lines = 100,
+#     provider = 'HF',
+# 	run_on_every_keystroke = true,
+# 	ignored_file_types = {
+# 		-- default is not to ignore
+# 		-- uncomment to ignore in lua:
+# 		-- lua = true
+# 	},
+# })
+# """

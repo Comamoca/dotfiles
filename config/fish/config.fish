@@ -10,6 +10,7 @@ source ~/.wasmer/wasmer.sh
 
 set LUA_PATH ~/.luarocks/lib/ $LUA_PATH
 set LUA_PATH ~/.luarocks/lib/luarocks/rocks-5.4/ $LUA_PATH
+set -x BLOG_PATH ~/ghq/github.com/coma/blog/src/content/blog/
 
 zoxide init fish | source
 
@@ -42,8 +43,6 @@ alias gcl='g clone'
 alias gcz='g cz'
 alias grm='g rm'
 
-alias blog='cd /home/coma/ghq/github.com/coma/blog/src/content/blog && e'
-
 alias vimdiff='nvim -d'
 
 alias README='cp ~/ghq/github.com/Comamoca/baserepo/README.md ~/ghq/github.com/Comamoca/baserepo/README.ja.md .'
@@ -57,8 +56,15 @@ alias ":wqa"="exit"
 
 alias __recker='cd (recker)'
 alias cdf='cd (ls -d */ | sed "s/\///" | fzf)'
+alias tmp='cd (mktemp -d)'
 
 alias boost='deno run -A (string join "/" ~/.config/boost (/bin/ls ~/.config/boost/ | fzf --preview-window=down:70% --preview "bat --color=always (string join "/" ~/.config/boost {})"))'
+alias wiki="wikitool"
+alias blog='cd /home/coma/ghq/github.com/coma/blog/src/content/blog'
+alias new_post='touch (read title && string join "" (date "+%Y-%m-%d-") $title ".md")'
+
+# .bin scripts
+alias MIT="ruby ~/.bin/scripts/mit/mit.rb"
 
 export EDITOR=nvim
 # export PYTHONPATH=/home/coma/bundler/bundler/lib
@@ -77,7 +83,7 @@ export PATH="/home/coma/go/bin:$PATH"
 export PATH="/home/coma/local/:$PATH"
 
 
-set BAT_THEME "gruvbox-dark" $PATH
+set BAT_THEME "gruvbox-dark"
 set PATH /home/coma/$CARGO_HOME/bin/ $PATH
 set PATH /home/coma/.luarocks/bin/ $PATH
 
@@ -163,3 +169,5 @@ export PATH='/home/coma/.luarocks/bin:/home/coma/.rbenv/shims:/home/coma/.asdf/s
 # Wasmer
 export WASMER_DIR="/home/coma/.wasmer"
 [ -s "$WASMER_DIR/wasmer.sh" ] && source "$WASMER_DIR/wasmer.sh"
+
+rbenv init - fish | source

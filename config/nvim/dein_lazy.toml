@@ -1,6 +1,6 @@
 [[plugins]]
 repo= 'lilydjwg/colorizer'
-on_event = ["BufEnter"]
+on_event = ["/BufEnter"]
 
 [[plugins]]
 on_event = ["BufRead"]
@@ -48,11 +48,8 @@ require('Comment').setup()
 """
 
 [[plugins]]
-repo= 'folke/noice.nvim'
-
-[[plugins]]
 repo = "lukas-reineke/indent-blankline.nvim"
-on_event = ["BufEnter"]
+on_event = ["BufRead"]
 lua_source = """
 require("configs/blankline")
 """
@@ -215,7 +212,7 @@ require("configs/skkeleton")
 
 [[plugins]]
 repo = "https://github.com/phaazon/hop.nvim"
-on_event = ["BufEnter"]
+on_event = ["BufRead"]
 lua_source = """
 require("configs/hop")
 """
@@ -279,7 +276,7 @@ on_cmd = ["Fq"]
 
 [[plugins]]
 repo = 'simrat39/symbols-outline.nvim'
-on_event = ["VimEnter"]
+on_event = ["BufRead"]
 lua_source = """
 require("configs/outline")
 vim.cmd("au BufRead * :SymbolsOutlineOpen")
@@ -291,7 +288,7 @@ on_source = ["nvim-treesitter"]
 
 [[plugins]]
 repo = "https://github.com/SmiteshP/nvim-navic"
-on_event = ["VimEnter"]
+on_event = ["BufEnter"]
 lua_source = """
 local navic = require("nvim-navic")
 
@@ -339,30 +336,30 @@ navic.setup {
 
 [[plugins]]
 repo = 'nvim-lualine/lualine.nvim'
-on_event = ["VimEnter"]
+# on_event = ["VimEnter"]
 # on_source = ["nvim-web-devicons"]
 lua_source = """
-require("configs/lualine")
+-- require("configs/lualine")
 """
 
 [[plugins]]
 repo = 'https://github.com/nvim-tree/nvim-web-devicons'
-on_source = ["VimEnter"]
+on_source = ["BufRead"]
 lua_source = """
 require('nvim-web-devicons').setup()
 """
 
 [[plugins]]
 repo = 'https://github.com/simeji/winresizer'
-on_event = ["BufEnter"]
+on_event = ["BufRead"]
 
-[[plugins]]
-repo = 'https://github.com/utilyre/barbecue.nvim'
-on_source = ["nvim-navic"]
-# on_event = ["BufEnter"]
-lua_source = """
-require("configs/barbecue")
-"""
+# [[plugins]]
+# repo = 'https://github.com/utilyre/barbecue.nvim'
+# on_source = ["nvim-navic"]
+# # on_event = ["BufEnter"]
+# lua_source = """
+# require("configs/barbecue")
+# """
 
 [[plugins]]
 repo = 'https://github.com/yuki-yano/fuzzy-motion.vim'
@@ -393,10 +390,7 @@ require("nvim-surround").setup()
 
 [[plugins]]
 repo = "https://github.com/lambdalisue/mr.vim"
-on_event = ["VimEnter"]
-lua_source = """
-require("nvim-surround").setup({})
-"""
+on_event = ["BufRead"]
 
 [[plugins]]
 repo = "https://github.com/Comamoca/mr-telescope"
@@ -447,3 +441,93 @@ on_cmd = ["help"]
 [[plugins]]
 repo = "https://github.com/kyoh86/vim-ripgrep"
 on_event = ["BufEnter"]
+
+[[plugins]]
+repo = "https://github.com/lewis6991/satellite.nvim"
+on_event = ["BufEnter"]
+
+# [[plugins]]
+# repo = "https://github.com/epwalsh/obsidian.nvim"
+# on_event = ["BufEnter"]
+# lua_source = """
+#  require("obsidian").setup(
+#  dir = "~/ghq/github.com/Comamoca/note"
+#  )
+# """
+
+[[plugins]]
+repo = 'VonHeikemen/fine-cmdline.nvim'
+on_cmd = ["FineCmdline"]
+lua_source = """
+vim.api.nvim_set_keymap('n', ':', '<cmd>FineCmdline<CR>', {noremap = true})
+"""
+
+[[plugins]]
+repo = 'https://github.com/esensar/nvim-dev-container'
+on_cmd = [
+  "DevcontainerStart",
+  "DevcontainerAttach",
+  "DevcontainerExec",
+  "DevcontainerStop",
+  "DevcontainerStopAll",
+  "DevcontainerRemoveAll",
+  "DevcontainerLogs",
+  "DevcontainerEditNearestConfig"
+]
+lua_source = """
+require("devcontainer").setup{}
+"""
+
+[[plugins]]
+repo = 'https://github.com/rafcamlet/nvim-luapad'
+on_cmd = ["Luapad"]
+lua_source = """
+require('luapad').setup()
+"""
+
+[[plugins]]
+repo = 'https://github.com/svermeulen/nvim-teal-maker'
+on_cmd = ["TealBuild"]
+
+# [[plugins]]
+# repo = 'huggingface/hfcc.nvim'
+# on_event = ["BufEnter"]
+# lua_source = """
+# require('hfcc').setup({
+# model = "bigcode/starcoder",
+# accept_keymap = "<C-i>",
+# dismiss_keymap = "<C-o>",
+# max_context_after = 5000,
+# max_context_before = 5000,
+# tls_skip_verify_insecure = false,
+# })
+# """
+
+[[plugins]]
+repo = "folke/zen-mode.nvim"
+on_cmd = ["ZenMode"]
+lua_source = """
+require("configs/zen")
+"""
+
+# [[plugins]]
+# repo = "https://github.com/echasnovski/mini.nvim"
+# on_event = ["VimEnter"]
+# lua_source = """
+# require("configs/mini")
+# """
+
+[[plugins]]
+repo = "folke/noice.nvim"
+on_event = ["VimEnter"]
+lua_source = """
+require("configs/noice")
+"""
+
+[[plugins]]
+on_source = ["noice.nvim"]
+repo = "rcarriga/nvim-notify"
+
+[[plugins]]
+on_source = ["noice.nvim"]
+repo = "MunifTanjim/nui.nvim"
