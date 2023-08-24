@@ -32,7 +32,36 @@ end
 -- }}}
 local null_ls = require("null-ls")
 
+local h = require("null-ls.helpers")
+local u = require("null-ls.utils")
+local methods = require("null-ls.methods")
+
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+
+local FORMATTING = methods.internal.FORMATTING
+
+local gleam = h.make_builtin({
+	name = "gleam_format",
+	meta = {
+		url = "https://github.com/gleam-lang/gleam",
+		description = "The Gleam formatter.",
+	},
+	method = FORMATTING,
+	filetypes = { "gleam" },
+	generator_opts = {
+		command = "gleam",
+		args = {
+			"format",
+			"--stdin",
+		},
+		-- "$FILENAME",
+		to_stdin = true,
+		cwd = h.cache.by_bufnr(function(params)
+			return u.root_pattern("gleam.toml")(params.bufname)
+		end),
+	},
+	factory = h.formatter_factory,
+})
 
 require("null-ls").setup({
 	-- you can reuse a shared lspconfig on_attach callback here
@@ -117,11 +146,11 @@ require("null-ls").setup({
 		null_ls.builtins.formatting.mix,
 
 		--Ruby
-		null_ls.builtins.diagnostics.rubocop,
+		-- null_ls.builtins.diagnostics.rubocop,
 		null_ls.builtins.diagnostics.standardrb,
 		null_ls.builtins.formatting.standardrb,
 		null_ls.builtins.formatting.erb_format,
-		null_ls.builtins.formatting.erb_lint,
+		-- null_ls.builtins.formatting.erb_lint,
 
 		-- Crystal
 		null_ls.builtins.formatting.crystal_format,
@@ -138,6 +167,9 @@ require("null-ls").setup({
 
 		-- Haskel
 		null_ls.builtins.formatting.fourmolu,
+
+		-- Gleam
+		gleam,
 	},
 	on_attach = function(client, bufnr)
 		if client.supports_method("textDocument/formatting") then

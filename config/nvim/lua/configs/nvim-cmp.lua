@@ -73,6 +73,14 @@ local cmp = require("cmp")
 local lspkind = require("lspkind")
 local luasnip = require("luasnip")
 
+local source_mapping = {
+	buffer = "[Buffer]",
+	nvim_lsp = "[LSP]",
+	nvim_lua = "[Lua]",
+	cmp_ai = "[AI]",
+	path = "[Path]",
+}
+
 cmp.setup({
 	snippet = {
 		-- expand = function(args)
@@ -91,6 +99,7 @@ cmp.setup({
 		-- { name = "cmp_tabnine" },
 		{ name = "codeium" },
 		{ name = "emmet_vim" },
+		{ name = "cmp_ai" },
 	},
 	mapping = {
 		["<C-p>"] = cmp.mapping.select_prev_item(),
@@ -138,6 +147,30 @@ cmp.setup({
 			symbol_map = { Codeium = "" },
 		}),
 	},
+	-- formatting = {
+	-- 	format = function(entry, vim_item)
+	-- 		-- if you have lspkind installed, you can use it like
+	-- 		-- in the following line:
+	--  		vim_item.kind = lspkind.symbolic(vim_item.kind, {mode = "symbol"})
+	--  		vim_item.menu = source_mapping[entry.source.name]
+	--  		if entry.source.name == "cmp_ai" then
+	--
+	--                        local detail = (entry.completion_item.labelDetails or {}).detail
+	--  			vim_item.kind = ""
+	--  			if detail and detail:find('.*%%.*') then
+	--  				vim_item.kind = vim_item.kind .. ' ' .. detail
+	--  			end
+	--
+	--  			if (entry.completion_item.data or {}).multiline then
+	--  				vim_item.kind = vim_item.kind .. ' ' .. '[ML]'
+	--  			end
+	--  		end
+	--  		local maxwidth = 80
+	--  		vim_item.abbr = string.sub(vim_item.abbr, 1, maxwidth)
+	--  		return vim_item
+	--   end,
+	--  }
+	-- },
 	experimental = {
 		ghost_text = true,
 	},

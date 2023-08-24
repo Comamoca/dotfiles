@@ -74,3 +74,5 @@ keymap("n", "<Leader>t", ":lua require'mr-telescope'.mr()" .. cr)
 
 -- vim.keymap.set("c", "<Leader>", "<Plug>(kensaku-search-replace)" .. cr)
 vim.cmd("cnoremap <C-y> <Plug>(kensaku-search-replace)<CR>")
+-- keymap("n", ":", ":FineCmdline" .. cr)
+-- nnoremap : <cmd>FineCmdline<CR>

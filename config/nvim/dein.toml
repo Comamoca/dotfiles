@@ -8,14 +8,14 @@
 repo = 'vim-denops/denops.vim'
 
 #theme
-[[plugins]]
-repo = 'https://github.com/pierrechevalier83/labcoat.nvim'
+# [[plugins]]
+# repo = 'https://github.com/pierrechevalier83/labcoat.nvim'
 
 [[plugins]]
 repo = 'sainnhe/gruvbox-material'
 
-[[plugins]]
-repo = 'folke/tokyonight.nvim'
+# [[plugins]]
+# repo = 'folke/tokyonight.nvim'
 
 [[plugins]]
 repo = 'https://github.com/EdenEast/nightfox.nvim'
@@ -70,4 +70,7 @@ repo = 'nvim-lua/plenary.nvim'
 # """
 
 [[plugins]]
-repo ='MunifTanjim/nui.nvim'
+repo = "https://github.com/NLKNguyen/papercolor-theme"
+
+[[plugins]]
+repo = 'challenger-deep-theme/vim'
