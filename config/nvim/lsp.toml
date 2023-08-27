@@ -133,7 +133,7 @@ on_event = ["BufEnter"]
 # on_event = ["InsertEnter"]
 # on_source = ["nvim-cmp"]
 lua_source = """
-require("configs/lsp")
+require("configs/lspconfig")
 """
 
 [[plugins]]
