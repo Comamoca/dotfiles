@@ -3,91 +3,104 @@ if vim.loader then
 end
 vim.g.loaded_luv = true
 
--- dein.vim loading script
--- {{{
-local dein_dir = vim.env.HOME .. "/.cache/dein"
-local dein_repo_dir = dein_dir .. "/repos/github.com/Shougo/dein.vim"
+local dein = require("comatools/dein")
+require("comatools/lazyload")
 
-if not string.match(vim.o.runtimepath, "/dein.vim") then
-	if vim.fn.isdirectory(dein_repo_dir) ~= 1 then
-		os.execute("git clone https://github.com/Shougo/dein.vim " .. dein_repo_dir)
+local dein_toml_dir = "/home/coma/" .. ".config/nvim/"
+
+local dein_toml = dein_toml_dir .. "dein.toml"
+local dein_toml_lazy = dein_toml_dir .. "dein_lazy.toml"
+
+local function toTomlPath(filename)
+	return dein_toml_dir .. filename
+end
+
+dein.prelude(function()
+	dein.load_toml({
+		{
+			path = dein_toml,
+			lazy = 0,
+		},
+		{
+			path = dein_toml_lazy,
+			lazy = 1,
+		},
+		{
+			path = toTomlPath("lsp.toml"),
+			lazy = 1,
+		},
+		{
+			path = toTomlPath("ft.toml"),
+			lazy = 1,
+		},
+		{
+			path = toTomlPath("dap.toml"),
+			lazy = 1,
+		},
+		{
+			path = toTomlPath("ddu.toml"),
+			lazy = 1,
+		},
+		{
+			path = toTomlPath("openai.toml"),
+			lazy = 1,
+		},
+	})
+
+	-- vim.call("dein#begin", dein_dir)
+	local plugins = {
+		{
+			name = "~/ghq/github.com/Allianaab2m/vimskey",
+			config = function() end,
+		},
+		{
+			name = "~/ghq/github.com/coma/ddu-configs",
+			config = function() end,
+		},
+		{
+			name = "~/ghq/github.com/Comamoca/sandbox/sample_picker",
+			config = function() end,
+		},
+		{
+			name = "~/ghq/github.com/Comamoca/sandbox/ruby-plugin",
+			config = function() end,
+		},
+		{
+			name = "~/ghq/github.com/Comamoca/sandbox/denops-sample",
+			config = function() end,
+		},
+	}
+
+	for _, plugin in ipairs(plugins) do
+		dein.add(plugin.name)
 	end
-	vim.o.runtimepath = dein_repo_dir .. "," .. vim.o.runtimepath
-end
+end)
 
-if vim.call("dein#load_state", dein_dir) == 1 then
-	local dein_toml_dir = vim.env.HOME .. "/.config/nvim/"
+-- vim.call("dein#add", "~/ghq/github.com/coma/mr-telescope")
+-- vim.call("dein#add", "~/ghq/github.com/vim-denops/denops.vim")
+-- vim.call("dein#add", "~/ghq/github.com/coma/gpt.vim")
 
-	local dein_toml = dein_toml_dir .. "dein.toml"
-	local dein_toml_lazy = dein_toml_dir .. "dein_lazy.toml"
-
-	vim.call("dein#begin", dein_dir)
-	vim.call("dein#load_toml", dein_toml, { lazy = 0 })
-	vim.call("dein#load_toml", dein_toml_lazy, { lazy = 1 })
-	vim.call("dein#load_toml", dein_toml_dir .. "ddu.toml", { lazy = 1 })
-	vim.call("dein#load_toml", dein_toml_dir .. "lsp.toml", { lazy = 1 })
-	vim.call("dein#load_toml", dein_toml_dir .. "ft.toml", { lazy = 1 })
-	vim.call("dein#load_toml", dein_toml_dir .. "dap.toml", { lazy = 1 })
-	vim.call("dein#load_toml", dein_toml_dir .. "openai.toml", { lazy = 1 })
-
-	vim.call("dein#add", "~/ghq/github.com/Allianaab2m/vimskey")
-	vim.call("dein#add", "~/ghq/github.com/coma/ddu-configs")
-	vim.call("dein#add", "~/ghq/github.com/Comamoca/sandbox/sample_picker")
-	vim.call("dein#add", "~/ghq/github.com/coma/mr-telescope")
-	-- vim.call("dein#add", "~/ghq/github.com/vim-denops/denops.vim")
-	-- vim.call("dein#add", "~/ghq/github.com/coma/gpt.vim")
-
-	vim.call("dein#end")
-	vim.call("dein#save_state")
-end
--- }}}
+-- vim.call("dein#add", "~/ghq/github.com/coma/fmt.nvim")
 
 require("configs/cmds")
 require("configs/keybind")
-
 -- require("configs/splash")
-
-require("comatools/lazyload")
 require("comatools/kit")
 require("comatools/cloma")
--- require("comatools/color")
--- base
+
 vim.scriptencoding = "utf-8"
--- vim.wo.number = true
 
 vim.g.gruvbox_material_transparent_background = 1
 
 if not vim.g.vscode then
-	-- vim.cmd.colorscheme("gruvbox-material")
+	vim.cmd.colorscheme("gruvbox-material")
 	-- vim.cmd.colorscheme("labcoat")
-	vim.cmd.colorscheme("neodark")
+	-- vim.cmd.colorscheme("neodark")
 	-- vim.cmd.colorscheme("terafox")
 	-- vim.cmd.colorscheme("nordfox")
 	-- vim.cmd.colorscheme("gotham")
+	-- vim.cmd.colorscheme("challenger_deep")
 end
-
--- require("base16-colorscheme").setup({
--- 	base00 = "#3B3228",
--- 	base01 = "#534636",
--- 	base02 = "#645240",
--- 	base03 = "#7e705a",
--- 	base04 = "#b8afad",
--- 	base05 = "#d0c8c6",
--- 	base06 = "#e9e1dd",
--- 	base07 = "#f5eeeb",
--- 	base08 = "#cb6077",
--- 	base09 = "#d28b71",
--- 	base0A = "#f4bc87",
--- 	base0B = "#beb55b",
--- 	base0C = "#7bbda4",
--- 	base0D = "#8ab3b5",
--- 	base0E = "#a89bb9",
--- 	base0F = "#bb9584",
--- })
-
--- vim.cmd.colorscheme("everforest")
--- vim.cmd.colorscheme("gruvbox")
--- vim.cmd.colorscheme("habamax")
 
 vim.opt.termguicolors = true
 
@@ -121,23 +134,9 @@ LazyLoad("VimEnter", function()
 	vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
 end)
 
--- LazyLoad("FileType  cotowali", function()
--- 	require("configs/kuqi")
--- end)
-
 vim.opt.laststatus = 0
 
 vim.g.seiya_auto_enable = 1
-
--- vim.api.nvim_create_augroup("lua", {})
--- vim.api.nvim_create_autocmd({ "FileType  *.go" }, {
--- 	group = "lua",
--- 	callback = function()
--- 		vim.opt.wrap = false
--- 	end,
--- })
-
--- vim.api.nvim_create_augroup("crystal", {})
 
 vim.cmd([[
 " au BufRead,BufNewFile *.ex,*.exs set filetype=elixir
@@ -151,6 +150,7 @@ au BufRead,FileType  *.cr set filetype=crystal
 au BufRead,FileType  *.v set filetype=v
 au BufRead,FileType  *.hx set filetype=haxe
 au BufRead,FileType  *.vsh set filetype=vsh
+" au BufRead,FileType  *.tl set filetype=teal
 
 au BufRead,FileType  *.nim set foldmethod=marker
 
@@ -160,10 +160,8 @@ autocmd TermOpen * setlocal nonumber
 ]])
 
 vim.g.comfortable_motion_no_default_key_mappings = 1
--- vim.cmd [[highlight IndentBlanklineChar guifg=#56B6C2 gui=nocombine]]
 
--- vim.cmd("let g:denops_server_addr = '127.0.0.1:32123'")
--- vim.cmd("let g:denops#debug = 1")
+-- enable denops debugmode
 -- vim.cmd("let g:denops_server_addr = '127.0.0.1:32123'")
 -- vim.cmd("let g:denops#debug = 1")
 
@@ -198,3 +196,5 @@ function dump(o)
 		return tostring(o)
 	end
 end
+
+vim.opt.cmdheight = 0
