@@ -2,12 +2,6 @@ local function add(package)
 	vim.call("dein#add", package)
 end
 
--- local function load_toml(table)
--- 	for _, toml in ipairs(table) do
--- 		vim.call("dein#load_toml", toml.path, { lazy = toml.lazy })
--- 	end
--- end
-
 local function load_toml(table)
 	for _, toml in ipairs(table) do
 		-- print(string.format("installing %s lazy = %d", toml.path, toml.lazy))
