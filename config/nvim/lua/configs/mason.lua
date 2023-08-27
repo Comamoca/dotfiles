@@ -40,10 +40,6 @@ mason.setup({
 -- 	})
 -- end}}}
 
-local opts = {}
-
-local check = vim.fn.getftype
-
 -- require("mason-lspconfig").setup_handlers({
 -- 	function(server)
 -- 		local opt = {
@@ -81,8 +77,7 @@ mason_lspconfig.setup_handlers({
 				return
 			end
 
-			opts.root_dir = nvim_lsp.util.root_pattern("deno.json", "deno.jsonc", "deps.ts",
-				"import_map.json")
+			opts.root_dir = nvim_lsp.util.root_pattern("deno.json", "deno.jsonc", "deps.ts", "import_map.json")
 			opts.init_options = {
 				lint = true,
 				unstable = true,
@@ -141,7 +136,7 @@ vim.keymap.set("n", "g[", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
 
 -- LSP handlers
 vim.lsp.handlers["textDocument/publishDiagnostics"] =
-    vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, { virtual_text = true })
+	vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, { virtual_text = true })
 
 -- vim.cmd([[
 -- highlight LspDiagnosticsSignError ctermbg=9 ctermfg=15
