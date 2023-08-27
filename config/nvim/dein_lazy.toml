@@ -219,7 +219,7 @@ require("configs/hop")
 
 [[plugins]]
 repo = 'https://github.com/miyakogi/seiya.vim'
-on_event = ["VimEnter"]
+on_event = ["BufEnter"]
 lua_source = """
 vim.g.seiya_auto_enable=1
 vim.cmd("let g:seiya_target_groups = has('nvim') ? ['guibg'] : ['ctermbg']")
@@ -334,13 +334,13 @@ navic.setup {
 
 """
 
-[[plugins]]
-repo = 'nvim-lualine/lualine.nvim'
+# [[plugins]]
+# repo = 'nvim-lualine/lualine.nvim'
 # on_event = ["VimEnter"]
 # on_source = ["nvim-web-devicons"]
-lua_source = """
--- require("configs/lualine")
-"""
+# lua_source = """
+#  require("configs/lualine")
+# """
 
 [[plugins]]
 repo = 'https://github.com/nvim-tree/nvim-web-devicons'
