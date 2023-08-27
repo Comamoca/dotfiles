@@ -5,6 +5,7 @@ set PATH ~/ghq/github.com/emscripten-core/emsdk $PATH
 set PATH ~/ghq/github.com/emscripten-core/emsdk/upstream/emscripten $PATH
 set PATH ~/.codon/bin $PATH
 set PATH ~/.rye/shims/ $PATH
+set PATH ~/.local/share/gem/ruby/3.0.0/bin $PATH
 set PATH ~/.local/share/gem/ruby/3.0.0/bin/ $PATH
 source ~/.wasmer/wasmer.sh
 
@@ -60,8 +61,8 @@ alias tmp='cd (mktemp -d)'
 
 alias boost='deno run -A (string join "/" ~/.config/boost (/bin/ls ~/.config/boost/ | fzf --preview-window=down:70% --preview "bat --color=always (string join "/" ~/.config/boost {})"))'
 alias wiki="wikitool"
-alias blog='cd /home/coma/ghq/github.com/coma/blog/src/content/blog'
-alias new_post='touch (read title && string join "" (date "+%Y-%m-%d-") $title ".md")'
+alias BLOG='cd (ruby ~/ghq/github.com/coma/blogtool/blogtool.rb path)'
+alias blog='ruby ~/ghq/github.com/coma/blogtool/blogtool.rb'
 
 # .bin scripts
 alias MIT="ruby ~/.bin/scripts/mit/mit.rb"
@@ -171,3 +172,6 @@ export WASMER_DIR="/home/coma/.wasmer"
 [ -s "$WASMER_DIR/wasmer.sh" ] && source "$WASMER_DIR/wasmer.sh"
 
 rbenv init - fish | source
+
+# opam configuration
+source /home/coma/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
