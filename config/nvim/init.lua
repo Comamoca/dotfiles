@@ -16,6 +16,15 @@ local function toTomlPath(filename)
 end
 
 dein.prelude(function()
+	-- vim.call("dein#load_toml", dein_toml, { lazy = 0 })
+	-- vim.call("dein#load_toml", dein_toml_lazy, { lazy = 1 })
+
+	-- vim.call("dein#load_toml", toTomlPath("lsp.toml"), { lazy = 1 })
+	-- vim.call("dein#load_toml", toTomlPath("ft.toml"), { lazy = 1 })
+	-- vim.call("dein#load_toml", toTomlPath("dap.toml"), { lazy = 1 })
+	-- vim.call("dein#load_toml", toTomlPath("ddu.toml"), { lazy = 1 })
+	-- vim.call("dein#load_toml", toTomlPath("openai.toml"), { lazy = 1 })
+
 	dein.load_toml({
 		{
 			path = dein_toml,
@@ -47,7 +56,13 @@ dein.prelude(function()
 		},
 	})
 
-	-- vim.call("dein#begin", dein_dir)
+	-- dein.add("~/ghq/github.com/Allianaab2m/vimskey")
+	-- dein.add("~/ghq/github.com/coma/ddu-configs")
+	-- dein.add("~/ghq/github.com/Comamoca/sandbox/sample_picker")
+	-- dein.add("~/ghq/github.com/Comamoca/sandbox/ruby-plugin")
+	-- dein.add("~/ghq/github.com/Comamoca/sandbox/denops-sample")
+
+	vim.call("dein#begin", dein_dir)
 	local plugins = {
 		{
 			name = "~/ghq/github.com/Allianaab2m/vimskey",
