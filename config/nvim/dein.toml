@@ -74,3 +74,10 @@ repo = "https://github.com/NLKNguyen/papercolor-theme"
 
 [[plugins]]
 repo = 'challenger-deep-theme/vim'
+
+[[plugins]]
+# on_source = ["dapui"]
+repo = "https://github.com/mfussenegger/nvim-dap"
+lua_source = """
+require("configs/dap")
+"""

@@ -1,3 +1,4 @@
+require("configs/ddu-kind")
 local sugar = require("comatools/sugar")
 
 local ddu_patch_global = sugar.ddu_patch_global

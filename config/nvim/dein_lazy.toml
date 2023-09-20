@@ -2,16 +2,23 @@
 repo= 'lilydjwg/colorizer'
 on_event = ["/BufEnter"]
 
-[[plugins]]
-on_event = ["BufRead"]
-repo = 'jose-elias-alvarez/null-ls.nvim'
-lua_source = """
-require("configs/null-ls")
-"""
+# [[plugins]]
+# on_event = ["BufRead"]
+# repo = 'jose-elias-alvarez/null-ls.nvim'
+# lua_source = """
+# require("configs/null-ls")
+# """
+
+# [[plugins]]
+# repo = 'jay-babu/mason-null-ls.nvim'
+# on_source = ["null-ls.nvim"]
 
 [[plugins]]
-repo = 'jay-babu/mason-null-ls.nvim'
-on_source = ["null-ls.nvim"]
+repo = 'mhartington/formatter.nvim'
+on_event = ["BufRead"]
+lua_source = """
+require("configs/formatter")
+"""
 
 [[plugins]]
 repo = "segeljakt/vim-silicon"
@@ -174,7 +181,8 @@ on_event = ["BufRead"]
 
 [[plugins]]
 repo = "https://github.com/HiPhish/nvim-ts-rainbow2"
-on_event = ["BufRead"]
+# on_event = ["BufRead"]
+on_source = ["nvim-treesitter"]
 lua_source = """
 require('nvim-treesitter.configs').setup {
   rainbow = {
@@ -187,7 +195,8 @@ require('nvim-treesitter.configs').setup {
 
 [[plugins]]
 repo = "https://github.com/JoosepAlviste/nvim-ts-context-commentstring"
-on_event = ["BufRead"]
+# on_event = ["BufRead"]
+on_source = ["nvim-treesitter"]
 lua_source = """
 require'nvim-treesitter.configs'.setup {
   context_commentstring = {
@@ -198,7 +207,8 @@ require'nvim-treesitter.configs'.setup {
 
 [[plugins]]
 repo= 'https://github.com/nvim-treesitter/nvim-treesitter'
-on_event = ["BufRead"]
+on_event = ["BufEnter"]
+# on_event = ["VimEnter"]
 lua_source = """
 require("configs/treesitter")
 """
@@ -227,7 +237,8 @@ vim.cmd("let g:seiya_target_groups = has('nvim') ? ['guibg'] : ['ctermbg']")
 
 [[plugins]]
 repo = "https://github.com/nvim-treesitter/nvim-treesitter-context"
-on_event = ["BufRead"]
+# on_event = ["BufRead"]
+on_source = ["nvim-treesitter"]
 lua_source = """
 require'treesitter-context'.setup{
   enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
@@ -271,8 +282,11 @@ repo = "https://github.com/Shougo/dda.vim"
 on_event = ["BufRead"]
 
 [[plugins]]
-repo = "junegunn/fzf.vim"
-on_cmd = ["Fq"]
+repo = "https://github.com/ibhagwan/fzf-lua"
+on_event = ["BufEnter"]
+on_surce = """
+require("configs/fzf")
+"""
 
 [[plugins]]
 repo = 'simrat39/symbols-outline.nvim'
@@ -525,9 +539,36 @@ require("configs/noice")
 """
 
 [[plugins]]
-on_source = ["noice.nvim"]
 repo = "rcarriga/nvim-notify"
+on_source = ["noice.nvim"]
 
 [[plugins]]
-on_source = ["noice.nvim"]
 repo = "MunifTanjim/nui.nvim"
+on_source = ["noice.nvim"]
+
+[[plugins]]
+repo = "https://github.com/stevearc/conform.nvim"
+on_event = ["VimEnter"]
+lua_source = """
+require("configs/conform")
+"""
+
+# [[plugins]]
+# repo = "https://github.com/mattn/vim-koukoku-chat"
+# on_cmd = ["KoukokuChat"]
+
+# [[plugins]]
+# repo = "https://github.com/mfussenegger/nvim-dap"
+# on_source = ["mason"]
+# lua_source = """
+# require("configs/dap")
+# """
+#
+# [[plugins]]
+# repo = "https://github.com/rcarriga/nvim-dap-ui"
+# on_source = ["nvim-dap"]
+# lua_source = """
+# require("neodev").setup({
+#   library = { plugins = { "nvim-dap-ui" }, types = true },
+# })
+# """

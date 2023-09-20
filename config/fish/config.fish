@@ -7,6 +7,8 @@ set PATH ~/.codon/bin $PATH
 set PATH ~/.rye/shims/ $PATH
 set PATH ~/.local/share/gem/ruby/3.0.0/bin $PATH
 set PATH ~/.local/share/gem/ruby/3.0.0/bin/ $PATH
+set PATH /home/coma/.kiex/elixirs/elixir-1.14/bin/ $PATH
+
 source ~/.wasmer/wasmer.sh
 
 set LUA_PATH ~/.luarocks/lib/ $LUA_PATH
@@ -175,3 +177,4 @@ rbenv init - fish | source
 
 # opam configuration
 source /home/coma/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
+source "$HOME/.kiex/scripts/kiex.fish"
