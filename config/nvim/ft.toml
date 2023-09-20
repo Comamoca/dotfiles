@@ -5,9 +5,7 @@
 repo = 'mhanberg/elixir.nvim'
 on_ft = ["elixir", "eex", "heex", "surface"]
 lua_source = """
--- require("elixir").setup({
---   cmd = "/home/coma/ghq/github.com/elixir-lsp/elixir-ls/release/language_server.sh",
--- })
+require("configs/elixir-tools")
 """
 
 [[plugins]]
@@ -83,6 +81,9 @@ on_ft = ["svelte"]
 [[plugins]]
 repo = 'https://github.com/ziglang/zig.vim'
 on_ft = ["zig"]
+lua_source = """
+vim.cmd("let g:zig_fmt_autosave = 0")
+"""
 
 [[plugins]]
 repo = 'elixir-editors/vim-elixir'

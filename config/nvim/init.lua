@@ -16,86 +16,88 @@ local function toTomlPath(filename)
 end
 
 dein.prelude(function()
-	-- vim.call("dein#load_toml", dein_toml, { lazy = 0 })
-	-- vim.call("dein#load_toml", dein_toml_lazy, { lazy = 1 })
+	vim.call("dein#load_toml", dein_toml, { lazy = 0 })
+	vim.call("dein#load_toml", dein_toml_lazy, { lazy = 1 })
 
-	-- vim.call("dein#load_toml", toTomlPath("lsp.toml"), { lazy = 1 })
-	-- vim.call("dein#load_toml", toTomlPath("ft.toml"), { lazy = 1 })
-	-- vim.call("dein#load_toml", toTomlPath("dap.toml"), { lazy = 1 })
-	-- vim.call("dein#load_toml", toTomlPath("ddu.toml"), { lazy = 1 })
-	-- vim.call("dein#load_toml", toTomlPath("openai.toml"), { lazy = 1 })
+	vim.call("dein#load_toml", toTomlPath("lsp.toml"), { lazy = 1 })
+	vim.call("dein#load_toml", toTomlPath("ft.toml"), { lazy = 1 })
+	vim.call("dein#load_toml", toTomlPath("dap.toml"), { lazy = 1 })
+	vim.call("dein#load_toml", toTomlPath("ddu.toml"), { lazy = 1 })
+	vim.call("dein#load_toml", toTomlPath("openai.toml"), { lazy = 1 })
 
-	dein.load_toml({
-		{
-			path = dein_toml,
-			lazy = 0,
-		},
-		{
-			path = dein_toml_lazy,
-			lazy = 1,
-		},
-		{
-			path = toTomlPath("lsp.toml"),
-			lazy = 1,
-		},
-		{
-			path = toTomlPath("ft.toml"),
-			lazy = 1,
-		},
-		{
-			path = toTomlPath("dap.toml"),
-			lazy = 1,
-		},
-		{
-			path = toTomlPath("ddu.toml"),
-			lazy = 1,
-		},
-		{
-			path = toTomlPath("openai.toml"),
-			lazy = 1,
-		},
-	})
+	-- dein.load_toml({
+	-- 	{
+	-- 		path = dein_toml,
+	-- 		lazy = 0,
+	-- 	},
+	-- 	{
+	-- 		path = dein_toml_lazy,
+	-- 		lazy = 1,
+	-- 	},
+	-- 	{
+	-- 		path = toTomlPath("lsp.toml"),
+	-- 		lazy = 1,
+	-- 	},
+	-- 	{
+	-- 		path = toTomlPath("ft.toml"),
+	-- 		lazy = 1,
+	-- 	},
+	-- 	{
+	-- 		path = toTomlPath("dap.toml"),
+	-- 		lazy = 1,
+	-- 	},
+	-- 	{
+	-- 		path = toTomlPath("ddu.toml"),
+	-- 		lazy = 1,
+	-- 	},
+	-- 	{
+	-- 		path = toTomlPath("openai.toml"),
+	-- 		lazy = 1,
+	-- 	},
+	-- })
 
-	-- dein.add("~/ghq/github.com/Allianaab2m/vimskey")
-	-- dein.add("~/ghq/github.com/coma/ddu-configs")
-	-- dein.add("~/ghq/github.com/Comamoca/sandbox/sample_picker")
-	-- dein.add("~/ghq/github.com/Comamoca/sandbox/ruby-plugin")
-	-- dein.add("~/ghq/github.com/Comamoca/sandbox/denops-sample")
+	dein.add("~/ghq/github.com/Allianaab2m/vimskey")
+	dein.add("~/ghq/github.com/coma/ddu-configs")
+	dein.add("~/ghq/github.com/Comamoca/sandbox/sample_picker")
+	dein.add("~/ghq/github.com/Comamoca/sandbox/ruby-plugin")
+	dein.add("~/ghq/github.com/Comamoca/sandbox/denops-sample")
 
-	vim.call("dein#begin", dein_dir)
-	local plugins = {
-		{
-			name = "~/ghq/github.com/Allianaab2m/vimskey",
-			config = function() end,
-		},
-		{
-			name = "~/ghq/github.com/coma/ddu-configs",
-			config = function() end,
-		},
-		{
-			name = "~/ghq/github.com/Comamoca/sandbox/sample_picker",
-			config = function() end,
-		},
-		{
-			name = "~/ghq/github.com/Comamoca/sandbox/ruby-plugin",
-			config = function() end,
-		},
-		{
-			name = "~/ghq/github.com/Comamoca/sandbox/denops-sample",
-			config = function() end,
-		},
-	}
+	-- dein.add("~/ghq/github.com/coma/fmt.denops")
+	dein.add("~/ghq/github.com/coma/koukoku-chat.denops/")
+	dein.add("~/ghq/github.com/coma/memos.denops")
 
-	for _, plugin in ipairs(plugins) do
-		dein.add(plugin.name)
-	end
+	-- vim.call("dein#begin", dein_dir)
+	-- local plugins = {
+	-- 	{
+	-- 		name = "~/ghq/github.com/Allianaab2m/vimskey",
+	-- 		config = function() end,
+	-- 	},
+	-- 	{
+	-- 		name = "~/ghq/github.com/coma/ddu-configs",
+	-- 		config = function() end,
+	-- 	},
+	-- 	{
+	-- 		name = "~/ghq/github.com/Comamoca/sandbox/sample_picker",
+	-- 		config = function() end,
+	-- 	},
+	-- 	{
+	-- 		name = "~/ghq/github.com/Comamoca/sandbox/ruby-plugin",
+	-- 		config = function() end,
+	-- 	},
+	-- 	{
+	-- 		name = "~/ghq/github.com/Comamoca/sandbox/denops-sample",
+	-- 		config = function() end,
+	-- 	},
+	-- }
+	--
+	-- for _, plugin in ipairs(plugins) do
+	-- 	dein.add(plugin.name)
+	-- end
 end)
 
 -- vim.call("dein#add", "~/ghq/github.com/coma/mr-telescope")
 -- vim.call("dein#add", "~/ghq/github.com/vim-denops/denops.vim")
 -- vim.call("dein#add", "~/ghq/github.com/coma/gpt.vim")
-
--- vim.call("dein#add", "~/ghq/github.com/coma/fmt.nvim")
 
 require("configs/cmds")
 require("configs/keybind")

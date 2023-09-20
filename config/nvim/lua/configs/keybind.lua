@@ -30,8 +30,11 @@ keymap("t", "<ESC>", "<C-\\><C-n>", opts)
 -- runCmd("<C-u>", ":Telescope commands")
 -- runCmd("<C-g>", ":Telescope live_grep")
 
-runCmd("<C-i>", ":Ddu buffer")
-runCmd("<C-o>", ":Ddu file_rec")
+-- runCmd("<C-i>", ":Ddu buffer")
+-- runCmd("<C-o>", ":Ddu file_rec")
+
+runCmd("<C-i>", ":Telescope buffers")
+runCmd("<C-o>", ":Telescope find_files")
 
 runCmd("sp", ":split")
 runCmd("sv", ":vs")
@@ -65,6 +68,7 @@ runCmd("<C-u>", ":Fq" .. cr)
 keymap("i", "<C-s>", "<C-o>:w" .. "<CR>", opts)
 runCmd("<Leader>s", ":SymbolsOutline" .. cr)
 runCmd("<Leader>f", ":Fern . -reveal=% -drawer -toggle -width=30" .. cr)
+runCmd("<Leader>l", ":HopAnywhereCurrentLine")
 -- runCmd("", "" .. cr)
 -- runCmd("", "" .. cr)
 

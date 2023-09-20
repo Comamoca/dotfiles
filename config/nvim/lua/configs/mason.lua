@@ -2,6 +2,24 @@ local mason = require("mason")
 local mason_lspconfig = require("mason-lspconfig")
 local nvim_lsp = require("lspconfig")
 
+-- local nextls = {
+-- default_config = {
+-- 	cmd = { "/home/coma/.cache/nvim/elixir-tools.nvim/installs/elixir-lsp/elixir-ls/tags_v0.15.1/1.15.0-26/language_server.sh" },
+-- 	filetypes = { "elixir" },
+-- 	root_dir = function(fname)
+-- 		return nvim_lsp.root_pattern(".git")(fname)
+-- 	end,
+-- 	single_file_support = true,
+-- },
+-- docs = {
+-- 	description = [[
+-- 	]],
+-- 	default_config = {
+-- 		root_dir = [[root_pattern(".git")]],
+-- 	},
+-- }
+-- }
+
 mason.setup({
 	ui = {
 		icons = {
@@ -110,6 +128,14 @@ mason_lspconfig.setup_handlers({
 					},
 				},
 			})
+-- 			elseif server_name == "elixirls" then
+-- vim.tbl_deep_extend("keep", nvim_lsp, {
+-- 	lsp_name = {
+-- 		cmd = { '/home/coma/.cache/nvim/elixir-tools.nvim/installs/elixir-lsp/elixir-ls/tags_v0.15.1/1.15.0-26/language_server.sh' },
+-- 		filetypes = 'elixir',
+-- 		name = 'elixirls',
+-- 	}
+-- })
 		end
 
 		opts.on_attach = function(_, bufnr)
