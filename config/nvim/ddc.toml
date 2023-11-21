@@ -1,48 +1,170 @@
-# ddu.vim
+# AutoComplete plugin
 [[plugins]]
-repo = 'Shougo/ddu.vim'
-on_event = ["VimEnter"]
+repo = 'Shougo/ddc.vim'
+# on_event = ['InsertEnter']
+on_event = ['BufRead', 'CursorHold']
+# on_event = ['BufEnter']
+depends = ['denops.vim']
+lua_source = '''
+    -- require("configs/ddc")
+    local ddc_custom_patch_global = vim.fn["ddc#custom#patch_global"]
+
+    ddc_custom_patch_global("ui", "native")
+    -- vim.fn["ddc#custom#patch_global"]('completionMenu', 'pum.vim')
+
+    ddc_custom_patch_global("sources", { "nvim-lsp", "around", "file" })
+    ddc_custom_patch_global("sourceOptions", {
+      _ = {
+        matchers = { "matcher_head" },
+        sorters = { "sorter_rank" },
+      },
+      around = { mark = "around" },
+      ["nvim-lsp"] = {
+        mark = "LSP",
+        forceCompletionPattern = ".w*|:w*|->w*",
+      },
+      path = {
+        mark = "P",
+      },
+      file = {
+        mark = "F",
+        isVolatile = true,
+        forceCompletionPattern = [[\S/\S*]],
+      },
+    })
+
+    vim.fn["ddc#custom#patch_filetype"](
+      { "ps1", "dosbatch", "autohotkey", "registry" },
+      {
+        sourceOptions = {
+          file = {
+            forceCompletionPattern = [[\S\\\S*]],
+          },
+        },
+        sourceParams = {
+          file = {
+            mode = "win32",
+          },
+        },
+      }
+    )
+
+    -- ddc_custom_patch_global("sourceParams", {
+    -- 	["nvim-lsp"] = { kindLabels = { Class = "c" } },
+    -- })
+
+    ddc_custom_patch_global("sourceParams", {
+      ["nvim-lsp"] = {
+        snippetEngine = vim.fn["denops#callback#register"](function(body)
+          vim.fn["vsnip#anonymous"](body)
+        end),
+        enableResolveItem = true,
+        enableAdditionalTextEdit = true,
+      },
+      path = {
+        cmd = { "fd", "--max-depth", "5" },
+      },
+    })
+
+    vim.fn["ddc#enable"]()
+
+    vim.cmd([[
+    inoremap <expr> <TAB>
+    	\ pumvisible() ? '<C-n>' :
+    	\ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
+    	\ '<TAB>' : ddc#map#manual_complete()
+    ]])
+
+    vim.api.nvim_create_autocmd("InsertEnter", {
+      callback = function(event)
+        vim.keymap.set({ "i", "s" }, "<Tab>", function()
+          return vim.fn["vsnip#available"](1) == 1 and "<Plug>(vsnip-expand-or-jump)" or "<C-l>"
+        end, { expr = true, noremap = false })
+
+        vim.keymap.set({ "i", "s" }, "<C-k>", function()
+          return vim.fn["vsnip#jumpable"](1) == 1 and "<Plug>(vsnip-jump-next)" or "<Tab>"
+        end, { expr = true, noremap = false })
+
+        vim.keymap.set({ "i", "s" }, "<C-j>", function()
+          return vim.fn["vsnip#jumpable"](-1) == 1 and "<Plug>(vsnip-jump-prev)" or "<S-Tab>"
+        end, { expr = true, noremap = false })
+
+        vim.keymap.set({ "n", "s" }, "<s>", [[<Plug>(vsnip-select-text)]], { expr = true, noremap = false })
+        vim.keymap.set({ "n", "s" }, "<S>", [[<Plug>(vsnip-cut-text)]], { expr = true, noremap = false })
+
+        -- imap <expr><CR>   pumvisible() ? '<C-y>'   : '<CR>'
+        vim.keymap.set("i", "<CR>", function()
+          if vim.fn.pumvisible() == 1 then
+            return "<C-y>"
+          else
+            return "<CR>"
+          end
+        end, { expr = true })
+      end,
+    })
+'''
 
 [[plugins]]
-repo = 'Shougo/ddu-commands.vim'
-on_source = ["ddu.vim"]
-
-# ui
-[[plugins]]
-repo = 'Shougo/ddu-ui-ff'
-on_source = ["ddu.vim"]
+repo = 'Shougo/ddc-ui-native'
+on_source = 'ddc.vim'
 
 [[plugins]]
-repo = 'Shougo/ddu-ui-filer'
-on_source = ["ddu.vim"]
-
-# source
-[[plugins]]
-repo = 'Shougo/ddu-source-file_rec'
-on_source = ["ddu.vim"]
+repo = "uga-rosa/ddc-source-vsnip"
+on_source = 'ddc.vim'
 
 [[plugins]]
-repo = 'shun/ddu-source-rg'
-on_source = ["ddu.vim"]
+repo = 'Shougo/ddc-around'
+on_source = 'ddc.vim'
 
 [[plugins]]
-repo = 'shun/ddu-source-buffer'
-on_source = ["ddu.vim"]
+repo = 'Shougo/ddc-matcher_head'
+on_source = 'ddc.vim'
 
 [[plugins]]
-repo = 'Shougo/ddu-source-file'
-on_source = ["ddu.vim"]
+repo = 'Shougo/ddc-sorter_rank'
+on_source = 'ddc.vim'
 
 [[plugins]]
-repo = 'liquidz/ddu-source-custom-list'
-on_source = ["ddu.vim"]
+repo = "Shougo/ddc-source-nvim-lsp"
+on_source = 'nvim-lspconfig'
 
-# matcher
 [[plugins]]
-repo = 'Shougo/ddu-filter-matcher_substring'
-on_source = ["ddu.vim"]
+repo = "uga-rosa/ddc-nvim-lsp-setup"
+on_source = 'nvim-lspconfig'
+# on_source = 'ddc.vim'
 
-# kind
 [[plugins]]
-repo = 'Shougo/ddu-kind-file'
-on_source = ["ddu.vim"]
+repo = 'matsui54/denops-signature_help'
+on_source = 'ddc.vim'
+lua_source = '''
+ vim.fn["signature_help#enable"]()
+'''
+
+[[plugins]]
+repo = 'matsui54/denops-popup-preview.vim'
+on_source = 'ddc.vim'
+lua_source = '''
+ vim.fn["popup_preview#enable"]()
+'''
+
+# [[plugins]]
+# repo = 'tani/ddc-path'
+# on_source = 'ddc.vim'
+
+[[plugins]]
+repo = 'LumaKernel/ddc-source-file'
+on_source = 'ddc.vim'
+
+# Snippet Engine
+[[plugins]]
+repo = 'hrsh7th/vim-vsnip'
+on_source = 'ddc.vim'
+lua_source = """
+vim.g.vsnip_filetypes = {
+	javascriptreact = "javascript",
+	typescriptreact = "typescript",
+}
+
+vim.g.vsnip_snippet_dir = vim.fn.expand("~/.config/nvim/snippets")
+vim.g.vsnip_snippet_dirs = {vim.fn.expand("~/.cache/dpp/repos/github.com/rafamadriz/friendly-snippets")}
+"""

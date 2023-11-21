@@ -1,130 +1,136 @@
-require("configs/ddu-kind")
-local sugar = require("comatools/sugar")
+local filename = debug.getinfo(1).source:match("[^/]*$")
+print(string.format("[[WARN]] @%s loading outside config file.", filename))
+---
 
-local ddu_patch_global = sugar.ddu_patch_global
-local imap = sugar.imap
-local nmap = sugar.nmap
+local keymap = vim.keymap.set
 
-ddu_patch_global({
-	ui = "ff",
-	uiParams = {
-		ff = {
-			previewFloating = true,
-			previewFloatingBorder = "single",
-			split = "floating",
-		},
-	},
+local ddu_custom_patch_global = vim.fn["ddu#custom#patch_global"]
+-- local ddu_ui_ff_do_action = vim.fn["ddu#ui#ff#do_action"]
+-- local ddu_item_action = vim.fn["ddu#item_action"]
+-- local ddu_ui_ff_execute = vim.fn["ddu#ui#ff#execute"]
+
+local keymap_opt = { buffer = true, silent = true }
+
+local columns = vim.opt.columns:get()
+local width, col = math.floor(columns * 0.8), math.floor(columns * 0.12)
+
+ddu_custom_patch_global({
+  ui = "ff",
+  sources = {
+    {
+      -- default source
+      name = "file_rec",
+      params = {
+        ignoredDirectories = { ".git", "node_modules", "vendor", ".next"},
+      },
+    },
+  },
+  sourceOptions = {
+    _ = {
+      matchers = { "matcher_substring" },
+    },
+  },
+  filterParams = {
+    matcher_substring = {
+      highlightMatched = "Title",
+    },
+  },
+  kindOptions = {
+    file = {
+      defaultAction = "open",
+    },
+    buffer = {
+      defaultAction = "open",
+    },
+  },
+  uiParams = {
+    ff = {
+      startFilter = true,
+      prompt = "* ",
+      -- prompt = " ",
+      split = "floating",
+      previewFloating = true,
+      previewSplit = "vertical",
+      previewFloatingBorder = "single",
+      previewWidth = math.floor(width / 3),
+      previewHeight = col,
+      -- highlights = {
+      --   floating = "Normal",
+      --   floatingBorder = "Normal",
+      -- },
+      autoAction = {
+        name = "preview",
+      },
+    },
+  },
 })
 
--- ddu_patch_global({
--- 	uiParams = {
--- 		filer = {
--- 			split = "floating",
--- 		},
--- 	},
--- })
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "ddu-ff",
+  callback = function()
+    print("filetype ddu-ff")
 
--- ddu_patch_global({
--- 	ui = "filer",
--- 	sourceOptions = {
--- 		_ = {
--- 			-- columns = {'filename'},
--- 		},
--- 	},
--- 	kindOptions = {
--- 		file = {
--- 			defaultAction = "open",
--- 		},
--- 	},
--- })
+    keymap("n", "<CR>", "<Cmd>call ddu#ui#ff#do_action('itemAction')<CR>", keymap_opt)
 
--- call ddu#start({'sources': [
---     \  {'name': 'custom-list',
---     \   'params': {'texts': ['hello', 'world'], 'callbackId': id}}]})
+    -- nnoremap <buffer><silent> i
+    --       \ <Cmd>call ddu#ui#ff#do_action('openFilterWindow')<CR>
+    -- nnoremap <buffer><silent> q
+    --       \ <Cmd>call ddu#ui#ff#do_action('quit')<CR>
+    -- nnoremap <buffer><silent> p
+    --   \ <Cmd>call ddu#ui#ff#do_action('preview')<CR>
 
--- キーマップでエラー。多分mapping絡み。頑張れ明日の自分
--- local nmap = function (map, cmd)
--- 	local opts = { noremap = true, silent = true }
+    keymap("n", "<Space>", "<Cmd>call ddu#ui#ff#do_action('toggleSelectItem')<CR>", keymap_opt)
+    keymap("n", "i", "<Cmd>call ddu#ui#ff#do_action('openFilterWindow')<CR>", keymap_opt)
+    keymap("n", "i", "<Cmd>call ddu#ui#ff#do_action('quit')<CR>", keymap_opt)
+    keymap("n", "q", "<Cmd>call ddu#ui#ff#do_action('quit')<CR>", keymap_opt)
 
--- 	vim.api.nvim_buf_set_keymap("n", map, cmd, opts)
--- end
+    vim.api.nvim_create_autocmd("CursorMoved", {
+      pattern = "*",
+      callback = function()
+        -- <Cmd>call ddu#ui#ff#do_action('quit')<CR>
+        vim.fn["ddu#ui#ff#do_action"]("preview")
+      end,
+    })
+  end,
+})
 
--- local function ddu_keymap()
--- 		nmap("<CR>", "<Cmd>call ddu#ui#ff#do_action('itemAction', {'name': 'open', 'params': {'command': 'vsplit'}})<CR>")
--- 		nmap("i", "<Cmd>call ddu#ui#ff#do_action('openFilterWindow')<CR>")
--- 		nmap("<Space>", "<Cmd>call ddu#ui#ff#do_action('itemAction', {'name': 'open', 'params': {'command': 'split'}})<CR>")
--- 		nmap("o", "<Cmd>call ddu#ui#ff#do_action('openFilterWindow')<CR>")
--- 		nmap("p", "<Cmd>call ddu#ui#ff#do_action('preview')<CR>")
--- 		nmap("q", "<Cmd>call ddu#ui#ff#do_action('quit')<CR>")
--- 	end
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "ddu-ff-filter",
+  callback = function()
+    print("filetype ddu-ff-filter")
 
--- vim.api.nvim_create_augroup( 'lua', {} )
--- vim.api.nvim_create_autocmd({"FileType"}, {
--- 	group = 'lua',
--- 	pattern = {"ddu-ff"},
--- 	callback = function ()
--- 		ddu_keymap()
--- 	end
--- })
-
-vim.api.nvim_create_augroup("ddu", {})
-
-function ddu_filter_my_settings(args)
-	nmap("<CR>", "<Cmd>call ddu#ui#ff#do_action('itemAction')<CR>")
-	nmap("q", "<Cmd>call ddu#ui#ff#do_action('quit')<CR>")
-	nmap("<CR>", "<Cmd>call ddu#ui#ff#do_action('itemAction')<CR>")
-	nmap("<C-j>", [[<Cmd>call ddu#ui#ff#execute("call cursor(line('.')+1,0)")<CR>]])
-	nmap("<C-k>", [[<Cmd>call ddu#ui#ff#execute("call cursor(line('.')-1,0)")<CR>]])
-end
-
-function ddu_my_settings(args)
-	imap("<CR>", [[<Cmd>call ddu#ui#ff#do_action('itemAction')<CR>]])
-	imap("<C-j>", [[<Cmd>call ddu#ui#ff#execute("call cursor(line('.')+1,0)")<CR>]])
-	imap("<C-k>", [[<Cmd>call ddu#ui#ff#execute("call cursor(line('.')-1,0)")<CR>]])
-	nmap("i", "<Cmd>call ddu#ui#ff#do_action('openFilterWindow')<CR>")
-	nmap("q", "<Cmd>call ddu#ui#ff#do_action('quit')<CR>")
-end
+    keymap("i", "<C-c>", "<Esc><Cmd>close<CR>", keymap_opt)
+    keymap("i", "<CR>", "<Esc><Cmd>close<CR>", keymap_opt)
+    keymap("n", "<CR>", "<Cmd>close<CR>", keymap_opt)
+    keymap("n", "q", "<Cmd>close<CR>", keymap_opt)
+  end,
+})
 
 vim.cmd([[
-function! s:ddu_ff_settings() abort
-  nnoremap <buffer><silent> <CR>
-        \ <Cmd>call ddu#ui#ff#do_action('itemAction')<CR>
-  nnoremap <buffer><silent> <Space>
-        \ <Cmd>call ddu#ui#ff#do_action('toggleSelectItem')<CR>
-  nnoremap <buffer><silent> i
-        \ <Cmd>call ddu#ui#ff#do_action('openFilterWindow')<CR>
-  nnoremap <buffer><silent> q
-        \ <Cmd>call ddu#ui#ff#do_action('quit')<CR>
-  nnoremap <buffer><silent> p
-        \ <Cmd>call ddu#ui#ff#do_action('preview')<CR>
-endfunction
+" function! s:ddu_my_settings() abort
+"   nnoremap <buffer><silent> <CR>
+"         \ <Cmd>call ddu#ui#ff#do_action('itemAction')<CR>
+"   nnoremap <buffer><silent> <Space>
+"         \ <Cmd>call ddu#ui#ff#do_action('toggleSelectItem')<CR>
+"   nnoremap <buffer><silent> i
+"         \ <Cmd>call ddu#ui#ff#do_action('openFilterWindow')<CR>
+"   nnoremap <buffer><silent> q
+"         \ <Cmd>call ddu#ui#ff#do_action('quit')<CR>
+"   nnoremap <buffer><silent> p
+"     \ <Cmd>call ddu#ui#ff#do_action('preview')<CR>
+" endfunction
 
-function! s:ddu_filter_my_settings() abort
-  nnoremap <buffer> <CR>
-  \ <Cmd>call ddu#ui#ff#do_action('itemAction')<CR>
-  inoremap <buffer> <CR>
-  \ <Cmd>call ddu#ui#ff#do_action('itemAction')<CR>
-  inoremap <buffer> <C-j>
-  \ <Cmd>call ddu#ui#ff#execute("call cursor(line('.')+1,0)")<CR>
-  inoremap <buffer> <C-k>
-  \ <Cmd>call ddu#ui#ff#execute("call cursor(line('.')-1,0)")<CR>
-  nnoremap <buffer><silent> q
-  \ <Cmd>call ddu#ui#ff#do_action('quit')<CR>
-endfunction
+" function! s:ddu_filter_my_settings() abort
+"   inoremap <buffer><silent> <CR>
+"   \ <Esc><Cmd>close<CR>
+"   nnoremap <buffer><silent> <CR>
+"   \ <Cmd>close<CR>
+"   nnoremap <buffer><silent> q
+"   \ <Cmd>close<CR>
+" endfunction
 
-function! s:ddu_filer_my_settings() abort
-  nnoremap <buffer><silent> <CR>
-        \ <Cmd>call ddu#ui#filer#do_action('itemAction')<CR>
-  nnoremap <buffer><silent> <Space>
-        \ <Cmd>call ddu#ui#filer#do_action('toggleSelectItem')<CR>
-  nnoremap <buffer> o
-        \ <Cmd>call ddu#ui#filer#do_action('expandItem',
-        \ {'mode': 'toggle'})<CR>
-  nnoremap <buffer><silent> q
-        \ <Cmd>call ddu#ui#filer#do_action('quit')<CR>
-endfunction
+" autocmd FileType ddu-ff-filter call s:ddu_filter_my_settings()
+" autocmd FileType ddu-ff call s:ddu_my_settings()
 
-autocmd FileType ddu-ff-filter call s:ddu_filter_my_settings()
-autocmd FileType ddu-ff call s:ddu_ff_settings()
-autocmd FileType ddu-filer call s:ddu_filer_my_settings()
+" autocmd CursorMoved * call ddu#ui#ff#do_action('preview')
 ]])
