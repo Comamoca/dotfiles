@@ -1,24 +1,5 @@
-[[plugins]]
-repo = 'neovim/nvim-lspconfig'
-# on_event = ['BufEnter']
-on_event = ['BufRead', 'CursorHold']
-# on_event = ['LspAttach']
-
-# Add `vim.*` in LSP suggestion
-[[plugins]]
-repo = 'folke/neodev.nvim'
-on_source = 'nvim-lspconfig'
-
-# Language Server management
-[[plugins]]
-repo = 'williamboman/mason.nvim'
-on_source = 'nvim-lspconfig'
-
-[[plugins]]
-repo = 'williamboman/mason-lspconfig.nvim'
-on_source = 'mason.nvim'
-lua_source = """
--- require("configs/lsp")
+local filename = debug.getinfo(1).source:match("[^/]*$")
+print(string.format("[[WARN]] @%s loading outside config file.", filename))
 
 require("mason").setup({
   ui = {
@@ -110,20 +91,3 @@ require("mason-lspconfig").setup_handlers({
     end
   end,
 })
-
-vim.keymap.set('n', 'K',  '<cmd>lua vim.lsp.buf.hover()<CR>')
-vim.keymap.set('n', 'gf', '<cmd>lua vim.lsp.buf.formatting()<CR>')
-vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>')
-vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
-vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>')
-vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
-vim.keymap.set('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
-vim.keymap.set('n', 'gn', '<cmd>lua vim.lsp.buf.rename()<CR>')
-vim.keymap.set('n', 'ga', '<cmd>lua vim.lsp.buf.code_action()<CR>')
-vim.keymap.set('n', 'ge', '<cmd>lua vim.diagnostic.open_float()<CR>')
-vim.keymap.set('n', 'g]', '<cmd>lua vim.diagnostic.goto_next()<CR>')
-vim.keymap.set('n', 'g[', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
-"""
-
-[[plugins]]
-repo = 'rafamadriz/friendly-snippets'
