@@ -6,7 +6,6 @@ import {
 } from "https://deno.land/x/dpp_vim@v0.0.5/types.ts";
 import { Denops, fn } from "https://deno.land/x/dpp_vim@v0.0.5/deps.ts";
 
-
 export class Config extends BaseConfig {
   override async config(args: {
     denops: Denops;
@@ -61,9 +60,9 @@ export class Config extends BaseConfig {
           },
         ) as Toml,
       );
-    })
+    });
 
-    await Promise.all(toml_promises)
+    await Promise.all(toml_promises);
 
     const recordPlugins: Record<string, Plugin> = {};
     const ftplugins: Record<string, string> = {};
@@ -76,7 +75,7 @@ export class Config extends BaseConfig {
       local: true,
       path: "/home/coma/ghq/github.com/coma/dpp-ext-ghq/",
       name: "dpp-ext-ghq",
-    },{
+    }, {
       frozen: true,
       merged: false,
       repo: "/home/coma/ghq/github.com/coma/sandbox/ruby-plugin",
@@ -110,7 +109,6 @@ export class Config extends BaseConfig {
         },
       },
     ) as Plugin[];
-
 
     // ghqPlugins.forEach((plugin) => {
     //   recordPlugins[plugin.name] = plugin;

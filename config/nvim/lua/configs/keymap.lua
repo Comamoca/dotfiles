@@ -39,14 +39,15 @@ runCmd("<C-j>", ":call comfortable_motion#flick(70)" .. cr)
 -- keymap("n", "<S-k>", "<C-u>", opts)
 -- keymap("n", "<S-j>", "<C-d>", opts)
 
-
 local function ddu_start(source)
   -- call ddu#start({'sources': [{'name': 'buffer'}]})
   return string.format("<Esc>:call ddu#start({'sources': [{'name': '%s'}]})<CR>", source)
 end
 
-keymap("n", "<C-o>", "<cmd>Ddu file_rec<CR>", opts)
-keymap("n", "<C-i>", "<cmd>Ddu buffer<CR>", opts)
+-- ddu keymap
+keymap("n", "<C-o>", "<cmd>Ddu file_rec<CR>", opts) -- file open
+keymap("n", "<C-i>", "<cmd>Ddu buffer<CR>", opts) -- buffer open
+keymap("n", "<C-u>", "<cmd>Ddu source") -- search sources
 
 -- call ddu#start({'sources': [{'name': 'buffer'}]})
 keymap("i", "<C-l>", ddu_start("line"), opts)
