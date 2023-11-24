@@ -35,13 +35,13 @@ on_event = ['BufRead', 'CursorHold']
 hook_post_update = 'TSUpdate'
 lua_source = """
     -- require("configs/tree-sitter")
-    
+
     require("nvim-treesitter.configs").setup({
       ensure_installed = { "c", "lua", "vim", "vimdoc", "query" },
       sync_install = false,
       auto_install = true,
       ignore_install = { "javascript" },
-    
+
       textobjects = {
         select = {
           enable = true,
@@ -54,10 +54,10 @@ lua_source = """
           },
         },
       },
-    
+
       highlight = {
         enable = true,
-    
+
         -- disable highlight in big file
         disable = function(lang, buf)
           local max_filesize = 100 * 1024 -- 100 KB
@@ -66,8 +66,11 @@ lua_source = """
             return true
           end
         end,
-    
+
         additional_vim_regex_highlighting = false,
+      },
+      autotag = {
+        enable = true,
       },
     })
 """
@@ -167,3 +170,89 @@ lua_add = '''
 
 
 '''
+
+[[plugins]]
+repo = 'stevearc/conform.nvim'
+on_event = ['BufRead', 'CursorHold']
+lua_source = """
+    local conform = require("conform")
+
+    conform.formatters.stylua = {
+      prepend_args = { "--indent-type", "Spaces", "--indent-width", "2" },
+    }
+
+    conform.setup({
+      formatters_by_ft = {
+        lua = {
+          "stylua",
+        },
+        python = { "black", "isort" },
+        javascript = {
+          "deno_fmt",
+        },
+        typescript = {
+          "deno_fmt",
+        },
+        typescriptreact = {
+          "deno_fmt",
+        },
+        javascriptreact = {
+          "deno_fmt",
+        },
+      },
+    })
+
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      pattern = "*",
+      callback = function(args)
+        require("conform").format({ bufnr = args.buf })
+      end,
+    })
+
+    vim.api.nvim_create_user_command("Format", function(args)
+      local range = nil
+      if args.count ~= -1 then
+        local end_line = vim.api.nvim_buf_get_lines(0, args.line2 - 1, args.line2, true)[1]
+        range = {
+          start = { args.line1, 0 },
+          ["end"] = { args.line2, end_line:len() },
+        }
+      end
+      require("conform").format({ async = true, lsp_fallback = true, range = range })
+    end, { range = true })
+"""
+
+[[plugins]]
+repo = 'windwp/nvim-ts-autotag'
+on_source = ["nvim-treesitter"]
+
+[[plugins]]
+repo = 'folke/zen-mode.nvim'
+on_cmd = ["ZenMode"]
+lua_source = """
+    require("zen-mode").setup(
+    {
+      window = {
+        backdrop = 0.95,
+ width = 120,
+        height = 1,
+        options = {},
+      },
+      plugins = {
+        options = {
+          enabled = true,
+          ruler = true,
+          showcmd = false,
+          laststatus = 0,
+        },
+        wezterm = {
+          enabled = false,
+          font = "+4",
+        },
+      },
+      on_open = function(win)
+      end,
+      on_close = function()
+      end,
+    })
+"""

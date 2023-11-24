@@ -25,18 +25,25 @@ lua_source = '''
           -- default source
           name = "file_rec",
           params = {
-            ignoredDirectories = { ".git", "node_modules", "vendor", ".next", ".venv" },
+            ignoredDirectories = { ".venv", ".git", "node_modules", "vendor", ".next" },
           },
         },
       },
       sourceOptions = {
         _ = {
-          matchers = { "matcher_substring" },
+          -- matchers = { "matcher_substring" },
+          matchers = { "matcher_fzf" },
+          sorters = { "sorter_fzf" },
         },
       },
+      -- filterParams = {
+      --   matcher_substring = {
+      --     highlightMatched = "Title",
+      --   },
+      -- },
       filterParams = {
-        matcher_substring = {
-          highlightMatched = "Title",
+        matcher_fzf = {
+          highlightMatched = "Search",
         },
       },
       kindOptions = {
@@ -110,13 +117,13 @@ lua_source = '''
       end,
     })
 
-    ddu_custom_patch_global ({
+    ddu_custom_patch_global({
       kindOptions = {
-        ["custom-list" ]=  {
-    	    defaultAction = 'callback',
-         },
-       }
-     })
+        ["custom-list"] = {
+          defaultAction = "callback",
+        },
+      },
+    })
 '''
 
 [[plugins]]
@@ -149,4 +156,16 @@ on_source = 'ddu.vim'
 
 [[plugins]]
 repo = "liquidz/ddu-source-custom-list"
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = "4513ECHO/ddu-source-source"
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = "yuki-yano/ddu-filter-fzf"
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = "4513ECHO/ddu-source-ghq"
 on_source = 'ddu.vim'

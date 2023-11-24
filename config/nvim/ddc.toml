@@ -13,10 +13,15 @@ lua_source = '''
     -- vim.fn["ddc#custom#patch_global"]('completionMenu', 'pum.vim')
 
     ddc_custom_patch_global("sources", { "nvim-lsp", "around", "file" })
+
     ddc_custom_patch_global("sourceOptions", {
       _ = {
-        matchers = { "matcher_head" },
-        sorters = { "sorter_rank" },
+        -- matchers = { "matcher_head" },
+        -- sorters = { "sorter_rank" },
+
+        matchers = { "matcher_fuzzy" },
+        sorters = { "sorter_fuzzy" },
+        converters = { "converter_fuzzy" },
       },
       around = { mark = "around" },
       ["nvim-lsp"] = {
@@ -33,21 +38,18 @@ lua_source = '''
       },
     })
 
-    vim.fn["ddc#custom#patch_filetype"](
-      { "ps1", "dosbatch", "autohotkey", "registry" },
-      {
-        sourceOptions = {
-          file = {
-            forceCompletionPattern = [[\S\\\S*]],
-          },
+    vim.fn["ddc#custom#patch_filetype"]({ "ps1", "dosbatch", "autohotkey", "registry" }, {
+      sourceOptions = {
+        file = {
+          forceCompletionPattern = [[\S\\\S*]],
         },
-        sourceParams = {
-          file = {
-            mode = "win32",
-          },
+      },
+      sourceParams = {
+        file = {
+          mode = "win32",
         },
-      }
-    )
+      },
+    })
 
     -- ddc_custom_patch_global("sourceParams", {
     -- 	["nvim-lsp"] = { kindLabels = { Class = "c" } },
@@ -161,10 +163,24 @@ repo = 'hrsh7th/vim-vsnip'
 on_source = 'ddc.vim'
 lua_source = """
 vim.g.vsnip_filetypes = {
-	javascriptreact = "javascript",
-	typescriptreact = "typescript",
+  javascriptreact = "javascript",
+  typescriptreact = "typescript",
 }
 
-vim.g.vsnip_snippet_dir = vim.fn.expand("~/.config/nvim/snippets")
-vim.g.vsnip_snippet_dirs = {vim.fn.expand("~/.cache/dpp/repos/github.com/rafamadriz/friendly-snippets")}
+vim.g.vsnip_snippet_dirs = {
+  -- vim.fn.expand("~/.cache/dpp/repos/github.com/rafamadriz/friendly-snippets/snippets"),
+  vim.fn.expand("~/.config/nvim/snippets"),
+}
 """
+
+[[plugins]]
+repo = 'rafamadriz/friendly-snippets'
+on_source = 'ddc.vim'
+
+[[plugins]]
+repo = 'tani/ddc-fuzzy'
+on_source = 'ddc.vim'
+
+[[plugins]]
+repo = 'matsui54/ddc-matcher_fuzzy'
+on_source = 'ddc.vim'
