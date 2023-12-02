@@ -33,11 +33,12 @@ require("mason").setup({
   },
 })
 
-require("ddc_nvim_lsp_setup").setup()
+require("ddc_source_lsp_setup").setup()
 require("neodev").setup({})
 
 local nvim_lsp = require("lspconfig")
 require("mason-lspconfig").setup()
+
 require("mason-lspconfig").setup_handlers({
   function(server_name)
     local opts = {}
@@ -65,6 +66,10 @@ require("mason-lspconfig").setup_handlers({
         return
       end
 
+      require("lspconfig").denols.setup({
+        capabilities = require("ddc_source_lsp").make_client_capabilities(),
+      })
+
       -- opts.root_dir = nvim_lsp.util.root_pattern("deno.json", "deno.jsonc", "deps.ts", "import_map.json")
       opts.root_dir = nvim_lsp.util.root_pattern("*")
       opts.init_options = {
@@ -81,6 +86,7 @@ require("mason-lspconfig").setup_handlers({
         },
       }
       opts.cmd = { "deno", "lsp", "--unstable" }
+
     elseif server_name == "elixirls" then
       opts.cmd = { "/home/coma/.local/share/nvim/mason/bin/elixir-ls" }
       -- nvim_lsp["elixirls"].setup({
@@ -101,13 +107,14 @@ require("mason-lspconfig").setup_handlers({
       })
     end
 
-    if server_name == "denols" then
-      require("lspconfig").denols.setup({
-        capabilities = require("ddc_nvim_lsp").make_client_capabilities(),
-      })
-    else
-      nvim_lsp[server_name].setup(opts)
-    end
+    -- if server_name == "denols" then
+    --   require("lspconfig").denols.setup({
+    --     capabilities = require("ddc_source_lsp").make_client_capabilities(),
+    --   })
+    -- else
+    --   nvim_lsp[server_name].setup(opts)
+    -- end
+    nvim_lsp[server_name].setup(opts)
   end,
 })
 

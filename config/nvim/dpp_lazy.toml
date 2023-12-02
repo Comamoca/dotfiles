@@ -20,6 +20,9 @@ on_cmd = ["StartupTime"]
 [[plugins]]
 repo = "mhinz/vim-sayonara"
 on_cmd = ["Sayonara"]
+on_source = """
+nnoremap <C-f> <cmd>Sayonara<CR>
+"""
 
 [[plugins]]
 repo = "hrsh7th/nvim-insx"
@@ -70,8 +73,8 @@ lua_source = """
         additional_vim_regex_highlighting = false,
       },
       autotag = {
-        enable = true,
-      },
+        -- enable = false,
+        enable = true     },
     })
 """
 
@@ -106,9 +109,6 @@ repo = "yuttie/comfortable-motion.vim"
 # on_event = ['BufEnter']
 on_event = ['BufRead', 'CursorHold']
 
-# [[plugins]]
-# repo = 'stevearc/conform.nvim'
-# on_event = ['BufEnter']
 
 [[plugins]]
 repo = 'stevearc/oil.nvim'
@@ -129,7 +129,7 @@ on_event = ['BufRead', 'CursorHold']
 repo = "miyakogi/seiya.vim"
 # on_event = ['BufRead', 'CursorHold']
 on_event = ["ColorSchemePre", 'BufRead', 'CursorHold']
-on_cmd = ["SeiyaEnable"]
+# on_cmd = ["SeiyaEnable"]
 lua_source = """
 vim.cmd("let g:seiya_target_groups = has('nvim') ? ['guibg'] : ['ctermbhhg']")
 -- vim.g.seiya_auto_enable = 1
@@ -199,6 +199,9 @@ lua_source = """
         javascriptreact = {
           "deno_fmt",
         },
+        json = {
+          "deno_fmt",
+        },
       },
     })
 
@@ -256,3 +259,7 @@ lua_source = """
       end,
     })
 """
+
+[[plugins]]
+repo = 'skanehira/denops-translate.vim'
+on_cmd = ['Translate']

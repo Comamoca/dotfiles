@@ -1,12 +1,12 @@
--- dpp setup start
 local dpp_src = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp.vim"
+
 vim.opt.runtimepath:prepend(dpp_src)
 local dpp = require("dpp")
 
 local dpp_base = "~/.cache/dpp/"
 local dpp_config = "~/.config/nvim/dpp.ts"
 
-local denops_src = "$HOME/.cache/dpp/repos/github.com/vim-denops/denops.vim"
+local denops_src = "~/.cache/dpp/repos/github.com/vim-denops/denops.vim"
 
 local ext_toml = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-ext-toml"
 local ext_lazy = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-ext-lazy"
@@ -14,21 +14,21 @@ local ext_installer = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-ext-installe
 local ext_git = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-protocol-git"
 
 vim.opt.runtimepath:append(ext_toml)
-vim.opt.runtimepath:append(ext_git)
 vim.opt.runtimepath:append(ext_lazy)
 vim.opt.runtimepath:append(ext_installer)
+vim.opt.runtimepath:append(ext_git)
 
-vim.g.denops_server_addr = "127.0.0.1:34141"
--- vim.g["denops#debug"] = 1
+local dpp = require("dpp")
 
-if dpp.load_state(dpp_base) then
+local dppBase = "~/.cache/dpp"
+if dpp.load_state(dppBase) then
   vim.opt.runtimepath:prepend(denops_src)
 
   vim.api.nvim_create_autocmd("User", {
     pattern = "DenopsReady",
     callback = function()
-      vim.notify("vim load_state is failed")
-      dpp.make_state(dpp_base, dpp_config)
+      vim.notify("dpp load_state() is failed")
+      dpp.make_state(dppBase, dpp_config)
     end,
   })
 end
@@ -39,14 +39,18 @@ vim.api.nvim_create_autocmd("User", {
     vim.notify("dpp make_state() is done")
   end,
 })
--- dpp setup end
+
+vim.cmd("filetype indent plugin on")
+vim.cmd("syntax on")
 
 vim.api.nvim_create_user_command("DppInstall", "call dpp#async_ext_action('installer', 'install')", { nargs = 0 })
 vim.api.nvim_create_user_command("DppUpdate", "call dpp#async_ext_action('installer', 'update')", { nargs = 0 })
 
-vim.opt.ignorecase = true
-vim.opt.completeopt = { "menuone", "noinsert" }
-vim.opt.guifont = "UDEV Gothic NF Regular:h12"
+vim.api.nvim_create_user_command("Ddu", function(args)
+  local subcmd = args.args
+  print(subcmd)
+  vim.fn["ddu#start"]({ sources = { { name = subcmd } } })
+end, { nargs = 1 })
 
 vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
   callback = function()
@@ -70,25 +74,14 @@ vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
     end
 
     require("configs/keymap")
-    require("configs/cmd")
+    -- require("configs/cmd")
   end,
 })
 
-vim.api.nvim_create_user_command("Configs", function()
-  --   local id = vim.fn["denops#callback#register"](function(s)
-  --     -- vim.fn.execute(vim.fn.printf('echom "%s"', s), "")
-  --     vim.fn.execute(vim.fn.printf(':e "%s"<CR>', s))
-  --   end)
-  --
-  -- local paths = vim.fn.expand("~/.config/nvim/lua/configs/*.lua")
-  -- local files = vim.fn.split(paths, "\n")
-  --
-  --   vim.fn["ddu#start"]({
-  --     sources = {
-  --       { name = "custom-list", params = {
-  -- 	texts = files,
-  --         callbackId = id,
-  --       } },
-  --     },
-  --   })
-end, { nargs = 0 })
+vim.cmd("colorscheme gruvbox")
+vim.cmd("inoremap jj <C-[>")
+vim.cmd("nnoremap <C-[><C-[> <cmd>noh<CR>")
+vim.cmd("let g:seiya_auto_enable=1")
+vim.cmd("nnoremap sv <cmd>vs<CR>")
+vim.cmd("nnoremap s <C-w>")
+vim.cmd("set ignorecase")
