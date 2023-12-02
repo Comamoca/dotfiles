@@ -12,7 +12,13 @@ lua_source = '''
     ddc_custom_patch_global("ui", "native")
     -- vim.fn["ddc#custom#patch_global"]('completionMenu', 'pum.vim')
 
-    ddc_custom_patch_global("sources", { "nvim-lsp", "around", "file" })
+    ddc_custom_patch_global("sources", {
+      -- "nvim-lsp",
+      "lsp",
+      "around",
+      "vsnip",
+      "file",
+    })
 
     ddc_custom_patch_global("sourceOptions", {
       _ = {
@@ -24,7 +30,7 @@ lua_source = '''
         converters = { "converter_fuzzy" },
       },
       around = { mark = "around" },
-      ["nvim-lsp"] = {
+      lsp = {
         mark = "LSP",
         forceCompletionPattern = ".w*|:w*|->w*",
       },
@@ -35,6 +41,9 @@ lua_source = '''
         mark = "F",
         isVolatile = true,
         forceCompletionPattern = [[\S/\S*]],
+      },
+      vsnip = {
+        mark = "vsnip",
       },
     })
 
@@ -131,7 +140,7 @@ repo = "Shougo/ddc-source-nvim-lsp"
 on_source = 'nvim-lspconfig'
 
 [[plugins]]
-repo = "uga-rosa/ddc-nvim-lsp-setup"
+repo = "uga-rosa/ddc-source-lsp-setup"
 on_source = 'nvim-lspconfig'
 # on_source = 'ddc.vim'
 
@@ -183,4 +192,13 @@ on_source = 'ddc.vim'
 
 [[plugins]]
 repo = 'matsui54/ddc-matcher_fuzzy'
+on_source = 'ddc.vim'
+
+
+[[plugins]]
+repo = 'uga-rosa/ddc-source-vsnip'
+on_source = 'ddc.vim'
+
+[[plugins]]
+repo = 'uga-rosa/denippet.vim'
 on_source = 'ddc.vim'

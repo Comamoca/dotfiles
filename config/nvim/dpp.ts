@@ -6,6 +6,8 @@ import {
 } from "https://deno.land/x/dpp_vim@v0.0.5/types.ts";
 import { Denops, fn } from "https://deno.land/x/dpp_vim@v0.0.5/deps.ts";
 
+console.log("dpp.ts is loaded!");
+
 export class Config extends BaseConfig {
   override async config(args: {
     denops: Denops;
@@ -45,6 +47,7 @@ export class Config extends BaseConfig {
     ];
 
     const toml_promises = toml_files.map(async (toml) => {
+      console.log(toml);
       tomls.push(
         await args.dpp.extAction(
           args.denops,
@@ -67,52 +70,6 @@ export class Config extends BaseConfig {
     const recordPlugins: Record<string, Plugin> = {};
     const ftplugins: Record<string, string> = {};
     const hooksFiles: string[] = [];
-
-    const localPlugins = [{
-      frozen: true,
-      merged: false,
-      repo: "/home/coma/ghq/github.com/coma/dpp-ext-ghq/",
-      local: true,
-      path: "/home/coma/ghq/github.com/coma/dpp-ext-ghq/",
-      name: "dpp-ext-ghq",
-    }, {
-      frozen: true,
-      merged: false,
-      repo: "/home/coma/ghq/github.com/coma/sandbox/ruby-plugin",
-      local: true,
-      path: "/home/coma/ghq/github.com/coma/sandbox/ruby-plugin",
-      name: "ruby-plugin",
-    }];
-
-    localPlugins.forEach((plugin: Plugin) => {
-      //   lazy: false,
-      //   repo: plugin.repo,
-      //   name: basename(plugin.repo as string),
-      // });
-
-      recordPlugins[plugin.name] = plugin;
-    });
-
-    const ghqPlugins = await args.dpp.extAction(
-      args.denops,
-      context,
-      options,
-      "ghq",
-      "ghq",
-      {
-        ghq_root: "~/ghq/",
-        repos: ["coma/runit.nvim", "Comamoca/sandbox/denops-sample"],
-        hostname: "github.com",
-        options: {
-          frozen: true,
-          merged: false,
-        },
-      },
-    ) as Plugin[];
-
-    // ghqPlugins.forEach((plugin) => {
-    //   recordPlugins[plugin.name] = plugin;
-    // });
 
     tomls.forEach((toml) => {
       for (const plugin of toml.plugins) {
