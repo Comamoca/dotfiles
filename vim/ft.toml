@@ -1,0 +1,14 @@
+[[plugins]]
+repo = 'liquidz/dps-parinfer'
+on_ft = ['clojure', 'lisp', 'fennel', 'janet']
+
+[[plugins]]
+repo = 'zah/nim.vim'
+on_ft = 'nim'
+
+[[plugins]]
+repo = 'janet-lang/janet.vim'
+on_ft = 'janet'
+hook_source = '''
+autocmd FileType janet setlocal sw=2 sts=2 ts=2 et
+'''

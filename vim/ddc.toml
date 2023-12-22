@@ -1,0 +1,189 @@
+[[plugins]]
+repo = 'Shougo/ddc.vim'
+# on_event = ['InsertEnter']
+on_event = ['BufRead', 'CursorHold']
+depends = ['denops.vim']
+hook_source = '''
+call ddc#custom#patch_global('ui', 'pum')
+call ddc#custom#patch_global('sources', [
+\  'vim-lsp',
+\  'around',
+\  'vsnip',
+\  'file',
+\  'shell-native',
+\])
+
+call ddc#custom#patch_global('sourceOptions', #{
+    \   vim-lsp: #{
+    \     matchers: ['matcher_head'],
+    \     mark: 'lsp',
+    \   },
+    \ })
+
+call ddc#custom#patch_global('sourceOptions', {
+\  '_': {
+\    'matchers': [ 'matcher_fuzzy' ],
+\    'sorters': [ 'sorter_fuzzy' ],
+\    'converters': [ 'converter_fuzzy' ],
+\  },
+\  'around': { 'mark': 'around' },
+\  'path': { 'mark': 'P' },
+\  'file': {
+\    'mark': 'F',
+\    'isVolatile': v:true,
+\    'forceCompletionPattern': '\S/\S*',
+\  },
+\  'vsnip': { 'mark': 'vsnip' },
+\})
+
+call ddc#custom#patch_filetype([ 'ps1', 'dosbatch', 'autohotkey', 'registry' ], {
+\   'sourceOptions': {
+\     'file': {
+\       'forceCompletionPattern': '\S\\\S*',
+\     },
+\   },
+\   'sourceParams': {
+\     'file': {
+\       'mode': 'win32',
+\     },
+\   },
+\ })
+
+
+call ddc#custom#patch_global('sourceParams', {
+\  'path': {
+\     'cmd': [ 'fd', '--max-depth', '5' ],
+\   },
+\ })
+
+
+" ==================== ddu cmdline ==================== 
+" call ddc#custom#patch_global('sourceOptions', #{
+"       \   shell-native: #{ mark: 'fish' },
+"       \ })
+"
+" call ddc#custom#patch_global(#{
+"         \   ui: 'pum',
+"         \   autoCompleteEvents: [
+"         \     'InsertEnter', 'TextChangedI', 'TextChangedP', 'CmdlineChanged',
+"         \   ],
+"         \   cmdlineSources: {
+"         \     ':': ['cmdline', 'cmdline-history', 'around']
+"         \   },
+"         \ })
+" nnoremap :       <Cmd>call CommandlinePre()<CR>:
+"
+" call ddc#custom#patch_global(#{
+"         \   ui: 'pum',
+"         \   autoCompleteEvents: [
+"         \     'InsertEnter', 'TextChangedI', 'TextChangedP', 'CmdlineChanged',
+"         \   ],
+"         \   cmdlineSources: {
+"         \     ':!': ['shell-native', 'cmdline', 'cmdline-history', 'around']
+"         \   },
+"         \ })
+" nnoremap :       <Cmd>call CommandlinePre()<CR>:
+"
+" function! CommandlinePre() abort
+"     cnoremap <Tab>   <Cmd>call pum#map#insert_relative(+1)<CR>
+"     cnoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
+"     cnoremap <C-n>   <Cmd>call pum#map#insert_relative(+1)<CR>
+"     cnoremap <C-p>   <Cmd>call pum#map#insert_relative(-1)<CR>
+"     cnoremap <C-y>   <Cmd>call pum#map#confirm()<CR>
+"     cnoremap <C-c>   <Cmd>call pum#map#cancel()<CR>
+"     cnoremap <silent><expr> <CR>
+"       \ pum#visible() ? '<Cmd>call pum#map#confirm()<CR>' :
+"       \ '<CR>'
+"
+"     autocmd User DDCCmdlineLeave ++once call CommandlinePost()
+"
+"     " Enable command line completion for the buffer
+"     call ddc#enable_cmdline_completion()
+" endfunction
+" function! CommandlinePost() abort
+"     silent! cunmap <Tab>
+"     silent! cunmap <S-Tab>
+"     silent! cunmap <C-n>
+"     silent! cunmap <C-p>
+"     silent! cunmap <C-y>
+"     silent! cunmap <C-e>
+" endfunction
+
+call ddc#enable()
+
+inoremap <C-n>   <Cmd>call pum#map#select_relative(+1)<CR>
+inoremap <C-p>   <Cmd>call pum#map#select_relative(-1)<CR>
+inoremap <Tab>   <Cmd>call pum#map#confirm()<CR>
+inoremap <C-e>   <Cmd>call pum#map#cancel()<CR>
+'''
+
+# ddc ui
+[[plugins]]
+repo = 'Shougo/pum.vim'
+on_source = 'ddc.vim'
+
+[[plugins]]
+repo = 'Shougo/ddc-ui-pum'
+on_source = 'ddc.vim'
+
+# ddc source
+[[plugins]]
+repo = "shun/ddc-source-vim-lsp"
+on_source = 'ddc.vim'
+
+[[plugins]]
+repo = 'Shougo/ddc-source-shell-native'
+on_source = 'ddc.vim'
+
+[[plugins]]
+repo = "uga-rosa/ddc-source-vsnip"
+on_source = 'ddc.vim'
+
+[[plugins]]
+repo = 'Shougo/ddc-around'
+on_source = 'ddc.vim'
+
+[[plugins]]
+repo = 'LumaKernel/ddc-source-file'
+on_source = 'ddc.vim'
+
+[[plugins]]
+repo = 'Shougo/ddc-source-cmdline'
+on_source = 'ddc.vim'
+
+[[plugins]]
+repo = 'Shougo/ddc-source-cmdline-history'
+on_source = 'ddc.vim'
+
+# ddc sorter
+[[plugins]]
+repo = 'Shougo/ddc-sorter_rank'
+on_source = 'ddc.vim'
+
+# ddc matcher
+[[plugins]]
+repo = 'Shougo/ddc-matcher_head'
+on_source = 'ddc.vim'
+
+[[plugins]]
+repo = 'tani/ddc-fuzzy'
+on_source = 'ddc.vim'
+
+[[plugins]]
+repo = 'lambdalisue/kensaku.vim'
+on_source = 'ddc.vim'
+# on_event = ['BufRead', 'CursorHold']
+
+# Snippet Engine
+[[plugins]]
+repo = 'hrsh7th/vim-vsnip'
+on_source = 'ddc.vim'
+hook_source = """
+let g:vsnip_filetypes = {}
+let g:vsnip_filetypes.javascriptreact = ['javascript']
+let g:vsnip_filetypes.typescriptreact = ['typescript']
+
+let g:vsnip_snippet_dirs = [expand("~/.config/nvim/snippets")]
+
+" expand("~/.cache/dpp_vim/repos/github.com/rafamadriz/friendly-snippets/snippets"),
+"""
