@@ -54,9 +54,6 @@ end, { nargs = 1 })
 
 vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
   callback = function()
-    vim.cmd.colorscheme("gruvbox")
-    vim.cmd("SeiyaEnable")
-
     vim.opt.clipboard = "unnamedplus"
     if vim.fn.has("wsl") then
       vim.g.clipboard = {
@@ -75,13 +72,22 @@ vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
 
     require("configs/keymap")
     -- require("configs/cmd")
+
+    -- vim.cmd("colorscheme gruvbox")
+    vim.cmd("colorscheme kanagawa-wave")
+    vim.cmd("SeiyaEnable")
   end,
 })
 
-vim.cmd("colorscheme gruvbox")
 vim.cmd("inoremap jj <C-[>")
 vim.cmd("nnoremap <C-[><C-[> <cmd>noh<CR>")
 vim.cmd("let g:seiya_auto_enable=1")
 vim.cmd("nnoremap sv <cmd>vs<CR>")
 vim.cmd("nnoremap s <C-w>")
 vim.cmd("set ignorecase")
+
+vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/coma/memos.vim"))
+vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/vimskey"))
+
+-- vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/fennel_nvim"))
+vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/calc.nvim"))

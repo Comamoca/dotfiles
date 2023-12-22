@@ -77,6 +77,7 @@ lua_source = '''
       },
     })
 
+    vim.fn["ddc#enable_terminal_completion"]()
     vim.fn["ddc#enable"]()
 
     vim.cmd([[

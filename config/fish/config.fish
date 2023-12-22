@@ -15,6 +15,14 @@ set LUA_PATH ~/.luarocks/lib/ $LUA_PATH
 set LUA_PATH ~/.luarocks/lib/luarocks/rocks-5.4/ $LUA_PATH
 set -x BLOG_PATH ~/ghq/github.com/coma/blog/src/content/blog/
 
+fish_add_path ~/.nimble/bin
+fish_add_path ~/.nimble/.bin/git-tasukete
+fish_add_path ~/.bin/
+fish_add_path ~/.bin/bin
+fish_add_path $DENO_INSTALL/bin
+fish_add_path /home/coma/go/bin
+fish_add_path /home/coma/local/
+
 zoxide init fish | source
 
 alias zx='/home/coma/go/bin/z'
@@ -58,6 +66,7 @@ alias ":wq"="exit"
 alias ":wqa"="exit"
 
 alias __recker='cd (recker)'
+alias __sandbox='cd (string join "/" (~/ghq/github.com/Comamoca/sandbox) (fd -d 1 | fzf))'
 alias cdf='cd (ls -d */ | sed "s/\///" | fzf)'
 alias tmp='cd (mktemp -d)'
 
@@ -72,18 +81,11 @@ alias MIT="ruby ~/.bin/scripts/mit/mit.rb"
 export EDITOR=nvim
 # export PYTHONPATH=/home/coma/bundler/bundler/lib
 export GOPATH=$HOME/go
-export PATH="$HOME/.nimble/bin:$PATH"
-export PATH="$HOME/.nimble/.bin/git-tasukete:$PATH"
-# export PATH=" $HOME/.local/kitty.app/bin/:$PATH"
-export PATH="$HOME/.bin/:$PATH"
 
 set PATH /home/coma/.cargo/bin $PATH
 set GH_BINPATH /home/coma/.bin/
 export FYNE_FONT=/usr/share/fonts/PlemolJP/PlemolJP-Regular.ttf
 export DENO_INSTALL="/home/coma/.deno"
-export PATH="$DENO_INSTALL/bin:$PATH"
-export PATH="/home/coma/go/bin:$PATH"
-export PATH="/home/coma/local/:$PATH"
 
 
 set BAT_THEME "gruvbox-dark"
@@ -136,6 +138,7 @@ set -Ux fish_user_paths $HOME/.rbenv/shims $fish_user_paths
 bind \cg __recker
 bind \cb boost
 bind \cf cdf
+bind \cs __sandbox
 bind \cc __fish_cancel_commandline
 
 # bind \cf zi
@@ -167,7 +170,6 @@ set -q GHCUP_INSTALL_BASE_PREFIX[1]; or set GHCUP_INSTALL_BASE_PREFIX $HOME ; se
 
 export LUA_PATH='/usr/share/lua/5.4/?.lua;/usr/share/lua/5.4/?/init.lua;/usr/lib/lua/5.4/?.lua;/usr/lib/lua/5.4/?/init.lua;./?.lua;./?/init.lua;/home/coma/.luarocks/share/lua/5.4/?.lua;/home/coma/.luarocks/share/lua/5.4/?/init.lua'
 export LUA_CPATH='/usr/lib/lua/5.4/?.so;/usr/lib/lua/5.4/loadall.so;./?.so;/home/coma/.luarocks/lib/lua/5.4/?.so'
-export PATH='/home/coma/.luarocks/bin:/home/coma/.rbenv/shims:/home/coma/.asdf/shims:/opt/asdf-vm/bin:/home/coma/.rbenv/bin:/home/coma/.local/share/rtx/bin:/home/coma/.nimble/bin:/home/coma/.nimble/pkgs:/home/coma/.cabal/bin:/home/coma/.bun/bin:/home/coma/.konryu/cotowali/bin/:/home/coma/.konryu/bin:/home/coma/.local/share/pnpm:/home/coma/.luarocks/bin/:/home/coma/local/:/home/coma/go/bin:/home/coma/.deno/bin:/home/coma/.cargo/bin:/home/coma/.bin/:/home/coma/.nimble/.bin/git-tasukete:/home/coma/.local/share/gem/ruby/3.0.0/bin/:/home/coma/.rye/shims/:/home/coma/.codon/bin:/home/coma/ghq/github.com/emscripten-core/emsdk/upstream/emscripten:/home/coma/ghq/github.com/emscripten-core/emsdk:/home/coma/.local/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/Oculus/Support/oculus-runtime:/mnt/c/Program Files/Microsoft/jdk-11.0.12.7-hotspot/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/Program Files/Microsoft SQL Server/150/Tools/Binn/:/mnt/c/Program Files/usbipd-win/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/Neovide/:/mnt/c/Program Files/Cloudflare/Cloudflare WARP/:/mnt/c/Program Files/WezTerm:/mnt/c/Program Files/gsudo/Current:/mnt/c/Program Files/komorebi/bin/:/mnt/c/Users/Coma/AppData/Local/Programs/Python/Python311/Scripts/:/mnt/c/Users/Coma/AppData/Local/Programs/Python/Python311/:/mnt/c/Users/Coma/AppData/Local/Programs/Python/Launcher/:/mnt/c/Users/Coma/.cargo/bin:/mnt/c/Users/Coma/go/bin:/mnt/c/Users/Coma/scoop/apps/python/current/Scripts:/mnt/c/Users/Coma/scoop/apps/python/current:/mnt/c/Users/Coma/scoop/shims:/mnt/c/Users/Coma/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/Coma/.dotnet/tools:/mnt/c/Users/Coma/.deno/bin:/mnt/c/Users/Coma/AppData/Roaming/pypoetry:/mnt/c/Users/Coma/AppData/Local/Programs/FirefoxPWA/:/mnt/c/users/coma/.local/bin:/mnt/c/Users/Coma/.bin:/mnt/c/Users/Coma/AppData/Local/Programs/Microsoft VS Code/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin:/home/coma/.pub-cache/bin:/home/coma/.ghcup/bin'
 
 # Wasmer
 export WASMER_DIR="/home/coma/.wasmer"
