@@ -44,6 +44,7 @@ export class Config extends BaseConfig {
       { name: "lsp.toml", lazy: true },
       { name: "ddu.toml", lazy: true },
       { name: "ddc.toml", lazy: true },
+      { name: "ft.toml", lazy: true },
     ];
 
     const toml_promises = toml_files.map(async (toml) => {

@@ -53,6 +53,9 @@ lua_source = '''
         buffer = {
           defaultAction = "open",
         },
+	memos = {
+          defaultAction = "echo",
+	}
       },
       uiParams = {
         ff = {

@@ -3,10 +3,6 @@ repo = 'vim-denops/denops.vim'
 on_event = ['BufRead', 'CursorHold']
 
 [[plugins]]
-repo = "vim-denops/denops-shared-server.vim"
-on_func = [ 'denops_shared_server#install', 'denops_shared_server#uninstall']
-
-[[plugins]]
 repo = "lambdalisue/fern.vim"
 on_cmd = ["Fern"]
 lua_source = """
@@ -33,17 +29,15 @@ require('insx.preset.standard').setup()
 
 [[plugins]]
 repo = 'nvim-treesitter/nvim-treesitter'
-# on_event = ['BufEnter']
 on_event = ['BufRead', 'CursorHold']
 hook_post_update = 'TSUpdate'
 lua_source = """
     -- require("configs/tree-sitter")
 
     require("nvim-treesitter.configs").setup({
-      ensure_installed = { "c", "lua", "vim", "vimdoc", "query" },
+      -- ensure_installed = { "c", "lua", "vim", "vimdoc", "query" },
       sync_install = false,
       auto_install = true,
-      ignore_install = { "javascript" },
 
       textobjects = {
         select = {
@@ -60,6 +54,7 @@ lua_source = """
 
       highlight = {
         enable = true,
+	-- disable = { "markdown" },
 
         -- disable highlight in big file
         disable = function(lang, buf)
@@ -73,7 +68,6 @@ lua_source = """
         additional_vim_regex_highlighting = false,
       },
       autotag = {
-        -- enable = false,
         enable = true     },
     })
 """
@@ -117,13 +111,31 @@ on_cmd = ["Oil"]
 on_event = ['BufRead', 'CursorHold']
 
 # color theme
-# [[plugins]]
-# repo = "sainnhe/gruvbox-material"
-# on_event = ['BufRead', 'CursorHold']
+[[plugins]]
+repo = "ellisonleao/gruvbox.nvim"
+on_event = ['BufRead', 'CursorHold']
+lua_source = """
+require("gruvbox").setup({
+  terminal_colors = true,
+  contrast = "soft",
+  transparent_mode = true,
+  palette_overrides = {
+    bright_green = "#98971a",
+  },
+})
+"""
+
+[[plugins]]
+repo = "rebelot/kanagawa.nvim"
+on_event = ['BufRead', 'CursorHold']
 
 [[plugins]]
 repo = 'VDuchauffour/neodark.nvim'
 on_event = ['BufRead', 'CursorHold']
+
+# [[plugins]]
+# repo = "sainnhe/gruvbox-material"
+# on_event = ['BufRead', 'CursorHold']
 
 [[plugins]]
 repo = "miyakogi/seiya.vim"
@@ -136,22 +148,21 @@ vim.cmd("let g:seiya_target_groups = has('nvim') ? ['guibg'] : ['ctermbhhg']")
 -- vim.cmd("SeiyaEnable")
 """
 
-# [[plugins]]
-# repo = "Shougo/context_filetype.vim"
-# on_event = ['BufRead', 'CursorHold', "BufReadPre"]
-
 [[plugins]]
 repo = "wakatime/vim-wakatime"
 on_event = ['BufRead', 'CursorHold', "BufReadPre"]
 
 [[plugins]]
+repo = "Shougo/context_filetype.vim"
+on_event = ['BufRead', 'CursorHold', "BufReadPre"]
+
+[[plugins]]
 repo = 'thinca/vim-partedit'
-on_cmd = 'Partedit'
+on_event = ['BufRead', 'CursorHold', "BufReadPre"]
 hook_add = '''
     let g:partedit#prefix_pattern = '\s*'
     let g:partedit#auto_prefix = 0
 '''
-
 
 [[plugins]]
 repo = 'monaqa/nvim-treesitter-clipping'
@@ -167,8 +178,6 @@ lua_add = '''
         end, { buffer = true })
       end,
     })
-
-
 '''
 
 [[plugins]]
@@ -263,3 +272,7 @@ lua_source = """
 [[plugins]]
 repo = 'skanehira/denops-translate.vim'
 on_cmd = ['Translate']
+
+# [[plugins]]
+# repo = 'Allianaab2m/vimskey'
+# on_cmd = ['VimskeyOpenTL', 'VimskeyAuth', 'VimskeyNote', 'VimskeyRenote']
