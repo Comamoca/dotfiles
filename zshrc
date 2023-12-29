@@ -11,4 +11,13 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
-export PATH=~/.bin/:$PATH
+export PATH=$PATH:~/.bin/
+export PATH=$PATH:~/.deno/bin/
+
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+
+if [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
+  exec sway
+fi
