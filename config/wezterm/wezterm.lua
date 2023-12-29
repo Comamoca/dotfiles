@@ -1,9 +1,10 @@
 local wezterm = require("wezterm")
 
 return {
-  default_prog = { "wsl.exe", "--distribution", "Manjaro", "--exec", "/bin/fish", "-l" },
+  -- default_prog = { "wsl.exe", "--distribution", "Manjaro", "--exec", "/bin/fish", "-l" },
   -- window_background_image = "/home/coma/Pictures/wallpapelar/atul-vinayak-hZioHCEWSAE-unsplash.jpg",
-  window_background_image = "C:/Users/Coma/OneDrive/画像/wallpapelar/sarah-sheedy-co1YPSazn70-unsplash.jpg",
+  -- window_background_image = "C:/Users/Coma/OneDrive/画像/wallpapelar/sarah-sheedy-co1YPSazn70-unsplash.jpg",
+  window_background_image = "/home/coma/Pictures/wallpapelar/benjamin-hersh-_69DlG4rMm4-unsplash.jpg",
 
   -- window_background_opacity = 0.85,
   window_background_image_hsb = {
@@ -20,9 +21,9 @@ return {
   -- disable_default_key_bindings = true,
   color_scheme = "Afterglow",
   use_ime = true,
-  font_size = 14,
+  font_size = 16,
   -- font = wezterm.font("UDEVGothicLG-Regular"),
-  font = wezterm.font("UDEV Gothic NF Regular"),
+  font = wezterm.font("UDEV Gothic NFLG"),
   -- font = wezterm.font("/home/coma/Downloads/"),
 
   hide_tab_bar_if_only_one_tab = true,
