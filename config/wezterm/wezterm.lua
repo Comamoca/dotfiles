@@ -33,8 +33,6 @@ local config = {
     },
   },
 
-  window_background_image = "C:/Users/Coma/wallpapelar/sarah-sheedy-co1YPSazn70-unsplash.jpg",
-
   -- window_background_opacity = 0.85,
   window_background_image_hsb = {
     -- Darken the background image by reducing it to 1/3rd
@@ -117,8 +115,10 @@ local config = {
 
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
   config.default_prog = { "wsl.exe", "--distribution", "Manjaro", "--exec", "/bin/fish", "-l" }
+  config.window_background_image = "C:/Users/Coma/wallpapelar/sarah-sheedy-co1YPSazn70-unsplash.jpg"
 else
   config.default_prog = { "fish" }
+  config.window_background_image = "~/Pictures/wallpapelar/benjamin-hersh-_69DlG4rMm4-unsplash.jpg"
 end
 
 return config
