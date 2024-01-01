@@ -1,5 +1,6 @@
 local wezterm = require("wezterm")
 local act = wezterm.action
+local home = "/home/coma/"
 
 local config = {
   colors = {
@@ -118,7 +119,7 @@ if wezterm.target_triple == "x86_64-pc-windows-msvc" then
   config.window_background_image = "C:/Users/Coma/wallpapelar/sarah-sheedy-co1YPSazn70-unsplash.jpg"
 else
   config.default_prog = { "fish" }
-  config.window_background_image = "~/Pictures/wallpapelar/benjamin-hersh-_69DlG4rMm4-unsplash.jpg"
+  config.window_background_image = home .. "Pictures/wallpapelar/benjamin-hersh-_69DlG4rMm4-unsplash.jpg"
 end
 
 return config
