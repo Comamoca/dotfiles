@@ -14,6 +14,8 @@ execute 'set runtimepath^=' .. s:dpp_src
 " execute 'set runtimepath+=' .. "~/.cache/dpp_vim/repos/github.com/Shougo/dpp-ext-toml"
 " execute 'set runtimepath+=' .. "~/.cache/dpp_vim/repos/github.com/Shougo/dpp-protocol-git"
 
+execute 'set runtimepath^=' .. s:denops_src
+
 execute 'set runtimepath+=' .. "~/.cache/dpp_vim/pre/dpp-ext-installer"
 execute 'set runtimepath+=' .. "~/.cache/dpp_vim/pre/dpp-ext-lazy"
 execute 'set runtimepath+=' .. "~/.cache/dpp_vim/pre/dpp-ext-toml"
@@ -48,7 +50,6 @@ function! s:ddu_command(args) abort
   call ddu#start(#{ sources: [#{ name: a:args }] })
 endfunction
 
-set clipboard=unnamedplus
 set backspace=indent,eol,start
 set hlsearch
 set incsearch
@@ -115,3 +116,27 @@ let g:lightline = {
       \   'lsp_ok':       'middle',
       \ },
     \ }
+
+" set runtimepath+=~/.ghq/github.com/Comamoca/vimskey
+
+function! s:WaylandYank()
+    if v:event['regname'] == '+' ||
+                \ (v:event['regname'] == 'w' && s:plus_to_w) ||
+                \ (v:event['regname'] == '' && &clipboard =~ 'unnamedplus')
+        silent call job_start(['wl-copy'] + s:copy_args + ['--', getreg(v:event['regname'])], {
+            \   "in_io": "null", "out_io": "null", "err_io": "null",
+            \   "stoponexit": "",
+            \ })
+    endif
+endfunction
+
+" run s:WaylandYank() after every time text is yanked
+augroup waylandyank
+    autocmd!
+    autocmd TextYankPost * call s:WaylandYank()
+augroup END
+
+" nnoremap <expr> <silent> "+p <SID>put('p', v:false)
+" nnoremap <expr> <silent> "+P <SID>put('P', v:false)
+" nnoremap <expr> <silent> p <SID>put('p', &clipboard !~ 'unnamedplus')
+" nnoremap <expr> <silent> P <SID>put('P', &clipboard !~ 'unnamedplus')
