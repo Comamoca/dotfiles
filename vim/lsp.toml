@@ -3,6 +3,7 @@ repo = 'prabirshrestha/vim-lsp'
 on_event = ['BufRead', 'CursorHold']
 hook_source = '''
 let g:lsp_log_file = expand('~/.vim/log/vim-lsp.log')
+let g:lsp_settings_filetype_typescript = ['typescript-language-server', 'eslint-language-server', 'deno']
 
 if executable('janet-lsp')
     au User lsp_setup call lsp#register_server({

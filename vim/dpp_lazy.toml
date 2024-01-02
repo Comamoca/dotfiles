@@ -66,6 +66,9 @@ let g:comfortable_motion_no_default_key_mappings = 1
 [[plugins]]
 repo = 'tomtom/tcomment_vim'
 on_event = ['BufRead', 'CursorHold']
+hook_source = '''
+call tcomment#type#Define('janet', '# %s')
+'''
 
 [[plugins]]
 repo = 'Shougo/ddc-ui-pum'
@@ -84,9 +87,17 @@ on_cmd = ['Translate', 'Translate!']
 repo = 'itchyny/lightline.vim'
 on_event = ['BufRead', 'CursorHold']
 hook_source = '''
-execute("source" .. expand("~/.vim/lightline.vim"))
+" execute("source" .. expand("~/.vim/lightline.vim"))
 '''
 
 [[plugins]]
 repo = 'skanehira/denops-translate.vim'
 on_cmd = ['Translate', 'Translate!']
+
+[[plugins]]
+repo = 'thinca/vim-quickrun'
+on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = 'cohama/lexima.vim'
+on_event = ['BufRead', 'CursorHold']
