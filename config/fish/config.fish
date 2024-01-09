@@ -14,6 +14,7 @@ fish_add_path $HOME/.kiex/elixirs/elixir-1.14/bin/
 fish_add_path $HOME/.kerl/26.2.1/bin/
 
 fish_add_path $HOME/.janet/bin
+fish_add_path $HOME/.bin/opam
 
 source .kiex/elixirs/.elixir-1.16.0-rc.1.env.fish
 source ~/.wasmer/wasmer.sh
@@ -187,5 +188,6 @@ rbenv init - fish | source
 
 # opam configuration
 source /home/coma/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
+
 source "$HOME/.kiex/scripts/kiex.fish"
 source "$HOME/.sdkman/bin/sdkman-init.sh"
