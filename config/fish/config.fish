@@ -1,15 +1,23 @@
-set PATH /usr/local/bin $PATH
-set PATH ~/.local/bin $PATH
+fish_add_path /usr/local/bin
+fish_add_path $HOME/.local/bin
 
-set PATH ~/ghq/github.com/emscripten-core/emsdk $PATH
-set PATH ~/ghq/github.com/emscripten-core/emsdk/upstream/emscripten $PATH
-set PATH ~/.codon/bin $PATH
-set PATH ~/.rye/shims/ $PATH
-set PATH ~/.local/share/gem/ruby/3.0.0/bin $PATH
-set PATH ~/.local/share/gem/ruby/3.0.0/bin/ $PATH
-set PATH /home/coma/.kiex/elixirs/elixir-1.14/bin/ $PATH
+fish_add_path $HOME/ghq/github.com/emscripten-core/emsdk
+fish_add_path $HOME/ghq/github.com/emscripten-core/emsdk/upstream/emscripten
+fish_add_path $HOME/.codon/bin
+fish_add_path $HOME/.rye/shims/
+fish_add_path $HOME/.local/share/gem/ruby/3.0.0/bin
+fish_add_path $HOME/.local/share/gem/ruby/3.0.0/bin/
 
+fish_add_path $HOME/.kiex/bin/
+fish_add_path $HOME/.kiex/elixirs/elixir-1.14/bin/
+
+fish_add_path $HOME/.kerl/26.2.1/bin/
+
+fish_add_path $HOME/.janet/bin
+
+source .kiex/elixirs/.elixir-1.16.0-rc.1.env.fish
 source ~/.wasmer/wasmer.sh
+source "$HOME/.rye/env"
 
 set LUA_PATH ~/.luarocks/lib/ $LUA_PATH
 set LUA_PATH ~/.luarocks/lib/luarocks/rocks-5.4/ $LUA_PATH
@@ -36,7 +44,7 @@ alias nush='/bin/nu'
 # alias ide="~/.scripts/tmux_layout.sh"
 alias wallpapelar='feh --bg-fill'
 alias ls='lsd'
-alias rm='rip'
+# alias rm='rip'
 alias server='python -m http.server'
 # alias fzvim='nvim (fzf)'
 alias fzhq='string  join / (ghq root) (ghq list | fzf --preview "bat --color=always --style=header,grid --line-range :80 $(ghq root)/{}/README.*")'
@@ -56,7 +64,7 @@ alias grm='g rm'
 
 alias vimdiff='nvim -d'
 
-alias README='cp ~/ghq/github.com/Comamoca/baserepo/README.md ~/ghq/github.com/Comamoca/baserepo/README.ja.md .'
+alias README='cp (ghq root)/github.com/Comamoca/baserepo/README.md ~/ghq/github.com/Comamoca/baserepo/README.ja.md .'
 alias lg='lazygit'
 alias ablaze_repos='gh repo list Ablaze-MIRAI'
 alias wk='wikitool'
@@ -180,3 +188,4 @@ rbenv init - fish | source
 # opam configuration
 source /home/coma/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 source "$HOME/.kiex/scripts/kiex.fish"
+source "$HOME/.sdkman/bin/sdkman-init.sh"
