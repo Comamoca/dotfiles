@@ -49,12 +49,9 @@ local config = {
   -- disable_default_key_bindings = true,
   color_scheme = "Afterglow",
   use_ime = true,
--- <<<<<<< HEAD
   font_size = 16,
--- =======
   font = wezterm.font("UDEV Gothic NFLG"),
   -- font = wezterm.font("UDEV Gothic NF Regular"),
-  -- font = wezterm.font("/home/coma/Downloads/"),
 
   hide_tab_bar_if_only_one_tab = true,
   adjust_window_size_when_changing_font_size = false,
