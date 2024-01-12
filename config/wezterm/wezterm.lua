@@ -117,6 +117,7 @@ if wezterm.target_triple == "x86_64-pc-windows-msvc" then
 else
   config.default_prog = { "fish" }
   config.window_background_image = home .. "Pictures/wallpapelar/benjamin-hersh-_69DlG4rMm4-unsplash.jpg"
+  config.enable_wayland = true
 end
 
 return config
