@@ -15,6 +15,7 @@ fish_add_path $HOME/.kerl/26.2.1/bin/
 
 fish_add_path $HOME/.janet/bin
 fish_add_path $HOME/.bin/opam
+fish_add_path $HOME/.bin/mason
 
 source .kiex/elixirs/.elixir-1.16.0-rc.1.env.fish
 source ~/.wasmer/wasmer.sh
