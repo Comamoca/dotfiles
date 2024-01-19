@@ -17,8 +17,20 @@ fish_add_path $HOME/.janet/bin
 fish_add_path $HOME/.bin/opam
 fish_add_path $HOME/.bin/mason
 
+fish_add_path $HOME/.wasmer/wasmer.sh
+
+fish_add_path $HOME/.local/share/aquaproj-aqua/bin/
+fish_add_path $AQUA_ROOT_DIR/bin
+
+fish_add_path $HOME/.konryu/versions/v0.1.1/cotowali/bin
+fish_add_path $HOME/go/bin/
+
+set -gx XDG_DATA_HOME $HOME/.local/share
+set -gx AQUA_ROOT_DIR $XDG_DATA_HOME/aquaproj-aqua
+
+
 source .kiex/elixirs/.elixir-1.16.0-rc.1.env.fish
-source ~/.wasmer/wasmer.sh
+# source ~/.wasmer/wasmer.sh
 source "$HOME/.rye/env"
 
 set LUA_PATH ~/.luarocks/lib/ $LUA_PATH
@@ -110,12 +122,12 @@ set -ga fish_user_paths /home/coma/.nimble/pkgs
 set -gx PNPM_HOME "/home/coma/.local/share/pnpm"
 set -gx PATH "$PNPM_HOME" $PATH
 
-set -x PATH "$HOME/.konryu/bin" $PATH
-set -x PATH "$HOME/.konryu/cotowali/bin/" $PATH
+# set -x PATH "$HOME/.konryu/bin" $PATH
+# set -x PATH "$HOME/.konryu/cotowali/bin/" $PATH
+# eval (konryu init)
 
 eval (gh completion -s fish| source)
 eval (hugo completion fish)
-eval (konryu init)
 
 set EMSDK_QUIET = 1
 
@@ -163,7 +175,7 @@ export PATH="$PATH":"$HOME/.pub-cache/bin"
 # to copy to xclip system keyboard (on mac use pbcopy) after selecting
 # emoj | xclip -selection c
 
-set -x BLUESKY_IDENTIFIER "comamoca.bsky.social"
+# set -x BLUESKY_IDENTIFIER "comamoca.bsky.social"
 set -x BLUESKY_PASSWORD (__secret bluesky_pass)
 
 # pnpm
