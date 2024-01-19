@@ -142,7 +142,7 @@ autocmd TabEnter,CursorHold,FocusGained <buffer>
 
 autocmd FileType ddu-filer call s:ddu_filer_my_settings()
 function! s:ddu_filer_my_settings() abort
-  nnoremap <buffer><silent><expr> <CR>
+  nnoremap <buffer><silent><expr> l
     \ ddu#ui#get_item()->get('isTree', v:false) ?
     \ "<Cmd>call ddu#ui#filer#do_action('itemAction', {'name': 'narrow'})<CR>" :
     \ "<Cmd>call ddu#ui#filer#do_action('itemAction', {'name': 'open', 'params': {}})<CR>"
@@ -161,7 +161,7 @@ function! s:ddu_filer_my_settings() abort
   nnoremap <buffer><silent> <Leader>f
     \ <Cmd>call ddu#ui#filer#do_action('quit')<CR>
 
-  nnoremap <buffer><silent> ..
+  nnoremap <buffer><silent> -
     \ <Cmd>call ddu#ui#filer#do_action('itemAction', {'name': 'narrow', 'params': {'path': '..'}})<CR>
 
   nnoremap <buffer><silent> c

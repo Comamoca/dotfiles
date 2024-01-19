@@ -1,6 +1,6 @@
 [[plugins]]
 repo = 'liquidz/dps-parinfer'
-on_ft = ['clojure', 'lisp', 'fennel', 'janet']
+on_ft = ['clojure', 'lisp', 'fennel', 'janet', 'hy']
 
 [[plugins]]
 repo = 'zah/nim.vim'

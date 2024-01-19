@@ -1,4 +1,5 @@
-import { BaseConfig,
+import {
+  BaseConfig,
   ContextBuilder,
   Dpp,
   Plugin,
@@ -102,7 +103,11 @@ export class Config extends BaseConfig {
       },
     ) as LazyMakeStateResult;
 
-    console.log(Object.values(recordPlugins));
+    // console.log(Object.values(recordPlugins));
+    console.log({
+      plugins: lazyResult.plugins,
+      stateLines: lazyResult.stateLines,
+    })
 
     return {
       plugins: lazyResult.plugins,
@@ -110,4 +115,3 @@ export class Config extends BaseConfig {
     };
   }
 }
-

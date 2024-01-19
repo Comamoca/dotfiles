@@ -1,39 +1,40 @@
+set nocompatible
+
 const s:dpp_base = '~/.cache/dpp_vim/'
 
-" Set dpp source path (required)
-" const s:dpp_src = '~/.cache/dpp_vim/repos/github.com/Shougo/dpp.vim'
-const s:dpp_src = '~/.cache/dpp_vim/pre/dpp.vim'
-" const s:denops_src = '~/.cache/dpp_vim/repos/github.com/vim-denops/denops.vim'
-const s:denops_src = '~/.cache/dpp_vim/pre/denops.vim'
+const s:dpp_src = '~/.cache/dpp_vim/repos/github.com/Shougo/dpp.vim'
+const s:denops_src = '~/.cache/dpp_vim/repos/github.com/vim-denops/denops.vim'
 
-" Set dpp runtime path (required)
 execute 'set runtimepath^=' .. s:dpp_src
 
-" execute 'set runtimepath+=' .. "~/.cache/dpp_vim/repos/github.com/Shougo/dpp-ext-installer"
-" execute 'set runtimepath+=' .. "~/.cache/dpp_vim/repos/github.com/Shougo/dpp-ext-lazy"
-" execute 'set runtimepath+=' .. "~/.cache/dpp_vim/repos/github.com/Shougo/dpp-ext-toml"
-" execute 'set runtimepath+=' .. "~/.cache/dpp_vim/repos/github.com/Shougo/dpp-protocol-git"
+execute 'set runtimepath^=' .. '~/.cache/dpp_vim/repos/github.com/Shougo/dpp-ext-installer'
+execute 'set runtimepath^=' .. '~/.cache/dpp_vim/repos/github.com/Shougo/dpp-ext-toml'
+execute 'set runtimepath^=' .. '~/.cache/dpp_vim/repos/github.com/Shougo/dpp.vim'
+execute 'set runtimepath^=' .. '~/.cache/dpp_vim/repos/github.com/Shougo/dpp-ext-lazy'
+execute 'set runtimepath^=' .. '~/.cache/dpp_vim/repos/github.com/Shougo/dpp-protocol-git'
 
-execute 'set runtimepath^=' .. s:denops_src
-
-execute 'set runtimepath+=' .. "~/.cache/dpp_vim/pre/dpp-ext-installer"
-execute 'set runtimepath+=' .. "~/.cache/dpp_vim/pre/dpp-ext-lazy"
-execute 'set runtimepath+=' .. "~/.cache/dpp_vim/pre/dpp-ext-toml"
-execute 'set runtimepath+=' .. "~/.cache/dpp_vim/pre/dpp-protocol-git"
-
-if dpp#min#load_state(s:dpp_base)
+if s:dpp_base->dpp#min#load_state()
   " NOTE: dpp#make_state() requires denops.vim
   execute 'set runtimepath^=' .. s:denops_src
   autocmd User DenopsReady
+  \ echo "denops ready"
+
+  autocmd User DenopsReady
   \ call dpp#make_state(s:dpp_base, '~/.vim/dpp.ts')
 endif
+
+execute 'set runtimepath^=' .. s:denops_src
 
 if has('syntax')
   syntax on
 endif
 
+filetype indent plugin on
+
 command! DppInstall :call s:dpp_install('install')
 command! DppUpdate :call s:dpp_install('update')
+command! DppMakeState :call dpp#make_state(s:dpp_base, '~/.vim/dpp.ts')
+
 
 function! s:dpp_install(cmd) abort
 	if denops#server#status() == "running"
@@ -67,10 +68,7 @@ set autoindent
 
 const mapleader = " "
 
-nnoremap <silent> <C-[> <cmd>set nohlsearch<CR>
-
-let g:seiya_auto_enable=1
-
+nnoremap <silent> <C-[> <cmd>nohlsearch<CR>
 
 nnoremap <C-o> <cmd>Ddu file_rec<CR>
 nnoremap <C-i> <cmd>Ddu buffer<CR>
@@ -81,7 +79,7 @@ nnoremap <Leader>f <cmd>call ddu#start({"name": "filer", "searchPath": expand('%
 " nnoremap <C-o> <cmd>Ddu file_rec<CR>
 " nnoremap <C-o> <cmd>Ddu file_rec<CR>
 
-execute("set runtimepath^=" .. expand("~/ghq/github.com/coma/memos.vim"))
+" execute("set runtimepath^=" .. expand("~/ghq/github.com/coma/memos.vim"))
 
 inoremap jj <C-[>
 nnoremap s <C-w>
@@ -92,6 +90,8 @@ function! s:cmd_win_hook() abort
     nnoremap <buffer> <C-c> <Cmd>quit<CR>
     inoremap <buffer> <C-c> <ESC><Cmd>quit<CR>
 endfunction
+
+" au BufNewFile,BufRead *.hy setf lisp
 
 let g:lightline = {
       \ 'colorscheme': 'seoul256',
@@ -119,24 +119,7 @@ let g:lightline = {
 
 " set runtimepath+=~/.ghq/github.com/Comamoca/vimskey
 
-function! s:WaylandYank()
-    if v:event['regname'] == '+' ||
-                \ (v:event['regname'] == 'w' && s:plus_to_w) ||
-                \ (v:event['regname'] == '' && &clipboard =~ 'unnamedplus')
-        silent call job_start(['wl-copy'] + s:copy_args + ['--', getreg(v:event['regname'])], {
-            \   "in_io": "null", "out_io": "null", "err_io": "null",
-            \   "stoponexit": "",
-            \ })
-    endif
-endfunction
+set clipboard=unnamedplus
+set autoindent
 
-" run s:WaylandYank() after every time text is yanked
-augroup waylandyank
-    autocmd!
-    autocmd TextYankPost * call s:WaylandYank()
-augroup END
-
-" nnoremap <expr> <silent> "+p <SID>put('p', v:false)
-" nnoremap <expr> <silent> "+P <SID>put('P', v:false)
-" nnoremap <expr> <silent> p <SID>put('p', &clipboard !~ 'unnamedplus')
-" nnoremap <expr> <silent> P <SID>put('P', &clipboard !~ 'unnamedplus')
+autocmd BufRead,ColorScheme * highlight Normal ctermbg=none
