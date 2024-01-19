@@ -2,7 +2,7 @@
 repo = 'Shougo/ddc.vim'
 # on_event = ['InsertEnter']
 on_event = ['BufRead', 'CursorHold']
-depends = ['denops.vim']
+# depends = ['denops.vim']
 hook_source = '''
 call ddc#custom#patch_global('ui', 'pum')
 call ddc#custom#patch_global('sources', [
@@ -17,6 +17,7 @@ call ddc#custom#patch_global('sourceOptions', #{
     \   vim-lsp: #{
     \     matchers: ['matcher_head'],
     \     mark: 'lsp',
+    \     forceCompletionPattern: '\.\w*|:\w*|->\w*',
     \   },
     \ })
 
@@ -25,6 +26,7 @@ call ddc#custom#patch_global('sourceOptions', {
 \    'matchers': [ 'matcher_fuzzy' ],
 \    'sorters': [ 'sorter_fuzzy' ],
 \    'converters': [ 'converter_fuzzy' ],
+\    'minAutoCompleteLength': 1,
 \  },
 \  'around': { 'mark': 'around' },
 \  'path': { 'mark': 'P' },

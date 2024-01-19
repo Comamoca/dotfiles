@@ -1,6 +1,6 @@
-[[plugins]]
-repo = 'vim-denops/denops.vim'
-on_event = ['BufRead', 'CursorHold']
+# [[plugins]]
+# repo = 'vim-denops/denops.vim'
+# on_event = ['BufRead', 'CursorHold']
 
 [[plugins]]
 repo = "morhetz/gruvbox"
@@ -20,10 +20,6 @@ on_event = ['BufRead', 'CursorHold']
 hook_source = """
 nnoremap <C-f> <cmd>Sayonara<CR>
 """
-
-[[plugins]]
-repo = "miyakogi/seiya.vim"
-on_event = ["ColorSchemePre", 'BufRead', 'CursorHold']
 
 [[plugins]]
 repo = "Shougo/context_filetype.vim"
@@ -57,8 +53,8 @@ hook_source = '''
 repo = "yuttie/comfortable-motion.vim"
 on_event = ['BufRead', 'CursorHold']
 hook_source = '''
-nnoremap <C-k> :<C-u>call comfortable_motion#flick(-70)<CR>
-nnoremap <C-j> :<C-u>call comfortable_motion#flick(70)<CR>
+nnoremap <silent><C-k> :<C-u>call comfortable_motion#flick(-70)<CR>
+nnoremap <silent><C-j> :<C-u>call comfortable_motion#flick(70)<CR>
 
 let g:comfortable_motion_no_default_key_mappings = 1
 '''
@@ -101,3 +97,26 @@ on_event = ['BufRead', 'CursorHold']
 [[plugins]]
 repo = 'cohama/lexima.vim'
 on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = "jasonccox/vim-wayland-clipboard"
+on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = "miyakogi/seiya.vim"
+on_event = ["ColorSchemePre", 'BufReadPre', 'CursorHold']
+hook_source = """
+let g:seiya_auto_enable=1
+"""
+
+[[plugins]]
+repo = "wakatime/vim-wakatime"
+on_cmd = [
+          'WakaTimeApiKey',
+          'WakaTimeDebugEnable',
+	  'WakaTimeDebugDisable',
+	  'WakaTimeScreenRedrawEnable',
+	  'WakaTimeScreenRedrawEnableAuto',
+	  'WakaTimeScreenRedrawDisable',
+	  'WakaTimeToday',
+	 ]
