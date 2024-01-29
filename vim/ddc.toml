@@ -185,7 +185,7 @@ let g:vsnip_filetypes = {}
 let g:vsnip_filetypes.javascriptreact = ['javascript']
 let g:vsnip_filetypes.typescriptreact = ['typescript']
 
-let g:vsnip_snippet_dirs = [expand("~/.config/nvim/snippets")]
+let g:vsnip_snippet_dirs = [expand("~/.vsnip/snippets")]
 
 " expand("~/.cache/dpp_vim/repos/github.com/rafamadriz/friendly-snippets/snippets"),
 """

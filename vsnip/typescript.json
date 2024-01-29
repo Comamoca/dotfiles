@@ -1,0 +1,14 @@
+{
+  "log": {
+    "prefix": ["log"],
+    "body": "console.log($1)"
+  },
+  "arrow": {
+    "prefix": ["arrow"],
+    "body": [
+      "const $1 = () => {",
+      "$2",
+      "}"
+    ]
+  }
+}
