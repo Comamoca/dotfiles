@@ -120,3 +120,10 @@ on_cmd = [
 	  'WakaTimeScreenRedrawDisable',
 	  'WakaTimeToday',
 	 ]
+
+[[plugins]]
+repo = "lambdalisue/kensaku-search.vim"
+on_event = ['BufRead', 'CursorHold']
+hook_source = """"
+cnoremap <CR> <Plug>(kensaku-search-replace)<CR>
+"""
