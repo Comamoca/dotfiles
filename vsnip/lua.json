@@ -5,6 +5,7 @@
   },
   "pirnt": {
     "prefix": ["print"],
-    "body": "vim.print($1)"
+    "body": "vim.print($1)",
+    "description": "prettry print in neovim embeded"
   }
 }
