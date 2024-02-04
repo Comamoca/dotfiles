@@ -25,3 +25,10 @@ fi
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+# Wasmer
+export WASMER_DIR="/home/coma/.wasmer"
+[ -s "$WASMER_DIR/wasmer.sh" ] && source "$WASMER_DIR/wasmer.sh"
+source "$HOME/.rye/env"
+
+[ -f "/home/coma/.ghcup/env" ] && source "/home/coma/.ghcup/env" # ghcup-env
