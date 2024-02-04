@@ -123,3 +123,11 @@ set clipboard=unnamedplus
 set autoindent
 
 autocmd BufRead,ColorScheme * highlight Normal ctermbg=none
+autocmd BufRead *.lark set filetype=lark
+
+set statusline=─
+set fillchars+=stl:─,stlnc:─,vert:│,eob:\\x20
+set laststatus=0
+highlight! link StatusLine Comment
+highlight! link StatusLineNC Comment
+highlight! link VertSplit Comment
