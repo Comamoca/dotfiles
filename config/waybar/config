@@ -2,7 +2,7 @@
 	"layer": "top",
 	"modules-left": ["custom/launcher","cpu","memory","tray"],
 	"modules-center": ["river/tags","custom/media"],
-	"modules-right": ["custom/updates","custom/wallpaper","backlight","pulseaudio","clock", "battery","custom/power"],
+	"modules-right": ["custom/updates","custom/wallpaper","backlight","pulseaudio","clock", "battery", "custom/power"],
 	
 	"pulseaudio": {
 		"tooltip": false,
@@ -130,5 +130,10 @@
         "exec-if": "[[ $(checkupdates | wc -l) != 0 ]]",
         "interval": 15,
         "on-click": "alacritty -e paru -Syu && notify-send 'The system has been updated' "
+    },
+    "bluetooth":{
+        "format": "{}%",
+        "exec": "bluetoothctl info | grep 'Battery Percentage' | cut -f 2 -d '(' | sed -z -e 's/)//' -e 's/\n//'",
+	"interval": 10,
     },
 }
