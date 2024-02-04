@@ -9,6 +9,7 @@ call ddc#custom#patch_global('sources', [
 \  'vim-lsp',
 \  'around',
 \  'vsnip',
+\  'denippet',
 \  'file',
 \  'shell-native',
 \  'skkeleton',
@@ -36,7 +37,8 @@ call ddc#custom#patch_global('sourceOptions', {
 \    'isVolatile': v:true,
 \    'forceCompletionPattern': '\S/\S*',
 \  },
-\  'vsnip': { 'mark': 'vsnip' },
+\  'vsnip': { 'mark': '🧩' },
+\  'denippet': { 'mark': '⚡' }
 \})
 
 call ddc#custom#patch_global('sourceOptions', {
@@ -186,12 +188,28 @@ repo = 'hrsh7th/vim-vsnip'
 on_source = 'ddc.vim'
 hook_source = """
 let g:vsnip_filetypes = {}
-let g:vsnip_filetypes.javascriptreact = ['javascript']
-let g:vsnip_filetypes.typescriptreact = ['typescript']
 
-let g:vsnip_snippet_dirs = [expand("~/.config/nvim/snippets")]
+let g:vsnip_filetypes.javascript = ['javascript']
+let g:vsnip_filetypes.typescript = ['typescript', 'javascript']
 
-" expand("~/.cache/dpp_vim/repos/github.com/rafamadriz/friendly-snippets/snippets"),
+imap <expr> <C-j>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<C-j>'
+smap <expr> <C-j>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<C-j>'
+imap <expr> <C-k> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<C-k>'
+smap <expr> <C-k> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<C-k>'
+
+let g:vsnip_snippet_dirs = [expand("~/.vsnip/snippets"), expand("~/.cache/dpp_vim/repos/github.com/rafamadriz/friendly-snippets/snippets")]
+"""
+
+[[plugins]]
+repo = 'rafamadriz/friendly-snippets'
+
+[[plugins]]
+repo = 'uga-rosa/denippet.vim'
+on_source = 'ddc.vim'
+hook_source = """"
+for file in glob("~/.denippet/*", ".", 1, 1)
+	call denippet#load(file)
+endfor
 """
 
 [[plugins]]

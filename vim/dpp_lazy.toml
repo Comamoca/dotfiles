@@ -1,7 +1,3 @@
-# [[plugins]]
-# repo = 'vim-denops/denops.vim'
-# on_event = ['BufRead', 'CursorHold']
-
 [[plugins]]
 repo = "morhetz/gruvbox"
 on_event = ['BufRead', 'CursorHold']
@@ -141,3 +137,18 @@ let g:fuzzy_motion_matchers = ['fzf', 'kensaku']
 # on_event = ['BufRead', 'CursorHold']
 # on_event = ['VimEnter']
 # on_source = 'denops.vim'
+[[plugins]]
+repo = "lambdalisue/kensaku-search.vim"
+on_event = ['BufRead', 'CursorHold']
+hook_source = """"
+cnoremap <CR> <Plug>(kensaku-search-replace)<CR>
+"""
+
+[[plugins]]
+repo = 'kat0h/bufpreview.vim'
+build = 'deno task prepare'
+on_cmd = [
+    'PreviewMarkdown',
+    'PreviewMarkdownStop',
+    'PreviewMarkdownToggle',
+]

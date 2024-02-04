@@ -10,7 +10,7 @@ call ddu#custom#patch_global(#{
 \   ui: 'ff',
 \   sourceOptions: #{
 \     _: #{
-\       matchers: ['matcher_substring']
+\      matchers: ['matcher_fzf']
 \     },
 \     memos: #{
 \       matchers: ['matcher_kensaku'],
@@ -48,7 +48,16 @@ call ddu#custom#patch_global(#{
 \       },
 \      deol: #{
 \         defaultAction: 'edit',
-\       }
+\      },
+\      source: #{
+\         defaultAction: 'execute',
+\      },
+\      command: #{
+\         defaultAction: 'edit',
+\      },
+\      custom-list: #{
+\         defaultAction: 'callback',
+\      }
 \     }
 \ })
 
@@ -69,6 +78,19 @@ call ddu#custom#patch_global(#{
 \        },
 \    },
 \ })
+
+" call ddu#custom#patch_global('kindOptions', {
+" \   'source': {
+" \     'defaultAction': 'execute',
+" \   },
+" \ })
+"
+" call ddu#custom#patch_global('kindOptions', {
+" \   'command': {
+" \     'defaultAction': 'edit',
+" \   },
+" \ })
+
 
 setlocal updatetime=500
 autocmd CursorHold ddu-ff call ddu#ui#do_action('preview')
@@ -261,3 +283,7 @@ on_source = 'ddu.vim'
 repo = "hasundue/ddu-filter-zf"
 on_source = 'ddu.vim'
 build = 'deno task fetch' 
+
+[[plugins]]
+repo = 'kyoh86/ddu-source-command'
+on_source = 'ddc.vim'
