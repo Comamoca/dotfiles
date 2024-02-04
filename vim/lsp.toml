@@ -3,7 +3,17 @@ repo = 'prabirshrestha/vim-lsp'
 on_event = ['BufRead', 'CursorHold']
 hook_source = '''
 let g:lsp_log_file = expand('~/.vim/log/vim-lsp.log')
-let g:lsp_settings_filetype_typescript = ['typescript-language-server', 'eslint-language-server', 'deno']
+let g:lsp_settings_filetype_typescript = [
+\	'typescript-language-server',
+\       'eslint-language-server',
+\       'deno'
+\ ]
+let g:lsp_diagnostics_virtual_text_enabled = 1
+let g:lsp_diagnostics_virtual_text_insert_mode_enabled = 1
+let g:lsp_diagnostics_virtual_text_enabled = "after"
+let g:lsp_diagnostics_enabled = 0
+
+
 
 if executable('janet-lsp')
     au User lsp_setup call lsp#register_server({
@@ -12,6 +22,31 @@ if executable('janet-lsp')
         \ 'whitelist': ['janet'],
         \ })
 endif
+
+if executable('ocamllsp')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'Ocaml Language Server',
+	\ 'cmd': {server_info->['ocamllsp']},
+        \ 'whitelist': ['ocaml'],
+        \ })
+endif
+
+if executable('rescript-language-server')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'Rescript Language Server',
+	\ 'cmd': {server_info->['rescript-language-server', '--stdio']},
+        \ 'whitelist': ['rescript'],
+        \ })
+endif
+
+if executable('fennel-language-server')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'Fennel Language Server',
+	\ 'cmd': {server_info->['fennel-language-server']},
+        \ 'whitelist': ['fennel'],
+        \ })
+endif
+
 
 function! s:on_lsp_buffer_enabled() abort
     setlocal omnifunc=lsp#complete
@@ -31,8 +66,8 @@ function! s:on_lsp_buffer_enabled() abort
     " nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
     " nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
 
-    let g:lsp_format_sync_timeout = 1000
-    autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
+    let g:lsp_format_sync_timeout = 0
+    " autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
     
     " refer to doc to add more commands
 endfunction
@@ -42,11 +77,33 @@ augroup lsp_install
     " call s:on_lsp_buffer_enabled only for languages that has the server registered.
     autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
+
+augroup vimspector
+    autocmd!
+    autocmd User VimspectorJumpedToFrame * call s:vimspector_my_settings()
+augroup END
+
+function! s:vimspector_my_settings() abort
+	echom "Vimspector!"
+	nnoremap <Leader>r <Plug>VimspectorContinue
+	nnoremap <Leader>s <plug>VimspectorStop
+	nnoremap <C-b> <cmd>call vimspector#ToggleBreakpoint()<CR>
+        nnoremap <S-q> <cmd>vimspector#Reset()<CR>
+endfunction
 '''
 
 [[plugins]]
 repo = 'mattn/vim-lsp-settings'
 on_source = 'vim-lsp'
-hook_source = '''
 
+[[plugins]]
+repo = 'dense-analysis/ale'
+on_event = ['BufRead', 'CursorHold']
+hook_source = '''
+let g:ale_sign_error = ' '
+let g:ale_sign_warning = ' '
+let g:ale_sign_info = ' '
+
+let g:ale_fix_on_save = 1
+let g:rustfmt_on_save = 0
 '''

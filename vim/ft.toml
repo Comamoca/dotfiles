@@ -12,3 +12,11 @@ on_ft = 'janet'
 hook_source = '''
 autocmd FileType janet setlocal sw=2 sts=2 ts=2 et
 '''
+
+[[plugins]]
+repo = 'rescript-lang/vim-rescript'
+on_ft = 'rescript'
+
+[[plugins]]
+repo = 'atweiden/vim-fennel'
+on_ft = 'fennel'
