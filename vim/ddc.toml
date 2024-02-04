@@ -11,6 +11,7 @@ call ddc#custom#patch_global('sources', [
 \  'vsnip',
 \  'file',
 \  'shell-native',
+\  'skkeleton',
 \])
 
 call ddc#custom#patch_global('sourceOptions', #{
@@ -37,6 +38,14 @@ call ddc#custom#patch_global('sourceOptions', {
 \  },
 \  'vsnip': { 'mark': 'vsnip' },
 \})
+
+call ddc#custom#patch_global('sourceOptions', {
+    \   'skkeleton': {
+    \     'mark': ' ',
+    \     'isVolatile': v:true,
+    \     'minAutoCompleteLength': 1,
+    \   },
+    \ })
 
 call ddc#custom#patch_filetype([ 'ps1', 'dosbatch', 'autohotkey', 'registry' ], {
 \   'sourceOptions': {
@@ -171,11 +180,6 @@ on_source = 'ddc.vim'
 repo = 'tani/ddc-fuzzy'
 on_source = 'ddc.vim'
 
-[[plugins]]
-repo = 'lambdalisue/kensaku.vim'
-on_source = 'ddc.vim'
-# on_event = ['BufRead', 'CursorHold']
-
 # Snippet Engine
 [[plugins]]
 repo = 'hrsh7th/vim-vsnip'
@@ -189,3 +193,20 @@ let g:vsnip_snippet_dirs = [expand("~/.config/nvim/snippets")]
 
 " expand("~/.cache/dpp_vim/repos/github.com/rafamadriz/friendly-snippets/snippets"),
 """
+
+[[plugins]]
+repo = "vim-skk/skkeleton"
+on_source = 'ddc.vim'
+hook_source = '''
+call skkeleton#config({
+\    'globalDictionaries': [
+\      "~/.vim/skk/SKK-JISYO.L.utf8"
+\   ]
+\ })
+
+imap <C-j> <Plug>(skkeleton-enable)
+cmap <C-j> <Plug>(skkeleton-enable)
+
+imap <C-k> <Plug>(skkeleton-disable)
+cmap <C-k> <Plug>(skkeleton-disable)
+'''

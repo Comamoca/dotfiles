@@ -12,3 +12,15 @@ on_ft = 'janet'
 hook_source = '''
 autocmd FileType janet setlocal sw=2 sts=2 ts=2 et
 '''
+
+[[plugins]]
+repo = 'lark-parser/vim-lark-syntax'
+on_ft = 'lark'
+
+[[plugins]]
+repo = 'gleam-lang/gleam.vim'
+on_ft = 'gleam'
+
+[[plugins]]
+repo = 'vmchale/dhall-vim'
+on_ft = 'dhall'

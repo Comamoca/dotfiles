@@ -120,3 +120,24 @@ on_cmd = [
 	  'WakaTimeScreenRedrawDisable',
 	  'WakaTimeToday',
 	 ]
+
+[[plugins]]
+repo = "easymotion/vim-easymotion"
+on_event = ['BufRead', 'CursorHold']
+hook_source = """
+nmap <Leader>k <Plug>(easymotion-overwin-line)
+"""
+
+[[plugins]]
+repo = "yuki-yano/fuzzy-motion.vim"
+depends = ['denops.vim', 'kensaku.vim']
+on_cmd = ["FuzzyMotion"]
+hook_source = """
+let g:fuzzy_motion_matchers = ['fzf', 'kensaku']
+"""
+
+# [[plugins]]
+# repo = 'lambdalisue/kensaku.vim'
+# on_event = ['BufRead', 'CursorHold']
+# on_event = ['VimEnter']
+# on_source = 'denops.vim'
