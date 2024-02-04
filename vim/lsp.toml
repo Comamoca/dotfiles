@@ -5,11 +5,32 @@ hook_source = '''
 let g:lsp_log_file = expand('~/.vim/log/vim-lsp.log')
 let g:lsp_settings_filetype_typescript = ['typescript-language-server', 'eslint-language-server', 'deno']
 
+if executable('haskell-language-server-wrapper')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'haskell-ls',
+        \ 'cmd': {server_info->['haskell-language-server-wrapper', '--lsp']},
+        \ 'root_uri':{server_info->lsp#utils#path_to_uri(
+        \     lsp#utils#find_nearest_parent_file_directory(
+        \         lsp#utils#get_buffer_path(),
+        \         ['.cabal', 'stack.yaml', 'cabal.project', 'package.yaml', 'hie.yaml', '.git'],
+        \     ))},
+        \ 'allowlist': ['haskell', 'lhaskell'],
+        \ })
+endif
+
 if executable('janet-lsp')
     au User lsp_setup call lsp#register_server({
         \ 'name': 'Janet Language Server',
 	\ 'cmd': {server_info->['janet-lsp']},
         \ 'whitelist': ['janet'],
+        \ })
+endif
+
+if executable('gleam')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'Gleam language server',
+	\ 'cmd': {server_info->['gleam', 'lsp']},
+        \ 'whitelist': ['gleam'],
         \ })
 endif
 
