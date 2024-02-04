@@ -72,6 +72,9 @@ nnoremap <silent> <C-[> <cmd>nohlsearch<CR>
 
 nnoremap <C-o> <cmd>Ddu file_rec<CR>
 nnoremap <C-i> <cmd>Ddu buffer<CR>
+nnoremap <C-u> <cmd>Ddu source<CR>
+nnoremap <Leader>l <cmd>call vimspector#Launch()<CR>
+
 nnoremap <Leader>f <cmd>call ddu#start({"name": "filer", "searchPath": expand('%:p'),})<CR>
 
 " nnoremap <buffer> <C-p> <Cmd>call <SID>operator_partedit()<CR>
@@ -131,3 +134,34 @@ set laststatus=0
 highlight! link StatusLine Comment
 highlight! link StatusLineNC Comment
 highlight! link VertSplit Comment
+
+inoremap <C-l> <Plug>(denippet-expand)
+
+
+const exec = denops#callback#register(
+    \ {s -> execute(printf('execute "%s"', s), '')},
+    \ {'once': v:true})
+
+const cd = denops#callback#register(
+    \ {s -> execute(printf('cd "%s"', s), '')},
+    \ {'once': v:true})
+
+function s:dduCustom(items, callback)
+	call ddu#start({'sources': [
+		\  {'name': 'custom-list',
+		\   'params': {'texts': a:items, 'callbackId': a:callback}}]})
+endfunction
+
+" call s:dduCustom(['DppInstall', 'DppMakeState', 'DppUpdate'], exec)
+
+" const ghq_root = system('ghq root')
+
+" echo system("ghq list")
+" 	\ ->split()
+" 	\ ->map('"/home/coma/.ghq/" .. v:val')
+
+
+execute 'set runtimepath^=' .. '~/.ghq/github.com/Comamoca/memos.vim'
+execute 'set runtimepath^=' .. '~/.ghq/github.com/coma/ddu-kind-cd'
+
+let g:rustfmt_autosave = 0

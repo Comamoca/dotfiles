@@ -4,7 +4,7 @@ fish_add_path $HOME/.local/bin
 fish_add_path $HOME/ghq/github.com/emscripten-core/emsdk
 fish_add_path $HOME/ghq/github.com/emscripten-core/emsdk/upstream/emscripten
 fish_add_path $HOME/.codon/bin
-fish_add_path $HOME/.rye/shims/
+fish_add_path $HOME/.rye/shims
 fish_add_path $HOME/.local/share/gem/ruby/3.0.0/bin
 fish_add_path $HOME/.local/share/gem/ruby/3.0.0/bin/
 
@@ -29,9 +29,9 @@ set -gx XDG_DATA_HOME $HOME/.local/share
 set -gx AQUA_ROOT_DIR $XDG_DATA_HOME/aquaproj-aqua
 
 
-source .kiex/elixirs/.elixir-1.16.0-rc.1.env.fish
+source $HOME/.kiex/elixirs/.elixir-1.16.0-rc.1.env.fish
 # source ~/.wasmer/wasmer.sh
-source "$HOME/.rye/env"
+# source "$HOME/.rye/env"
 
 set LUA_PATH ~/.luarocks/lib/ $LUA_PATH
 set LUA_PATH ~/.luarocks/lib/luarocks/rocks-5.4/ $LUA_PATH
@@ -203,4 +203,3 @@ rbenv init - fish | source
 source /home/coma/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 
 source "$HOME/.kiex/scripts/kiex.fish"
-source "$HOME/.sdkman/bin/sdkman-init.sh"

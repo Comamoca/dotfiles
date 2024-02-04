@@ -1,0 +1,11 @@
+{
+  "keymap": {
+    "prefix": ["keymap"],
+    "body": "vim.keymap.set($1, $2, $3, {})"
+  },
+  "pirnt": {
+    "prefix": ["print"],
+    "body": "vim.print($1)",
+    "description": "prettry print in neovim embeded"
+  }
+}

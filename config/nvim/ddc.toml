@@ -179,7 +179,7 @@ vim.g.vsnip_filetypes = {
 
 vim.g.vsnip_snippet_dirs = {
   -- vim.fn.expand("~/.cache/dpp/repos/github.com/rafamadriz/friendly-snippets/snippets"),
-  vim.fn.expand("~/.config/nvim/snippets"),
+  vim.fn.expand("~/.vsnip/snippets")
 }
 """
 
