@@ -19,7 +19,7 @@ call ddu#custom#patch_global(#{
 \       actions: ['edit'],
 \     },
 \     file_rec: #{
-\       matchers: ['matcher_kensaku', 'matcher_zf'],
+\       matchers: ['matcher_kensaku'],
 \     },
 \   },
 \   sourceParams: #{
@@ -279,10 +279,10 @@ on_source = 'ddu.vim'
 repo = 'Shougo/deol.nvim'
 on_source = 'ddu.vim'
 
-[[plugins]]
-repo = "hasundue/ddu-filter-zf"
-on_source = 'ddu.vim'
-build = 'deno task fetch' 
+# [[plugins]]
+# repo = "hasundue/ddu-filter-zf"
+# on_source = 'ddu.vim'
+# build = 'deno task fetch' 
 
 [[plugins]]
 repo = 'kyoh86/ddu-source-command'

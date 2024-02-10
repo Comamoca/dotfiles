@@ -13,6 +13,7 @@ execute 'set runtimepath^=' .. '~/.cache/dpp_vim/repos/github.com/Shougo/dpp.vim
 execute 'set runtimepath^=' .. '~/.cache/dpp_vim/repos/github.com/Shougo/dpp-ext-lazy'
 execute 'set runtimepath^=' .. '~/.cache/dpp_vim/repos/github.com/Shougo/dpp-protocol-git'
 
+
 if s:dpp_base->dpp#min#load_state()
   " NOTE: dpp#make_state() requires denops.vim
   execute 'set runtimepath^=' .. s:denops_src
@@ -24,6 +25,8 @@ if s:dpp_base->dpp#min#load_state()
 endif
 
 execute 'set runtimepath^=' .. s:denops_src
+
+" set runtimepath^=/usr/share/vim/vim91/filetype.vim
 
 if has('syntax')
   syntax on
@@ -127,6 +130,7 @@ set autoindent
 
 autocmd BufRead,ColorScheme * highlight Normal ctermbg=none
 autocmd BufRead *.lark set filetype=lark
+autocmd BufRead *.rs let g:rustfmt_autosave = 0
 
 set statusline=─
 set fillchars+=stl:─,stlnc:─,vert:│,eob:\\x20
@@ -164,4 +168,4 @@ endfunction
 execute 'set runtimepath^=' .. '~/.ghq/github.com/Comamoca/memos.vim'
 execute 'set runtimepath^=' .. '~/.ghq/github.com/coma/ddu-kind-cd'
 
-let g:rustfmt_autosave = 0
+set runtimepath^=~/.ghq/github.com/Comamoca/denops.init/tmp
