@@ -152,3 +152,7 @@ on_cmd = [
     'PreviewMarkdownStop',
     'PreviewMarkdownToggle',
 ]
+
+[[plugins]]
+repo = 'sheerun/vim-polyglot'
+on_event = ['BufRead', 'CursorHold']
