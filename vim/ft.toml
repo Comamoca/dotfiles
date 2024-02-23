@@ -24,3 +24,23 @@ on_ft = 'gleam'
 [[plugins]]
 repo = 'vmchale/dhall-vim'
 on_ft = 'dhall'
+
+[[plugins]]
+repo = 'elixir-editors/vim-elixir'
+on_ft = ['elixir', 'heex']
+
+[[plugins]]
+repo = 'mattn/vim-maketable'
+on_ft = 'markdown'
+
+[[plugins]]
+repo = 'dhruvasagar/vim-table-mode'
+on_ft = 'markdown'
+
+[[plugins]]
+repo = 'DrTom/fsharp-vim'
+on_ft = 'fsharp'
+
+[[plugins]]
+repo = 'mxw/vim-jsx'
+on_ft = ['jsx']

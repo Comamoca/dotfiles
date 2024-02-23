@@ -13,6 +13,13 @@ let g:lsp_diagnostics_virtual_text_insert_mode_enabled = 1
 let g:lsp_diagnostics_virtual_text_enabled = "after"
 let g:lsp_diagnostics_enabled = 0
 
+if executable('nextls')
+  au User lsp_setup call lsp#register_server({
+      \ 'name': 'next_ls',
+      \ 'cmd': ["nextls", "--stdio"],
+      \ 'allowlist': ['elixir'],
+      \ })
+endif
 
 
 if executable('haskell-language-server-wrapper')
@@ -96,10 +103,13 @@ on_source = 'vim-lsp'
 repo = 'dense-analysis/ale'
 on_event = ['BufRead', 'CursorHold']
 hook_source = '''
+let g:ale_disable_lsp = 1
+
 let g:ale_sign_error = ' '
 let g:ale_sign_warning = ' '
 let g:ale_sign_info = ' '
 
 let g:ale_fix_on_save = 1
 let g:rustfmt_on_save = 0
+let g:ale_floating_window_border = ['│', '─', '╭', '╮', '╯', '╰', '│', '─']
 '''
