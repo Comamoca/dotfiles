@@ -1,3 +1,4 @@
+# dpp.vim
 [[plugins]]
 repo = 'Shougo/dpp.vim'
 
@@ -18,3 +19,10 @@ repo = "vim-jp/vital.vim"
 
 [[plugins]]
 repo = 'lambdalisue/kensaku.vim'
+
+# denops.vim
+[[plugins]]
+repo = 'vim-denops/denops.vim'
+
+[[plugins]]
+repo = 'jxnblk/vim-mdx-js'
