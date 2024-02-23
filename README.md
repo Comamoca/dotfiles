@@ -29,18 +29,18 @@ The installed packages list if you want to use, `# pacman -S $(cat pkglist)`
 
 This file is package list from packaman.
 
+## 🐚 [fish](https://github.com/fish-shell/fish-shell)
+
 - ~/.config/fish/config.fish
 - fish is friendry shell.
 
-## 🐚 [fish](https://github.com/fish-shell/fish-shell)
+## 📝 [Neovim](https://github.com/neovim/neovim) settings
 
 - ~/.config/nvim/
 
-## 📝 [Neovim](https://github.com/neovim/neovim) settings
+## 💻 [Tmux](https://github.com/tmux/tmux) config
 
 - ~/.tmux.conf
-
-## 💻 [Tmux](https://github.com/tmux/tmux) config
 
 ## 🔧 Management Tool
 
