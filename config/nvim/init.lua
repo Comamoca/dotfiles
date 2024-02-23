@@ -20,10 +20,11 @@ vim.opt.runtimepath:append(ext_git)
 
 local dpp = require("dpp")
 
-local dppBase = "~/.cache/dpp"
-if dpp.load_state(dppBase) then
-  vim.opt.runtimepath:prepend(denops_src)
+vim.opt.runtimepath:prepend(denops_src)
 
+local dppBase = "~/.cache/dpp"
+
+if dpp.load_state(dppBase) then
   vim.api.nvim_create_autocmd("User", {
     pattern = "DenopsReady",
     callback = function()
@@ -54,21 +55,21 @@ end, { nargs = 1 })
 
 vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
   callback = function()
-    vim.opt.clipboard = "unnamedplus"
-    if vim.fn.has("wsl") then
-      vim.g.clipboard = {
-        name = "win32yank-wsl",
-        copy = {
-          ["+"] = "win32yank.exe -i --crlf",
-          ["*"] = "win32yank.exe -i --crlf",
-        },
-        paste = {
-          ["+"] = "win32yank.exe -o --crlf",
-          ["*"] = "win32yank.exe -o --crlf",
-        },
-        cache_enable = 0,
-      }
-    end
+    -- vim.opt.clipboard = "unnamedplus"
+    -- if vim.fn.has("wsl") then
+    --   vim.g.clipboard = {
+    --     name = "win32yank-wsl",
+    --     copy = {
+    --       ["+"] = "win32yank.exe -i --crlf",
+    --       ["*"] = "win32yank.exe -i --crlf",
+    --     },
+    --     paste = {
+    --       ["+"] = "win32yank.exe -o --crlf",
+    --       ["*"] = "win32yank.exe -o --crlf",
+    --     },
+    --     cache_enable = 0,
+    --   }
+    -- end
 
     require("configs/keymap")
     -- require("configs/cmd")
@@ -85,6 +86,8 @@ vim.cmd("let g:seiya_auto_enable=1")
 vim.cmd("nnoremap sv <cmd>vs<CR>")
 vim.cmd("nnoremap s <C-w>")
 vim.cmd("set ignorecase")
+
+vim.cmd("au FileType * setlocal formatoptions-=ro")
 
 vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/coma/memos.vim"))
 vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/vimskey"))
