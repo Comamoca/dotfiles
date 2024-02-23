@@ -1,7 +1,7 @@
 {
 	"layer": "top",
-	"modules-left": ["custom/launcher","cpu","memory","tray"],
-	"modules-center": ["river/tags","custom/media"],
+	"modules-left": ["custom/launcher","cpu","memory","tray", "hyprland/workspaces"],
+	"modules-center": ["custom/media"],
 	"modules-right": ["custom/updates","custom/wallpaper","backlight","pulseaudio","clock", "battery", "custom/power"],
 	
 	"pulseaudio": {
@@ -14,7 +14,11 @@
 			"default": ["", "", ""]
 		}
 	},
-
+    "hyprland/workspaces": {
+         "format": "{icon}",
+         "on-scroll-up": "hyprctl dispatch workspace e+1",
+         "on-scroll-down": "hyprctl dispatch workspace e-1"
+    },
     "river/tags": {
 		"num-tags": 6
     },
