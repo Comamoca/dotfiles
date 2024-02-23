@@ -63,10 +63,12 @@ local config = {
   -- }
 
   leader = { key = "q", mods = "CTRL", timeout_milliseconds = 1000 },
+
   keys = {
     -- {key="C", mods="SHIFT|CTRL", action="Copy"},
     -- {key="V", mods="SHIFT|CTRL", action="Paste"},
 
+    { key = "w", mods = "ALT|CTRL", action = wezterm.action.CloseCurrentTab { confirm = false },},
     { key = "y", mods = "ALT|CTRL", action = "ActivateCopyMode" },
 
     -- { key = "p", mods = "ALT|CTRL", action = wezterm.action({ PasteFrom = "PrimarySelection" }) },
@@ -96,17 +98,25 @@ local config = {
     },
     { key = "t", mods = "LEADER", action = wezterm.action({ SpawnTab = "CurrentPaneDomain" }) },
     { key = "q", mods = "LEADER", action = wezterm.action({ CloseCurrentTab = { confirm = false } }) },
+
     -- { key = "e", mods = "ALT", action = wezterm.action({ SpawnTab = "CurrentPaneDomain" }) },
     -- { key = "q", mods = "ALT", action = wezterm.action({ CloseCurrentTab = { confirm = false } }) },
-    { key = "j", mods = "ALT", action = wezterm.action({ ActivateTabRelative = -1 }) },
-    { key = "k", mods = "ALT", action = wezterm.action({ ActivateTabRelative = 1 }) },
-    { key = "h", mods = "ALT", action = wezterm.action({ ActivatePaneDirection = "Left" }) },
-    { key = "l", mods = "ALT", action = wezterm.action({ ActivatePaneDirection = "Right" }) },
-    { key = "h", mods = "LEADER", action = wezterm.action({ AdjustPaneSize = { "Left", 1 } }) },
-    { key = "l", mods = "LEADER", action = wezterm.action({ AdjustPaneSize = { "Right", 1 } }) },
-    { key = "k", mods = "LEADER", action = wezterm.action({ AdjustPaneSize = { "Up", 1 } }) },
-    { key = "j", mods = "LEADER", action = wezterm.action({ AdjustPaneSize = { "Down", 1 } }) },
-    -- { key = " ", mods = "ALT", action = "QuickSelect" },
+
+    { key = "j", mods = "LEADER", action = wezterm.action({ ActivateTabRelative = -1 }) },
+    { key = "k", mods = "LEADER", action = wezterm.action({ ActivateTabRelative = 1 }) },
+
+    { key = "l", mods = "LEADER", action = wezterm.action({ ActivateTabRelative = -1 }) },
+    { key = "h", mods = "LEADER", action = wezterm.action({ ActivateTabRelative = 1 }) },
+
+    -- { key = "l", mods = "LEADER", action = wezterm.action({ ActivatePaneDirection = "Right" }) },
+    -- { key = "h", mods = "LEADER", action = wezterm.action({ ActivatePaneDirection = "Left" }) },
+
+    { key = "h", mods = "ALT|SHIFT", action = wezterm.action({ AdjustPaneSize = { "Left", 1 } }) },
+    { key = "l", mods = "ALT|SHIFT", action = wezterm.action({ AdjustPaneSize = { "Right", 1 } }) },
+    { key = "k", mods = "ALT|SHIFT", action = wezterm.action({ AdjustPaneSize = { "Up", 1 } }) },
+    { key = "j", mods = "ALT|SHIFT", action = wezterm.action({ AdjustPaneSize = { "Down", 1 } }) },
+
+    { key = "i", mods = "ALT", action = "QuickSelect" },
     { key = "o", mods = "ALT", action = act.ShowTabNavigator },
 }}
 
