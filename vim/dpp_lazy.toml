@@ -10,12 +10,12 @@ set background=dark
 colorscheme gruvbox-material
 """
 
-[[plugins]]
-repo = 'mhinz/vim-sayonara'
-on_event = ['BufRead', 'CursorHold']
-hook_source = """
-nnoremap <C-f> <cmd>Sayonara<CR>
-"""
+# [[plugins]]
+# repo = 'mhinz/vim-sayonara'
+# on_event = ['BufRead', 'CursorHold']
+# hook_source = """
+# nnoremap <C-f> <cmd>Sayonara<CR>
+# """
 
 [[plugins]]
 repo = "Shougo/context_filetype.vim"
@@ -89,6 +89,20 @@ on_cmd = ['Translate', 'Translate!']
 [[plugins]]
 repo = 'thinca/vim-quickrun'
 on_event = ['BufRead', 'CursorHold']
+on_source = """
+let g:quickrun_config = {
+\   "_" : {
+\       "outputter/buffer/split" : ":botright",
+\       "outputter/buffer/close_on_empty" : 1
+\   },
+\   "deno" : {
+\       "command": "deno",
+\       "cmdopt" : "run",
+\   },
+\}
+
+nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
+"""
 
 [[plugins]]
 repo = 'cohama/lexima.vim'
@@ -137,6 +151,7 @@ let g:fuzzy_motion_matchers = ['fzf', 'kensaku']
 # on_event = ['BufRead', 'CursorHold']
 # on_event = ['VimEnter']
 # on_source = 'denops.vim'
+
 [[plugins]]
 repo = "lambdalisue/kensaku-search.vim"
 on_event = ['BufRead', 'CursorHold']
@@ -152,3 +167,11 @@ on_cmd = [
     'PreviewMarkdownStop',
     'PreviewMarkdownToggle',
 ]
+
+[[plugins]]
+repo = 'lambdalisue/mr.vim'
+on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = 'nathanaelkane/vim-indent-guides'
+on_event = ['BufRead', 'CursorHold']

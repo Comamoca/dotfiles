@@ -3,8 +3,8 @@ import {
   ContextBuilder,
   Dpp,
   Plugin,
-} from "https://deno.land/x/dpp_vim@v0.0.5/types.ts";
-import { Denops, fn } from "https://deno.land/x/dpp_vim@v0.0.5/deps.ts";
+} from "https://deno.land/x/dpp_vim@v0.0.9/types.ts";
+import { Denops, fn } from "https://deno.land/x/dpp_vim@v0.0.9/deps.ts";
 
 console.log("dpp.ts is loaded!");
 
@@ -45,7 +45,8 @@ export class Config extends BaseConfig {
       { name: "ddu.toml", lazy: true },
       { name: "ddc.toml", lazy: true },
       { name: "ft.toml", lazy: true },
-      { name: "dap.toml", lazy: true },
+
+      // { name: "dap.toml", lazy: true },
     ];
 
     const toml_promises = toml_files.map(async (toml) => {
