@@ -1,9 +1,37 @@
+@define-color blue         #75BFBF;
+@define-color yellow       #F2C46D;
+@define-color pale-pink    #F2E4DF;
+@define-color pink         #D9A3A3;
+@define-color green        #9AB7A6;
+@define-color orange       #F2C094;
+
+@define-color bg #161320;
+
+@define-color critical #BF616A;
+
 * {
 	border: none;
-	border-radius: 10;
+	border-radius: 10px;
     font-family: "JetbrainsMono Nerd Font" ;
 	font-size: 15px;
 	min-height: 10px;
+}
+
+#workspaces {
+	margin-top: 6px;
+	margin-left: 8px;
+}
+
+#workspaces button.active {
+	/* margin-top: 6px; */
+	/* margin-left: 8px; */
+	/* padding-left: 10px; */
+	/* padding-right: 10px; */
+	/* margin-bottom: 0px; */
+	border-radius: 10px;
+	/* transition: none; */
+	color: #161320;
+	background: @green;
 }
 
 window#waybar {
@@ -89,7 +117,7 @@ window#waybar.hidden {
 	border-radius: 10px;
 	transition: none;
 	color: #1A1826;
-	background: #FAE3B0;
+	background: @orange;
 }
 
 #battery {
@@ -101,16 +129,16 @@ window#waybar.hidden {
 	border-radius: 10px;
 	transition: none;
 	color: #161320;
-	background: #B5E8E0;
+	background: @blue;
 }
 
 #battery.charging, #battery.plugged {
 	color: #161320;
-    background-color: #B5E8E0;
+    background-color: @blue;
 }
 
 #battery.critical:not(.charging) {
-    background-color: #B5E8E0;
+    background-color: @blue;
     color: #161320;
     animation-name: blink;
     animation-duration: 0.5s;
@@ -121,8 +149,8 @@ window#waybar.hidden {
 
 @keyframes blink {
     to {
-        background-color: #BF616A;
-        color: #B5E8E0;
+        background-color: @critical;
+        color: @blue;
     }
 }
 
@@ -135,7 +163,7 @@ window#waybar.hidden {
 	border-radius: 10px;
 	transition: none;
 	color: #161320;
-	background: #F8BD96;
+	background: @yellow;
 }
 #clock {
 	margin-top: 6px;
@@ -146,7 +174,7 @@ window#waybar.hidden {
 	border-radius: 10px;
 	transition: none;
 	color: #161320;
-	background: #ABE9B3;
+	background: @green;
 	/*background: #1A1826;*/
 }
 
@@ -159,7 +187,7 @@ window#waybar.hidden {
 	border-radius: 10px;
 	transition: none;
 	color: #161320;
-	background: #DDB6F2;
+	background: @green;
 }
 #cpu {
 	margin-top: 6px;
@@ -170,7 +198,7 @@ window#waybar.hidden {
 	border-radius: 10px;
 	transition: none;
 	color: #161320;
-	background: #96CDFB;
+	background: @blue;
 }
 
 #tray {
@@ -182,7 +210,7 @@ window#waybar.hidden {
 	border-radius: 10px;
 	transition: none;
 	color: #B5E8E0;
-	background: #161320;
+	background: @bg;
 }
 
 #custom-launcher {
@@ -194,7 +222,7 @@ window#waybar.hidden {
 	border-radius: 10px;
 	transition: none;
     color: #ABE9B3;
-    background: #161320;
+    background: @bg;
 }
 
 #custom-power {
@@ -208,7 +236,7 @@ window#waybar.hidden {
 	border-radius: 10px;
 	transition: none;
 	color: #161320;
-	background: #F28FAD;
+	background: @pink;
 }
 
 #custom-wallpaper {
@@ -220,7 +248,7 @@ window#waybar.hidden {
 	border-radius: 10px;
 	transition: none;
 	color: #161320;
-	background: #C9CBFF;
+	background: @pink;
 }
 
 #custom-updates {
@@ -232,7 +260,7 @@ window#waybar.hidden {
 	border-radius: 10px;
 	transition: none;
 	color: #161320;
-	background: #E8A2AF;
+	background: @pink;
 }
 
 #custom-media {
@@ -244,5 +272,5 @@ window#waybar.hidden {
 	border-radius: 10px;
 	transition: none;
 	color: #161320;
-	background: #F2CDCD;
+	background: @pink;
 }
