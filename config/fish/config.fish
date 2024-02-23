@@ -1,6 +1,8 @@
 fish_add_path /usr/local/bin
 fish_add_path $HOME/.local/bin
 
+fish_add_path $HOME/.dotnet/tools
+
 fish_add_path $HOME/ghq/github.com/emscripten-core/emsdk
 fish_add_path $HOME/ghq/github.com/emscripten-core/emsdk/upstream/emscripten
 fish_add_path $HOME/.codon/bin
@@ -25,9 +27,10 @@ fish_add_path $AQUA_ROOT_DIR/bin
 fish_add_path $HOME/.konryu/versions/v0.1.1/cotowali/bin
 fish_add_path $HOME/go/bin/
 
+set fish_greeting
+
 set -gx XDG_DATA_HOME $HOME/.local/share
 set -gx AQUA_ROOT_DIR $XDG_DATA_HOME/aquaproj-aqua
-
 
 source $HOME/.kiex/elixirs/.elixir-1.16.0-rc.1.env.fish
 # source ~/.wasmer/wasmer.sh
@@ -50,7 +53,6 @@ zoxide init fish | source
 alias zx='/home/coma/go/bin/z'
 alias glow='glow -p'
 # alias vlang='/usr/sbin/v'
-alias e='nvim'
 alias gupm='~/.gupm/gupm/g'
 # alias git='gix'
 alias g='git'
@@ -78,7 +80,7 @@ alias grm='g rm'
 
 alias vimdiff='nvim -d'
 
-alias README='cp (ghq root)/github.com/Comamoca/baserepo/README.md ~/ghq/github.com/Comamoca/baserepo/README.ja.md .'
+alias README='cp (ghq root)/github.com/Comamoca/baserepo/README.md (ghq root)/github.com/Comamoca/baserepo/README.ja.md .'
 alias lg='lazygit'
 alias ablaze_repos='gh repo list Ablaze-MIRAI'
 alias wk='wikitool'
@@ -100,9 +102,11 @@ alias blog='ruby ~/ghq/github.com/coma/blogtool/blogtool.rb'
 # .bin scripts
 alias MIT="ruby ~/.bin/scripts/mit/mit.rb"
 
-export EDITOR=nvim
+export EDITOR=vim
 # export PYTHONPATH=/home/coma/bundler/bundler/lib
 export GOPATH=$HOME/go
+
+abbr --add e $EDITOR
 
 set PATH /home/coma/.cargo/bin $PATH
 set GH_BINPATH /home/coma/.bin/
@@ -131,25 +135,6 @@ eval (hugo completion fish)
 
 set EMSDK_QUIET = 1
 
-# eval (fzenn completion fish | source)
-
-#mkdir -p $fish_complete_path[1]
-## cp extra/completions/alacritty.fish $fish_complete_path[1]/alacritty.fish
-##
-#export PATH=/home/coma/.nimble/bin:$PATH
-
-# bind \cp __fzf_open --editor
-
-
-# alias ghlist='cd "~/ghq/"(ghq list | fzf --preview "bat --color=always --style=header,grid --line-range :80 $(ghq root)/{}/README.*")'
-
-# # fish key bindings
-# function fish_user_key_bindings
-#   bind \cg ghlist
-# end
-
-# set -x FZF_DEFAULT_COMMAND 'rg --files --hidden --follow --glob "!.git/*"'
-
 set SoundDriver PULSEAUDIO:JACK:ALSA:OSS
 
 set -Ux fish_user_paths $HOME/.rbenv/bin $fish_user_paths
@@ -171,14 +156,8 @@ bind \cc __fish_cancel_commandline
 set -Ux BUN_INSTALL "/home/coma/.bun"
 set -px --path PATH "/home/coma/.bun/bin"
 export PATH="$PATH":"$HOME/.pub-cache/bin"
-# alias emoji=''
-# to copy to xclip system keyboard (on mac use pbcopy) after selecting
-# emoj | xclip -selection c
 
-# set -x BLUESKY_IDENTIFIER "comamoca.bsky.social"
-set -x BLUESKY_PASSWORD (__secret bluesky_pass)
 
-# pnpm
 set -gx PNPM_HOME "/home/coma/.local/share/pnpm"
 if not string match -q -- $PNPM_HOME $PATH
   set -gx PATH "$PNPM_HOME" $PATH
