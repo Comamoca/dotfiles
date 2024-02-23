@@ -175,3 +175,7 @@ on_event = ['BufRead', 'CursorHold']
 [[plugins]]
 repo = 'nathanaelkane/vim-indent-guides'
 on_event = ['BufRead', 'CursorHold']
+
+# [[plugins]]
+# repo = 'sheerun/vim-polyglot'
+# on_event = ['BufRead', 'CursorHold']

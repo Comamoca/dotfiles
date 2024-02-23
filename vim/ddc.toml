@@ -223,8 +223,6 @@ call skkeleton#config({
 \ })
 
 imap <C-j> <Plug>(skkeleton-enable)
-cmap <C-j> <Plug>(skkeleton-enable)
 
 imap <C-k> <Plug>(skkeleton-disable)
-cmap <C-k> <Plug>(skkeleton-disable)
 '''
