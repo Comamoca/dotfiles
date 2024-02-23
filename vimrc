@@ -7,15 +7,16 @@ const s:denops_src = '~/.cache/dpp_vim/repos/github.com/vim-denops/denops.vim'
 
 execute 'set runtimepath^=' .. s:dpp_src
 
+execute 'set runtimepath^=' .. '~/.cache/dpp_vim/repos/github.com/Shougo/dpp.vim'
+execute 'set runtimepath^=' .. '~/.cache/dpp_vim/repos/github.com/Shougo/dpp-protocol-git'
 execute 'set runtimepath^=' .. '~/.cache/dpp_vim/repos/github.com/Shougo/dpp-ext-installer'
 execute 'set runtimepath^=' .. '~/.cache/dpp_vim/repos/github.com/Shougo/dpp-ext-toml'
-execute 'set runtimepath^=' .. '~/.cache/dpp_vim/repos/github.com/Shougo/dpp.vim'
 execute 'set runtimepath^=' .. '~/.cache/dpp_vim/repos/github.com/Shougo/dpp-ext-lazy'
-execute 'set runtimepath^=' .. '~/.cache/dpp_vim/repos/github.com/Shougo/dpp-protocol-git'
 
 if s:dpp_base->dpp#min#load_state()
   " NOTE: dpp#make_state() requires denops.vim
   execute 'set runtimepath^=' .. s:denops_src
+
   autocmd User DenopsReady
   \ echo "denops ready"
 
@@ -57,6 +58,8 @@ set incsearch
 set ignorecase
 set laststatus=2
 set noshowmode
+set formatoptions-=r
+set formatoptions-=o
 
 set completeopt=menuone,noinsert
 
@@ -72,10 +75,13 @@ nnoremap <silent> <C-[> <cmd>nohlsearch<CR>
 
 nnoremap <C-o> <cmd>Ddu file_rec<CR>
 nnoremap <C-i> <cmd>Ddu buffer<CR>
-nnoremap <C-u> <cmd>Ddu source<CR>
+nnoremap <C-u> <cmd>Ddu mr<CR>
+" nnoremap <C-u> <cmd>Ddu source<CR>
 nnoremap <Leader>l <cmd>call vimspector#Launch()<CR>
 
 nnoremap <Leader>f <cmd>call ddu#start({"name": "filer", "searchPath": expand('%:p'),})<CR>
+
+nnoremap <C-f> <cmd>close<CR>
 
 " nnoremap <buffer> <C-p> <Cmd>call <SID>operator_partedit()<CR>
 " nnoremap <C-o> <cmd>Ddu file_rec<CR>
@@ -137,7 +143,7 @@ highlight! link VertSplit Comment
 
 inoremap <C-l> <Plug>(denippet-expand)
 
-
+" ddu custom finder
 const exec = denops#callback#register(
     \ {s -> execute(printf('execute "%s"', s), '')},
     \ {'once': v:true})
@@ -152,6 +158,21 @@ function s:dduCustom(items, callback)
 		\   'params': {'texts': a:items, 'callbackId': a:callback}}]})
 endfunction
 
+function s:openConfig() abort 
+    const configs = map(
+    \  split(glob("~/.vim/*"), "\n"),
+    \  "substitute(v:val, printf('%s/.vim/', $HOME), '', 'g')")
+
+    const configedit = denops#callback#register(
+        \ {s -> execute(printf('e ~/.vim/%s', s), '')},
+        \ {'once': v:true})
+    
+    call s:dduCustom(configs, configedit)
+endfunction
+
+command! Config call s:openConfig()
+
+
 " call s:dduCustom(['DppInstall', 'DppMakeState', 'DppUpdate'], exec)
 
 " const ghq_root = system('ghq root')
@@ -163,5 +184,6 @@ endfunction
 
 execute 'set runtimepath^=' .. '~/.ghq/github.com/Comamoca/memos.vim'
 execute 'set runtimepath^=' .. '~/.ghq/github.com/coma/ddu-kind-cd'
+execute 'set runtimepath^=' .. '~/.ghq/github.com/coma/baibai.vim'
 
 let g:rustfmt_autosave = 0

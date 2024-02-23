@@ -19,12 +19,23 @@ call ddu#custom#patch_global(#{
 \       actions: ['edit'],
 \     },
 \     file_rec: #{
-\       matchers: ['matcher_kensaku', 'matcher_zf'],
+\       matchers: ['matcher_kensaku'],
 \     },
 \   },
 \   sourceParams: #{
 \     file_rec: #{
-\        ignoredDirectories: ['.git', 'node_modules', 'vendor', '.next', '__pycache__'],
+\        ignoredDirectories: [
+\      '.git',
+\      'node_modules',
+\      'vendor',
+\      '.next',
+\      '__pycache__',
+\      '.elixir_ls',
+\      '_build',
+\      'deps',
+\      '.pytest_cache',
+\      '.venv'
+\      ],
 \        expandSymbolicLink: v:true
 \       },
 \   },
@@ -255,6 +266,9 @@ on_source = 'ddu.vim'
 repo = "4513ECHO/ddu-source-source"
 on_source = 'ddu.vim'
 
+[[plugins]]
+repo = 'Shougo/ddu-source-register'
+
 # ==================== ddu matcher ====================
 [[plugins]]
 repo = 'Shougo/ddu-filter-matcher_substring'
@@ -269,6 +283,9 @@ on_source = 'ddu.vim'
 repo = 'Shougo/ddu-kind-file'
 on_source = 'ddu.vim'
 
+[[plugins]]
+repo = 'Shougo/ddu-kind-word'
+
 # ==================== ddu filter ====================
 [[plugins]]
 repo = "yuki-yano/ddu-filter-fzf"
@@ -279,11 +296,15 @@ on_source = 'ddu.vim'
 repo = 'Shougo/deol.nvim'
 on_source = 'ddu.vim'
 
-[[plugins]]
-repo = "hasundue/ddu-filter-zf"
-on_source = 'ddu.vim'
-build = 'deno task fetch' 
+# [[plugins]]
+# repo = "hasundue/ddu-filter-zf"
+# on_source = 'ddu.vim'
+# build = 'deno task fetch' 
 
 [[plugins]]
 repo = 'kyoh86/ddu-source-command'
-on_source = 'ddc.vim'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'kuuote/ddu-source-mr'
+on_source = 'ddu.vim'
