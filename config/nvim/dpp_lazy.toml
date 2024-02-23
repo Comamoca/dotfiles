@@ -102,6 +102,12 @@ require('Comment').setup()
 repo = "yuttie/comfortable-motion.vim"
 # on_event = ['BufEnter']
 on_event = ['BufRead', 'CursorHold']
+hook_source = """
+nnoremap <silent><C-k> :<C-u>call comfortable_motion#flick(-70)<CR>
+nnoremap <silent><C-j> :<C-u>call comfortable_motion#flick(70)<CR>
+
+let g:comfortable_motion_no_default_key_mappings = 1
+"""
 
 
 [[plugins]]
