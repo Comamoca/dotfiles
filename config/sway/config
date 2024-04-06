@@ -290,6 +290,9 @@ output * bg $HOME/Pictures/wallpapelar/benjamin-hersh-_69DlG4rMm4-unsplash.jpg f
 for_window [app_id="firefox" title="^ピクチャーインピクチャー$"] \
     floating enable, move position 877 450, sticky enable
 
+for_window [app_id="" title="^ピクチャー イン ピクチャー$"] \
+    floating enable, move position 877 450, sticky enable
+
 bindsym XF86MonBrightnessUp exec light -A 10
 bindsym XF86MonBrightnessDown exec light -U 10
 bindsym XF86AudioPlay exec playerctl play-pause
