@@ -81,6 +81,10 @@ repo = 'nvim-treesitter/playground'
 on_source = ["nvim-treesitter"]
 
 [[plugins]]
+repo = 'HiPhish/nvim-ts-rainbow2'
+on_source = ["nvim-treesitter"]
+
+[[plugins]]
 repo = 'phaazon/hop.nvim'
 # on_event = ['BufEnter']
 on_event = ['BufRead', 'CursorHold']
@@ -282,3 +286,13 @@ on_cmd = ['Translate']
 # [[plugins]]
 # repo = 'Allianaab2m/vimskey'
 # on_cmd = ['VimskeyOpenTL', 'VimskeyAuth', 'VimskeyNote', 'VimskeyRenote']
+
+[[plugins]]
+repo = 'yuki-yano/fzf-preview.vim'
+on_event = ['BufRead', 'CursorHold']
+build = './install --all'
+
+
+[[plugins]]
+repo = 'liquidz/dps-parinfer'
+on_ft = ["lisp"]
