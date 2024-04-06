@@ -39,7 +39,7 @@ export class Config extends BaseConfig {
     const tomls: Toml[] = [];
 
     const toml_files: { name: string; lazy: boolean }[] = [
-      // { name: "dpp.toml", lazy: false },
+      { name: "dpp.toml", lazy: false },
       { name: "dpp_lazy.toml", lazy: true },
       { name: "lsp.toml", lazy: true },
       { name: "ddu.toml", lazy: true },
