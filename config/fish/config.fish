@@ -10,8 +10,13 @@ fish_add_path $HOME/.rye/shims
 fish_add_path $HOME/.local/share/gem/ruby/3.0.0/bin
 fish_add_path $HOME/.local/share/gem/ruby/3.0.0/bin/
 
-fish_add_path $HOME/.kiex/bin/
-fish_add_path $HOME/.kiex/elixirs/elixir-1.14/bin/
+fish_add_path $HOME/.gleam/bin
+
+fish_add_path $HOME/.roswell/bin/
+
+# source $HOME/.kiex/elixirs/.elixir-1.16.0-rc.1.env.fish
+# fish_add_path $HOME/.kiex/bin/
+# fish_add_path $HOME/.kiex/elixirs/elixir-1.14/bin/
 
 fish_add_path $HOME/.kerl/26.2.1/bin/
 
@@ -27,12 +32,16 @@ fish_add_path $AQUA_ROOT_DIR/bin
 fish_add_path $HOME/.konryu/versions/v0.1.1/cotowali/bin
 fish_add_path $HOME/go/bin/
 
+fish_add_path $HOME/.local/share/mise/shims
+fish_add_path ~/.nimble/bin
+
+set -gx RUNEWIDTH_EASTASIAN 0
+
 set fish_greeting
 
 set -gx XDG_DATA_HOME $HOME/.local/share
 set -gx AQUA_ROOT_DIR $XDG_DATA_HOME/aquaproj-aqua
 
-source $HOME/.kiex/elixirs/.elixir-1.16.0-rc.1.env.fish
 # source ~/.wasmer/wasmer.sh
 # source "$HOME/.rye/env"
 
@@ -40,7 +49,6 @@ set LUA_PATH ~/.luarocks/lib/ $LUA_PATH
 set LUA_PATH ~/.luarocks/lib/luarocks/rocks-5.4/ $LUA_PATH
 set -x BLOG_PATH ~/ghq/github.com/coma/blog/src/content/blog/
 
-fish_add_path ~/.nimble/bin
 fish_add_path ~/.nimble/.bin/git-tasukete
 fish_add_path ~/.bin/
 fish_add_path ~/.bin/bin
@@ -51,6 +59,7 @@ fish_add_path /home/coma/local/
 zoxide init fish | source
 
 alias zx='/home/coma/go/bin/z'
+alias gleam_update="curl -fsSL https://gleam.pink/install.sh | sh -s -- --prefix ~/.gleam --version nightly"
 alias glow='glow -p'
 # alias vlang='/usr/sbin/v'
 alias gupm='~/.gupm/gupm/g'
@@ -109,6 +118,8 @@ export GOPATH=$HOME/go
 
 abbr --add e $EDITOR
 
+set -x ELIXIR_ERL_OPTIONS "+fnu"
+
 set PATH /home/coma/.cargo/bin $PATH
 set GH_BINPATH /home/coma/.bin/
 export FYNE_FONT=/usr/share/fonts/PlemolJP/PlemolJP-Regular.ttf
@@ -131,8 +142,10 @@ set -gx PATH "$PNPM_HOME" $PATH
 # set -x PATH "$HOME/.konryu/cotowali/bin/" $PATH
 # eval (konryu init)
 
-eval (gh completion -s fish| source)
-eval (hugo completion fish)
+gh completion -s fish | source
+hugo completion fish | source
+
+$HOME/.local/bin/mise activate fish | source
 
 set EMSDK_QUIET = 1
 
