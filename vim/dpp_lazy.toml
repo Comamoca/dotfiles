@@ -21,7 +21,7 @@ colorscheme gruvbox-material
 repo = "Shougo/context_filetype.vim"
 on_event = ['BufRead', 'CursorHold', "BufReadPre"]
 hook_source = '''
-nnoremap <C-p> <Cmd>call <SID>operator_partedit()<CR>
+nnoremap <Leader>p <Cmd>call <SID>operator_partedit()<CR>
 
 function! s:operator_partedit() abort
   let context = context_filetype#get()
@@ -91,13 +91,15 @@ repo = 'thinca/vim-quickrun'
 on_event = ['BufRead', 'CursorHold']
 on_source = """
 let g:quickrun_config = {
+\   "gleam" : {
+\       "command": "gleam run",
+\   },
+\   "deno" : {
+\       "command": "deno run",
+\   },
 \   "_" : {
 \       "outputter/buffer/split" : ":botright",
 \       "outputter/buffer/close_on_empty" : 1
-\   },
-\   "deno" : {
-\       "command": "deno",
-\       "cmdopt" : "run",
 \   },
 \}
 
@@ -121,15 +123,7 @@ let g:seiya_auto_enable=1
 
 [[plugins]]
 repo = "wakatime/vim-wakatime"
-on_cmd = [
-          'WakaTimeApiKey',
-          'WakaTimeDebugEnable',
-	  'WakaTimeDebugDisable',
-	  'WakaTimeScreenRedrawEnable',
-	  'WakaTimeScreenRedrawEnableAuto',
-	  'WakaTimeScreenRedrawDisable',
-	  'WakaTimeToday',
-	 ]
+on_event = ['BufRead', 'CursorHold']
 
 [[plugins]]
 repo = "easymotion/vim-easymotion"
@@ -179,3 +173,10 @@ on_event = ['BufRead', 'CursorHold']
 # [[plugins]]
 # repo = 'sheerun/vim-polyglot'
 # on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = 'luochen1990/rainbow'
+on_event = ['BufRead', 'CursorHold']
+hook_source = '''
+let g:rainbow_active = 1 
+'''

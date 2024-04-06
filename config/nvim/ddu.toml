@@ -53,9 +53,9 @@ lua_source = '''
         buffer = {
           defaultAction = "open",
         },
-	memos = {
+ memos = {
           defaultAction = "echo",
-	}
+ }
       },
       uiParams = {
         ff = {
@@ -84,7 +84,7 @@ lua_source = '''
       callback = function()
         print("filetype ddu-ff")
 
-        keymap("n", "<CR>", "<Cmd>call ddu#ui#ff#do_action('itemAction')<CR>", keymap_opt)
+        keymap("n", "<CR>", "<Cmd>call ddu#ui#do_action('itemAction')<CR>", keymap_opt)
 
         -- nnoremap <buffer><silent> i
         --       \ <Cmd>call ddu#ui#ff#do_action('openFilterWindow')<CR>
@@ -93,16 +93,16 @@ lua_source = '''
         -- nnoremap <buffer><silent> p
         --   \ <Cmd>call ddu#ui#ff#do_action('preview')<CR>
 
-        keymap("n", "<Space>", "<Cmd>call ddu#ui#ff#do_action('toggleSelectItem')<CR>", keymap_opt)
-        keymap("n", "i", "<Cmd>call ddu#ui#ff#do_action('openFilterWindow')<CR>", keymap_opt)
-        keymap("n", "i", "<Cmd>call ddu#ui#ff#do_action('quit')<CR>", keymap_opt)
-        keymap("n", "q", "<Cmd>call ddu#ui#ff#do_action('quit')<CR>", keymap_opt)
+        keymap("n", "<Space>", "<Cmd>call ddu#ui#do_action('toggleSelectItem')<CR>", keymap_opt)
+        keymap("n", "i", "<Cmd>call ddu#ui#do_action('openFilterWindow')<CR>", keymap_opt)
+        keymap("n", "i", "<Cmd>call ddu#ui#do_action('quit')<CR>", keymap_opt)
+        keymap("n", "q", "<Cmd>call ddu#ui#do_action('quit')<CR>", keymap_opt)
 
         vim.api.nvim_create_autocmd("CursorMoved", {
           pattern = "*",
           callback = function()
-            -- <Cmd>call ddu#ui#ff#do_action('quit')<CR>
-            vim.fn["ddu#ui#ff#do_action"]("preview")
+            -- <Cmd>call ddu#ui#do_action('quit')<CR>
+            vim.fn["ddu#ui#do_action"]("preview")
           end,
         })
       end,
@@ -116,7 +116,7 @@ lua_source = '''
         keymap("i", "<C-c>", "<Esc><Cmd>close<CR>", keymap_opt)
         keymap("i", "<CR>", "<Esc><Cmd>close<CR>", keymap_opt)
         keymap("n", "<CR>", "<Cmd>close<CR>", keymap_opt)
-        keymap("n", "q", "<Cmd>call ddu#ui#ff#do_action('quit')<CR>", keymap_opt)
+        keymap("n", "q", "<Cmd>call ddu#ui#do_action('quit')<CR>", keymap_opt)
       end,
     })
 

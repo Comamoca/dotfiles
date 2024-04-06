@@ -50,7 +50,6 @@ local config = {
   use_ime = true,
   font_size = 16,
   font = wezterm.font("UDEV Gothic NFLG"),
-  -- font = wezterm.font("UDEV Gothic NF Regular"),
 
   hide_tab_bar_if_only_one_tab = true,
   adjust_window_size_when_changing_font_size = false,

@@ -44,6 +44,9 @@ call ddc#custom#patch_global('sourceOptions', {
 call ddc#custom#patch_global('sourceOptions', {
     \   'skkeleton': {
     \     'mark': ' ',
+    \     'matchers': [],
+    \     'sorters': [],
+    \     'converters': [],
     \     'isVolatile': v:true,
     \     'minAutoCompleteLength': 1,
     \   },
@@ -197,7 +200,7 @@ smap <expr> <C-j>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<C-j
 imap <expr> <C-k> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<C-k>'
 smap <expr> <C-k> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<C-k>'
 
-let g:vsnip_snippet_dirs = [expand("~/.vsnip/snippets"), expand("~/.cache/dpp_vim/repos/github.com/rafamadriz/friendly-snippets/snippets")]
+let g:vsnip_snippet_dirs = [expand("~/.vsnip")]
 """
 
 [[plugins]]
@@ -212,17 +215,28 @@ for file in glob("~/.denippet/*", ".", 1, 1)
 endfor
 """
 
+# SKK
 [[plugins]]
 repo = "vim-skk/skkeleton"
 on_source = 'ddc.vim'
 hook_source = '''
-call skkeleton#config({
-\    'globalDictionaries': [
-\      "~/.vim/skk/SKK-JISYO.L.utf8"
-\   ]
-\ })
+" call skkeleton#azik#add_table("jis")
 
-imap <C-j> <Plug>(skkeleton-enable)
+" \   '<s-j><s-j>':   ['じゅん', ''],
 
-imap <C-k> <Plug>(skkeleton-disable)
+call skkeleton#register_kanatable('rom', {
+    \ "jj": "escape",
+    \ })
+
+call skkeleton#config(#{
+\   globalDictionaries: [ "~/.vim/skk/SKK-JISYO.L.utf8" ],
+\   databasePath: "~/.vim/skk/database",
+\   })
+
+
+imap <C-i> <Plug>(skkeleton-toggle)
 '''
+
+[[plugins]]
+repo = 'NI57721/skkeleton-azik-kanatable'
+# on_source = 'skkeleton'

@@ -13,6 +13,38 @@ let g:lsp_diagnostics_virtual_text_insert_mode_enabled = 1
 let g:lsp_diagnostics_virtual_text_enabled = "after"
 let g:lsp_diagnostics_enabled = 1
 
+" if executable('gop')
+"   au User lsp_setup call lsp#register_server({
+"       \ 'name': 'Go+ language server',
+"       \ 'cmd': ["gop", "serve"],
+"       \ 'allowlist': ['gop'],
+"       \ })
+" endif
+
+if executable('erg')
+  au User lsp_setup call lsp#register_server({
+      \ 'name': 'erg',
+      \ 'cmd': ["erg", "server"],
+      \ 'allowlist': ['erg'],
+      \ })
+endif
+
+if executable('haxe-lsp')
+  au User lsp_setup call lsp#register_server({
+      \ 'name': 'haxe-language-server',
+      \ 'cmd': ["haxe-lsp", "--stdio"],
+      \ 'allowlist': ['haxe'],
+      \ })
+endif
+
+if executable('rescript-language-server')
+  au User lsp_setup call lsp#register_server({
+      \ 'name': 'rescript-language-server',
+      \ 'cmd': ["rescript-language-server", "--stdio"],
+      \ 'allowlist': ['rescript'],
+      \ })
+endif
+
 if executable('nextls')
   au User lsp_setup call lsp#register_server({
       \ 'name': 'next_ls',
@@ -43,10 +75,10 @@ if executable('janet-lsp')
         \ })
 endif
 
-if executable('gleam')
+if executable('glas')
     au User lsp_setup call lsp#register_server({
-        \ 'name': 'Gleam language server',
-	\ 'cmd': {server_info->['gleam', 'lsp']},
+        \ 'name': 'glas',
+	\ 'cmd': {server_info->['glas', '--stdio']},
         \ 'whitelist': ['gleam'],
         \ })
 endif
@@ -93,6 +125,8 @@ function! s:vimspector_my_settings() abort
 	nnoremap <C-b> <cmd>call vimspector#ToggleBreakpoint()<CR>
         nnoremap <S-q> <cmd>vimspector#Reset()<CR>
 endfunction
+
+call lsp#activate()
 '''
 
 [[plugins]]
@@ -112,4 +146,13 @@ let g:ale_sign_info = ' '
 let g:ale_fix_on_save = 1
 let g:rustfmt_on_save = 0
 let g:ale_floating_window_border = ['│', '─', '╭', '╮', '╯', '╰', '│', '─']
+
+
+let g:ale_fixers = {
+      \ 'javascript': ['deno'],
+      \ 'typescript': ['deno'],
+      \ 'python': ['ruff', 'isort'],
+      \ 'nix': ['nixfmt', 'nixpkgs-fmt'],
+      \ 'gleam': ["gleam_format"],
+      \ }
 '''

@@ -2,9 +2,10 @@
 repo = 'Shougo/ddu.vim'
 on_event = ['BufRead', 'CursorHold']
 hook_source = '''
+" execute("source" .. expand("~/.vim/ddu.vim"))
+
 const width = &columns * 0.8
 const col = &columns * 0.12
-
 
 call ddu#custom#patch_global(#{
 \   ui: 'ff',
@@ -75,8 +76,6 @@ call ddu#custom#patch_global(#{
 call ddu#custom#patch_global(#{
 \     uiParams: #{
 \        ff: #{
-\          startFilter: v:true,
-\          prompt: "> ",
 \          split: "horizontal",
 \          previewFloating: v:false,
 \          previewSplit: "vertical",
@@ -89,19 +88,6 @@ call ddu#custom#patch_global(#{
 \        },
 \    },
 \ })
-
-" call ddu#custom#patch_global('kindOptions', {
-" \   'source': {
-" \     'defaultAction': 'execute',
-" \   },
-" \ })
-"
-" call ddu#custom#patch_global('kindOptions', {
-" \   'command': {
-" \     'defaultAction': 'edit',
-" \   },
-" \ })
-
 
 setlocal updatetime=500
 autocmd CursorHold ddu-ff call ddu#ui#do_action('preview')
@@ -132,7 +118,6 @@ function! s:ddu_filter_my_settings() abort
     inoremap <buffer> <C-p>
     \ <Cmd>call ddu#ui#do_action('cursorPrevious')<CR>
 endfunction
-
 
 " ==================== ddu-ui-filer setting ====================  
 call ddu#custom#patch_local('filer', #{
