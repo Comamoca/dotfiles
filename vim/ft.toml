@@ -44,3 +44,15 @@ on_ft = 'fsharp'
 [[plugins]]
 repo = 'mxw/vim-jsx'
 on_ft = ['jsx']
+
+[[plugins]]
+repo = 'mattn/emmet-vim'
+on_ft = ['html']
+
+[[plugins]]
+repo = 'rescript-lang/vim-rescript'
+on_ft = ['rescript']
+
+[[plugins]]
+repo = 'jdonaldson/vaxe'
+on_ft = ['haxe']
