@@ -1,3 +1,4 @@
+set encoding=utf-8
 set nocompatible
 
 const s:dpp_base = '~/.cache/dpp_vim/'
@@ -174,7 +175,7 @@ function s:openConfig() abort
     call s:dduCustom(configs, configedit)
 endfunction
 
-command! Config call s:openConfig()
+command! Configs call s:openConfig()
 
 
 " call s:dduCustom(['DppInstall', 'DppMakeState', 'DppUpdate'], exec)
@@ -184,7 +185,6 @@ command! Config call s:openConfig()
 " echo system("ghq list")
 " 	\ ->split()
 " 	\ ->map('"/home/coma/.ghq/" .. v:val')
-
 
 execute 'set runtimepath^=' .. '~/.ghq/github.com/Comamoca/memos.vim'
 execute 'set runtimepath^=' .. '~/.ghq/github.com/coma/ddu-kind-cd'
