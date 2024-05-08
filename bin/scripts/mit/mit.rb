@@ -13,6 +13,6 @@ EOS
 
 puts Dir.pwd
 
-file = File.open "LICENSE.md", "w"
+file = File.open "LICENSE", "w"
 file.puts(mit)
 file.close
