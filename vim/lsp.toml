@@ -13,13 +13,6 @@ let g:lsp_diagnostics_virtual_text_insert_mode_enabled = 1
 let g:lsp_diagnostics_virtual_text_enabled = "after"
 let g:lsp_diagnostics_enabled = 1
 
-" if executable('gop')
-"   au User lsp_setup call lsp#register_server({
-"       \ 'name': 'Go+ language server',
-"       \ 'cmd': ["gop", "serve"],
-"       \ 'allowlist': ['gop'],
-"       \ })
-" endif
 
 if executable('erg')
   au User lsp_setup call lsp#register_server({

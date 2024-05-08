@@ -56,3 +56,29 @@ on_ft = ['rescript']
 [[plugins]]
 repo = 'jdonaldson/vaxe'
 on_ft = ['haxe']
+
+# [[plugins]]
+# repo = 'kovisoft/slimv'
+# on_ft = ['lisp']
+
+[[plugins]]
+repo = 'fukamachi/vlime'
+on_ft = ['lisp']
+rtp = "vim/"
+hook_source = '''
+nnoremap <silent> <LocalLeader>rr :call VlimeStart()<CR>
+
+let g:vlime_cl_impl = "mondo"
+let g:vlime_cl_use_terminal = v:true
+let g:vlime_window_settings = {
+    \ 'server': {'pos': 'botright', 'size': v:null, 'vertical': v:true}
+    \ }
+
+function! VlimeBuildServerCommandFor_mondo(vlime_loader, vlime_eval)
+    return ["mondo", "--server", "vlime"]
+endfunction
+
+function! VlimeStart()
+    call vlime#server#New(v:true, get(g:, "vlime_cl_use_terminal", v:false))
+endfunction
+'''

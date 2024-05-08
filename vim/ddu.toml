@@ -4,6 +4,12 @@ on_event = ['BufRead', 'CursorHold']
 hook_source = '''
 " execute("source" .. expand("~/.vim/ddu.vim"))
 
+autocmd User Ddu:uiReady
+      \ : if &l:filetype ==# 'ddu-ff'
+      \ |   call ddu#ui#do_action('openFilterWindow')
+      \ | endif
+
+
 const width = &columns * 0.8
 const col = &columns * 0.12
 
@@ -101,6 +107,8 @@ function! s:ddu_my_settings() abort
   nnoremap <buffer><silent> q
     \ <Cmd>call ddu#ui#do_action('quit')<CR> 
 
+
+
 endfunction
 
 autocmd FileType ddu-ff-filter call s:ddu_filter_my_settings()
@@ -197,7 +205,7 @@ function! s:ddu_filer_my_settings() abort
   nnoremap <buffer><silent> N
     \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'newFile'})<CR>
 
-  nnoremap <buffer><silent> mk
+  nnoremap <buffer><silent> K
     \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'newDirectory'})<CR>
 
   nnoremap <buffer><silent> yy

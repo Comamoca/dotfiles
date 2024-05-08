@@ -49,8 +49,8 @@ hook_source = '''
 repo = "yuttie/comfortable-motion.vim"
 on_event = ['BufRead', 'CursorHold']
 hook_source = '''
-nnoremap <silent><C-k> :<C-u>call comfortable_motion#flick(-70)<CR>
-nnoremap <silent><C-j> :<C-u>call comfortable_motion#flick(70)<CR>
+" nnoremap <silent><C-k> :<C-u>call comfortable_motion#flick(-70)<CR>
+" nnoremap <silent><C-j> :<C-u>call comfortable_motion#flick(70)<CR>
 
 let g:comfortable_motion_no_default_key_mappings = 1
 '''
@@ -75,33 +75,26 @@ repo = 'skanehira/denops-translate.vim'
 on_cmd = ['Translate', 'Translate!']
 
 # ==================== lightline ==================== 
-[[plugins]]
-repo = 'itchyny/lightline.vim'
-on_event = ['BufRead', 'CursorHold']
-hook_source = '''
-" execute("source" .. expand("~/.vim/lightline.vim"))
-'''
-
-[[plugins]]
-repo = 'skanehira/denops-translate.vim'
-on_cmd = ['Translate', 'Translate!']
+# [[plugins]]
+# repo = 'itchyny/lightline.vim'
+# on_event = ['BufRead', 'CursorHold']
+# hook_source = '''
+# execute("source" .. expand("~/.vim/lightline.vim"))
+# '''
 
 [[plugins]]
 repo = 'thinca/vim-quickrun'
 on_event = ['BufRead', 'CursorHold']
 on_source = """
 let g:quickrun_config = {
-\   "gleam" : {
-\       "command": "gleam run",
-\   },
-\   "deno" : {
-\       "command": "deno run",
-\   },
 \   "_" : {
 \       "outputter/buffer/split" : ":botright",
 \       "outputter/buffer/close_on_empty" : 1
-\   },
+\   }
 \}
+
+autocmd BufNewFile,BufRead *.gleam let g:quickrun_config.gleam = {'command': 'gleam run', 'exec' : ''}
+let g:quickrun_config.deno = {"command": "deno run"}
 
 nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
 """
@@ -179,4 +172,57 @@ repo = 'luochen1990/rainbow'
 on_event = ['BufRead', 'CursorHold']
 hook_source = '''
 let g:rainbow_active = 1 
+'''
+
+[[plugins]]
+repo = 'junegunn/fzf'
+on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = 'junegunn/fzf.vim'
+on_event = ['BufRead', 'CursorHold']
+hook_source = """
+"""
+
+[[plugins]]
+repo = 'vim-denops/denops-shared-server.vim'
+on_func = ["denops_shared_server#install", "denops_shared_server#uninstall"]
+
+[[plugins]]
+repo = 'vim-jp/vimdoc-ja'
+on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = 'vim-airline/vim-airline'
+on_event = ['BufRead', 'CursorHold']
+on_source = '''
+let g:airline_left_sep = '⮀'
+let g:airline_left_alt_sep = '⮁'
+
+let g:airline_right_sep = '⮂'
+let g:airline_right_alt_sep = '⮃'
+let g:airline_symbols.crypt = '🔒'
+let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.maxlinenr = '行'
+let g:airline_symbols.branch = '⭠'
+let g:airline_symbols.paste = 'ρ'
+let g:airline_symbols.spell = 'Ꞩ'
+let g:airline_symbols.notexists = '∄'
+let g:airline_symbols.whitespace = 'Ξ'
+
+let g:ariline_theme = "base16_gruvbox_dark_hard"
+'''
+
+[[plugins]]
+repo = 'vim-airline/vim-airline-themes'
+on_source = 'vim-ariline'
+
+[[plugins]]
+repo = 'ryanoasis/vim-devicons'
+on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = 'preservim/vim-indent-guides'
+on_event = ['BufRead', 'CursorHold']
+on_source = '''
 '''
