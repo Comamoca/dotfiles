@@ -1,3 +1,5 @@
+vim.print("load keymap.lua")
+
 local opts = { silent = true }
 local cr = "<CR>"
 
@@ -6,7 +8,6 @@ local runCmd = function(map, cmd)
   keymap("n", map, cmd .. "<CR>", opts)
 end
 
-vim.g.mapleader = " "
 
 keymap("i", "jj", "<C-[><C-[>")
 keymap("n", "<C-[><C-[>", ":noh<CR>")

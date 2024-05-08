@@ -80,6 +80,8 @@ vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
   end,
 })
 
+vim.g.mapleader = " "
+
 vim.cmd("inoremap jj <C-[>")
 vim.cmd("nnoremap <C-[><C-[> <cmd>noh<CR>")
 vim.cmd("let g:seiya_auto_enable=1")

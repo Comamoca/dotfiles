@@ -85,14 +85,31 @@ repo = 'HiPhish/nvim-ts-rainbow2'
 on_source = ["nvim-treesitter"]
 
 [[plugins]]
-repo = 'phaazon/hop.nvim'
-# on_event = ['BufEnter']
+repo = 'easymotion/vim-easymotion'
 on_event = ['BufRead', 'CursorHold']
 lua_source = """
-    -- vim.keymap.set("n", "<leader>k", "<Cmd>")
-    -- vim.keymap.set("n", "<leader>l", "<Cmd>")
-    -- vim.keymap.set("n", "<leader>w", "<Cmd>")
+vim.cmd("nmap <Leader>k <Plug>(easymotion-overwin-line)")
 """
+
+# [[plugins]]
+# repo = 'phaazon/hop.nvim'
+# # on_event = ['BufEnter']
+# on_event = ['BufRead', 'CursorHold']
+# lua_source = """
+# require("hop").setup()
+#
+# -- vim.keymap.set("n", "<Leader>k", "<Cmd>HopLine<CR>")
+# vim.keymap.set("n", "<Leader>k", "<Cmd>HopLine<CR>")
+# -- vim.cmd("nnoremap <leader>k <Cmd>HopLine<CR>")
+#
+# -- vim.api.nvim_set_keymap("n", "<Leader>k", "<Cmd>HopLine<CR>", { silent = true })
+#
+# vim.print("load hop.vim hook")
+#
+#
+# -- vim.keymap.set("n", "<leader>l", <Cmd>)
+# -- vim.keymap.set("n", "<leader>w", <Cmd>)
+# """
 
 [[plugins]]
 repo = "numToStr/Comment.nvim"
@@ -180,14 +197,14 @@ depends = ['nvim-treesitter', 'vim-partedit']
 on_lua = 'nvim-treesitter-clipping'
 lua_add = '''
     vim.api.nvim_create_autocmd("FileType", {
-      pattern = { "toml", "markdown" },
-      callback = function()
-        vim.keymap.set("n", "<C-p>", function()
-          require("nvim-treesitter-clipping.internal").clip()
-          vim.keymap.set("n", "Q", "<Cmd>w<CR><Cmd>ParteditEnd<CR>", { buffer = true })
-        end, { buffer = true })
-      end,
-    })
+                                             pattern = { "toml", "markdown" },
+                                             callback = function()
+                                             vim.keymap.set("n", "<C-p>", function()
+                                                            require("nvim-treesitter-clipping.internal").clip()
+                                                            vim.keymap.set("n", "Q", "<Cmd>w<CR><Cmd>ParteditEnd<CR>", { buffer = true})
+                                                            end, { buffer = true})
+                                             end,})
+    
 '''
 
 [[plugins]]
@@ -296,3 +313,9 @@ build = './install --all'
 [[plugins]]
 repo = 'liquidz/dps-parinfer'
 on_ft = ["lisp"]
+
+[[plugins]]
+repo = 'Olical/conjure'
+on_event = ['BufRead', 'CursorHold']
+lua_source = """
+"""

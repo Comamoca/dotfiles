@@ -58,6 +58,7 @@ fish_add_path /home/coma/local/
 
 zoxide init fish | source
 
+alias slack='slack --enable-features=UseOzonePlatform --ozone-platform=wayland'
 alias zx='/home/coma/go/bin/z'
 alias gleam_update="curl -fsSL https://gleam.pink/install.sh | sh -s -- --prefix ~/.gleam --version nightly"
 alias glow='glow -p'
@@ -99,7 +100,9 @@ alias bt="boost"
 alias ":wq"="exit"
 alias ":wqa"="exit"
 
-alias __recker='cd (recker)'
+# alias __recker='cd (recker)'
+alias __recker='cd (string  join / (ghq root) (ghq list | fzf --preview "bat --color=always --style=header,grid --line-range :80 $(ghq root)/{}/README.*"))'
+
 alias __sandbox='cd (string join "/" (~/ghq/github.com/Comamoca/sandbox) (fd -d 1 | fzf))'
 alias cdf='cd (ls -d */ | sed "s/\///" | fzf)'
 alias tmp='cd (mktemp -d)'
@@ -183,8 +186,6 @@ end
 
 set -q GHCUP_INSTALL_BASE_PREFIX[1]; or set GHCUP_INSTALL_BASE_PREFIX $HOME ; set -gx PATH $HOME/.cabal/bin $PATH /home/coma/.ghcup/bin # ghcup-env
 
-export LUA_PATH='/usr/share/lua/5.4/?.lua;/usr/share/lua/5.4/?/init.lua;/usr/lib/lua/5.4/?.lua;/usr/lib/lua/5.4/?/init.lua;./?.lua;./?/init.lua;/home/coma/.luarocks/share/lua/5.4/?.lua;/home/coma/.luarocks/share/lua/5.4/?/init.lua'
-export LUA_CPATH='/usr/lib/lua/5.4/?.so;/usr/lib/lua/5.4/loadall.so;./?.so;/home/coma/.luarocks/lib/lua/5.4/?.so'
 
 # Wasmer
 export WASMER_DIR="/home/coma/.wasmer"
@@ -194,5 +195,7 @@ rbenv init - fish | source
 
 # opam configuration
 source /home/coma/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
-
 source "$HOME/.kiex/scripts/kiex.fish"
+
+theme_gruvbox "dark" "hard"
+command printf "\033]11;rgb:23/23/23\007"

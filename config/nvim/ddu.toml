@@ -6,6 +6,13 @@ on_event = ['BufRead', 'CursorHold']
 lua_source = '''
     -- require("configs/ddu")
 
+    vim.cmd([[
+    autocmd User Ddu:uiReady
+       \ : if &l:filetype ==# 'ddu-ff'
+       \ |   call ddu#ui#do_action('openFilterWindow')
+       \ | endif
+    ]])
+
     local keymap = vim.keymap.set
 
     local ddu_custom_patch_global = vim.fn["ddu#custom#patch_global"]
