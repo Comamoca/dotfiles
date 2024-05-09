@@ -301,3 +301,7 @@ on_source = 'ddu.vim'
 [[plugins]]
 repo = 'kuuote/ddu-source-mr'
 on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'uga-rosa/ddu-source-lsp'
+on_source = 'ddu.vim'
