@@ -140,7 +140,7 @@ let g:fuzzy_motion_matchers = ['fzf', 'kensaku']
 # on_source = 'denops.vim'
 
 [[plugins]]
-repo = "lambdalisue/kensaku-search.vim"
+repo = "lambdalisue/vim-kensaku-search"
 on_event = ['BufRead', 'CursorHold']
 hook_source = """"
 cnoremap <CR> <Plug>(kensaku-search-replace)<CR>
@@ -156,7 +156,7 @@ on_cmd = [
 ]
 
 [[plugins]]
-repo = 'lambdalisue/mr.vim'
+repo = 'lambdalisue/vim-mr'
 on_event = ['BufRead', 'CursorHold']
 
 [[plugins]]
