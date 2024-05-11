@@ -101,10 +101,10 @@ alias ":wq"="exit"
 alias ":wqa"="exit"
 
 # alias __recker='cd (recker)'
-alias __recker='cd (string  join / (ghq root) (ghq list | fzf --preview "bat --color=always --style=header,grid --line-range :80 $(ghq root)/{}/README.*"))'
+# alias __recker=
 
 alias __sandbox='cd (string join "/" (~/ghq/github.com/Comamoca/sandbox) (fd -d 1 | fzf))'
-alias cdf='cd (ls -d */ | sed "s/\///" | fzf)'
+alias cdf='__fzmove'
 alias tmp='cd (mktemp -d)'
 
 alias boost='deno run -A (string join "/" ~/.config/boost (/bin/ls ~/.config/boost/ | fzf --preview-window=down:70% --preview "bat --color=always (string join "/" ~/.config/boost {})"))'
