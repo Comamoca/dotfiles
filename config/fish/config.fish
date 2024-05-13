@@ -45,9 +45,10 @@ set -gx AQUA_ROOT_DIR $XDG_DATA_HOME/aquaproj-aqua
 # source ~/.wasmer/wasmer.sh
 # source "$HOME/.rye/env"
 
-set LUA_PATH ~/.luarocks/lib/ $LUA_PATH
-set LUA_PATH ~/.luarocks/lib/luarocks/rocks-5.4/ $LUA_PATH
+# set LUA_PATH ~/.luarocks/lib/ $LUA_PATH
+set -x LUA_PATH ~/.luarocks/lib/luarocks/rocks-5.4/ $LUA_PATH
 set -x BLOG_PATH ~/ghq/github.com/coma/blog/src/content/blog/
+set -x CHROME_EXECUTABLE (which google-chrome-stable)
 
 fish_add_path ~/.nimble/.bin/git-tasukete
 fish_add_path ~/.bin/
@@ -116,6 +117,7 @@ alias blog='ruby ~/ghq/github.com/coma/blogtool/blogtool.rb'
 alias MIT="ruby ~/.bin/scripts/mit/mit.rb"
 
 export EDITOR=vim
+# export EDITOR=nvim
 # export PYTHONPATH=/home/coma/bundler/bundler/lib
 export GOPATH=$HOME/go
 
