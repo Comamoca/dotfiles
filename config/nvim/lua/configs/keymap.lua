@@ -34,8 +34,13 @@ vim.g.comfortable_motion_no_default_key_mappings = 1
 -- vim.fn["comfortable_motion#flick"](-40)
 -- end, opts)
 
-runCmd("<C-k>", ":call comfortable_motion#flick(-70)" .. cr)
-runCmd("<C-j>", ":call comfortable_motion#flick(70)" .. cr)
+-- runCmd("<C-k>", ":call comfortable_motion#flick(-70)" .. cr)
+-- runCmd("<C-j>", ":call comfortable_motion#flick(70)" .. cr)
+
+vim.cmd([[
+nnoremap <C-k> <C-u>
+nnoremap <C-j> <C-d>
+]])
 
 -- keymap("n", "<S-k>", "<C-u>", opts)
 -- keymap("n", "<S-j>", "<C-d>", opts)
@@ -48,7 +53,7 @@ end
 -- ddu keymap
 keymap("n", "<C-o>", "<cmd>Ddu file_rec<CR>", opts) -- file open
 keymap("n", "<C-i>", "<cmd>Ddu buffer<CR>", opts) -- buffer open
-keymap("n", "<C-u>", "<cmd>Ddu source") -- search sources
+keymap("n", "<C-u>", "<cmd>Ddu source<CR>") -- search sources
 
 -- call ddu#start({'sources': [{'name': 'buffer'}]})
 keymap("i", "<C-l>", ddu_start("line"), opts)

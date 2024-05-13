@@ -1,5 +1,4 @@
 local dpp_src = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp.vim"
-
 vim.opt.runtimepath:prepend(dpp_src)
 local dpp = require("dpp")
 
@@ -96,5 +95,30 @@ vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/vimskey"))
 
 -- vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/fennel_nvim"))
 vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/calc.nvim"))
+vim.opt.clipboard = "unnamedplus"
 
 vim.cmd("set completeopt=menuone,noinsert")
+
+vim.g.denops_server_addr = '127.0.0.1:32123'
+
+vim.cmd([[
+function s:dduCustom(items, callback)
+	call ddu#start({'sources': [
+		\  {'name': 'custom-list',
+		\   'params': {'texts': a:items, 'callbackId': a:callback}}]})
+endfunction
+
+function s:openConfig() abort 
+    const configs = map(
+    \  split(glob("~/.config/nvim/*"), "\n"),
+    \  "substitute(v:val, printf('%s/.vim/', $HOME), '', 'g')")
+
+    const configedit = denops#callback#register(
+        \ {s -> execute(printf('e ~/.vim/%s', s), '')},
+        \ {'once': v:true})
+    
+    call s:dduCustom(configs, configedit)
+endfunction
+
+command! Configs call s:openConfig()
+]])
