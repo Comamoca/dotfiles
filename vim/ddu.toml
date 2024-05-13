@@ -75,7 +75,7 @@ call ddu#custom#patch_global(#{
 \      },
 \      custom-list: #{
 \         defaultAction: 'callback',
-\      }
+\      },
 \     }
 \ })
 

@@ -26,3 +26,33 @@ repo = 'vim-denops/denops.vim'
 
 [[plugins]]
 repo = 'jxnblk/vim-mdx-js'
+
+[[plugins]]
+repo = 'mattn/vim-molder'
+hook_add = '''
+let g:molder_show_hidden = 1
+
+autocmd FileType molder call s:molder_settings()
+function! s:molder_settings() abort
+  nnoremap <buffer><silent> l
+    \ <Cmd>call molder#open()<CR> 
+
+  nnoremap <buffer><silent> K
+    \ <Cmd>call molder#extension#operations#newdir_parents()<CR> 
+
+  nnoremap <buffer><silent> R
+    \ <Cmd>call molder#extension#operations#rename()<CR>
+
+  nnoremap <buffer><silent> D
+    \ <Cmd>call molder#extension#operations#delete()<CR>
+
+  nnoremap <buffer><silent> N
+    \ <Cmd>call molder#extension#operations#newfile()<CR>
+endfunction
+'''
+
+[[plugins]]
+repo = 'mattn/vim-molder-operations'
+
+[[plugins]]
+repo = 'comamoca/additional-molder-operations'

@@ -1,6 +1,7 @@
 [[plugins]]
 repo = 'Shougo/ddc.vim'
 # on_event = ['InsertEnter']
+# on_source = 'denops.vim'
 on_event = ['BufRead', 'CursorHold']
 # depends = ['denops.vim']
 hook_source = '''
@@ -226,20 +227,23 @@ call skkeleton#config(#{
       \   kanaTable: "azik"
       \   })
 
+    " \   '<s-j><s-j>':   ['じゅん', ''],
+    " \   '<s-j>p':   ['じょう', ''],
+    " \   '<s-j>l':   ['じょん', ''],
+    " \   '<s-j>q':   ['じゃい', ''],
+    " \   '<s-j>w':   ['じぇい', ''],
+    " \   '<s-j>d':   ['じぇん', ''],
+    " \   '<s-j>j':   ['じゅん', ''],
+    " \   '<s-j>i':   ['じ', ''],
+    " \   '<s-j>u':   ['じゅ', ''],
+    " \   '<s-j>k':   ['じん', ''],
+    " \   '<s-j>o':   ['じょ', ''],
+
 autocmd InsertEnter * ++once call skkeleton#register_kanatable('azik', {
     \   'jj':    'escape',
+    \   '@':       'katakana',
     \   '<s-l>':     'zenkaku',
     \   '<s-q>': 'hankatakana',
-    \   '<s-j><s-j>':   ['じゅん', ''],
-    \   '<s-j>p':   ['じょう', ''],
-    \   '<s-j>l':   ['じょん', ''],
-    \   '<s-j>q':   ['じゃい', ''],
-    \   '<s-j>w':   ['じぇい', ''],
-    \   '<s-j>d':   ['じぇん', ''],
-    \   '<s-j>j':   ['じゅん', ''],
-    \   '<s-j>i':   ['じ', ''],
-    \   '<s-j>o':   ['じょ', ''],
-    \   '@':       'katakana',
     \   'kl':      ['こん', ''],
     \   'dl':      ['どん', ''],
     \   'sl':      ['そん', ''],
@@ -259,11 +263,28 @@ autocmd InsertEnter * ++once call skkeleton#register_kanatable('azik', {
     \   'z~':    ['～', ''],
     \   'z ':    ['　', ''],
     \   'z:':    ['：', ''],
+    \   'bkr':    ['ばかり', ''],
+    \   'dg':    ['だが', ''],
+    \   'krd':    ['けれど', ''],
+    \   'mst':    ['ました', ''],
+    \   'mt':    ['もと', ''],
+    \   'nk':    ['のか', ''],
+    \   'nm':    ['のみ', ''],
+    \   'sbt':    ['すべて', ''],
+    \   'srn':    ['さらに', ''],
+    \   'ss':    ['そして', ''],
+    \   'th':    ['とは', ''],
+    \   'tk':    ['ところ', ''],
+    \   'tm':    ['つまり', ''],
+    \   'ts':    ['として', ''],
+    \   'tt':    ['たとえば', ''],
+    \   'wk':    ['わけ', ''],
+    \   'kq':    ['かい', ''],
     \ })
 
 " call skkeleton#register_keymap('input', '<C-l>', 'disable')
-call skkeleton#register_keymap('input', 'jj', 'escape')
-call skkeleton#register_keymap('henkan', 'jj', 'escape')
+" call skkeleton#register_keymap('input', 'jj', 'escape')
+" call skkeleton#register_keymap('henkan', 'jj', 'escape')
 
 " call skkeleton#register_keymap('input', '@', 'katakana')
 " call skkeleton#register_keymap('input', '@', 'katakana')

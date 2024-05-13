@@ -70,9 +70,7 @@ nnoremap <silent> <LocalLeader>rr :call VlimeStart()<CR>
 
 let g:vlime_cl_impl = "mondo"
 let g:vlime_cl_use_terminal = v:true
-let g:vlime_window_settings = {
-    \ 'server': {'pos': 'botright', 'size': v:null, 'vertical': v:true}
-    \ }
+let g:vlime_window_settings = {'server': {'pos': 'botright', 'size': v:null, 'vertical': v:true}}
 
 function! VlimeBuildServerCommandFor_mondo(vlime_loader, vlime_eval)
     return ["mondo", "--server", "vlime"]
