@@ -114,7 +114,7 @@ function s:openConfig() abort
     \  "substitute(v:val, printf('%s/.vim/', $HOME), '', 'g')")
 
     const configedit = denops#callback#register(
-        \ {s -> execute(printf('e ~/.vim/%s', s), '')},
+        \ {s -> execute(printf('e %s', s), '')},
         \ {'once': v:true})
     
     call s:dduCustom(configs, configedit)
