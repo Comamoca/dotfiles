@@ -59,6 +59,7 @@ fish_add_path /home/coma/local/
 
 zoxide init fish | source
 
+alias rad='./build/packages/rad/priv/rad'
 alias slack='slack --enable-features=UseOzonePlatform --ozone-platform=wayland'
 alias zx='/home/coma/go/bin/z'
 alias gleam_update="curl -fsSL https://gleam.pink/install.sh | sh -s -- --prefix ~/.gleam --version nightly"
