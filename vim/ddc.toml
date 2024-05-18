@@ -267,6 +267,7 @@ autocmd InsertEnter * ++once call skkeleton#register_kanatable('azik', {
     \   'dg':    ['だが', ''],
     \   'krd':    ['けれど', ''],
     \   'mst':    ['ました', ''],
+    \   'ms':    ['ます', ''],
     \   'mt':    ['もと', ''],
     \   'nk':    ['のか', ''],
     \   'nm':    ['のみ', ''],

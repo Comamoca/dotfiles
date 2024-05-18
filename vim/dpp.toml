@@ -55,4 +55,4 @@ endfunction
 repo = 'mattn/vim-molder-operations'
 
 [[plugins]]
-repo = 'comamoca/additional-molder-operations'
+repo = 'Comamoca/additional-molder-operations'
