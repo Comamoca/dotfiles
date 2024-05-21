@@ -42,9 +42,9 @@ vim.api.nvim_create_autocmd("User", {
 
 vim.cmd("filetype indent plugin on")
 vim.cmd("syntax on")
-
 vim.api.nvim_create_user_command("DppInstall", "call dpp#async_ext_action('installer', 'install')", { nargs = 0 })
 vim.api.nvim_create_user_command("DppUpdate", "call dpp#async_ext_action('installer', 'update')", { nargs = 0 })
+vim.api.nvim_create_user_command("DppMakestate", "call dpp#make_state('~/.cache/dpp', '~/.config/nvim/dpp.ts')", { nargs = 0 })
 
 vim.api.nvim_create_user_command("Ddu", function(args)
   local subcmd = args.args
@@ -73,8 +73,8 @@ vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
     require("configs/keymap")
     -- require("configs/cmd")
 
-    -- vim.cmd("colorscheme gruvbox")
-    vim.cmd("colorscheme kanagawa-wave")
+    vim.cmd("colorscheme gruvbox")
+    -- vim.cmd("colorscheme kanagawa-wave")
     vim.cmd("SeiyaEnable")
   end,
 })
@@ -99,7 +99,6 @@ vim.opt.clipboard = "unnamedplus"
 
 vim.cmd("set completeopt=menuone,noinsert")
 
-vim.g.denops_server_addr = '127.0.0.1:32123'
 
 vim.cmd([[
 function s:dduCustom(items, callback)
@@ -122,3 +121,5 @@ endfunction
 
 command! Configs call s:openConfig()
 ]])
+
+-- vim.g.denops_server_addr = '127.0.0.1:32123'
