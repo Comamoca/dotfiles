@@ -17,7 +17,7 @@ if [[ -z $FloatingVim ]]; then
       --config enable_tab_bar=false \
       --config window_background_opacity=0.4 \
       --config text_background_opacity=0.7 \
-      start --class floating vim ${tmpfile} -c 'startinsert'
+      start --class floating nvim ${tmpfile} -c 'startinsert'
 else
 	if [[ `$echo ${FloatingVim} | jq -c '.floating'` = true ]]; then
 	  wtype -P escape -p escape
