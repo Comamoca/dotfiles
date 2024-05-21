@@ -1,5 +1,15 @@
+# Theme
 [[plugins]]
-repo = 'vim-denops/denops.vim'
+repo = "sainnhe/gruvbox-material"
+# on_event = ['BufRead', 'CursorHold']
+hook_source = """
+set background=dark
+let g:gruvbox_material_transparent_background=1
+colorscheme gruvbox-material
+"""
+
+[[plugins]]
+repo = "rebelot/kanagawa.nvim"
 on_event = ['BufRead', 'CursorHold']
 
 [[plugins]]
@@ -54,7 +64,7 @@ lua_source = """
 
       highlight = {
         enable = true,
-	-- disable = { "markdown" },
+ -- disable = { "markdown" },
 
         -- disable highlight in big file
         disable = function(lang, buf)
@@ -131,12 +141,6 @@ let g:comfortable_motion_no_default_key_mappings = 1
 """
 
 
-[[plugins]]
-repo = 'stevearc/oil.nvim'
-lua_source = "require(\"oil\").setup()\n"
-on_cmd = ["Oil"]
-on_event = ['BufRead', 'CursorHold']
-
 # color theme
 [[plugins]]
 repo = "ellisonleao/gruvbox.nvim"
@@ -153,10 +157,6 @@ require("gruvbox").setup({
 """
 
 [[plugins]]
-repo = "rebelot/kanagawa.nvim"
-on_event = ['BufRead', 'CursorHold']
-
-[[plugins]]
 repo = 'VDuchauffour/neodark.nvim'
 on_event = ['BufRead', 'CursorHold']
 
@@ -166,13 +166,9 @@ on_event = ['BufRead', 'CursorHold']
 
 [[plugins]]
 repo = "miyakogi/seiya.vim"
-# on_event = ['BufRead', 'CursorHold']
-on_event = ["ColorSchemePre", 'BufRead', 'CursorHold']
-# on_cmd = ["SeiyaEnable"]
-lua_source = """
-vim.cmd("let g:seiya_target_groups = has('nvim') ? ['guibg'] : ['ctermbhhg']")
--- vim.g.seiya_auto_enable = 1
--- vim.cmd("SeiyaEnable")
+on_event = ["ColorSchemePre", 'BufReadPre', 'CursorHold']
+hook_source = """
+let g:seiya_auto_enable=1
 """
 
 [[plugins]]
@@ -317,5 +313,47 @@ on_ft = ["lisp"]
 [[plugins]]
 repo = 'Olical/conjure'
 on_event = ['BufRead', 'CursorHold']
-lua_source = """
-"""
+
+[[plugins]]
+repo = 'itchyny/lightline.vim'
+on_event = ['BufRead', 'CursorHold']
+hook_source = '''
+execute("source" .. expand("~/.vim/lightline.vim"))
+'''
+
+[[plugins]]
+repo = 'nvimtools/none-ls.nvim'
+on_event = ['BufRead', 'CursorHold']
+lua_source = '''
+local null_ls = require("null-ls")
+
+local no_really = {
+    method = null_ls.methods.DIAGNOSTICS,
+    filetypes = { "markdown", "text" },
+    generator = {
+        fn = function(params)
+            local diagnostics = {}
+            -- sources have access to a params object
+            -- containing info about the current file and editor state
+            for i, line in ipairs(params.content) do
+                local col, end_col = line:find("really")
+                if col and end_col then
+                    -- null-ls fills in undefined positions
+                    -- and converts source diagnostics into the required format
+                    table.insert(diagnostics, {
+                        row = i,
+                        col = col,
+                        end_col = end_col + 1,
+                        source = "no-really",
+                        message = "Don't use 'really!'",
+                        severity = vim.diagnostic.severity.WARN,
+                    })
+                end
+            end
+            return diagnostics
+        end,
+    },
+}
+
+null_ls.register(no_really)
+'''
