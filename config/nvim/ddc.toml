@@ -18,7 +18,19 @@ lua_source = '''
       "around",
       "vsnip",
       "file",
+      "skkeleton"
     })
+
+    vim.fn["ddc#custom#patch_global"]('sourceOptions', {
+    	skkeleton = {
+            mark = " ",
+            matchers =  {},
+            sorters =  {},
+            converters =  {},
+            isVolatile = true,
+            minAutoCompleteLength =  1,
+          },
+        })
 
     ddc_custom_patch_global("sourceOptions", {
       _ = {
@@ -203,3 +215,96 @@ on_source = 'ddc.vim'
 [[plugins]]
 repo = 'uga-rosa/denippet.vim'
 on_source = 'ddc.vim'
+
+# skkeleton
+[[plugins]]
+repo = "vim-skk/skkeleton"
+on_source = 'ddc.vim'
+hook_source = '''
+call skkeleton#config(#{
+      \   globalDictionaries: [ "~/.vim/skk/SKK-JISYO.L.utf8" ],
+      \   databasePath: "~/.vim/skk/database",
+      \   kanaTable: "azik"
+      \   })
+
+    " \   '<s-j><s-j>':   ['じゅん', ''],
+    " \   '<s-j>p':   ['じょう', ''],
+    " \   '<s-j>l':   ['じょん', ''],
+    " \   '<s-j>q':   ['じゃい', ''],
+    " \   '<s-j>w':   ['じぇい', ''],
+    " \   '<s-j>d':   ['じぇん', ''],
+    " \   '<s-j>j':   ['じゅん', ''],
+    " \   '<s-j>i':   ['じ', ''],
+    " \   '<s-j>u':   ['じゅ', ''],
+    " \   '<s-j>k':   ['じん', ''],
+    " \   '<s-j>o':   ['じょ', ''],
+
+autocmd InsertEnter * ++once call skkeleton#register_kanatable('azik', {
+    \   'jj':    'escape',
+    \   '@':       'katakana',
+    \   '<s-l>':     'zenkaku',
+    \   '<s-q>': 'hankatakana',
+    \   'kl':      ['こん', ''],
+    \   'dl':      ['どん', ''],
+    \   'sl':      ['そん', ''],
+    \   'cl':      ['ちょん', ''],
+    \   'zl':      ['ぞん', ''],
+    \   'xxa':     ['ぁ', ''],
+    \   'xxi':     ['ぃ', ''],
+    \   'xxu':     ['ぅ', ''],
+    \   'xxe':     ['ぇ', ''],
+    \   'xxo':     ['ぉ', ''],
+    \   'xxtu':    ['っ', ''],
+    \   'xxya':    ['ゃ', ''],
+    \   'xxyu':    ['ゅ', ''],
+    \   'xxyo':    ['ょ', ''],
+    \   'n':     ['ん', ''],
+    \   'z=':    ['＝', ''],
+    \   'z~':    ['～', ''],
+    \   'z ':    ['　', ''],
+    \   'z:':    ['：', ''],
+    \   'bkr':    ['ばかり', ''],
+    \   'dg':    ['だが', ''],
+    \   'krd':    ['けれど', ''],
+    \   'mst':    ['ました', ''],
+    \   'ms':    ['ます', ''],
+    \   'mt':    ['もと', ''],
+    \   'nk':    ['のか', ''],
+    \   'nm':    ['のみ', ''],
+    \   'sbt':    ['すべて', ''],
+    \   'srn':    ['さらに', ''],
+    \   'ss':    ['そして', ''],
+    \   'th':    ['とは', ''],
+    \   'tk':    ['ところ', ''],
+    \   'tm':    ['つまり', ''],
+    \   'ts':    ['として', ''],
+    \   'tt':    ['たとえば', ''],
+    \   'wk':    ['わけ', ''],
+    \   'kq':    ['かい', ''],
+    \ })
+
+" call skkeleton#register_keymap('input', '<C-l>', 'disable')
+" call skkeleton#register_keymap('input', 'jj', 'escape')
+" call skkeleton#register_keymap('henkan', 'jj', 'escape')
+
+" call skkeleton#register_keymap('input', '@', 'katakana')
+" call skkeleton#register_keymap('input', '@', 'katakana')
+
+" call skkeleton#register_keymap('henkan', ']', 'katakana')
+
+inoremap <C-i> <Plug>(skkeleton-enable)
+inoremap <C-l> <Plug>(skkeleton-disable)
+" inoremap <C-i> <Plug>(skkeleton-toggle)
+
+" inoremap <C-i> <Plug>(skkeleton-enable)
+" inoremap <C-j> <Plug>(skkeleton-enable)
+" inoremap <C-j> <Plug>(skkeleton-disable)
+" inoremap <C-j> <Cmd>call skkeleton#disable()<CR>
+'''
+
+[[plugins]]
+repo = 'kei-s16/skkeleton-azik-kanatable'
+on_source = 'skkeleton'
+hook_source = """
+call skkeleton#azik#add_table('jis')
+"""
