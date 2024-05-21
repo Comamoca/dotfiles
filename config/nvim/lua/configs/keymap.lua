@@ -56,6 +56,6 @@ keymap("n", "<C-i>", "<cmd>Ddu buffer<CR>", opts) -- buffer open
 keymap("n", "<C-u>", "<cmd>Ddu source<CR>") -- search sources
 
 -- call ddu#start({'sources': [{'name': 'buffer'}]})
-keymap("i", "<C-l>", ddu_start("line"), opts)
+-- keymap("i", "<C-l>", ddu_start("line"), opts)
 
 keymap("t", "<Esc>", [[<C-\><C-n>]])
