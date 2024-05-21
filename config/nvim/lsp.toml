@@ -20,6 +20,8 @@ on_source = 'mason.nvim'
 lua_source = """
 -- require("configs/lsp")
 
+-- launch-test.lua
+
 require("mason").setup({
   ui = {
     icons = {
@@ -37,6 +39,13 @@ require("ddc_source_lsp_setup").setup()
 require("neodev").setup({})
 
 local nvim_lsp = require("lspconfig")
+
+-- nvim_lsp.gleam.setup({})
+
+if (vim.fs.dirname(vim.fs.find({ "gleam.toml" }, { upward = true })[1])) then
+	nvim_lsp.gleam.setup({})
+end
+
 require("mason-lspconfig").setup()
 
 require("mason-lspconfig").setup_handlers({
