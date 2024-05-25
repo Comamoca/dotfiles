@@ -74,8 +74,8 @@ vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
     require("configs/keymap")
     -- require("configs/cmd")
 
-    -- vim.cmd("colorscheme gruvbox")
-    vim.cmd("colorscheme kanagawa-wave")
+    vim.cmd("colorscheme gruvbox")
+    -- vim.cmd("colorscheme kanagawa-wave")
     vim.cmd("SeiyaEnable")
   end,
 })
