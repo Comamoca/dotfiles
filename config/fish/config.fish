@@ -56,8 +56,6 @@ fish_add_path $DENO_INSTALL/bin
 fish_add_path /home/coma/go/bin
 fish_add_path /home/coma/local/
 
-zoxide init fish | source
-
 alias zx='/home/coma/go/bin/z'
 alias gleam_update="curl -fsSL https://gleam.pink/install.sh | sh -s -- --prefix ~/.gleam --version nightly"
 alias glow='glow -p'
@@ -142,9 +140,6 @@ set -gx PATH "$PNPM_HOME" $PATH
 # set -x PATH "$HOME/.konryu/cotowali/bin/" $PATH
 # eval (konryu init)
 
-gh completion -s fish | source
-hugo completion fish | source
-
 $HOME/.local/bin/mise activate fish | source
 
 set EMSDK_QUIET = 1
@@ -190,9 +185,11 @@ export LUA_CPATH='/usr/lib/lua/5.4/?.so;/usr/lib/lua/5.4/loadall.so;./?.so;/home
 export WASMER_DIR="/home/coma/.wasmer"
 [ -s "$WASMER_DIR/wasmer.sh" ] && source "$WASMER_DIR/wasmer.sh"
 
-rbenv init - fish | source
+# rbenv init - fish | source
+# gh completion -s fish | source
+# zoxide init fish | source
+# hugo completion fish | source
+# source "$HOME/.kiex/scripts/kiex.fish"
+# source /home/coma/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 
 # opam configuration
-source /home/coma/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
-
-source "$HOME/.kiex/scripts/kiex.fish"
