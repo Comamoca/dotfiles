@@ -32,3 +32,5 @@ export WASMER_DIR="/home/coma/.wasmer"
 source "$HOME/.rye/env"
 
 [ -f "/home/coma/.ghcup/env" ] && source "/home/coma/.ghcup/env" # ghcup-env
+# bun completions
+[ -s "/home/coma/.bun/_bun" ] && source "/home/coma/.bun/_bun"
