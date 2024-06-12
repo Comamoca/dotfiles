@@ -1,13 +1,10 @@
 [[plugins]]
-repo = 'vim-denops/denops.vim'
-on_event = ['BufRead', 'CursorHold']
-
-[[plugins]]
 repo = "lambdalisue/fern.vim"
 on_cmd = ["Fern"]
 lua_source = """
 vim.keymap.set('n', '<leader>f', "<cmd>Fern . -reveal=% -drawer -toggle -width=40<CR>")
 """
+
 
 [[plugins]]
 repo = "dstein64/vim-startuptime"
@@ -16,7 +13,7 @@ on_cmd = ["StartupTime"]
 [[plugins]]
 repo = "mhinz/vim-sayonara"
 on_cmd = ["Sayonara"]
-on_source = """
+hook_source = """
 nnoremap <C-f> <cmd>Sayonara<CR>
 """
 
@@ -31,46 +28,64 @@ require('insx.preset.standard').setup()
 repo = 'nvim-treesitter/nvim-treesitter'
 on_event = ['BufRead', 'CursorHold']
 hook_post_update = 'TSUpdate'
-lua_source = """
-    -- require("configs/tree-sitter")
+lua_source = '''
+ --    require("nvim-treesitter.configs").setup({
+ --      -- ensure_installed = { "c", "lua", "vim", "vimdoc", "query" },
+ --      sync_install = false,
+ --      auto_install = true,
+ --
+ --      textobjects = {
+ --        select = {
+ --          enable = true,
+ --          lookahead = true,
+ --          keymaps = {
+ --            ["af"] = "@function.outer",
+ --            ["if"] = "@function.inner",
+ --            ["ac"] = "@class.outer",
+ --            ["ic"] = "@class.inner",
+ --          },
+ --        },
+ --      },
+ --
+ --      highlight = {
+ --        enable = true,
+ -- -- disable = { "markdown" },
+ --
+ --        -- disable highlight in big file
+ --        disable = function(lang, buf)
+ --          local max_filesize = 100 * 1024 -- 100 KB
+ --          local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+ --          if ok and stats and stats.size > max_filesize then
+ --            return true
+ --          end
+ --        end,
+ --
+ --        additional_vim_regex_highlighting = false,
+ --      },
+ --      autotag = {
+ --        enable = true
+ --        },
+ --    })
 
-    require("nvim-treesitter.configs").setup({
-      -- ensure_installed = { "c", "lua", "vim", "vimdoc", "query" },
-      sync_install = false,
-      auto_install = true,
+ require'nvim-treesitter.configs'.setup {
+   ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "gleam" },
+   sync_install = false,
+   auto_install = true,
+   ignore_install = {},
 
-      textobjects = {
-        select = {
-          enable = true,
-          lookahead = true,
-          keymaps = {
-            ["af"] = "@function.outer",
-            ["if"] = "@function.inner",
-            ["ac"] = "@class.outer",
-            ["ic"] = "@class.inner",
-          },
-        },
-      },
-
-      highlight = {
-        enable = true,
-	-- disable = { "markdown" },
-
-        -- disable highlight in big file
-        disable = function(lang, buf)
-          local max_filesize = 100 * 1024 -- 100 KB
-          local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-          if ok and stats and stats.size > max_filesize then
-            return true
-          end
-        end,
-
-        additional_vim_regex_highlighting = false,
-      },
-      autotag = {
-        enable = true     },
-    })
-"""
+   highlight = {
+     enable = true,
+     disable = function(lang, buf)
+         local max_filesize = 100 * 1024 -- 100 KB
+         local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+         if ok and stats and stats.size > max_filesize then
+             return true
+         end
+     end,
+     additional_vim_regex_highlighting = false,
+   },
+ }
+'''
 
 [[plugins]]
 repo = 'nvim-treesitter/nvim-treesitter-textobjects'
@@ -81,18 +96,39 @@ repo = 'nvim-treesitter/playground'
 on_source = ["nvim-treesitter"]
 
 [[plugins]]
-repo = 'HiPhish/nvim-ts-rainbow2'
-on_source = ["nvim-treesitter"]
+repo = 'hiphish/rainbow-delimiters.nvim'
+# on_source = ["nvim-treesitter"]
+lua_source = '''
+-- This module contains a number of default definitions
 
-[[plugins]]
-repo = 'phaazon/hop.nvim'
-# on_event = ['BufEnter']
-on_event = ['BufRead', 'CursorHold']
-lua_source = """
-    -- vim.keymap.set("n", "<leader>k", "<Cmd>")
-    -- vim.keymap.set("n", "<leader>l", "<Cmd>")
-    -- vim.keymap.set("n", "<leader>w", "<Cmd>")
-"""
+local rainbow_delimiters = require 'rainbow-delimiters'
+
+rainbow_delimiters.setup()
+
+vim.g.rainbow_delimiters = {
+    strategy = {
+        [''] = rainbow_delimiters.strategy['global'],
+        vim = rainbow_delimiters.strategy['local'],
+    },
+    query = {
+        [''] = 'rainbow-delimiters',
+        lua = 'rainbow-blocks',
+    },
+    priority = {
+        [''] = 110,
+        lua = 210,
+    },
+    -- highlight = {
+    --     'RainbowDelimiterRed',
+    --     'RainbowDelimiterYellow',
+    --     'RainbowDelimiterBlue',
+    --     'RainbowDelimiterOrange',
+    --     'RainbowDelimiterGreen',
+    --     'RainbowDelimiterViolet',
+    --     'RainbowDelimiterCyan',
+    -- },
+}
+'''
 
 [[plugins]]
 repo = "numToStr/Comment.nvim"
@@ -105,7 +141,7 @@ require('Comment').setup()
 [[plugins]]
 repo = "yuttie/comfortable-motion.vim"
 # on_event = ['BufEnter']
-on_event = ['BufRead', 'CursorHold']
+# on_event = ['BufRead', 'CursorHold']
 hook_source = """
 nnoremap <silent><C-k> :<C-u>call comfortable_motion#flick(-70)<CR>
 nnoremap <silent><C-j> :<C-u>call comfortable_motion#flick(70)<CR>
@@ -134,18 +170,6 @@ require("gruvbox").setup({
   },
 })
 """
-
-[[plugins]]
-repo = "rebelot/kanagawa.nvim"
-on_event = ['BufRead', 'CursorHold']
-
-[[plugins]]
-repo = 'VDuchauffour/neodark.nvim'
-on_event = ['BufRead', 'CursorHold']
-
-# [[plugins]]
-# repo = "sainnhe/gruvbox-material"
-# on_event = ['BufRead', 'CursorHold']
 
 [[plugins]]
 repo = "miyakogi/seiya.vim"
@@ -205,7 +229,7 @@ lua_source = """
         lua = {
           "stylua",
         },
-        python = { "black", "isort" },
+        python = { "ruff_format" , "black", "isort" },
         javascript = {
           "deno_fmt",
         },
@@ -220,6 +244,12 @@ lua_source = """
         },
         json = {
           "deno_fmt",
+        },
+        go = {
+          "gofmt", "goimoprts",
+        },
+        gleam = {
+          "gleam"
         },
       },
     })
@@ -296,3 +326,287 @@ build = './install --all'
 [[plugins]]
 repo = 'liquidz/dps-parinfer'
 on_ft = ["lisp"]
+
+[[plugins]]
+repo = "hadronized/hop.nvim"
+on_event = ['BufRead', 'CursorHold']
+lua_source = '''
+local hop = require('hop')
+local directions = require('hop.hint').HintDirection
+
+hop.setup()
+
+vim.keymap.set('n', '<Leader>k', function()
+	vim.cmd('hi HopNextKey guifg=#f72f38')
+	vim.cmd('hi HopNextKey1 guifg=#f72f38')
+	vim.cmd('hi HopNextKey2 guifg=#f72f38')
+
+	hop.hint_lines({})
+end,
+{noremap = true})
+'''
+
+# status line
+[[plugins]]
+repo = 'nvim-lualine/lualine.nvim'
+# on_event = ['BufRead', 'CursorHold']
+lua_source = '''
+require('lualine').setup {
+  options = {
+    globalstatus = true,
+    icons_enabled = true,
+    theme = 'auto',
+    component_separators = { left = '', right = ''},
+    section_separators = { left = '', right = ''},
+    disabled_filetypes = {
+      statusline = {},
+      winbar = {},
+    },
+    ignore_focus = {},
+    always_divide_middle = true,
+    refresh = {
+      statusline = 1000,
+      tabline = 1000,
+      winbar = 1000,
+    }
+  },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch', 'diff', 'diagnostics'},
+    lualine_c = {'filename'},
+    lualine_x = {'encoding', 'fileformat', 'filetype'},
+    lualine_y = {'progress'},
+    lualine_z = { 'totalchars' } -- 'location'
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {'filename'},
+    lualine_x = {'location'},
+    lualine_y = {},
+    lualine_z = {}
+  },
+  tabline = {},
+  winbar = {},
+  inactive_winbar = {},
+  extensions = {}
+}
+
+local function totalchars()
+	-- return vim.fn.wordcount()["words"]
+	return "Hello!"
+end
+'''
+
+[[plugins]]
+repo = 'itchyny/lightline.vim'
+on_event = ['BufRead', 'CursorHold']
+hook_source = '''
+let g:lightline = {
+      \ 'colorscheme': 'seoul256',
+      \ 'active': {
+      \   'left': [
+      \     [ 'mode', 'paste' ],
+      \     [ 'filename', 'lsp_errors', 'lsp_warnings', 'lsp_ok' ],
+      \   ],
+      \   'right': [
+      \     ['percent'],
+      \     [ 'fileformat', 'fileencoding', 'filetype', 'lineinfo', 'bufchar'],
+      \   ],
+      \ },
+      \ 'component_expand': {
+      \   'lsp_warnings': 'LightlineLSPWarnings',
+      \   'lsp_errors':   'LightlineLSPErrors',
+      \   'lsp_ok':       'LightlineLSPOk',
+      \ },
+      \ 'component_type': {
+      \   'lsp_warnings': 'warning',
+      \   'lsp_errors':   'error',
+      \   'lsp_ok':       'middle',
+      \ },
+      \ 'component_function': {
+      \   'bufchar': 'Bufchar'
+      \ }
+    \ }
+
+let g:lightline.component = {
+    \ 'lineinfo': '%3l[%L]:%-2v'
+    \ }
+
+function Bufchar() abort
+	return wordcount()['chars'] 
+endfunction
+'''
+
+[[plugins]]
+repo = 'luochen1990/rainbow'
+on_event = ['BufRead', 'CursorHold']
+hook_source = '''
+let g:rainbow_active = 1 
+'''
+
+[[plugins]]
+on_event = ['BufRead', 'CursorHold']
+repo = 'lambdalisue/vim-mr'
+
+[[plugins]]
+on_event = ['BufRead', 'CursorHold']
+repo = 'nvimtools/none-ls.nvim'
+
+[[plugins]]
+repo = "nvimtools/none-ls-extras.nvim"
+on_source = "none-ls.nvim"
+lua_source = '''
+local null_ls = require("null-ls")
+local methods = require("null-ls").methods
+
+
+local h = require("null-ls.helpers")
+local u = require("null-ls.utils")
+
+
+local handle_output = function(params)
+    params.messages = params.output and params.output[1] and params.output[1].messages or {}
+    if params.err then
+        table.insert(params.messages, { message = params.err })
+    end
+
+    local parser = h.diagnostics.from_json({
+        attributes = {
+            severity = "severity",
+        },
+        severities = {
+            h.diagnostics.severities["warning"],
+            h.diagnostics.severities["error"],
+        },
+    })
+
+    return parser({ output = params.messages })
+end
+
+local textlint = h.make_builtin({
+	-- generator_opts,
+	method = methods.DIAGNOSTICS,
+	meta = {},
+	filetypes = (function ()
+		if vim.fn["isdirectory"]("node_modules") == 1 then
+			vim.print("node_modules found")
+			return { "txt", "markdown" }
+		else
+			vim.print("node_modules not found")
+			return {}
+		end
+
+	end)(),
+	generator = h.generator_factory({
+	command = {"bunx", "textlint"},
+	args = { "-f", "json", "--stdin", "-c", "$ROOT/.textlintrc.json", "--stdin-filename", "$FILENAME" },
+	format = "json_raw",
+	check_exit_code = { 0, 1 },
+	to_stdin = true,
+	cwd = h.cache.by_bufnr(function(params)
+            return u.root_pattern(
+                ".textlintrc",
+                -- ".textlintrc.js",
+                ".textlintrc.json"
+                -- ".textlintrc.yml",
+                -- ".textlintrc.yaml",
+                -- "package.json"
+            )(params.bufname)
+        end),
+	on_output = handle_output,
+}),
+})
+
+--------------------------------------------------
+
+-- local cspell = require('cspell')
+
+-- local cspell_config = {
+--   config_file_preferred_name = 'cspell.json',
+-- }
+
+null_ls.setup({
+    diagnostics_format = "#{m} (#{s}: #{c})",
+    sources = {
+        null_ls.builtins.formatting.stylua,
+	textlint
+        -- null_ls.builtins.completion.spell,
+	-- cspell.diagnostics.with({config = cspell_config}),
+    },
+})
+'''
+
+[[plugins]]
+repo = "davidmh/cspell.nvim"
+on_source = "none-ls.nvim"
+
+[[plugins]]
+repo = "lambdalisue/vim-kensaku"
+on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = "lambdalisue/vim-kensaku-search"
+on_source = ["vim-kensaku"]
+hook_source = '''
+cnoremap <CR> <Plug>(kensaku-search-replace)<CR>
+'''
+
+[[plugins]]
+repo = "mattn/emmet-vim"
+on_ft = ["html"]
+
+[[plugins]]
+repo = 'kat0h/bufpreview.vim'
+build = 'deno task prepare'
+on_ft = ["markdown"]
+
+[[plugins]]
+repo = 'monaqa/dial.nvim'
+on_event = ['BufRead', 'CursorHold']
+lua_source = '''
+local augend = require("dial.augend")
+
+require("dial.config").augends:register_group{
+  default = {
+    augend.integer.alias.decimal,
+    augend.integer.alias.hex,
+    augend.date.alias["%Y/%m/%d"],
+    augend.constant.alias.alpha,
+    augend.constant.alias.Alpha,
+    augend.constant.alias.ja_weekday,
+    augend.constant.alias.ja_weekday_full,
+    augend.constant.alias.bool,
+    augend.date.alias["%H:%M:%S"],
+    augend.date.alias["%H:%M"]
+  },
+  typescript = {
+    augend.integer.alias.decimal,
+    augend.integer.alias.hex,
+    augend.constant.new{ elements = {"let", "const"} },
+  },
+  visual = {
+    augend.integer.alias.decimal,
+    augend.integer.alias.hex,
+    augend.date.alias["%Y/%m/%d"],
+    augend.constant.alias.alpha,
+    augend.constant.alias.Alpha,
+    augend.constant.alias.ja_weekday,
+    augend.constant.alias.ja_weekday_full,
+    augend.constant.alias.bool,
+    augend.date.alias["%H:%M:%S"],
+    augend.date.alias["%H:%M"]
+  },
+}
+
+vim.cmd([[
+nmap  <C-a>  <Plug>(dial-increment)
+nmap  <C-x>  <Plug>(dial-decrement)
+nmap g<C-a> g<Plug>(dial-increment)
+nmap g<C-x> g<Plug>(dial-decrement)
+vmap  <C-a>  <Plug>(dial-increment)
+vmap  <C-x>  <Plug>(dial-decrement)
+vmap g<C-a> g<Plug>(dial-increment)
+vmap g<C-x> g<Plug>(dial-decrement)
+]])
+'''
