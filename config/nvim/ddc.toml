@@ -18,6 +18,17 @@ lua_source = '''
       "around",
       "vsnip",
       "file",
+      "skkeleton",
+      "emoji"
+    })
+
+
+    ddc_custom_patch_global("sourceOptions", {
+    	emoji = {
+    		mark = "emoji",
+    		matchers =  {'emoji'},
+    		sorters = {},
+    	}
     })
 
     ddc_custom_patch_global("sourceOptions", {
@@ -28,6 +39,7 @@ lua_source = '''
         matchers = { "matcher_fuzzy" },
         sorters = { "sorter_fuzzy" },
         converters = { "converter_fuzzy" },
+        keywordPattern =  "[a-zA-Z_:]\\w*"
       },
       around = { mark = "around" },
       lsp = {
@@ -137,7 +149,7 @@ repo = 'Shougo/ddc-sorter_rank'
 on_source = 'ddc.vim'
 
 [[plugins]]
-repo = "Shougo/ddc-source-nvim-lsp"
+repo = "Shougo/ddc-source-lsp"
 on_source = 'nvim-lspconfig'
 
 [[plugins]]
@@ -203,3 +215,66 @@ on_source = 'ddc.vim'
 [[plugins]]
 repo = 'uga-rosa/denippet.vim'
 on_source = 'ddc.vim'
+
+# SKK
+[[plugins]]
+repo = "vim-skk/skkeleton"
+on_source = 'ddc.vim'
+hook_source = '''
+call skkeleton#azik#add_table("jis")
+
+call skkeleton#config(#{
+\   globalDictionaries: [[ "~/.vim/skk/SKK-JISYO.L", "euc-jp" ]],
+\   databasePath: "~/.vim/skk/database",
+\   kanaTable: "azik"
+\   })
+
+
+call skkeleton#register_keymap('henkan', "<", 'purgeCandidate')
+call skkeleton#register_keymap('henkan', "X", '')
+
+call skkeleton#register_keymap('henkan', "<S-q>", 'purgeCandidate')
+call skkeleton#register_keymap('henkan', "X", '')
+
+call skkeleton#register_keymap('input', ';', 'henkanPoint')
+
+
+autocmd InsertEnter * ++once call skkeleton#register_kanatable('azik', {
+    \   'jj':       'escape',
+    \   '@':        'katakana',
+    \   '<s-j><s-j>': ['じゅん', ''],
+    \   '<s-j>i':     ['じ', ''],
+    \   '<s-j>p':     ['じょう', ''],
+    \   '<s-j>o':     ['じょ', ''],
+    \   '<s-j>k':     ['じん', ''],
+    \   '<s-j>u':     ['じゅ', ''],
+    \   'l':          ['っ', ''],
+    \   'la':         ['', ''],
+    \   'li':         ['', ''],
+    \   'lu':         ['', ''],
+    \   'le':         ['', ''],
+    \   'lo':         ['', ''],
+    \   'xxa':        ['ぁ', ''],
+    \   'xxi':        ['ぃ', ''],
+    \   'xxu':        ['ぅ', ''],
+    \   'xxe':        ['ぇ', ''],
+    \   'xxo':        ['ぉ', ''],
+    \   'n':          ['ん', ''],
+    \   'z=':         ['＝', ''],
+    \   'z~':         ['～', ''],
+    \   'z ':         ['　', ''],
+    \   'z:':         ['：', ''],
+    \ })
+
+
+imap <C-i> <Plug>(skkeleton-enable)
+imap <C-l> <Plug>(skkeleton-disable)
+'''
+
+[[plugins]]
+repo = 'NI57721/skkeleton-azik-kanatable'
+on_source = 'skkeleton'
+
+[[plugins]]
+repo = "gamoutatsumi/ddc-emoji"
+on_source = 'skkeleton'
