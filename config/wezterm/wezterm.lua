@@ -67,7 +67,7 @@ local config = {
     -- {key="C", mods="SHIFT|CTRL", action="Copy"},
     -- {key="V", mods="SHIFT|CTRL", action="Paste"},
 
-    { key = "w", mods = "ALT|CTRL", action = wezterm.action.CloseCurrentTab { confirm = false },},
+    { key = "w", mods = "ALT|CTRL", action = wezterm.action.CloseCurrentTab({ confirm = false }) },
     { key = "y", mods = "ALT|CTRL", action = "ActivateCopyMode" },
 
     -- { key = "p", mods = "ALT|CTRL", action = wezterm.action({ PasteFrom = "PrimarySelection" }) },
@@ -117,7 +117,8 @@ local config = {
 
     { key = "i", mods = "ALT", action = "QuickSelect" },
     { key = "o", mods = "ALT", action = act.ShowTabNavigator },
-}}
+  },
+}
 
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
   config.default_prog = { "wsl.exe", "--distribution", "Manjaro", "--exec", "/bin/fish", "-l" }
@@ -125,9 +126,10 @@ if wezterm.target_triple == "x86_64-pc-windows-msvc" then
 else
   config.default_prog = { "fish" }
   -- config.window_background_image = home .. "Pictures/wallpapelar/benjamin-hersh-_69DlG4rMm4-unsplash.jpg"
-  config.window_background_opacity = 0.85
-  config.enable_wayland = true
-  config.font_size = 13
+  config.window_background_opacity = 0.80
+  -- config.enable_wayland = true
+  config.enable_wayland = false
+  config.font_size = 14
 end
 
 return config
