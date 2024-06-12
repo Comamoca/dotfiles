@@ -62,11 +62,11 @@ lua_source = '''
           startFilter = true,
           prompt = "> ",
           -- prompt = " ",
-          split = "floating",
-          previewFloating = true,
+          -- split = "floating",
+          previewFloating = false,
           previewSplit = "vertical",
           previewFloatingBorder = "single",
-          previewWidth = math.floor(width / 3),
+          previewWidth = math.floor((width / 6) * 3), -- 2/5
           previewHeight = col,
           -- highlights = {
           --   floating = "Normal",
@@ -172,3 +172,7 @@ on_source = 'ddu.vim'
 [[plugins]]
 repo = "4513ECHO/ddu-source-ghq"
 on_source = 'ddu.vim'
+
+[[plugins]]
+repo = "kuuote/ddu-source-mr"
+on_source = "ddu.vim"
