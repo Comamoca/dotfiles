@@ -46,6 +46,9 @@ vim.cmd("syntax on")
 
 vim.api.nvim_create_user_command("DppInstall", "call dpp#async_ext_action('installer', 'install')", { nargs = 0 })
 vim.api.nvim_create_user_command("DppUpdate", "call dpp#async_ext_action('installer', 'update')", { nargs = 0 })
+vim.api.nvim_create_user_command("DppMakestate", function(val)
+  dpp.make_state(dppBase, dpp_config)
+end, { nargs = 0 })
 
 vim.api.nvim_create_user_command("Ddu", function(args)
   local subcmd = args.args
@@ -55,7 +58,7 @@ end, { nargs = 1 })
 
 vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
   callback = function()
-    -- vim.opt.clipboard = "unnamedplus"
+    vim.opt.clipboard = "unnamedplus"
     -- if vim.fn.has("wsl") then
     --   vim.g.clipboard = {
     --     name = "win32yank-wsl",
@@ -74,25 +77,39 @@ vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
     require("configs/keymap")
     -- require("configs/cmd")
 
-    vim.cmd("colorscheme gruvbox")
-    -- vim.cmd("colorscheme kanagawa-wave")
+    -- vim.cmd("colorscheme gruvbox")
+    -- vim.cmd("colorscheme wal")
+    -- vim.cmd("colorscheme nord")
     vim.cmd("SeiyaEnable")
   end,
 })
 
+vim.cmd("colorscheme kanagawa-dragon")
+
+-- vim.g.seiya_auto_enable = 1
+
 vim.cmd("inoremap jj <C-[>")
 vim.cmd("nnoremap <C-[><C-[> <cmd>noh<CR>")
-vim.cmd("let g:seiya_auto_enable=1")
 vim.cmd("nnoremap sv <cmd>vs<CR>")
 vim.cmd("nnoremap s <C-w>")
 vim.cmd("set ignorecase")
+vim.cmd("set termguicolors")
 
-vim.cmd("au FileType * setlocal formatoptions-=ro")
+vim.cmd("au FileType * setlocal formatoptions-=r")
+vim.cmd("au FileType * setlocal formatoptions-=o")
 
 vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/coma/memos.vim"))
 vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/vimskey"))
 
 -- vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/fennel_nvim"))
 vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/calc.nvim"))
+vim.opt.laststatus = 3
+vim.opt.cursorline = true
 
 vim.cmd("set completeopt=menuone,noinsert")
+
+vim.keymap.set("n", "<Leader>k", function()
+  print("Hop!")
+end)
+
+vim.cmd([[const mapleader = " "]])
