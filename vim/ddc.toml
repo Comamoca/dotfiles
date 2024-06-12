@@ -229,7 +229,7 @@ call skkeleton#register_kanatable('rom', {
     \ })
 
 call skkeleton#config(#{
-\   globalDictionaries: [ "~/.vim/skk/SKK-JISYO.L.utf8" ],
+\   globalDictionaries: [[ "~/.vim/skk/SKK-JISYO.L", "euc-jp" ]],
 \   databasePath: "~/.vim/skk/database",
 \   })
 
