@@ -6,7 +6,7 @@ on_event = ['BufRead', 'CursorHold']
 
 # Add `vim.*` in LSP suggestion
 [[plugins]]
-repo = 'folke/neodev.nvim'
+repo = 'folke/lazydev.nvim'
 on_source = 'nvim-lspconfig'
 
 # Language Server management
@@ -19,6 +19,7 @@ repo = 'williamboman/mason-lspconfig.nvim'
 on_source = 'mason.nvim'
 lua_source = """
 -- require("configs/lsp")
+local lspconfig = require("lspconfig")
 
 require("mason").setup({
   ui = {
@@ -34,11 +35,25 @@ require("mason").setup({
 })
 
 require("ddc_source_lsp_setup").setup()
-require("neodev").setup({})
+require("lazydev").setup()
+
 
 local nvim_lsp = require("lspconfig")
-require("mason-lspconfig").setup()
 
+if (vim.fs.dirname(vim.fs.find({ "gleam.toml" }, { upward = true })[1])) then
+	nvim_lsp.gleam.setup({})
+end
+
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+ 	update_in_insert = false,
+	virtual_text = {
+		format = function(diagnostic)
+			return string.format("%s (%s: %s)", diagnostic.message, diagnostic.source, diagnostic.code)
+		end,
+	},
+ })
+
+require("mason-lspconfig").setup()
 require("mason-lspconfig").setup_handlers({
   function(server_name)
     local opts = {}
@@ -52,7 +67,8 @@ require("mason-lspconfig").setup_handlers({
         return
       end
 
-      opts.root_dir = node_root_dir
+      -- opts.root_dir = node_root_dir
+      opts.root_dir = lspconfig.util.root_pattern("package.json")
       -- elseif server_name == "java_language_server" then
       --      require("lspconfig").java_language_server.setup({})
     elseif server_name == "eslint" then
@@ -66,12 +82,22 @@ require("mason-lspconfig").setup_handlers({
         return
       end
 
-      require("lspconfig").denols.setup({
+      lspconfig.denols.setup({
         capabilities = require("ddc_source_lsp").make_client_capabilities(),
       })
 
       -- opts.root_dir = nvim_lsp.util.root_pattern("deno.json", "deno.jsonc", "deps.ts", "import_map.json")
-      opts.root_dir = nvim_lsp.util.root_pattern("*")
+
+      local deno_json_files = { "deno.json", "deno.jsonc" }
+      local deno_root_dir = lspconfig.util.root_pattern(deno_json_files)
+      local deno_json_exists = deno_root_dir(vim.api.nvim_buf_get_name(0)) ~= nil
+
+      if deno_json_exists then
+	      opts.root_dir = lspconfig.util.root_pattern(deno_json_files)
+      else
+	      opts.root_dir = lspconfig.util.root_pattern("*")
+      end
+
       opts.init_options = {
         lint = true,
         unstable = true,
@@ -117,6 +143,29 @@ require("mason-lspconfig").setup_handlers({
     nvim_lsp[server_name].setup(opts)
   end,
 })
+
+
+-- lspconfig["denols"].setup({
+--   root_dir = lspconfig.util.root_pattern("deno.json"),
+--   init_options = {
+--     lint = true,
+--     unstable = true,
+--     suggest = {
+--       imports = {
+--         hosts = {
+--           ["https://deno.land"] = true,
+--           ["https://cdn.nest.land"] = true,
+--           ["https://crux.land"] = true,
+--         },
+--       },
+--     },
+--   },
+-- })
+--
+-- lspconfig["tsserver"].setup({
+--   root_dir = lspconfig.util.root_pattern("package.json"),
+-- })
+
 
 vim.keymap.set('n', 'K',  '<cmd>lua vim.lsp.buf.hover()<CR>')
 vim.keymap.set('n', 'gf', '<cmd>lua vim.lsp.buf.formatting()<CR>')
