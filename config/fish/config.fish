@@ -12,6 +12,9 @@ fish_add_path $HOME/.local/share/gem/ruby/3.0.0/bin/
 
 fish_add_path $HOME/.gleam/bin
 
+fish_add_path $HOME/.bin/scripts/nowplaying
+fish_add_path $HOME/.bin/scripts/pywal
+# fish_add_path $HOME/.bin/scripts/nowplaying
 fish_add_path $HOME/.roswell/bin/
 
 # source $HOME/.kiex/elixirs/.elixir-1.16.0-rc.1.env.fish
@@ -35,6 +38,7 @@ fish_add_path $HOME/go/bin/
 fish_add_path $HOME/.local/share/mise/shims
 fish_add_path ~/.nimble/bin
 
+set -gx GPG_TTY (tty)
 set -gx RUNEWIDTH_EASTASIAN 0
 
 set fish_greeting
@@ -57,6 +61,7 @@ fish_add_path /home/coma/go/bin
 fish_add_path /home/coma/local/
 
 alias zx='/home/coma/go/bin/z'
+alias fzopen='cd (fd . -t d --max-depth 1 | fzf)'
 alias gleam_update="curl -fsSL https://gleam.pink/install.sh | sh -s -- --prefix ~/.gleam --version nightly"
 alias glow='glow -p'
 # alias vlang='/usr/sbin/v'
@@ -97,9 +102,8 @@ alias bt="boost"
 alias ":wq"="exit"
 alias ":wqa"="exit"
 
-alias __recker='cd (recker)'
+alias __recker='cd (string join "/" (ghq root) (ghq list | fzf))'
 alias __sandbox='cd (string join "/" (~/ghq/github.com/Comamoca/sandbox) (fd -d 1 | fzf))'
-alias cdf='cd (ls -d */ | sed "s/\///" | fzf)'
 alias tmp='cd (mktemp -d)'
 
 alias boost='deno run -A (string join "/" ~/.config/boost (/bin/ls ~/.config/boost/ | fzf --preview-window=down:70% --preview "bat --color=always (string join "/" ~/.config/boost {})"))'
@@ -110,11 +114,13 @@ alias blog='ruby ~/ghq/github.com/coma/blogtool/blogtool.rb'
 # .bin scripts
 alias MIT="ruby ~/.bin/scripts/mit/mit.rb"
 
-export EDITOR=vim
+# export EDITOR=vim
+export EDITOR=nvim
 # export PYTHONPATH=/home/coma/bundler/bundler/lib
 export GOPATH=$HOME/go
 
 abbr --add e $EDITOR
+abbr --add supa "bunx supabase"
 
 set -x ELIXIR_ERL_OPTIONS "+fnu"
 
@@ -153,7 +159,7 @@ set -Ux fish_user_paths $HOME/.rbenv/shims $fish_user_paths
 # bind \cg run_recker
 bind \cg __recker
 bind \cb boost
-bind \cf cdf
+bind \cf fzopen
 bind \cs __sandbox
 bind \cc __fish_cancel_commandline
 
@@ -192,4 +198,11 @@ export WASMER_DIR="/home/coma/.wasmer"
 # source "$HOME/.kiex/scripts/kiex.fish"
 # source /home/coma/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 
+alias rad='./build/packages/rad/priv/rad'
+
+wal -i ~/Pictures/wallpaper/wallpaper-1.jpg &> /dev/null
+
 # opam configuration
+
+# Generated for envman. Do not edit.
+test -s ~/.config/envman/load.fish; and source ~/.config/envman/load.fish
