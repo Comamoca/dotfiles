@@ -1,11 +1,6 @@
-@define-color blue         #75BFBF;
-@define-color yellow       #F2C46D;
-@define-color pale-pink    #F2E4DF;
-@define-color pink         #D9A3A3;
-@define-color green        #9AB7A6;
-@define-color orange       #F2C094;
+@import '../../.cache/wal/colors-waybar.css';
 
-@define-color bg #161320;
+/* @define-color bg #161320; */
 
 @define-color critical #BF616A;
 
@@ -30,8 +25,8 @@
 	/* margin-bottom: 0px; */
 	border-radius: 10px;
 	/* transition: none; */
-	color: #161320;
-	background: @green;
+	color: @background;
+	background: @color8;
 }
 
 window#waybar {
@@ -58,7 +53,7 @@ window#waybar.hidden {
 	font-size: 4px;
 	margin-bottom: 0px;
 	border-radius: 10px;
-	background: #161320;
+	background: @background;
 	transition: none;
 }
 
@@ -104,7 +99,7 @@ window#waybar.hidden {
 	margin-bottom: 0px;
 	border-radius: 10px;
 	transition: none;
-	color: #161320;
+	color: @background;
 	background: #bd93f9;
 }
 
@@ -117,7 +112,7 @@ window#waybar.hidden {
 	border-radius: 10px;
 	transition: none;
 	color: #1A1826;
-	background: @orange;
+	background: @color7;
 }
 
 #battery {
@@ -128,18 +123,18 @@ window#waybar.hidden {
 	margin-bottom: 0px;
 	border-radius: 10px;
 	transition: none;
-	color: #161320;
-	background: @blue;
+	color: @background;
+	background: @color4;
 }
 
 #battery.charging, #battery.plugged {
-	color: #161320;
-    background-color: @blue;
+	color: @background;
+    background-color: @color4;
 }
 
 #battery.critical:not(.charging) {
-    background-color: @blue;
-    color: #161320;
+    background-color: @color4;
+    color: @background;
     animation-name: blink;
     animation-duration: 0.5s;
     animation-timing-function: linear;
@@ -150,7 +145,7 @@ window#waybar.hidden {
 @keyframes blink {
     to {
         background-color: @critical;
-        color: @blue;
+        color: @color4;
     }
 }
 
@@ -162,8 +157,8 @@ window#waybar.hidden {
 	margin-bottom: 0px;
 	border-radius: 10px;
 	transition: none;
-	color: #161320;
-	background: @yellow;
+	color: @background;
+	background: @color5;
 }
 #clock {
 	margin-top: 6px;
@@ -173,8 +168,8 @@ window#waybar.hidden {
 	margin-bottom: 0px;
 	border-radius: 10px;
 	transition: none;
-	color: #161320;
-	background: @green;
+	color: @background;
+	background: @color8;
 	/*background: #1A1826;*/
 }
 
@@ -186,8 +181,8 @@ window#waybar.hidden {
 	padding-right: 10px;
 	border-radius: 10px;
 	transition: none;
-	color: #161320;
-	background: @green;
+	color: @background;
+	background: @color8;
 }
 #cpu {
 	margin-top: 6px;
@@ -197,8 +192,8 @@ window#waybar.hidden {
 	padding-right: 10px;
 	border-radius: 10px;
 	transition: none;
-	color: #161320;
-	background: @blue;
+	color: @background;
+	background: @color4;
 }
 
 #tray {
@@ -210,7 +205,7 @@ window#waybar.hidden {
 	border-radius: 10px;
 	transition: none;
 	color: #B5E8E0;
-	background: @bg;
+	background: @background;
 }
 
 #custom-launcher {
@@ -221,8 +216,8 @@ window#waybar.hidden {
 	padding-right: 5px;
 	border-radius: 10px;
 	transition: none;
-    color: #ABE9B3;
-    background: @bg;
+    color: @foreground;
+    background: @background;
 }
 
 #custom-power {
@@ -235,8 +230,8 @@ window#waybar.hidden {
 	margin-bottom: 0px;
 	border-radius: 10px;
 	transition: none;
-	color: #161320;
-	background: @pink;
+	color: @background;
+	background: @color11;
 }
 
 #custom-wallpaper {
@@ -247,8 +242,8 @@ window#waybar.hidden {
 	margin-bottom: 0px;
 	border-radius: 10px;
 	transition: none;
-	color: #161320;
-	background: @pink;
+	color: @background;
+	background: @color11;
 }
 
 #custom-updates {
@@ -259,8 +254,8 @@ window#waybar.hidden {
 	margin-bottom: 0px;
 	border-radius: 10px;
 	transition: none;
-	color: #161320;
-	background: @pink;
+	color: @background;
+	background: @color11;
 }
 
 #custom-media {
@@ -271,6 +266,19 @@ window#waybar.hidden {
 	margin-bottom: 0px;
 	border-radius: 10px;
 	transition: none;
-	color: #161320;
-	background: @pink;
+	color: @background;
+	background: @color11;
 }
+
+#custom-notification {
+	font-size: 15px;
+	margin-top: 6px;
+	margin-left: 8px;
+	padding-left: 10px;
+	padding-right: 5px;
+	border-radius: 10px;
+	transition: none;
+    color: @foreground;
+    background: @color6;
+}
+
