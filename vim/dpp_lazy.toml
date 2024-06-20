@@ -89,7 +89,7 @@ on_cmd = ['Translate', 'Translate!']
 [[plugins]]
 repo = 'thinca/vim-quickrun'
 on_event = ['BufRead', 'CursorHold']
-on_source = """
+on_source = '''
 let g:quickrun_config = {
 \   "gleam" : {
 \       "command": "gleam run",
@@ -104,7 +104,7 @@ let g:quickrun_config = {
 \}
 
 nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
-"""
+'''
 
 [[plugins]]
 repo = 'cohama/lexima.vim'
