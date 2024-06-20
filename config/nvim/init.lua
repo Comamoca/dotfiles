@@ -98,13 +98,9 @@ vim.cmd("set termguicolors")
 vim.cmd("au FileType * setlocal formatoptions-=r")
 vim.cmd("au FileType * setlocal formatoptions-=o")
 
-vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/coma/memos.vim"))
-vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/vimskey"))
-
--- vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/fennel_nvim"))
-vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/calc.nvim"))
 vim.opt.laststatus = 3
 vim.opt.cursorline = true
+vim.opt.relativenumber = true
 
 vim.cmd("set completeopt=menuone,noinsert")
 
@@ -113,3 +109,11 @@ vim.keymap.set("n", "<Leader>k", function()
 end)
 
 vim.cmd([[const mapleader = " "]])
+
+vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/coma/memos.vim"))
+vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/vimskey"))
+
+-- vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/fennel_nvim"))
+-- vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/calc.nvim"))
+-- vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/calc.nvim"))
+vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/sandbox/ex_gleam_denops"))

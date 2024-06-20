@@ -278,3 +278,7 @@ on_source = 'skkeleton'
 [[plugins]]
 repo = "gamoutatsumi/ddc-emoji"
 on_source = 'skkeleton'
+
+[[plugins]]
+repo = "andymass/vim-matchup"
+on_source = ""
