@@ -5,7 +5,6 @@ lua_source = """
 vim.keymap.set('n', '<leader>f', "<cmd>Fern . -reveal=% -drawer -toggle -width=40<CR>")
 """
 
-
 [[plugins]]
 repo = "dstein64/vim-startuptime"
 on_cmd = ["StartupTime"]
@@ -21,7 +20,14 @@ nnoremap <C-f> <cmd>Sayonara<CR>
 repo = "hrsh7th/nvim-insx"
 on_event = ['InsertEnter']
 lua_source = """
-require('insx.preset.standard').setup()
+-- require('insx.preset.standard').setup()
+"""
+
+[[plugins]]
+repo = 'm4xshen/autoclose.nvim'
+on_event = ['InsertEnter']
+lua_source = """
+require("autoclose").setup()
 """
 
 [[plugins]]
@@ -518,8 +524,6 @@ local textlint = h.make_builtin({
 }),
 })
 
---------------------------------------------------
-
 -- local cspell = require('cspell')
 
 -- local cspell_config = {
@@ -560,6 +564,10 @@ on_ft = ["html"]
 repo = 'kat0h/bufpreview.vim'
 build = 'deno task prepare'
 on_ft = ["markdown"]
+
+[[plugins]]
+repo = "vim-jp/vimdoc-ja"
+on_event = ['BufRead', 'CursorHold']
 
 [[plugins]]
 repo = 'monaqa/dial.nvim'
