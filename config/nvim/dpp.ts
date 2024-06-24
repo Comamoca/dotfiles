@@ -42,7 +42,8 @@ export class Config extends BaseConfig {
       { name: "dpp.toml", lazy: false },
       { name: "dpp_lazy.toml", lazy: true },
       { name: "lsp.toml", lazy: true },
-      { name: "ddu.toml", lazy: true },
+      // { name: "ddu.toml", lazy: true },
+      { name: "ddu.toml", lazy: false },
       { name: "ddc.toml", lazy: true },
       // { name: "ft.toml", lazy: true },
     ];
