@@ -257,6 +257,10 @@ lua_source = """
         gleam = {
           "gleam"
         },
+        php = {
+          "phpinsights",
+          "phpcbf"
+        }
       },
     })
 
@@ -264,6 +268,8 @@ lua_source = """
       pattern = "*",
       callback = function(args)
         require("conform").format({ bufnr = args.buf })
+        -- require("conform").format({ bufnr = args.buf })
+        require("conform").format({ async = true, lsp_fallback = true, bufnr = args.buf })
       end,
     })
 
