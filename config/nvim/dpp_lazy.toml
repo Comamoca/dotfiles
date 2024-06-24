@@ -494,16 +494,7 @@ local textlint = h.make_builtin({
 	-- generator_opts,
 	method = methods.DIAGNOSTICS,
 	meta = {},
-	filetypes = (function ()
-		if vim.fn["isdirectory"]("node_modules") == 1 then
-			vim.print("node_modules found")
-			return { "txt", "markdown" }
-		else
-			vim.print("node_modules not found")
-			return {}
-		end
-
-	end)(),
+	filetypes = { "txt", "markdown" },
 	generator = h.generator_factory({
 	command = {"bunx", "textlint"},
 	args = { "-f", "json", "--stdin", "-c", "$ROOT/.textlintrc.json", "--stdin-filename", "$FILENAME" },
@@ -521,8 +512,9 @@ local textlint = h.make_builtin({
             )(params.bufname)
         end),
 	on_output = handle_output,
-}),
+    }),
 })
+
 
 -- local cspell = require('cspell')
 
@@ -530,15 +522,21 @@ local textlint = h.make_builtin({
 --   config_file_preferred_name = 'cspell.json',
 -- }
 
-null_ls.setup({
-    diagnostics_format = "#{m} (#{s}: #{c})",
-    sources = {
-        null_ls.builtins.formatting.stylua,
-	textlint
-        -- null_ls.builtins.completion.spell,
-	-- cspell.diagnostics.with({config = cspell_config}),
-    },
-})
+local config = {
+		diagnostics_format = "#{m} (#{s}: #{c})",
+		sources = {
+			null_ls.builtins.formatting.stylua,
+			-- null_ls.builtins.completion.spell,
+			-- cspell.diagnostics.with({config = cspell_config}),
+		},
+	}
+
+
+if vim.fn["isdirectory"]("node_modules") == 1 then
+	config.sources[#config.sources + 1] = textlint
+end
+
+null_ls.setup(config)
 '''
 
 [[plugins]]
