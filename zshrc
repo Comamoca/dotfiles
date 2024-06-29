@@ -43,3 +43,9 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+## [Completion]
+## Completion scripts setup. Remove the following line to uninstall
+[[ -f /home/coma/.dart-cli-completion/zsh-config.zsh ]] && . /home/coma/.dart-cli-completion/zsh-config.zsh || true
+## [/Completion]
+
