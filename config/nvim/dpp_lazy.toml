@@ -616,3 +616,20 @@ vmap g<C-a> g<Plug>(dial-increment)
 vmap g<C-x> g<Plug>(dial-decrement)
 ]])
 '''
+
+[[plugins]]
+repo = 'akinsho/flutter-tools.nvim'
+on_ft = ["dart"]
+lua_source = """
+require("flutter-tools").setup {
+  fvm = true,
+}
+"""
+
+[[plugins]]
+repo = 'mattn/vim-maketable'
+on_ft = 'markdown'
+
+[[plugins]]
+repo = 'lambdalisue/vim-gin'
+on_event = ['BufRead', 'CursorHold']
