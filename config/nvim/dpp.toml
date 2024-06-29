@@ -1,0 +1,75 @@
+[[plugins]]
+repo = 'vim-denops/denops.vim'
+
+[[plugins]]
+repo = 'stevearc/oil.nvim'
+lua_add = '''
+require("oil").setup({
+  default_file_explorer = true,
+  keymaps = {
+    ["l"] = "actions.select",
+    ["<C-p>"] = "actions.preview",
+    ["-"] = "actions.parent",
+  },
+  preview = {
+    max_width = 0.9,
+    min_width = { 40, 0.4 },
+    width = nil,
+    max_height = 0.9,
+    min_height = { 5, 0.1 },
+    height = nil,
+    border = "rounded",
+    win_options = {
+      winblend = 0,
+    },
+    update_on_cursor_moved = true,
+  },
+})
+'''
+
+[[plugins]]
+repo = "nvim-lua/plenary.nvim"
+
+[[plugins]]
+repo = "nordtheme/vim"
+
+[[plugins]]
+repo = "rebelot/kanagawa.nvim"
+# on_event = ['BufRead', 'CursorHold']
+lua_add = '''
+require('kanagawa').setup({
+  compile = true,
+  transparent = true
+})
+'''
+
+[[plugins]]
+repo = 'VDuchauffour/neodark.nvim'
+# on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = "sainnhe/gruvbox-material"
+# on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = "dylanaraps/wal.vim"
+# on_event = ['BufRead', 'CursorHold']
+
+# dpp.vim
+[[plugins]]
+repo = "Shougo/dpp.vim"
+
+[[plugins]]
+repo = "vim-denops/denops.vim"
+
+[[plugins]]
+repo = "Shougo/dpp-ext-toml"
+
+[[plugins]]
+repo = "Shougo/dpp-ext-lazy"
+
+[[plugins]]
+repo = "Shougo/dpp-ext-installer"
+
+[[plugins]]
+repo = "Shougo/dpp-protocol-git"
