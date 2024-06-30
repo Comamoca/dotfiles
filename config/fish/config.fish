@@ -116,6 +116,7 @@ alias MIT="ruby ~/.bin/scripts/mit/mit.rb"
 
 # export EDITOR=vim
 export EDITOR=nvim
+export REACT_EDITOR=$EDITOR
 # export PYTHONPATH=/home/coma/bundler/bundler/lib
 export GOPATH=$HOME/go
 
