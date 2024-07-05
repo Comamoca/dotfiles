@@ -6,45 +6,86 @@
 
 (package-initialize)
 
+;; Load and setup packages
+(use-package lsp-mode)
+(use-package ivy)
+(use-package paredit)
+(use-package highlight-indent-guides)
+
+(use-package company-go)
+(use-package company
+  :init
+  (global-company-mode)
+  (setq company-idle-delay 0.3)
+  (setq company-minimum-prefix-length 1)
+  (setq company-transformers '(company-sort-by-occurrence))
+  :bind
+  (:map company-active-map
+	("C-n". company-select-next)
+	("C-p". company-select-previous)
+	("M-<". company-select-first)
+	("M->". company-select-last)))
+
+;; Language modes
+(use-package go-mode
+      :hook
+      (go-mode . eglot-ensure))
+
+(use-package c++-mode
+      :hook
+      (c++-mode . eglot-ensure))
+
+(use-package sh-mode
+      :hook
+      (sh-mode . eglot-ensure))
+
+(use-package html-mode
+      :hook
+      (html-mode . eglot-ensure))
+
+(use-package cmake-mode
+      :hook
+      (cmake-mode . eglot-ensure))
+
+(use-package bitbake-mode
+      :hook
+      (bitbake-mode . eglot-ensure))
+
 ;; eglot(LSP)
 (use-package eglot
   :ensure t
-  :hook
-  (c++-mode . eglot-ensure)
-  (sh-mode . eglot-ensure)
-  (python-mode . eglot-ensure)
-  (html-mode . eglot-ensure)
-  (go-mode . eglot-ensure)  
-  (cmake-mode . eglot-ensure)
-  (bitbake-mode . eglot-ensure)
   :config
-  (add-to-list 'eglot-server-programs '((bitbake-mode) "bitbake-language-server"))
+  (add-to-list 'eglot-server-programs
+        '((go-mode) "gopls"))
+        ;; '((mode-name) "program-name")
+   
   :bind (("M-t" . xref-find-definitions)
-     ("M-r" . xref-find-references)
-     ("C-t" . xref-go-back)))
+         ("M-r" . xref-find-references)
+         ("C-t" . xref-go-back)))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages '(company-box ivy lsp-ui company-go company leaf go-mode)))
+ '(package-selected-packages
+   '(highlight-indent-guides paredit company-box ivy lsp-ui company-go company leaf go-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ 
 
 (leaf iceberg-theme
   :ensure t
   :config
   (iceberg-theme-create-theme-file)
   (load-theme 'solarized-iceberg-dark t))
-
-(use-package lsp-mode)
-(use-package company)
-(use-package company-go)
-(use-package ivy)
 
 (defun lsp-mode-init ()
   (lsp)
@@ -66,3 +107,5 @@
 (global-set-key (kbd "C-c <down>")  'windmove-down)
 (global-set-key (kbd "C-c <up>")    'windmove-up)
 (global-set-key (kbd "C-c <right>") 'windmove-right)
+
+(electric-pair-mode 1)
