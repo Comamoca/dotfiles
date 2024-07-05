@@ -22,6 +22,14 @@ lua_source = '''
       "emoji"
     })
 
+    ddc_custom_patch_global("sourceOptions", {
+    	skkeleton = {
+    		mark = "SKK",
+    		matchers =  {},
+    		sorters = {},
+    		isVolatile = true,
+    	}
+    })
 
     ddc_custom_patch_global("sourceOptions", {
     	emoji = {
