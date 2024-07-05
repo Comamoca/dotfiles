@@ -272,4 +272,4 @@ imap <C-l> <Plug>(skkeleton-disable)
 
 [[plugins]]
 repo = 'NI57721/skkeleton-azik-kanatable'
-# on_source = 'skkeleton'
+on_source = 'skkeleton'

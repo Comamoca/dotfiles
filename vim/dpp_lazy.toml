@@ -47,7 +47,7 @@ hook_source = '''
 
 [[plugins]]
 repo = "yuttie/comfortable-motion.vim"
-on_event = ['BufRead', 'CursorHold']
+# on_event = ['BufRead', 'CursorHold']
 hook_source = '''
 nnoremap <silent><C-k> :<C-u>call comfortable_motion#flick(-70)<CR>
 nnoremap <silent><C-j> :<C-u>call comfortable_motion#flick(70)<CR>
