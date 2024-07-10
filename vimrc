@@ -75,6 +75,9 @@ set autoindent
 
 const mapleader = " "
 
+nnoremap <silent> <C-k> <C-u>
+nnoremap <silent> <C-j> <C-d>
+
 nnoremap <silent> <C-[> <cmd>nohlsearch<CR>
 
 nnoremap <C-o> <cmd>Ddu file_rec<CR>
@@ -189,5 +192,11 @@ command! Configs call s:openConfig()
 execute 'set runtimepath^=' .. '~/.ghq/github.com/Comamoca/memos.vim'
 execute 'set runtimepath^=' .. '~/.ghq/github.com/coma/ddu-kind-cd'
 execute 'set runtimepath^=' .. '~/.ghq/github.com/coma/baibai.vim'
+
+if has('vim_starting')
+    let &t_SI .= "\e[6 q"
+    let &t_EI .= "\e[2 q"
+    let &t_SR .= "\e[4 q"
+endif
 
 set runtimepath^=~/.ghq/github.com/Comamoca/denops.init/tmp
