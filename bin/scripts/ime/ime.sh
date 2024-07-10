@@ -1,10 +1,15 @@
 #!/bin/bash -u
 
-# kitty --class Floaterm nvim /tmp/clip
-kitty --class Floaterm env NVIM_APPNAME=ime nvim /tmp/clip -c startinsert 
-# wezterm start --class Floaterm nvim /tmp/clip || exit 1
+if [ $# -ne 1  ]; then
+	env NVIM_APPNAME=ime nvim /tmp/clip -c startinsert
+	exit
+fi
 
-if [[ -e /tmp/clip ]]; then
-  head -c -1 /tmp/clip | wl-copy
-  rm -f /tmp/clip
+if [ "$1" = 'float' ]; then
+	kitty --class Floaterm env NVIM_APPNAME=ime nvim /tmp/clip -c startinsert 
+
+	if [[ -e /tmp/clip ]]; then
+		head -c -1 /tmp/clip | wl-copy
+		rm -f /tmp/clip
+    	fi
 fi
