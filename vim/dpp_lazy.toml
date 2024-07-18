@@ -6,9 +6,23 @@ on_event = ['BufRead', 'CursorHold']
 repo = "sainnhe/gruvbox-material"
 on_event = ['BufRead', 'CursorHold']
 hook_source = """
-set background=dark
+" set background=dark
 colorscheme gruvbox-material
 """
+
+[[plugins]]
+repo = 'catppuccin/vim'
+on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = 'sainnhe/edge'
+on_event = ['BufRead', 'CursorHold']
+hook_source = """
+set background=dark
+" let g:edge_style = 'default'
+" let g:edge_dim_foreground = 1
+" colorscheme edge
+" """
 
 # [[plugins]]
 # repo = 'mhinz/vim-sayonara'
