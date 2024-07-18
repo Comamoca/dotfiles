@@ -80,17 +80,24 @@ lua_source = '''
       },
     })
 
-    -- ddc_custom_patch_global("sourceParams", {
-    -- 	["nvim-lsp"] = { kindLabels = { Class = "c" } },
-    -- })
+    ddc_custom_patch_global("sourceOptions", {
+      -- ["nvim-lsp"] = {
+      lsp = {
+        dup = "keep",
+        keywordPattern = '\\k+',
+        sorters = {'sorter_lsp-kind'}
+      }
+    })
 
     ddc_custom_patch_global("sourceParams", {
-      ["nvim-lsp"] = {
+      -- ["nvim-lsp"] = {
+      lsp = {
         snippetEngine = vim.fn["denops#callback#register"](function(body)
           vim.fn["vsnip#anonymous"](body)
         end),
         enableResolveItem = true,
         enableAdditionalTextEdit = true,
+        confirmBehavior = 'replace'
       },
       path = {
         cmd = { "fd", "--max-depth", "5" },

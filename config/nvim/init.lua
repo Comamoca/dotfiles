@@ -13,6 +13,8 @@ local ext_lazy = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-ext-lazy"
 local ext_installer = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-ext-installer"
 local ext_git = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-protocol-git"
 
+local fn = vim.fn
+
 vim.opt.runtimepath:append(ext_toml)
 vim.opt.runtimepath:append(ext_lazy)
 vim.opt.runtimepath:append(ext_installer)
@@ -97,6 +99,9 @@ vim.cmd("set termguicolors")
 
 vim.cmd("au FileType * setlocal formatoptions-=r")
 vim.cmd("au FileType * setlocal formatoptions-=o")
+vim.cmd("au FileType *.hx set ft=haxe")
+
+vim.cmd("au BufRead .denoflare set filetype=json")
 
 vim.opt.laststatus = 3
 vim.opt.cursorline = true
@@ -104,7 +109,7 @@ vim.opt.relativenumber = true
 
 vim.cmd("set completeopt=menuone,noinsert")
 
-vim.keymap.set("n", "<Leader>k", function()
+vim.keymap.set("n", "<leader>k", function()
   print("Hop!")
 end)
 
@@ -116,4 +121,5 @@ vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/vimskey"))
 -- vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/fennel_nvim"))
 -- vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/calc.nvim"))
 -- vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/calc.nvim"))
-vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/sandbox/ex_gleam_denops"))
+-- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/sandbox/ex_gleam_denops"))
+vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-spotify"))
