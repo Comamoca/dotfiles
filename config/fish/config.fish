@@ -60,7 +60,11 @@ fish_add_path $DENO_INSTALL/bin
 fish_add_path /home/coma/go/bin
 fish_add_path /home/coma/local/
 
-alias zx='/home/coma/go/bin/z'
+# alias to get date by yymmdd 
+alias today="date '+%Y-%m-%d' | tr -d '\n' | wl-copy"
+alias today-1="date -d yesterday '+%Y-%m-%d' | tr -d '\n' | wl-copy"
+
+# alias zx='/home/coma/go/bin/z'
 alias fzopen='cd (fd . -t d --max-depth 1 | fzf)'
 alias gleam_update="curl -fsSL https://gleam.pink/install.sh | sh -s -- --prefix ~/.gleam --version nightly"
 alias glow='glow -p'
@@ -94,6 +98,8 @@ alias grm='git rm'
 alias vimdiff='nvim -d'
 
 alias README='cp (ghq root)/github.com/Comamoca/baserepo/README.md (ghq root)/github.com/Comamoca/baserepo/README.ja.md .'
+alias ISSUE='cp (ghq root)/github.com/coma/ask/template.ja.md issue.ja.md'
+
 alias lg='lazygit'
 alias ablaze_repos='gh repo list Ablaze-MIRAI'
 alias wk='wikitool'
@@ -114,8 +120,8 @@ alias blog='ruby ~/ghq/github.com/coma/blogtool/blogtool.rb'
 # .bin scripts
 alias MIT="ruby ~/.bin/scripts/mit/mit.rb"
 
-# export EDITOR=vim
-export EDITOR=nvim
+export EDITOR=vim
+# export EDITOR=nvim
 export REACT_EDITOR=$EDITOR
 # export PYTHONPATH=/home/coma/bundler/bundler/lib
 export GOPATH=$HOME/go
