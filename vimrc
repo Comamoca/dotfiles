@@ -110,7 +110,7 @@ endfunction
 " au BufNewFile,BufRead *.hy setf lisp
 
 let g:lightline = {
-      \ 'colorscheme': 'seoul256',
+      \ 'colorscheme': 'edge',
       \ 'active': {
       \   'left': [
       \     [ 'mode', 'paste' ],
@@ -118,7 +118,7 @@ let g:lightline = {
       \   ],
       \   'right': [
       \     [ 'percent' ],
-      \     [ 'fileformat', 'fileencoding', 'filetype'  ],
+      \     [ 'fileformat', 'fileencoding', 'filetype', 'bufchar'],
       \   ],
       \ },
       \ 'component_expand': {
@@ -131,7 +131,14 @@ let g:lightline = {
       \   'lsp_errors':   'error',
       \   'lsp_ok':       'middle',
       \ },
+      \ 'component_function': {
+      \   'bufchar': 'Bufchar',
+      \ }
     \ }
+
+function! Bufchar() abort
+	return wordcount()['chars'] 
+endfunction
 
 " set runtimepath+=~/.ghq/github.com/Comamoca/vimskey
 
@@ -144,7 +151,6 @@ autocmd BufRead *.rs let g:rustfmt_autosave = 0
 
 set statusline=─
 set fillchars+=stl:─,stlnc:─,vert:│,eob:\\x20
-set laststatus=0
 highlight! link StatusLine Comment
 highlight! link StatusLineNC Comment
 highlight! link VertSplit Comment
@@ -200,3 +206,4 @@ if has('vim_starting')
 endif
 
 set runtimepath^=~/.ghq/github.com/Comamoca/denops.init/tmp
+set runtimepath^=~/.ghq/github.com/coma/vim-spotify
