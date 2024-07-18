@@ -17,8 +17,9 @@ call skkeleton#register_keymap('input', ';', 'henkanPoint')
 
 
 autocmd InsertEnter * ++once call skkeleton#register_kanatable('azik', {
-    \   'jj':       'escape',
-    \   '@':        'katakana',
+    \   'jj':         'escape',
+    \   '@':          'katakana',
+    \   "'":          'hankatakana',
     \   '<s-j><s-j>': ['じゅん', ''],
     \   '<s-j>i':     ['じ', ''],
     \   '<s-j>p':     ['じょう', ''],
