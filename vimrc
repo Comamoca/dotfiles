@@ -110,7 +110,7 @@ endfunction
 " au BufNewFile,BufRead *.hy setf lisp
 
 let g:lightline = {
-      \ 'colorscheme': 'seoul256',
+      \ 'colorscheme': 'edge',
       \ 'active': {
       \   'left': [
       \     [ 'mode', 'paste' ],
@@ -137,6 +137,13 @@ let g:lightline = {
       \ }
 
 function Bufchar() abort
+	return wordcount()['chars'] 
+endfunction
+      \   'bufchar': 'Bufchar',
+      \ }
+    \ }
+
+function! Bufchar() abort
 	return wordcount()['chars'] 
 endfunction
 
