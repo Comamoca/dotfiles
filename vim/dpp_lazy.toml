@@ -1,14 +1,48 @@
 [[plugins]]
 repo = "morhetz/gruvbox"
 on_event = ['BufRead', 'CursorHold']
+hook_source = """
+set background=dark
+colorscheme gruvbox
+"""
 
 [[plugins]]
 repo = "sainnhe/gruvbox-material"
+# on_event = ['BufRead', 'CursorHold']
+hook_source = """
+" set background=dark
+" colorscheme gruvbox-material
+"""
+
+[[plugins]]
+repo = "tyrannicaltoucan/vim-deep-space"
+# on_event = ['BufRead', 'CursorHold']
+hook_source = """
+" colorscheme deep-space
+"""
+
+[[plugins]]
+repo = "habamax/vim-habamax"
 on_event = ['BufRead', 'CursorHold']
 hook_source = """
-set background=dark
-colorscheme gruvbox-material
+" colorscheme habamax
 """
+
+[[plugins]]
+repo = "cocopon/iceberg.vim"
+# on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = "KeitaNakamura/neodark.vim"
+on_event = ['BufRead', 'CursorHold']
+hook_source = """
+let g:neodark#terminal_transparent = 1
+let g:neodark#italics = 1
+"""
+
+[[plugins]]
+repo = "AlessandroYorba/Sierra"
+on_event = ['BufRead', 'CursorHold']
 
 # [[plugins]]
 # repo = 'mhinz/vim-sayonara'
@@ -119,6 +153,7 @@ repo = "miyakogi/seiya.vim"
 on_event = ["ColorSchemePre", 'BufReadPre', 'CursorHold']
 hook_source = """
 let g:seiya_auto_enable=1
+let g:seiya_target_groups = has('nvim') ? ['guibg'] : ['ctermbg']
 """
 
 [[plugins]]
