@@ -21,6 +21,22 @@ let g:lsp_diagnostics_enabled = 1
 "       \ })
 " endif
 
+" if executable('gleam')
+"   au User lsp_setup call lsp#register_server({
+"       \ 'name': 'gleam',
+"       \ 'cmd': ["gleam", "lsp"],
+"       \ 'allowlist': ['gleam'],
+"       \ })
+" endif
+
+" if executable('glas')
+"     au User lsp_setup call lsp#register_server({
+"         \ 'name': 'glas',
+" 	\ 'cmd': {server_info->['glas', '--stdio']},
+"         \ 'whitelist': ['gleam'],
+"         \ })
+" endif
+
 if executable('erg')
   au User lsp_setup call lsp#register_server({
       \ 'name': 'erg',
@@ -72,14 +88,6 @@ if executable('janet-lsp')
         \ 'name': 'Janet Language Server',
 	\ 'cmd': {server_info->['janet-lsp']},
         \ 'whitelist': ['janet'],
-        \ })
-endif
-
-if executable('glas')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'glas',
-	\ 'cmd': {server_info->['glas', '--stdio']},
-        \ 'whitelist': ['gleam'],
         \ })
 endif
 

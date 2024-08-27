@@ -55,21 +55,24 @@ call ddu#custom#patch_global(#{
 \       buffer: #{
 \         defaultAction: 'open',
 \       },
-\      memos: #{
-\         defaultAction: 'open',
+\       memos: #{
+\          defaultAction: 'open',
+\        },
+\       deol: #{
+\          defaultAction: 'edit',
 \       },
-\      deol: #{
-\         defaultAction: 'edit',
-\      },
-\      source: #{
-\         defaultAction: 'execute',
-\      },
-\      command: #{
-\         defaultAction: 'edit',
-\      },
-\      custom-list: #{
-\         defaultAction: 'callback',
-\      }
+\       source: #{
+\          defaultAction: 'execute',
+\       },
+\       command: #{
+\          defaultAction: 'edit',
+\       },
+\       custom-list: #{
+\          defaultAction: 'callback',
+\       },
+\       spotify: #{
+\        defaultAction: "play",
+\       },
 \     }
 \ })
 
