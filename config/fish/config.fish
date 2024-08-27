@@ -7,8 +7,13 @@ fish_add_path $HOME/ghq/github.com/emscripten-core/emsdk
 fish_add_path $HOME/ghq/github.com/emscripten-core/emsdk/upstream/emscripten
 fish_add_path $HOME/.codon/bin
 fish_add_path $HOME/.rye/shims
+
 fish_add_path $HOME/.local/share/gem/ruby/3.0.0/bin
 fish_add_path $HOME/.local/share/gem/ruby/3.0.0/bin/
+
+fish_add_path $HOME/.roswell/bin
+
+fish_add_path $HOME/.local/share/coursier/bin
 
 fish_add_path $HOME/.gleam/bin
 
@@ -16,6 +21,11 @@ fish_add_path $HOME/.bin/scripts/nowplaying
 fish_add_path $HOME/.bin/scripts/pywal
 # fish_add_path $HOME/.bin/scripts/nowplaying
 fish_add_path $HOME/.roswell/bin/
+
+# gerbil
+set -gx GERBIL_INSTALL_PREFIX /usr/local/gerbil
+fish_add_path $GERBIL_INSTALL_PREFIX/bin
+fish_add_path $HOME/.gerbil/bin
 
 # source $HOME/.kiex/elixirs/.elixir-1.16.0-rc.1.env.fish
 # fish_add_path $HOME/.kiex/bin/
@@ -56,7 +66,10 @@ set -x BLOG_PATH ~/ghq/github.com/coma/blog/src/content/blog/
 fish_add_path ~/.nimble/.bin/git-tasukete
 fish_add_path ~/.bin/
 fish_add_path ~/.bin/bin
+
+set -gx DENO_INSTALL "/home/coma/.deno"
 fish_add_path $DENO_INSTALL/bin
+
 fish_add_path /home/coma/go/bin
 fish_add_path /home/coma/local/
 
@@ -124,12 +137,10 @@ abbr --add e $EDITOR
 abbr --add supa "bunx supabase"
 
 set -x ELIXIR_ERL_OPTIONS "+fnu"
+set -gx FYNE_FONT /usr/share/fonts/PlemolJP/PlemolJP-Regular.ttf
 
 set PATH /home/coma/.cargo/bin $PATH
 set GH_BINPATH /home/coma/.bin/
-export FYNE_FONT=/usr/share/fonts/PlemolJP/PlemolJP-Regular.ttf
-export DENO_INSTALL="/home/coma/.deno"
-
 
 set BAT_THEME "gruvbox-dark"
 set PATH /home/coma/$CARGO_HOME/bin/ $PATH
@@ -137,6 +148,8 @@ set PATH /home/coma/.luarocks/bin/ $PATH
 
 #set PATH /home/coma/go/bin $PATH
 starship init fish | source
+arduino-cli completion fish | source
+
 set -ga fish_user_paths /home/coma/.nimble/bin
 set -ga fish_user_paths /home/coma/.nimble/pkgs
 
@@ -198,6 +211,8 @@ export WASMER_DIR="/home/coma/.wasmer"
 # hugo completion fish | source
 # source "$HOME/.kiex/scripts/kiex.fish"
 # source /home/coma/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
+
+# exercism completion fish | source
 
 alias rad='./build/packages/rad/priv/rad'
 
