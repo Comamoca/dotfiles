@@ -936,7 +936,8 @@ let g:ray_so_background = v:true
 " Dark mode (default: v:true)
 let g:ray_so_darkmode = v:true
 """
-=======
+
+[[plugins]]
 repo = 'windwp/nvim-ts-autotag'
 on_event = ['BufRead', 'CursorHold']
 lua_source = """
