@@ -1,28 +1,26 @@
+-- start prelude
 local dpp_src = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp.vim"
-
 vim.opt.runtimepath:prepend(dpp_src)
+
 local dpp = require("dpp")
+-- end prelude
 
-local dpp_base = "~/.cache/dpp/"
+-- local dpp_base = "~/.cache/dpp/"
+local dppBase = "~/.cache/dpp"
 local dpp_config = "~/.config/nvim/dpp.ts"
-
 local denops_src = "~/.cache/dpp/repos/github.com/vim-denops/denops.vim"
 
-local ext_toml = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-ext-toml"
-local ext_lazy = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-ext-lazy"
-local ext_installer = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-ext-installer"
-local ext_git = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-protocol-git"
+-- local ext_toml = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-ext-toml"
+-- local ext_lazy = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-ext-lazy"
+-- local ext_installer = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-ext-installer"
+-- local ext_git = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-protocol-git"
 
-vim.opt.runtimepath:append(ext_toml)
-vim.opt.runtimepath:append(ext_lazy)
-vim.opt.runtimepath:append(ext_installer)
-vim.opt.runtimepath:append(ext_git)
+-- vim.opt.runtimepath:append(ext_toml)
+-- vim.opt.runtimepath:append(ext_lazy)
+-- vim.opt.runtimepath:append(ext_installer)
+-- vim.opt.runtimepath:append(ext_git)
+-- vim.opt.runtimepath:prepend(denops_src)
 
-local dpp = require("dpp")
-
-vim.opt.runtimepath:prepend(denops_src)
-
-local dppBase = "~/.cache/dpp"
 
 if dpp.load_state(dppBase) then
   vim.api.nvim_create_autocmd("User", {
@@ -34,12 +32,19 @@ if dpp.load_state(dppBase) then
   })
 end
 
-vim.api.nvim_create_autocmd("User", {
-  pattern = "Dpp:makeStatePost",
-  callback = function()
-    vim.notify("dpp make_state() is done")
-  end,
+-- vim.api.nvim_create_autocmd("User", {
+--   pattern = "Dpp:makeStatePost",
+--   callback = function()
+--     vim.notify("dpp make_state() is done")
+--   end,
+-- })
+
+-- autocmd BufRead *.rs let g:rustfmt_autosave = 0
+vim.api.nvim_create_autocmd("BufRead", {
+  pattern = "*.ab",
+  command = 'set filetype=amber'
 })
+
 
 vim.cmd("filetype indent plugin on")
 vim.cmd("syntax on")
@@ -55,6 +60,11 @@ vim.api.nvim_create_user_command("Ddu", function(args)
   print(subcmd)
   vim.fn["ddu#start"]({ sources = { { name = subcmd } } })
 end, { nargs = 1 })
+
+
+vim.api.nvim_create_user_command("Deol", function (args)
+	vim.fn["deol#new"]({command = "fish"})
+end, {})
 
 vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
   callback = function()
@@ -117,3 +127,16 @@ vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/vimskey"))
 -- vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/calc.nvim"))
 -- vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/calc.nvim"))
 vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/sandbox/ex_gleam_denops"))
+vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-spotify"))
+-- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-palette"))
+vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/octagon.nvim"))
+-- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-repl"))
+vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-task"))
+
+-- ddu local
+vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Shougo/ddu-ui-ff"))
+require("configs/ddu")
+
+vim.opt.virtualedit = "none"
+
+vim.cmd([[let maplocalleader = ' ']])

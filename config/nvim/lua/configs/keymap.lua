@@ -8,6 +8,7 @@ end
 
 keymap("i", "jj", "<C-[><C-[>")
 keymap("n", "<C-[><C-[>", ":noh<CR>")
+keymap("n", "<C-u>", "<cmd>Ddu source<CR>")
 
 keymap("n", "s", "<C-w>", opts)
 keymap("i", "jj", "<ESC>", opts)
@@ -50,7 +51,7 @@ local function ddu_start(source)
 end
 
 -- ddu keymap
-keymap("n", "<C-o>", "<cmd>Ddu file_rec<CR>", opts) -- file open
+keymap("n", "<C-o>", "<cmd>Ddu file_external<CR>", opts) -- file open
 keymap("n", "<C-i>", "<cmd>Ddu buffer<CR>", opts) -- buffer ope
 -- keymap("n", "<C-i>", function()
 --   vim.cmd([[call ddu#start({'sources': [{'name': 'mr'}]})]])
@@ -61,3 +62,10 @@ keymap("n", "<C-i>", "<cmd>Ddu buffer<CR>", opts) -- buffer ope
 keymap("n", "<C-l>", ddu_start("line"), opts)
 
 keymap("t", "<Esc>", [[<C-\><C-n>]])
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "help",
+  callback = function (opts)
+	  vim.api.nvim_buf_set_keymap(0, "n", "gd", "<C-]>", { silent = true })
+  end
+})

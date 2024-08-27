@@ -76,7 +76,7 @@ lua_source = '''
  require'nvim-treesitter.configs'.setup {
    ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "gleam" },
    sync_install = false,
-   auto_install = true,
+   auto_install = false,
    ignore_install = {},
 
    highlight = {
@@ -104,36 +104,59 @@ on_source = ["nvim-treesitter"]
 [[plugins]]
 repo = 'hiphish/rainbow-delimiters.nvim'
 # on_source = ["nvim-treesitter"]
+on_event = ['BufRead', 'CursorHold']
 lua_source = '''
--- This module contains a number of default definitions
+local rainbow_delimiters = require('rainbow-delimiters')
 
-local rainbow_delimiters = require 'rainbow-delimiters'
+require('rainbow-delimiters.setup').setup(
+    {
+        strategy = {
+            [''] = rainbow_delimiters.strategy['global'],
+            vim = rainbow_delimiters.strategy['local'],
+        },
+        query = {
+            [''] = 'rainbow-delimiters',
+            lua = 'rainbow-blocks',
+        },
+        priority = {
+            [''] = 110,
+            lua = 210,
+        },
+        -- highlight = {
+        --     'RainbowDelimiterRed',
+        --     'RainbowDelimiterYellow',
+        --     'RainbowDelimiterBlue',
+        --     'RainbowDelimiterOrange',
+        --     'RainbowDelimiterGreen',
+        --     'RainbowDelimiterViolet',
+        --     'RainbowDelimiterCyan',
+        -- },
+    }
+)
 
-rainbow_delimiters.setup()
-
-vim.g.rainbow_delimiters = {
-    strategy = {
-        [''] = rainbow_delimiters.strategy['global'],
-        vim = rainbow_delimiters.strategy['local'],
-    },
-    query = {
-        [''] = 'rainbow-delimiters',
-        lua = 'rainbow-blocks',
-    },
-    priority = {
-        [''] = 110,
-        lua = 210,
-    },
-    -- highlight = {
-    --     'RainbowDelimiterRed',
-    --     'RainbowDelimiterYellow',
-    --     'RainbowDelimiterBlue',
-    --     'RainbowDelimiterOrange',
-    --     'RainbowDelimiterGreen',
-    --     'RainbowDelimiterViolet',
-    --     'RainbowDelimiterCyan',
-    -- },
-}
+-- vim.g.rainbow_delimiters = {
+--     strategy = {
+--         [''] = rainbow_delimiters.strategy['global'],
+--         vim = rainbow_delimiters.strategy['local'],
+--     },
+--     query = {
+--         [''] = 'rainbow-delimiters',
+--         lua = 'rainbow-blocks',
+--     },
+--     priority = {
+--         [''] = 110,
+--         lua = 210,
+--     },
+--     -- highlight = {
+--     --     'RainbowDelimiterRed',
+--     --     'RainbowDelimiterYellow',
+--     --     'RainbowDelimiterBlue',
+--     --     'RainbowDelimiterOrange',
+--     --     'RainbowDelimiterGreen',
+--     --     'RainbowDelimiterViolet',
+--     --     'RainbowDelimiterCyan',
+--     -- },
+-- }
 '''
 
 [[plugins]]
@@ -222,7 +245,7 @@ lua_add = '''
 
 [[plugins]]
 repo = 'stevearc/conform.nvim'
-on_event = ['BufRead', 'CursorHold']
+# on_event = ['BufRead', 'CursorHold']
 lua_source = """
     local conform = require("conform")
 
@@ -331,7 +354,7 @@ build = './install --all'
 
 [[plugins]]
 repo = 'liquidz/dps-parinfer'
-on_ft = ["lisp"]
+on_ft = ["lisp", "racket", "clojure"]
 
 [[plugins]]
 repo = "hadronized/hop.nvim"
@@ -452,12 +475,12 @@ let g:rainbow_active = 1
 '''
 
 [[plugins]]
-on_event = ['BufRead', 'CursorHold']
 repo = 'lambdalisue/vim-mr'
+on_event = ['BufRead', 'CursorHold']
 
 [[plugins]]
-on_event = ['BufRead', 'CursorHold']
 repo = 'nvimtools/none-ls.nvim'
+on_event = ['BufRead', 'CursorHold']
 
 [[plugins]]
 repo = "nvimtools/none-ls-extras.nvim"
@@ -526,6 +549,7 @@ local config = {
 		diagnostics_format = "#{m} (#{s}: #{c})",
 		sources = {
 			null_ls.builtins.formatting.stylua,
+			null_ls.builtins.formatting.black,
 			-- null_ls.builtins.completion.spell,
 			-- cspell.diagnostics.with({config = cspell_config}),
 		},
@@ -546,6 +570,8 @@ on_source = "none-ls.nvim"
 [[plugins]]
 repo = "lambdalisue/vim-kensaku"
 on_event = ['BufRead', 'CursorHold']
+hook_source = """
+"""
 
 [[plugins]]
 repo = "lambdalisue/vim-kensaku-search"
@@ -689,4 +715,202 @@ elixir.setup {
     end,
   }
 }
+"""
+
+[[plugins]]
+repo = "jdonaldson/vaxe"
+on_ft = ["haxe"]
+
+# format
+[[plugins]]
+repo = 'dense-analysis/ale'
+# on_event = ['BufRead', 'CursorHold']
+
+# [[plugins]]
+# repo = "scalameta/nvim-metals"
+# on_ft = ["scala", "sbt", "java"]
+# # on_event = ['BufRead', 'CursorHold']
+# lua_source = """
+# local metals_config = require("metals").bare_config()
+#
+# metals_config.on_attach = function(client, bufnr)
+#   -- your on_attach function
+# end
+#
+# require("metals").initialize_or_attach(metals_config)
+# """
+
+[[plugins]]
+repo = '4513ECHO/nvim-keycastr'
+on_event = ['BufRead', 'CursorHold']
+lua_source = """
+local keycastr = require('keycastr')
+
+local prefix = "KeyCaster"
+
+keycastr.config.set {
+    ignore_mouse = true,
+    position = "SE",
+    win_config = {
+        border = "rounded",
+    },
+}
+
+vim.api.nvim_create_user_command(prefix .. 'Enable',  function(opts) require('keycastr').enable() end, {})
+vim.api.nvim_create_user_command(prefix .. 'Show',    function(opts) require('keycastr').show() end, {})
+vim.api.nvim_create_user_command(prefix .. 'Hide',    function(opts) require('keycastr').hide() end, {})
+vim.api.nvim_create_user_command(prefix .. 'Disable', function(opts) require('keycastr').disable() end, {})
+
+-- vim.api.nvim_create_user_command("KeyCaster", function() print("hello") end, {})
+"""
+
+[[plugins]]
+repo = 'fukamachi/vlime'
+on_ft = ["lisp"]
+rtp = "vim"
+hook_source = '''
+map <buffer> <Space> <LocalLeader>
+nnoremap <silent> <localleader>rr :call VlimeStart()<CR>
+
+let g:vlime_cl_impl = "mondo"
+
+" let script_path = expand("~/.cache/dpp/repos/github.com/fukamachi/vlime/lisp/start-vlime.lisp")
+" let g:vlime_cl_impl = "sbcl --load " .. script_path
+
+let g:vlime_cl_use_terminal = v:true
+let g:vlime_window_settings = {
+    \ 'server': {'pos': 'botright', 'size': v:null, 'vertical': v:true}
+    \ }
+
+function! VlimeBuildServerCommandFor_mondo(vlime_loader, vlime_eval)
+    return ["mondo", "--server", "vlime"]
+endfunction
+
+function! VlimeStart()
+    call vlime#server#New(v:true, get(g:, "vlime_cl_use_terminal", v:false))
+endfunction
+'''
+
+[[plugins]]
+repo = 'Shougo/deol.nvim'
+on_event = ['BufRead', 'CursorHold']
+hook_source = """
+autocmd FileType deol call s:deol_settings()
+function! s:deol_settings()
+  nnoremap <buffer> <C-n>  <Plug>(deol_next_prompt)
+  nnoremap <buffer> <C-p>  <Plug>(deol_previous_prompt)
+  nnoremap <buffer> <CR>   <Plug>(deol_execute_line)
+  nnoremap <buffer> A      <Plug>(deol_start_append_last)
+  nnoremap <buffer> I      <Plug>(deol_start_insert_first)
+  nnoremap <buffer> a      <Plug>(deol_start_append)
+  nnoremap <buffer> e      <Plug>(deol_edit)
+  nnoremap <buffer> i      <Plug>(deol_start_insert)
+  nnoremap <buffer> q      <Plug>(deol_quit)
+endfunction
+
+autocmd BufEnter deol-edit@default call s:deol_edit_settings()
+function! s:deol_edit_settings()
+  nnoremap <buffer> <CR>  <Plug>(deol_execute_line)
+  nnoremap <buffer> <BS>  <Plug>(deol_backspace)
+  nnoremap <buffer> <C-h> <Plug>(deol_backspace)
+  nnoremap <buffer> q     <Plug>(deol_quit)
+  nnoremap <buffer> <C-c> <Plug>(deol_ctrl_c)
+  inoremap <buffer> <CR>  <Plug>(deol_execute_line)
+  inoremap <buffer> <BS>  <Plug>(deol_backspace)
+  inoremap <buffer> <C-h> <Plug>(deol_backspace)
+  inoremap <buffer> <C-c> <Plug>(deol_ctrl_c)
+  inoremap <buffer> <C-d> <Plug>(deol_ctrl_d)
+endfunction
+
+" deol ddu-kind
+" switch
+" new
+" delete
+" edit
+
+command! -nargs=1 Deol :call deol#start(#{command: <args>})
+"""
+
+[[plugins]]
+repo = 'gw31415/mstdn.vim'
+on_event = ['BufRead', 'CursorHold']
+hook_source = '''
+" command! MstdnHome :e mstdn://Comamoca@mstdn.jp/home
+" execute $"e mstdn://Comamoca@mstdn.jp/home"
+
+let s:username = "Comamoca"
+let s:server = "mstdn.jp"
+
+command! MstdnHome execute $":e mstdn://{s:username}@{s:server}/home"
+
+command! MstdnPublic execute  $":e mstdn://{s:username}@{s:server}/public"
+command! MstdnPublicMedia execute $":e mstdn://{s:username}@{s:server}/public/media"
+command! MstdnPublicHashtag execute $":e mstdn://{s:username}@{s:server}/public/tag/:hashtag"
+
+command! MstdnLocal execute $":e mstdn://{s:username}@{s:server}/local"
+command! MstdnLocalMedia execute $":e mstdn://{s:username}@{s:server}/local/media"
+command! MstdnLocalHashtag execute $":e mstdn://{s:username}@{s:server}/local/tag/:hashtag"
+
+command! MstdnRemote execute $":e mstdn://{s:username}@{s:server}/remote"
+command! MstdnRemoveMedia execute $":e mstdn://{s:username}@{s:server}/remote/media"
+
+autocmd BufReadCmd mstdn://* call s:mstdn_config()
+
+function s:mstdn_config() abort
+  " Some preferences
+  setl nonu so=0 scl=yes
+
+  " Key mappings
+  nn <buffer> <enter> <cmd>call mstdn#timeline#load_more()<cr>
+  nn <buffer> <expr> G getcurpos()[1] == line('$') ? "\<cmd>call mstdn#timeline#load_more()\<cr>" : "\<cmd>norm! G\<cr>"
+  nn <buffer><nowait> > <cmd>call mstdn#timeline#favourite()<cr>
+  nn <buffer><nowait> < <cmd>call mstdn#timeline#unfavourite()<cr>
+  nn <buffer><nowait> <C-r> <cmd>call mstdn#timeline#reconnect()<cr>
+
+  " mstdn#editor#open(user, opts = {}
+  " mstdn#editor#set_user(user)
+  " mstdn#editor#get_statusparams({bufnr})
+
+
+  " Configuration for mstdn-editor.vim
+  nn <buffer> i <Plug>(mstdn-editor-open)
+endfunction
+
+" auto reconnect
+autocmd BufReadCmd mstdn://* call timer_start(1500, {-> mstdn#timeline#reconnect_all()}, #{repeat: -1})
+'''
+
+[[plugins]]
+repo = 'gw31415/mstdn-editor.vim'
+on_source = ["mstdn.vim"]
+
+[[plugins]]
+repo = 'Olical/conjure'
+on_ft = ["racket", "clojure"]
+lua_source = """
+-- Disable the documentation mapping
+vim.g["conjure#mapping#doc_word"] = false
+
+-- Rebind it from K to <prefix>gk
+-- vim.g["conjure#mapping#doc_word"] = "gk"
+
+-- Reset it to the default unprefixed K (note the special table wrapped syntax)
+-- vim.g["conjure#mapping#doc_word"] = {"K"}
+"""
+
+[[plugins]]
+repo = 'ryoppippi/ray-so.vim'
+on_cmd = ["RaySo"]
+hook_source = """
+" Theme (default: 'vercel')
+let g:ray_so_theme = 'vercel'
+
+" Padding (default: 16)
+let g:ray_so_padding = 16
+
+" Background (default: v:true)
+let g:ray_so_background = v:true
+
+" Dark mode (default: v:true)
+let g:ray_so_darkmode = v:true
 """

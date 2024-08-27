@@ -3,8 +3,8 @@ import {
   ContextBuilder,
   Dpp,
   Plugin,
-} from "https://deno.land/x/dpp_vim@v0.0.5/types.ts";
-import { Denops, fn } from "https://deno.land/x/dpp_vim@v0.0.5/deps.ts";
+} from "https://deno.land/x/dpp_vim@v1.0.0/types.ts";
+import { Denops, fn } from "https://deno.land/x/dpp_vim@v1.0.0/deps.ts";
 
 console.log("dpp.ts is loaded!");
 
