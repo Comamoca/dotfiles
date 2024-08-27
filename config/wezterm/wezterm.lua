@@ -120,6 +120,7 @@ local config = {
   },
 }
 
+
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
   config.default_prog = { "wsl.exe", "--distribution", "Manjaro", "--exec", "/bin/fish", "-l" }
   config.window_background_image = "C:/Users/Coma/wallpapelar/sarah-sheedy-co1YPSazn70-unsplash.jpg"
@@ -127,8 +128,8 @@ else
   config.default_prog = { "fish" }
   -- config.window_background_image = home .. "Pictures/wallpapelar/benjamin-hersh-_69DlG4rMm4-unsplash.jpg"
   config.window_background_opacity = 0.80
-  config.enable_wayland = true
-  -- config.enable_wayland = false
+  -- config.enable_wayland = true
+  config.enable_wayland = false
   config.font_size = 14
 end
 
