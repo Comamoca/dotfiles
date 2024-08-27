@@ -102,7 +102,7 @@
   "custom/media": {
     "interval": 5,
     "format": "{icon} {}",
-    "max-length": 30,
+    "max-length": 15,
     "format-icons": {
       "default": " ",
       "spotify": " "

@@ -21,6 +21,7 @@ local denops_src = "~/.cache/dpp/repos/github.com/vim-denops/denops.vim"
 -- vim.opt.runtimepath:append(ext_git)
 -- vim.opt.runtimepath:prepend(denops_src)
 
+-- local fn = vim.fn
 
 if dpp.load_state(dppBase) then
   vim.api.nvim_create_autocmd("User", {
@@ -107,6 +108,9 @@ vim.cmd("set termguicolors")
 
 vim.cmd("au FileType * setlocal formatoptions-=r")
 vim.cmd("au FileType * setlocal formatoptions-=o")
+vim.cmd("au FileType *.hx set ft=haxe")
+
+vim.cmd("au BufRead .denoflare set filetype=json")
 
 vim.opt.laststatus = 3
 vim.opt.cursorline = true
@@ -114,7 +118,7 @@ vim.opt.relativenumber = true
 
 vim.cmd("set completeopt=menuone,noinsert")
 
-vim.keymap.set("n", "<Leader>k", function()
+vim.keymap.set("n", "<leader>k", function()
   print("Hop!")
 end)
 
@@ -126,6 +130,7 @@ vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/vimskey"))
 -- vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/fennel_nvim"))
 -- vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/calc.nvim"))
 -- vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/calc.nvim"))
+
 vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/sandbox/ex_gleam_denops"))
 vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-spotify"))
 -- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-palette"))
@@ -140,3 +145,7 @@ require("configs/ddu")
 vim.opt.virtualedit = "none"
 
 vim.cmd([[let maplocalleader = ' ']])
+
+-- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/sandbox/ex_gleam_denops"))
+-- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-spotify"))
+-- >>>>>>> b99d627fb445ee3f623c6f4c85a72612a45ebc37

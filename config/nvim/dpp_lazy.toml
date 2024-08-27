@@ -74,7 +74,7 @@ lua_source = '''
  --    })
 
  require'nvim-treesitter.configs'.setup {
-   ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "gleam" },
+   ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "gleam", "haxe"},
    sync_install = false,
    auto_install = false,
    ignore_install = {},
@@ -91,10 +91,26 @@ lua_source = '''
      additional_vim_regex_highlighting = false,
    },
  }
+
+ local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
+
+ parser_config.haxe = {
+   install_info = {
+     url = "https://github.com/vantreeseba/tree-sitter-haxe",
+     files = {"src/parser.c"},
+     -- optional entries:
+     branch = "main",
+   },
+   filetype = "haxe",
+ }
 '''
 
 [[plugins]]
 repo = 'nvim-treesitter/nvim-treesitter-textobjects'
+on_source = ["nvim-treesitter"]
+
+[[plugins]]
+repo = 'vantreeseba/tree-sitter-haxe'
 on_source = ["nvim-treesitter"]
 
 [[plugins]]
@@ -274,6 +290,9 @@ lua_source = """
         json = {
           "deno_fmt",
         },
+        jsonc = {
+          "deno_fmt",
+        },
         go = {
           "gofmt", "goimoprts",
         },
@@ -302,10 +321,6 @@ lua_source = """
       end,
     })
 """
-
-[[plugins]]
-repo = 'windwp/nvim-ts-autotag'
-on_source = ["nvim-treesitter"]
 
 [[plugins]]
 repo = 'folke/zen-mode.nvim'
@@ -440,21 +455,21 @@ let g:lightline = {
       \   ],
       \   'right': [
       \     ['percent'],
-      \     [ 'fileformat', 'fileencoding', 'filetype', 'lineinfo', 'bufchar'],
+      \     ['fileformat', 'fileencoding', 'filetype', 'lineinfo', 'bufchar'],
       \   ],
-      \ },
-      \ 'component_expand': {
-      \   'lsp_warnings': 'LightlineLSPWarnings',
-      \   'lsp_errors':   'LightlineLSPErrors',
-      \   'lsp_ok':       'LightlineLSPOk',
       \ },
       \ 'component_type': {
       \   'lsp_warnings': 'warning',
       \   'lsp_errors':   'error',
       \   'lsp_ok':       'middle',
       \ },
+			\ 'component_expand': {
+			\   'pomodoro': ''
+			\	},
       \ 'component_function': {
-      \   'bufchar': 'Bufchar'
+      \   'bufchar': 'Bufchar',
+      \   'nowplaying': 'NowPlaying',
+      \   'pomodoro': 'Pomodoro'
       \ }
     \ }
 
@@ -462,8 +477,15 @@ let g:lightline.component = {
     \ 'lineinfo': '%3l[%L]:%-2v'
     \ }
 
-function Bufchar() abort
+function! Bufchar() abort
 	return wordcount()['chars'] 
+endfunction
+
+function! NowPlaying() abort
+  let status = $"󰓇 {spotify#nowplaying()}"
+  call lightline#update()  
+
+	return status
 endfunction
 '''
 
@@ -577,7 +599,7 @@ hook_source = """
 repo = "lambdalisue/vim-kensaku-search"
 on_source = ["vim-kensaku"]
 hook_source = '''
-cnoremap <CR> <Plug>(kensaku-search-replace)<CR>
+" cnoremap <CR> <Plug>(kensaku-search-replace)<CR>
 '''
 
 [[plugins]]
@@ -914,3 +936,34 @@ let g:ray_so_background = v:true
 " Dark mode (default: v:true)
 let g:ray_so_darkmode = v:true
 """
+=======
+repo = 'windwp/nvim-ts-autotag'
+on_event = ['BufRead', 'CursorHold']
+lua_source = """
+require('nvim-ts-autotag').setup({
+  opts = {
+    -- Defaults
+    enable_close = true, -- Auto close tags
+    enable_rename = true, -- Auto rename pairs of tags
+    enable_close_on_slash = false -- Auto close on trailing </
+  },
+})
+"""
+
+[[plugins]]
+repo = 'gleam-lang/gleam.vim'
+ft = ["gleam"]
+
+[[plugins]]
+repo = 'sheerun/vim-polyglot'
+on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = 'uki00a/denops-pomodoro.vim'
+on_cmd = [
+  "PomodoroStart",
+  "PomodoroPause",
+  "PomodoroResume",
+  "PomodoroReset",
+  "PomodoroEcho",
+]
