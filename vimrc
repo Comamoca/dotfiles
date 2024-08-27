@@ -24,11 +24,11 @@ if s:dpp_base->dpp#min#load_state()
 
   autocmd User DenopsReady
   \ call dpp#make_state(s:dpp_base, '~/.vim/dpp.ts')
+
+  autocmd BufWritePre *.ts,*.tsx call execute('LspDocumentFormatSync --server=efm-langserver')
 endif
 
 execute 'set runtimepath^=' .. s:denops_src
-
-" set runtimepath^=/usr/share/vim/vim91/filetype.vim
 
 if has('syntax')
   syntax on
@@ -118,7 +118,7 @@ let g:lightline = {
       \   ],
       \   'right': [
       \     [ 'percent' ],
-      \     [ 'fileformat', 'fileencoding', 'filetype'  ],
+      \     [ 'fileformat', 'fileencoding', 'filetype', 'bufchar'],
       \   ],
       \ },
       \ 'component_expand': {
@@ -131,7 +131,14 @@ let g:lightline = {
       \   'lsp_errors':   'error',
       \   'lsp_ok':       'middle',
       \ },
-    \ }
+      \ 'component_function': {
+      \   'bufchar': 'Bufchar'
+      \ }
+      \ }
+
+function Bufchar() abort
+	return wordcount()['chars'] 
+endfunction
 
 " set runtimepath+=~/.ghq/github.com/Comamoca/vimskey
 
@@ -144,7 +151,6 @@ autocmd BufRead *.rs let g:rustfmt_autosave = 0
 
 set statusline=─
 set fillchars+=stl:─,stlnc:─,vert:│,eob:\\x20
-set laststatus=0
 highlight! link StatusLine Comment
 highlight! link StatusLineNC Comment
 highlight! link VertSplit Comment
@@ -199,4 +205,29 @@ if has('vim_starting')
     let &t_SR .= "\e[4 q"
 endif
 
+" set background=dark
+" colorscheme gruvbox-material
+" colorscheme deep-space
+" set background=dark
+" set termguicolors
+
+" set termguicolors
+augroup TransparentBG
+  	autocmd!
+	autocmd Colorscheme * highlight Normal ctermbg=none
+	autocmd Colorscheme * highlight NonText ctermbg=none
+	autocmd Colorscheme * highlight LineNr ctermbg=none
+	autocmd Colorscheme * highlight Folded ctermbg=none
+	autocmd Colorscheme * highlight EndOfBuffer ctermbg=none 
+augroup END
+
+set wildmenu
+set wildmode=full
+
+let g:deepspace_italics=1
+
 set runtimepath^=~/.ghq/github.com/Comamoca/denops.init/tmp
+set runtimepath^=~/.ghq/github.com/coma/vim-spotify
+set runtimepath^=~/.ghq/github.com/coma/vim-palette
+
+" set termguicolors
