@@ -968,3 +968,21 @@ on_cmd = [
   "PomodoroReset",
   "PomodoroEcho",
 ]
+
+[[plugins]]
+repo = 'lambdalisue/vim-gin'
+on_cmd = [
+  "Gin",
+  "GinBuffer",
+  "GinBranch",
+  "GinBrowse",
+  "GinCd",
+  "GinLcd",
+  "GinTcd",
+  "GinChaperon",
+  "GinDiff",
+  "GinEdit",
+  "GinLog",
+  "GinPatch",
+  "GinStatus"
+  ]

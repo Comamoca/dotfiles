@@ -10,16 +10,16 @@ local dppBase = "~/.cache/dpp"
 local dpp_config = "~/.config/nvim/dpp.ts"
 local denops_src = "~/.cache/dpp/repos/github.com/vim-denops/denops.vim"
 
--- local ext_toml = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-ext-toml"
--- local ext_lazy = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-ext-lazy"
--- local ext_installer = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-ext-installer"
--- local ext_git = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-protocol-git"
+local ext_toml = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-ext-toml"
+local ext_lazy = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-ext-lazy"
+local ext_installer = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-ext-installer"
+local ext_git = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp-protocol-git"
 
--- vim.opt.runtimepath:append(ext_toml)
--- vim.opt.runtimepath:append(ext_lazy)
--- vim.opt.runtimepath:append(ext_installer)
--- vim.opt.runtimepath:append(ext_git)
--- vim.opt.runtimepath:prepend(denops_src)
+vim.opt.runtimepath:append(ext_toml)
+vim.opt.runtimepath:append(ext_lazy)
+vim.opt.runtimepath:append(ext_installer)
+vim.opt.runtimepath:append(ext_git)
+vim.opt.runtimepath:prepend(denops_src)
 
 -- local fn = vim.fn
 
@@ -70,21 +70,6 @@ end, {})
 vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
   callback = function()
     vim.opt.clipboard = "unnamedplus"
-    -- if vim.fn.has("wsl") then
-    --   vim.g.clipboard = {
-    --     name = "win32yank-wsl",
-    --     copy = {
-    --       ["+"] = "win32yank.exe -i --crlf",
-    --       ["*"] = "win32yank.exe -i --crlf",
-    --     },
-    --     paste = {
-    --       ["+"] = "win32yank.exe -o --crlf",
-    --       ["*"] = "win32yank.exe -o --crlf",
-    --     },
-    --     cache_enable = 0,
-    --   }
-    -- end
-
     require("configs/keymap")
     -- require("configs/cmd")
 
@@ -137,6 +122,7 @@ vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-spotify"))
 vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/octagon.nvim"))
 -- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-repl"))
 vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-task"))
+vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-codecrop"))
 
 -- ddu local
 vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Shougo/ddu-ui-ff"))
@@ -148,4 +134,3 @@ vim.cmd([[let maplocalleader = ' ']])
 
 -- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/sandbox/ex_gleam_denops"))
 -- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-spotify"))
--- >>>>>>> b99d627fb445ee3f623c6f4c85a72612a45ebc37
