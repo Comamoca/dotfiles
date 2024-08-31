@@ -1,3 +1,5 @@
+if vim.loader then vim.loader.enable() end
+
 -- start prelude
 local dpp_src = "$HOME/.cache/dpp/repos/github.com/Shougo/dpp.vim"
 vim.opt.runtimepath:prepend(dpp_src)
@@ -134,3 +136,6 @@ vim.cmd([[let maplocalleader = ' ']])
 
 -- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/sandbox/ex_gleam_denops"))
 -- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-spotify"))
+
+
+vim.g['denops_server_addr'] = "127.0.0.1:32123"
