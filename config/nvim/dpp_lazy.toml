@@ -986,3 +986,7 @@ on_cmd = [
   "GinPatch",
   "GinStatus"
   ]
+
+[[plugins]]
+repo = 'vim-denops/denops-shared-server.vim'
+on_event = ['BufRead', 'CursorHold']
