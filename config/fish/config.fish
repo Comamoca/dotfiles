@@ -22,6 +22,9 @@ fish_add_path $HOME/.bin/scripts/pywal
 # fish_add_path $HOME/.bin/scripts/nowplaying
 fish_add_path $HOME/.roswell/bin/
 
+# qlot
+fish_add_path $HOME/.local/share/qlot/bin
+
 # gerbil
 set -gx GERBIL_INSTALL_PREFIX /usr/local/gerbil
 fish_add_path $GERBIL_INSTALL_PREFIX/bin
@@ -133,14 +136,16 @@ alias blog='ruby ~/ghq/github.com/coma/blogtool/blogtool.rb'
 # .bin scripts
 alias MIT="ruby ~/.bin/scripts/mit/mit.rb"
 
-export EDITOR=vim
-# export EDITOR=nvim
+# set -x EDITOR vim
+set -x EDITOR nvim
 export REACT_EDITOR=$EDITOR
 # export PYTHONPATH=/home/coma/bundler/bundler/lib
 export GOPATH=$HOME/go
 
 abbr --add e $EDITOR
 abbr --add supa "bunx supabase"
+
+abbr --add emacs emacs -nw
 
 set -x ELIXIR_ERL_OPTIONS "+fnu"
 set -gx FYNE_FONT /usr/share/fonts/PlemolJP/PlemolJP-Regular.ttf
