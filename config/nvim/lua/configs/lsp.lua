@@ -49,19 +49,8 @@ local lsp_settings = {
 
     local opts = {}
 
-    if name == "tsserver" then
-      if not is_node_repo then
-        return
-      end
-
-      opts.root_dir = node_root_dir
-    elseif name == "eslint" then
-      if not is_node_repo then
-        return
-      end
-
-      opts.root_dir = node_root_dir
-    elseif name == "denols" then
+    
+    if name == "denols" then
       if is_node_repo then
         return
       end
@@ -83,6 +72,18 @@ local lsp_settings = {
           },
         },
       }
+    elseif name == "tsserver" then
+      if not is_node_repo then
+        return
+      end
+
+      opts.root_dir = node_root_dir
+    elseif name == "eslint" then
+      if not is_node_repo then
+        return
+      end
+
+      opts.root_dir = node_root_dir
     end
 
     opts.on_attach = function(_, bufnr) end
