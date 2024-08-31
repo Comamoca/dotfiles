@@ -4,6 +4,7 @@
   inputs = {
     # Specify the source of Home Manager and Nixpkgs.
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixgl.url = "github:nix-community/nixGL";
 
     neovim-nightly = {
       url = "github:nix-community/neovim-nightly-overlay";
@@ -20,12 +21,13 @@
     };
   };
 
-  outputs = { nixpkgs, home-manager, neovim-nightly, lem-editor, ... }@inputs:
+  outputs = { nixpkgs, home-manager, neovim-nightly, lem-editor, nixgl, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
       overlays = [
         neovim-nightly.overlays.default
+        nixgl.overlay
       ]; 
     in {
       homeConfigurations."coma" = home-manager.lib.homeManagerConfiguration {
