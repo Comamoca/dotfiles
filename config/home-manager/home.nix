@@ -1,6 +1,6 @@
 { config, pkgs, overlays, inputs, ... }:
 
-{
+rec {
   nixpkgs.config = {
     allowUnfree = true;
     permittedInsecurePackages = [
@@ -29,6 +29,9 @@
     # # "Hello, world!" when run.
     # pkgs.hello
 
+    # Nix
+    nixVersions.nix_2_23
+
     # ========== NIXGL ========== 
     nixgl.nixGLIntel
 
@@ -42,8 +45,9 @@
     emacs
     felix
     micro
+    neovim
     # visual-studio-code-bin
-    inputs.lem-editor.packages.x86_64-linux.lem-ncurses
+    # inputs.lem-editor.packages.x86_64-linux.lem-ncurses
 
     metals
     meson
@@ -55,6 +59,7 @@
     # ========== OTHER TOOLS ========== 
     # textimg
     # textql-git
+    cachix 
 
     cava
     lsd
@@ -70,6 +75,9 @@
     jwt-cli
 
     slack
+    discord
+    beeper
+
     # Teams for linux is depends to Electron-29 but EOL.
     # teams-for-linux
 
@@ -100,7 +108,10 @@
 
     # ========== RUNTIME & COMPILER ========== 
     deno
+    gleam
+
     sbcl
+    # roswell
 
     # swift ==> Flake
 
@@ -141,7 +152,7 @@
     # bluez-utils
     bluez-tools
 
-    boost
+    # boost
     bottom
     btrfs-progs
     bzip2
@@ -347,7 +358,6 @@
     
     rlwrap
     rofi-power-menu
-    roswell
 
     rsync
 
@@ -418,7 +428,7 @@
 
     # ========== OTHER TOOLS ========== 
     # hyprland
-    hyprlock
+    # hyprlock
     hyprpaper
     hyprshade
 
@@ -459,18 +469,25 @@
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
-  home.file = {
-    # # Building this configuration will create a copy of 'dotfiles/screenrc' in
-    # # the Nix store. Activating the configuration will then make '~/.screenrc' a
-    # # symlink to the Nix store copy.
-    # ".screenrc".source = dotfiles/screenrc;
 
-    # # You can also set the file content immediately.
-    # ".gradle/gradle.properties".text = ''
-    #   org.gradle.console=verbose
-    #   org.gradle.daemon.idletimeout=3600000
-    # '';
-  };
+  # # Building this configuration will create a copy of 'dotfiles/screenrc' in
+  # # the Nix store. Activating the configuration will then make '~/.screenrc' a
+  # # symlink to the Nix store copy.
+  # ".screenrc".source = dotfiles/screenrc;
+
+  # # You can also set the file content immediately.
+  # ".gradle/gradle.properties".text = ''
+  #   org.gradle.console=verbose
+  #   org.gradle.daemon.idletimeout=3600000
+  # '';
+  home.file =
+    let
+      symlink = config.lib.file.mkOutOfStoreSymlink;
+      dotfiles = /${home.homeDirectory}/.ghq/github.com/Comamoca/dotfiles;
+    in
+    {
+      ".czrc".source = (symlink /${dotfiles}/czrc);
+    };
 
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a
@@ -489,16 +506,23 @@
   #  /etc/profiles/per-user/coma/etc/profile.d/hm-session-vars.sh
 
   home.sessionVariables = {
-    EDITOR = "nvim";
+    # EDITOR = "nvim";
   };
 
   programs.neovim.package = pkgs.neovim;
+  programs.neovim.enable = true;
+
+  # neovim-nightly
+  # programs.neovim = {
+  #   enable = true;
+  #   package = inputs.programs.neovim.packages.${pkgs.system}.default;
+  # };
+
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
-  programs.neovim.enable = true;
   # programs.lem-editor.enable = true 
 
-  wayland.windowManager.hyprland.enable = true;
-  wayland.windowManager.hyprland.settings = import ./hyprland.nix { inherit pkgs; };
+  # wayland.windowManager.hyprland.enable = true;
+  # wayland.windowManager.hyprland.settings = import ./hyprland.nix { inherit pkgs; };
 }

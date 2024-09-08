@@ -6,9 +6,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixgl.url = "github:nix-community/nixGL";
 
-    neovim-nightly = {
-      url = "github:nix-community/neovim-nightly-overlay";
-    };
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -21,12 +19,12 @@
     };
   };
 
-  outputs = { nixpkgs, home-manager, neovim-nightly, lem-editor, nixgl, ... }@inputs:
+  outputs = { nixpkgs, home-manager, neovim-nightly-overlay, lem-editor, nixgl, ... }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
       overlays = [
-        neovim-nightly.overlays.default
+        inputs.neovim-nightly-overlay.overlays.default
         nixgl.overlay
       ]; 
     in {

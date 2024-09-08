@@ -228,9 +228,11 @@ in {
     # Screenshot
     "$mainMod SHIFT, s, exec, slurp | grim -g - - | wl-copy"
     # Take screenshot active window
-    ",Print, exec, hyprctl -j activewindow | jq -r '\"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])\"' | grim -g - - | wl-copy"
+    # ",Print, exec, hyprctl -j activewindow | jq -r '\"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])\"' | grim -g - - | wl-copy"
+    # ",Print, exec, grim -o (hyprctl monitors -j | jq -r '.[] | select(.focused) | .name') - | wl-copy" 
     # Take screenshot active monitor
-    "$mainMod, s, exec, hyprctl -j activeworkspace | jq -r '(.monitor)' | xargs -i grim -o {} -- - | wl-copy"
+    # "$mainMod, s, exec, hyprctl -j activeworkspace | jq -r '(.monitor)' | xargs -i grim -o {} -- - | wl-copy"
+    ",Print, exec, hyprctl -j activeworkspace | jq -r '(.monitor)' | xargs -i grim -o {} -- - | wl-copy"
 
     # Screen lock
     "Super SHIFT, l, exec, hyprlock"
