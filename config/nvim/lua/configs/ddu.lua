@@ -32,7 +32,7 @@ ddu_custom_patch_global({
   },
   sourceParams = {
     file_external = {
-      cmd = { "fd", ".", "-H", "-E", ".git", "-t", "f" }
+      cmd = { vim.fn.expand( "~/.nix-profile/bin/fd"), ".", "-H", "-E", ".git", "-t", "f" }
     },
     rg = {
       args = {'--column', '--no-heading', '--color', 'never'},
