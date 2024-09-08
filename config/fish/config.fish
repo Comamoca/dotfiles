@@ -48,7 +48,9 @@ fish_add_path $AQUA_ROOT_DIR/bin
 fish_add_path $HOME/.konryu/versions/v0.1.1/cotowali/bin
 fish_add_path $HOME/go/bin/
 
-fish_add_path $HOME/.local/share/mise/shims
+# fish_add_path $HOME/.local/share/mise/shims
+# $HOME/.local/bin/mise activate fish | source
+
 fish_add_path ~/.nimble/bin
 
 set -gx GPG_TTY (tty)
@@ -171,7 +173,6 @@ set -gx PATH "$PNPM_HOME" $PATH
 # set -x PATH "$HOME/.konryu/cotowali/bin/" $PATH
 # eval (konryu init)
 
-$HOME/.local/bin/mise activate fish | source
 
 set EMSDK_QUIET = 1
 
