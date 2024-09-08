@@ -25,6 +25,8 @@ vim.opt.runtimepath:prepend(denops_src)
 
 -- local fn = vim.fn
 
+-- call dpp#min#load_state("~/.cache/dpp")
+-- call dpp#make_state("~/.cache/dpp", "~/.config/nvim/dpp.ts")
 if dpp.load_state(dppBase) then
   vim.api.nvim_create_autocmd("User", {
     pattern = "DenopsReady",
@@ -121,10 +123,10 @@ vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/vimskey"))
 vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/sandbox/ex_gleam_denops"))
 vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-spotify"))
 -- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-palette"))
-vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/octagon.nvim"))
+-- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/octagon.nvim"))
 -- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-repl"))
-vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-task"))
-vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-codecrop"))
+-- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-task"))
+-- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-codecrop"))
 
 -- ddu local
 vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Shougo/ddu-ui-ff"))

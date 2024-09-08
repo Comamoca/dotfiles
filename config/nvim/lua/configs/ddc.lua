@@ -110,6 +110,7 @@ vim.fn["ddc#enable"]()
 -- 	\ '<TAB>' : ddc#map#manual_complete()
 -- ]])
 
+
 vim.api.nvim_create_autocmd("InsertEnter", {
 	callback = function(event)
 		vim.keymap.set({ "i", "s" }, "<Tab>", function()
