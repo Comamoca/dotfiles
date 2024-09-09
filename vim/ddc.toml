@@ -223,8 +223,8 @@ hook_source = '''
 call skkeleton#azik#add_table("jis")
 
 call skkeleton#config(#{
-\   globalDictionaries: [[ "~/.vim/skk/SKK-JISYO.L", "euc-jp" ]],
-\   databasePath: "~/.vim/skk/database",
+\   globalDictionaries: [[ "~/.skk/SKK-JISYO.L", "utf-8" ]],
+\   databasePath: "~/.skk/database",
 \   kanaTable: "azik"
 \   })
 
