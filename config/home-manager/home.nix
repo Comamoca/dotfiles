@@ -111,6 +111,10 @@ rec {
     gleam
 
     sbcl
+    ruby
+    # ref: https://cons.io/
+    gerbil
+
     # roswell
 
     # swift ==> Flake
@@ -119,7 +123,6 @@ rec {
     noto-fonts
     noto-fonts-cjk
     # ttf-udev-gothic
-
 
     # ========== FROM PKGLIST ========== 
     acpi
@@ -484,9 +487,107 @@ rec {
     let
       symlink = config.lib.file.mkOutOfStoreSymlink;
       dotfiles = /${home.homeDirectory}/.ghq/github.com/Comamoca/dotfiles;
+      xdgConfigHome = /${home.homeDirectory}/.config;
+      homeBin = /${home.homeDirectory}/.bin;
     in
     {
+      # scripts
+      ".bin/scripts/ime" = {
+        source = (symlink /${dotfiles}/bin/scripts/ime);
+        recursive = true;
+      };
+      ".bin/scripts/mit" = {
+        source = (symlink /${dotfiles}/bin/scripts/ime);
+        recursive = true;
+      };
+      ".bin/scripts/shift" = {
+        source = (symlink /${dotfiles}/bin/scripts/ime);
+        recursive = true;
+      };
+
+      # Vim configs.
+      ".vimrc".source = (symlink /${dotfiles}/vimrc);
+      ".vim" = {
+        source = (symlink /${dotfiles}/vim);
+        recursive = true;
+      };
+    # # ========== SKK ========== 
+    # skk-dicts
+      ".skk/SKK-JISYO.L".source = "${pkgs.skk-dicts}/share/SKK-JISYO.L";
+
+      # TODO: 後で消す
+      # ".config/" = {
+      #   source = (symlink /${dotfiles}/config);
+      #   recursive = true;
+      # };
+
+      ".config/cava" = {
+        source = (symlink /${dotfiles}/config/cava);
+        recursive = true;
+      };
+
+      ".config/conky" = {
+        source = (symlink /${dotfiles}/config/conky);
+        recursive = true;
+      };
+
+      ".config/fish" = {
+        source = (symlink /${dotfiles}/config/fish);
+        recursive = true;
+      };
+
+      ".config/i3" = {
+        source = (symlink /${dotfiles}/config/i3);
+        recursive = true;
+      };
+
+      ".config/ime" = {
+        source = (symlink /${dotfiles}/config/ime);
+        recursive = true;
+      };
+
+      ".config/kitty" = {
+        source = (symlink /${dotfiles}/config/kitty);
+        recursive = true;
+      };
+
+      ".config/lazygit" = {
+        source = (symlink /${dotfiles}/config/lazygit);
+        recursive = true;
+      };
+
+      ".config/libskk" = {
+        source = (symlink /${dotfiles}/config/libskk);
+        recursive = true;
+      };
+
+      ".config/nvim" = {
+        source = (symlink /${dotfiles}/config/nvim);
+        recursive = true;
+      };
+
+      ".config/sway" = {
+        source = (symlink /${dotfiles}/config/sway);
+        recursive = true;
+      };
+
+      ".config/waybar" = {
+        source = (symlink /${dotfiles}/config/waybar);
+        recursive = true;
+      };
+
+      ".config/wezterm" = {
+        source = (symlink /${dotfiles}/config/wezterm);
+        recursive = true;
+      };
+
       ".czrc".source = (symlink /${dotfiles}/czrc);
+      ".nirc".source = (symlink /${dotfiles}/nirc);
+      ".zshrc".source = (symlink /${dotfiles}/zshrc);
+      # TODO: `~/.config/vsnip`に移動する。
+      ".vsnip".source = (symlink /${dotfiles}/vsnip);
+      ".gitconfig".source = (symlink /${dotfiles}/gitconfig);
+      ".Xmodmap".source = (symlink /${dotfiles}/Xmodmap);
     };
 
   # Home Manager can also manage your environment variables through
