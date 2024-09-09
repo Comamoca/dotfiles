@@ -1,4 +1,10 @@
-{ config, pkgs, overlays, inputs, ... }:
+{
+  config,
+  pkgs,
+  overlays,
+  inputs,
+  ...
+}:
 
 rec {
   nixpkgs.config = {
@@ -11,7 +17,7 @@ rec {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "coma";
-  home.homeDirectory = "/home/coma"; 
+  home.homeDirectory = "/home/coma";
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
@@ -53,13 +59,12 @@ rec {
     meson
     leiningen
 
-
     tig
 
     # ========== OTHER TOOLS ========== 
     # textimg
     # textql-git
-    cachix 
+    cachix
 
     cava
     lsd
@@ -230,7 +235,6 @@ rec {
     go
     gomi
 
-
     # greetd
     # greetd-tuigreet
     greetd.greetd
@@ -351,14 +355,14 @@ rec {
     # qt6ct
 
     ranger
-    rcm
+    # rcm
     re2c
     redis
     reiserfsprogs
     ripgrep
 
     # riscv-gnu-toolchain-bin
-    
+
     rlwrap
     rofi-power-menu
 
@@ -401,7 +405,6 @@ rec {
     xfce.thunar
 
     # timeshift-autosnap-manjaro
-
 
     usbutils
     uucp
@@ -511,8 +514,8 @@ rec {
         source = (symlink /${dotfiles}/vim);
         recursive = true;
       };
-    # # ========== SKK ========== 
-    # skk-dicts
+      # # ========== SKK ========== 
+      # skk-dicts
       ".skk/SKK-JISYO.L".source = "${pkgs.skk-dicts}/share/SKK-JISYO.L";
 
       # TODO: 後で消す
@@ -520,6 +523,11 @@ rec {
       #   source = (symlink /${dotfiles}/config);
       #   recursive = true;
       # };
+
+      ".config/home-manager" = {
+        source = (symlink /${dotfiles}/config/home-manager);
+        recursive = true;
+      };
 
       ".config/cava" = {
         source = (symlink /${dotfiles}/config/cava);
@@ -581,6 +589,11 @@ rec {
         recursive = true;
       };
 
+      ".config/emacs" = {
+        source = (symlink /${dotfiles}/config/emacs);
+        recursive = true;
+      };
+
       ".czrc".source = (symlink /${dotfiles}/czrc);
       ".nirc".source = (symlink /${dotfiles}/nirc);
       ".zshrc".source = (symlink /${dotfiles}/zshrc);
@@ -618,7 +631,6 @@ rec {
   #   enable = true;
   #   package = inputs.programs.neovim.packages.${pkgs.system}.default;
   # };
-
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
