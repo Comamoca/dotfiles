@@ -7,6 +7,11 @@
     nixgl.url = "github:nix-community/nixGL";
 
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+    emacs-overlay = {
+      url = "github:nix-community/emacs-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+      # inputs.nixpkgs-stable.follows = "nixpkgs-stable";
+    };
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -19,15 +24,26 @@
     };
   };
 
-  outputs = { nixpkgs, home-manager, neovim-nightly-overlay, lem-editor, nixgl, ... }@inputs:
+  outputs =
+    {
+      nixpkgs,
+      home-manager,
+      neovim-nightly-overlay,
+      emacs-overlay,
+      lem-editor,
+      nixgl,
+      ...
+    }@inputs:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
       overlays = [
         inputs.neovim-nightly-overlay.overlays.default
+        emacs-overlay.overlay
         nixgl.overlay
-      ]; 
-    in {
+      ];
+    in
+    {
       homeConfigurations."coma" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
 
@@ -35,10 +51,12 @@
         # the path to your home.nix.
         modules = [
           ./home.nix
-          { nixpkgs.overlays = overlays; }
           # lem-editor.packages.${system}.lem-ncurses
+          { nixpkgs.overlays = overlays; }
         ];
-        extraSpecialArgs = { inherit inputs; };
+        extraSpecialArgs = {
+          inherit inputs;
+        };
 
         # Optionally use extraSpecialArgs
         # to pass through arguments to home.nix

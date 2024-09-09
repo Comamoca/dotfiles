@@ -1,7 +1,8 @@
 { pkgs }:
 let
   kitty = "nixGLIntel kitty";
-in {
+in
+{
   monitor = [ ",preferred,auto,auto" ];
 
   env = [
@@ -32,7 +33,7 @@ in {
     mouse_refocus = false;
 
     touchpad = {
-        natural_scroll = true;
+      natural_scroll = true;
     };
 
     sensitivity = 0; # -1.0 to 1.0, 0 means no modification.
@@ -43,27 +44,27 @@ in {
   };
 
   general = {
-      gaps_in = 5;
-      gaps_out = 20;
-      border_size = 2;
-      "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-      "col.inactive_border" = "rgba(595959aa)";
-      layout = "dwindle";
-      allow_tearing = false;
+    gaps_in = 5;
+    gaps_out = 20;
+    border_size = 2;
+    "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
+    "col.inactive_border" = "rgba(595959aa)";
+    layout = "dwindle";
+    allow_tearing = false;
   };
 
   decoration = {
-      rounding = 10;
+    rounding = 10;
 
-      blur = {
-          enabled = true;
-          size = 3;
-          passes = 1;
-      };
-      drop_shadow = "yes";
-      shadow_range = 4;
-      shadow_render_power = 3;
-      "col.shadow" = "rgba(1a1a1aee)";
+    blur = {
+      enabled = true;
+      size = 3;
+      passes = 1;
+    };
+    drop_shadow = "yes";
+    shadow_range = 4;
+    shadow_render_power = 3;
+    "col.shadow" = "rgba(1a1a1aee)";
   };
 
   animations = {
@@ -106,19 +107,19 @@ in {
 
       # Shrink settings
       shrink = {
-          shrink_percentage = 0.95;
-          in_bezier = "realsmooth";
-          in_speed = 1;
-          out_bezier = "realsmooth";
-          out_speed = 2;
+        shrink_percentage = 0.95;
+        in_bezier = "realsmooth";
+        in_speed = 1;
+        out_bezier = "realsmooth";
+        out_speed = 2;
       };
     };
   };
 
   dwindle = {
-      pseudotile = "yes";
-      preserve_split = "yes";
-    };
+    pseudotile = "yes";
+    preserve_split = "yes";
+  };
 
   # master {
   #     # See https://wiki.hyprland.org/Configuring/Master-Layout/ for more
@@ -126,18 +127,18 @@ in {
   # }
 
   gestures = {
-      workspace_swipe = "off";
+    workspace_swipe = "off";
   };
 
   misc = {
-      force_default_wallpaper = -1;
+    force_default_wallpaper = -1;
   };
 
   # Example per-device config
   # See https://wiki.hyprland.org/Configuring/Keywords/#per-device-input-configs for more
   device = {
-      name = "epic-mouse-v1";
-      sensitivity = -0.5;
+    name = "epic-mouse-v1";
+    sensitivity = -0.5;
   };
 
   # Example windowrule v1
@@ -147,9 +148,9 @@ in {
   # See https://wiki.hyprland.org/Configuring/Window-Rules/ for more
 
   windowrule = [
-   "float,^(Floaterm)$"
-   "size 25% 30%,^(Floaterm)$"
-   "move 60% 60%,^(Floaterm)$"
+    "float,^(Floaterm)$"
+    "size 25% 30%,^(Floaterm)$"
+    "move 60% 60%,^(Floaterm)$"
   ];
 
   windowrulev2 = [
@@ -158,12 +159,11 @@ in {
     "suppressevent maximize, class:.*"
   ];
 
-
   # See https://wiki.hyprland.org/Configuring/Keywords/ for more
   # $mainMod = SUPER
   "$mainMod" = "Alt";
 
-  bind = [ 
+  bind = [
     # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
     "$mainMod, Return, exec, $terminal"
     "$mainMod, q, killactive,"
