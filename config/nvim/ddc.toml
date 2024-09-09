@@ -5,14 +5,16 @@ repo = 'Shougo/ddc.vim'
 on_event = ['BufRead', 'CursorHold']
 # on_event = ['BufEnter']
 depends = ['denops.vim']
-# lua_source = '''
-# vim.fn["ddc#custom#load_config"](vim.fn.expand("~/.config/nvim/ddc.ts"))
-# '''
-lua_source = """
-local fn = vim.fn
+lua_source = '''
+local ddc_custom_patch_global = vim.fn["ddc#custom#patch_global"]
 
 local pum_map_select_relative = vim.fn["pum#map#select_relative"]
+local pum_map_confirm = vim.fn["pum#map#confirm"]
+local pum_map_cancel = vim.fn["pum#map#cancel"]
 local pum_visible = vim.fn["pum#visible"]
+local pum_entered = vim.fn["pum#entered"]
+
+vim.fn["ddc#custom#load_config"](vim.fn.expand("~/.config/nvim/ddc.ts"))
 
 vim.api.nvim_create_autocmd("InsertEnter", {
 	callback = function(event)
@@ -48,13 +50,55 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 		end, { expr = true, silent = true })
 	end
 })
+'''
 
-
-fn["ddc#custom#load_config"](fn.expand("~/.config/nvim/ddc.ts"))
-fn["ddc#enable"]()
-fn["ddc#enable"]({context_filetype = "treesitter"})
-fn["ddc#enable_terminal_completion"]()
-"""
+# lua_source = """
+# local fn = vim.fn
+#
+# local pum_map_select_relative = vim.fn["pum#map#select_relative"]
+# local pum_visible = vim.fn["pum#visible"]
+#
+# vim.api.nvim_create_autocmd("InsertEnter", {
+# 	callback = function(event)
+# 		vim.keymap.set({ "i", "s" }, "<Tab>", function()
+# 			return vim.fn["vsnip#available"](1) == 1 and "<Plug>(vsnip-expand-or-jump)" or "<C-l>"
+# 		end, { expr = true, noremap = false })
+#
+# 		vim.keymap.set({ "i", "s" }, "<C-k>", function()
+# 			return vim.fn["vsnip#jumpable"](1) == 1 and "<Plug>(vsnip-jump-next)" or "<Tab>"
+# 		end, { expr = true, noremap = false })
+#
+# 		vim.keymap.set({ "i", "s" }, "<C-j>", function()
+# 			return vim.fn["vsnip#jumpable"](-1) == 1 and "<Plug>(vsnip-jump-prev)" or "<S-Tab>"
+# 		end, { expr = true, noremap = false })
+#
+# 		vim.keymap.set({ "n", "s" }, "<s>", [[<Plug>(vsnip-select-text)]], { expr = true, noremap = false })
+# 		vim.keymap.set({ "n", "s" }, "<S>", [[<Plug>(vsnip-cut-text)]], { expr = true, noremap = false })
+#
+# 		vim.keymap.set("i", "<C-p>", function()
+# 			pum_map_select_relative(-1)
+# 		end, {})
+#
+# 		vim.keymap.set("i", "<C-n>", function()
+# 			pum_map_select_relative(1)
+# 		end, {})
+#
+# 		vim.keymap.set("i", "<C-y>", function()
+# 			return '<Cmd>call pum#map#confirm()<CR>'
+# 		end, { expr = true, silent = true })
+#
+# 		vim.keymap.set("i", "<CR>", function()
+# 			return pum_visible() and '<Cmd>call pum#map#confirm()<CR>' or '<CR>'
+# 		end, { expr = true, silent = true })
+# 	end
+# })
+#
+#
+# fn["ddc#custom#load_config"](fn.expand("~/.config/nvim/ddc.ts"))
+# fn["ddc#enable"]()
+# fn["ddc#enable"]({context_filetype = "treesitter"})
+# fn["ddc#enable_terminal_completion"]()
+# """
 
 [[plugins]]
 repo = 'Shougo/pum.vim'
