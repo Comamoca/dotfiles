@@ -12,17 +12,17 @@
     ]
   },
   "export function": {
-   "prefix": ["exfn"],
-   "body": [
-	"export functoin $1($2) $3 {",
-	"}"
-     ]
-   },
+    "prefix": ["exfn"],
+    "body": [
+      "export functoin $1($2) $3 {",
+      "}"
+    ]
+  },
   "function": {
-   "prefix": ["fn"],
-   "body": [
-	"functoin $1($2) $3 {",
-	"}"
-     ]
-   }
+    "prefix": ["fn"],
+    "body": [
+      "functoin $1($2) $3 {",
+      "}"
+    ]
+  }
 }

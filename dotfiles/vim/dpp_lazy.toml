@@ -209,11 +209,7 @@ cnoremap <CR> <Plug>(kensaku-search-replace)<CR>
 [[plugins]]
 repo = 'kat0h/bufpreview.vim'
 build = 'deno task prepare'
-on_cmd = [
-    'PreviewMarkdown',
-    'PreviewMarkdownStop',
-    'PreviewMarkdownToggle',
-]
+on_cmd = ['PreviewMarkdown', 'PreviewMarkdownStop', 'PreviewMarkdownToggle']
 
 [[plugins]]
 repo = 'lambdalisue/mr.vim'
