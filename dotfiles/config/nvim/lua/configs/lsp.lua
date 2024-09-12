@@ -13,82 +13,82 @@ lspconfig.metals.setup({})
 
 -- when find `gleam.toml` in project root, start gleam lsp server.
 if vim.fs.dirname(vim.fs.find({ "gleam.toml" }, { upward = true })[1]) then
-	lspconfig.gleam.setup({
-		capabilities = capabilities,
-	})
+  lspconfig.gleam.setup({
+    capabilities = capabilities,
+  })
 end
 
 if vim.fn.executable("racket") then
-	if vim.fn.expand("%:e") == "ss" then
-		return
-	else
-		require("lspconfig").racket_langserver.setup({})
-	end
+  if vim.fn.expand("%:e") == "ss" then
+    return
+  else
+    require("lspconfig").racket_langserver.setup({})
+  end
 end
 
 -- Language server settings
 local lsp_settings = {
-	tailwindcss = function(name)
-		local fs = vim.fs
-		local root_dir = fs.find({ "tailwind.config.js", "tailwind.config.ts" }, { upward = false })[1]
+  tailwindcss = function(name)
+    local fs = vim.fs
+    local root_dir = fs.find({ "tailwind.config.js", "tailwind.config.ts" }, { upward = false })[1]
 
-		if root_dir == nil then
-			return
-		end
+    if root_dir == nil then
+      return
+    end
 
-		if fs.dirname(root_dir[1]) then
-			lspconfig[name].setup({
-				capabilities = capabilities,
-			})
-		end
-	end,
-	denols_tsserver = function(name)
-		local node_root_dir = lspconfig.util.root_pattern("package.json")
+    if fs.dirname(root_dir[1]) then
+      lspconfig[name].setup({
+        capabilities = capabilities,
+      })
+    end
+  end,
+  denols_tsserver = function(name)
+    local node_root_dir = lspconfig.util.root_pattern("package.json")
 
-		local is_node_repo = node_root_dir(vim.api.nvim_buf_get_name(0)) ~= nil
+    local is_node_repo = node_root_dir(vim.api.nvim_buf_get_name(0)) ~= nil
 
-		local opts = {}
+    local opts = {}
 
-		if name == "denols" then
-			if is_node_repo then
-				return
-			end
+    if name == "denols" then
+      if is_node_repo then
+        return
+      end
 
-			-- opts.root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc", "deps.ts", "import_map.json")
-			opts.root_dir = lspconfig.util.root_pattern("*")
+      -- opts.root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc", "deps.ts", "import_map.json")
+      opts.root_dir = lspconfig.util.root_pattern("*")
 
-			opts.init_options = {
-				lint = true,
-				unstable = true,
-				suggest = {
-					imports = {
-						hosts = {
-							["https://deno.land"] = true,
-							["https://jsr.io"] = true,
-							["https://cdn.nest.land"] = true,
-							["https://crux.land"] = true,
-						},
-					},
-				},
-			}
-		elseif name == "tsserver" then
-			if not is_node_repo then
-				return
-			end
+      opts.init_options = {
+        lint = true,
+        unstable = true,
+        suggest = {
+          imports = {
+            hosts = {
+              ["https://deno.land"] = true,
+              ["https://jsr.io"] = true,
+              ["https://cdn.nest.land"] = true,
+              ["https://crux.land"] = true,
+            },
+          },
+        },
+      }
+    elseif name == "tsserver" then
+      if not is_node_repo then
+        return
+      end
 
-			opts.root_dir = node_root_dir
-		elseif name == "eslint" then
-			if not is_node_repo then
-				return
-			end
+      opts.root_dir = node_root_dir
+    elseif name == "eslint" then
+      if not is_node_repo then
+        return
+      end
 
-			opts.root_dir = node_root_dir
-		end
+      opts.root_dir = node_root_dir
+    end
 
-		opts.on_attach = function(_, bufnr) end
+    opts.on_attach = function(_, bufnr) end
 
-		lspconfig[name].setup(opts)
-	end,
+    lspconfig[name].setup(opts)
+  end,
 }
 
 -- maosn config
@@ -108,23 +108,23 @@ local lsp_settings = {
 -- })
 
 local servers = {
-	"clangd",
-	"rust_analyzer",
-	"pyright",
-	"ts_ls",
-	"lua_ls",
-	"nil_ls",
+  "clangd",
+  "rust_analyzer",
+  "pyright",
+  "ts_ls",
+  "lua_ls",
+  "nil_ls",
 }
 
 -- Auto start language servers.
 for _, name in ipairs(servers) do
-	if name == "denols" or name == "tsserver" then
-		lsp_settings.denols_tsserver(name)
-	elseif name == "tailwindcss" then
-		lsp_settings.tailwindcss(name)
+  if name == "denols" or name == "tsserver" then
+    lsp_settings.denols_tsserver(name)
+  elseif name == "tailwindcss" then
+    lsp_settings.tailwindcss(name)
 
-		lspconfig[name].setup({})
-	end
+    lspconfig[name].setup({})
+  end
 end
 
 -- lsp keymaps

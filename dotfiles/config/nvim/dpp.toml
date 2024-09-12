@@ -38,6 +38,12 @@ repo = "nvim-lua/plenary.nvim"
 
 [[plugins]]
 repo = "catppuccin/nvim"
+lua_add = """
+require("catppuccin").setup({
+    flavour = "mocha",
+    transparent_background = true
+})
+"""
 
 [[plugins]]
 repo = "rebelot/kanagawa.nvim"
