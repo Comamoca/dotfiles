@@ -1,5 +1,4 @@
 <div align="center">
-
 ![Repository Stars](https://img.shields.io/github/stars/Comamoca/dotfiles?style=flat-square)
 ![Last commit](https://img.shields.io/github/last-commit/Comamoca/dotfiles?style=flat-square)
 ![Issues](https://img.shields.io/github/issues/Comamoca/dotfiles?style=flat-square)
@@ -12,6 +11,8 @@
 
 This is Comamoca's dotfiles repository.
 
+<img src="https://r2.comamoca.dev/unixporn-nixos.jpg" alt="Desktop Image" height="300">
+
 <br>
 <br>
 
@@ -21,27 +22,9 @@ This is Comamoca's dotfiles repository.
 
 </div>
 
-## 🚀 Introduction to each file
+## 🔧 Stack
 
-The installed packages list if you want to use, `# pacman -S $(cat pkglist)`
-
-- pkglist
-
-This file is package list from packaman.
-
-## 🐚 [fish](https://github.com/fish-shell/fish-shell)
-
-- ~/.config/fish/config.fish
-- fish is friendry shell.
-
-## 📝 [Neovim](https://github.com/neovim/neovim) settings
-
-- ~/.config/nvim/
-
-## 💻 [Tmux](https://github.com/tmux/tmux) config
-
-- ~/.tmux.conf
-
-## 🔧 Management Tool
-
-Cange Management Tool: [rcm](https://github.com/thoughtbot/rcm)
+- NixOS
+- fish
+- Neovim
+- and more...
