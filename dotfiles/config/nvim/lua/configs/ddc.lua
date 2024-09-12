@@ -34,8 +34,8 @@ ddc_custom_patch_global("sourceParams", {
 		}),
 		enableResolveItem = true,
 		enableAdditionalTextEdit = true,
-		sorters = {'sorter_lsp-kind'},
-		kindLabels = { Class = 'c' }
+		sorters = { "sorter_lsp-kind" },
+		kindLabels = { Class = "c" },
 	},
 })
 
@@ -110,7 +110,6 @@ vim.fn["ddc#enable"]()
 -- 	\ '<TAB>' : ddc#map#manual_complete()
 -- ]])
 
-
 vim.api.nvim_create_autocmd("InsertEnter", {
 	callback = function(event)
 		vim.keymap.set({ "i", "s" }, "<Tab>", function()
@@ -137,11 +136,11 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 		end, {})
 
 		vim.keymap.set("i", "<C-y>", function()
-			return '<Cmd>call pum#map#confirm()<CR>'
+			return "<Cmd>call pum#map#confirm()<CR>"
 		end, { expr = true, silent = true })
 
 		vim.keymap.set("i", "<CR>", function()
-			return pum_visible() and '<Cmd>call pum#map#confirm()<CR>' or '<CR>'
+			return pum_visible() and "<Cmd>call pum#map#confirm()<CR>" or "<CR>"
 		end, { expr = true, silent = true })
-	end
+	end,
 })
