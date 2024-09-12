@@ -49,7 +49,6 @@ local lsp_settings = {
 
     local opts = {}
 
-    
     if name == "denols" then
       if is_node_repo then
         return
@@ -93,31 +92,40 @@ local lsp_settings = {
 }
 
 -- maosn config
-mason.setup()
-mason_lspconfig.setup()
-mason_lspconfig.setup_handlers({
-  function(name)
-    if name == "denols" or name == "tsserver" then
-      lsp_settings.denols_tsserver(name)
-    elseif name == "tailwindcss" then
-      lsp_settings.tailwindcss(name)
-    -- elseif name == "lua_ls" then
-      -- return {
-        -- diagnostics = {
-        --   globals = { "vim" },
-        -- },
-        -- workspace = {
-        --   library = {
-        --     vim.env.VIMRUNTIME,
-        --     vim.api.nvim_get_runtime_file("", true),
-        --   },
-        -- },
-      -- }
-    else
-      require("lspconfig")[name].setup({})
-    end
-  end,
-})
+-- mason.setup()
+-- mason_lspconfig.setup()
+
+-- mason_lspconfig.setup_handlers({
+--   function(name)
+--     -- if name == "denols" or name == "tsserver" then
+--     --   lsp_settings.denols_tsserver(name)
+--     -- elseif name == "tailwindcss" then
+--     --   lsp_settings.tailwindcss(name)
+--
+--     print(name)
+--     require("lspconfig")[name].setup({})
+--   end,
+-- })
+
+local servers = {
+  "clangd",
+  "rust_analyzer",
+  "pyright",
+  "ts_ls",
+  "lua_ls",
+  "nil_ls",
+}
+
+-- Auto start language servers.
+for _, name in ipairs(servers) do
+  if name == "denols" or name == "tsserver" then
+    lsp_settings.denols_tsserver(name)
+  elseif name == "tailwindcss" then
+    lsp_settings.tailwindcss(name)
+
+    lspconfig[name].setup({})
+  end
+end
 
 -- lsp keymaps
 vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
