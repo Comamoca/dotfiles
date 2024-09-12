@@ -1,7 +1,7 @@
 call skkeleton#azik#add_table("jis")
 
 call skkeleton#config(#{
-\   globalDictionaries: [[ "~/.vim/skk/SKK-JISYO.L", "euc-jp" ]],
+\   globalDictionaries: [[ "~/.skk/SKK-JISYO.L", "utf-8" ]],
 \   databasePath: "~/.vim/skk/database",
 \   kanaTable: "azik"
 \   })
