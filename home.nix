@@ -585,7 +585,7 @@ rec {
         source = (symlink /${dotfiles}/config/kitty);
         recursive = true;
       };
-      
+
       # ".config/kitty/kitty.conf" = {
       #   source = pkgs.substituteAll {
       #     name = "kitty_themes";

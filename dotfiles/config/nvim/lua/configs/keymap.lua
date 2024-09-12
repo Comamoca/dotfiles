@@ -3,7 +3,7 @@ local cr = "<CR>"
 
 local keymap = vim.keymap.set
 local runCmd = function(map, cmd)
-  keymap("n", map, cmd .. "<CR>", opts)
+	keymap("n", map, cmd .. "<CR>", opts)
 end
 
 keymap("i", "jj", "<C-[><C-[>")
@@ -46,8 +46,8 @@ keymap("n", "<C-j>", "<C-d>")
 -- keymap("n", "<S-j>", "<C-d>", opts)
 
 local function ddu_start(source)
-  -- call ddu#start({'sources': [{'name': 'buffer'}]})
-  return string.format("<Esc>:call ddu#start({'sources': [{'name': '%s'}]})<CR>", source)
+	-- call ddu#start({'sources': [{'name': 'buffer'}]})
+	return string.format("<Esc>:call ddu#start({'sources': [{'name': '%s'}]})<CR>", source)
 end
 
 -- ddu keymap
@@ -64,8 +64,8 @@ keymap("n", "<C-l>", ddu_start("line"), opts)
 keymap("t", "<Esc>", [[<C-\><C-n>]])
 
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = "help",
-  callback = function (opts)
-	  vim.api.nvim_buf_set_keymap(0, "n", "gd", "<C-]>", { silent = true })
-  end
+	pattern = "help",
+	callback = function(opts)
+		vim.api.nvim_buf_set_keymap(0, "n", "gd", "<C-]>", { silent = true })
+	end,
 })

@@ -74,7 +74,7 @@
   catppuccin.enable = true;
 
   networking.hostName = "comabook"; # Define your hostname.
-  networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -94,11 +94,19 @@
   # NextDNS
   services.nextdns = {
     enable = true;
-    arguments = [ "-config" "10.0.3.0/24=abcdef" "-cache-size" "10MB" ];
+    arguments = [
+      "-config"
+      "10.0.3.0/24=abcdef"
+      "-cache-size"
+      "10MB"
+    ];
   };
 
   # use NextDNS
-  networking.nameservers = [ "2a07:a8c0::f2:3b72" "2a07:a8c1::f2:3b72" ];
+  networking.nameservers = [
+    "2a07:a8c0::f2:3b72"
+    "2a07:a8c1::f2:3b72"
+  ];
 
   # Set your time zone.
   time.timeZone = "Asia/Tokyo";
@@ -245,7 +253,7 @@
     deno
     wlogout
     # wofi
-  ]; 
+  ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

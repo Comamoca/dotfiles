@@ -984,8 +984,8 @@ on_cmd = [
   "GinEdit",
   "GinLog",
   "GinPatch",
-  "GinStatus"
-  ]
+  "GinStatus",
+]
 
 [[plugins]]
 repo = 'vim-denops/denops-shared-server.vim'

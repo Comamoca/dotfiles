@@ -2,7 +2,7 @@
   "foo": {
     "prefix": "foo",
     "body": [
-	    "bar"
+      "bar"
     ],
     "description": "test snippet"
   },
