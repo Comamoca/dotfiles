@@ -35,6 +35,9 @@ rec {
     # # "Hello, world!" when run.
     # pkgs.hello
 
+    # theme 
+    catppuccin
+
     # Nix
     nixVersions.nix_2_23
 
@@ -81,6 +84,7 @@ rec {
     jwt-cli
 
     slack
+    teams-for-linux
     discord
     beeper
 
@@ -95,6 +99,7 @@ rec {
     k6
 
     # esp32
+    easyeffects
     espup
     espflash
     esptool
@@ -111,9 +116,15 @@ rec {
     # ========== SECURITY TOOLS ========== 
     keybase
     lssecret
+    gnupg
 
     # ========== RUNTIME & COMPILER ========== 
     deno
+    nodejs
+    bun
+
+    pnpm
+
     gleam
 
     sbcl
@@ -129,6 +140,9 @@ rec {
     noto-fonts
     noto-fonts-cjk
     # ttf-udev-gothic
+
+    # ========== UTILS ========== 
+    nix-prefetch-scripts
 
     # ========== FROM PKGLIST ========== 
     acpi
@@ -207,10 +221,11 @@ rec {
 
     fastfetch
 
-    fcitx5
-    fcitx5-configtool
-    fcitx5-gtk
-    fcitx5-skk
+    # fcitx5
+    # fcitx5-configtool
+    # fcitx5-gtk
+    # fcitx5-skk
+
     fd
 
     ffmpeg
@@ -531,6 +546,16 @@ rec {
         recursive = true;
       };
 
+      # ".config/hypr" = {
+      #   source = (symlink /${dotfiles}/config/hypr);
+      #   recursive = true;
+      # };
+
+      ".config/swaylock" = {
+        source = (symlink /${dotfiles}/config/swaylock);
+        recursive = true;
+      };
+
       ".config/cava" = {
         source = (symlink /${dotfiles}/config/cava);
         recursive = true;
@@ -623,6 +648,7 @@ rec {
 
   home.sessionVariables = {
     # EDITOR = "nvim";
+    XDG_CONFIG_HOME = "${home.homeDirectory}/.config";
   };
 
   # programs.neovim.package = pkgs.neovim;
@@ -636,8 +662,8 @@ rec {
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
-  # programs.lem-editor.enable = true 
 
-  # wayland.windowManager.hyprland.enable = true;
-  # wayland.windowManager.hyprland.settings = import ./hyprland.nix { inherit pkgs; };
+  wayland.windowManager.hyprland.enable = true;
+  wayland.windowManager.hyprland.settings = import ./hyprland.nix { inherit pkgs; };
+  # programs.lem-editor.enable = true 
 }

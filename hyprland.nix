@@ -1,33 +1,31 @@
 { pkgs }:
 let
-  kitty = "nixGLIntel kitty";
+  kitty = "kitty";
 in
 {
   monitor = [ ",preferred,auto,auto" ];
 
+  source = "~/.config/hypr/mocha.conf";
+
   env = [
     "XCURSOR_SIZE,32"
     "GDK_SCALE,2"
-    # "HYPRCURSOR_THEME,MyCursor"
     "HYPRCURSOR_SIZE,25"
     "XCURSOR_SIZE,24"
     "QT_QPA_PLATFORMTHEME,qt5ct"
   ];
 
-  # "$terminal" = "\"${pkgs.kitty}/bin/kitty\"";
-  # "$terminal" = "kitty";
   "$terminal" = kitty;
 
   "$browser" = "firefox";
   "$fileManager" = "thunar";
-  # "$menu" = "${pkgs.rofi} -show drun";
   "$menu" = "rofi -show drun";
   input = {
     kb_layout = "jp";
-    #  kb_variant = "";
-    #  kb_model = "";
-    #  kb_options = "";
-    #  kb_rules = "";
+    kb_variant = "";
+    kb_model = "";
+    kb_options = "";
+    kb_rules = "";
 
     follow_mouse = "0";
     mouse_refocus = false;
@@ -47,8 +45,8 @@ in
     gaps_in = 5;
     gaps_out = 20;
     border_size = 2;
-    "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-    "col.inactive_border" = "rgba(595959aa)";
+    "col.active_border" = "$mauve $rosewater 45deg";
+    "col.inactive_border" = "$surface0";
     layout = "dwindle";
     allow_tearing = false;
   };
@@ -64,7 +62,7 @@ in
     drop_shadow = "yes";
     shadow_range = 4;
     shadow_render_power = 3;
-    "col.shadow" = "rgba(1a1a1aee)";
+    "col.shadow" = "$surface0Alpha";
   };
 
   animations = {
@@ -235,7 +233,7 @@ in
     ",Print, exec, hyprctl -j activeworkspace | jq -r '(.monitor)' | xargs -i grim -o {} -- - | wl-copy"
 
     # Screen lock
-    "Super SHIFT, l, exec, hyprlock"
+    "Super SHIFT, l, exec, swaylock"
 
     # bind = Print, exec, slurp | grim -g - - | wl-cop
 
@@ -255,6 +253,7 @@ in
     "conky"
     "swaync"
     "playerctld daemon"
-    "swaybg -i ~/Pictures/wallpaper/wallpaper-1.jpg"
+    "swaybg -i ~/Pictures/wallpaper/wallpaper.png"
+    # "hyprpaper"
   ];
 }
