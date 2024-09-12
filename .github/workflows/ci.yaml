@@ -5,8 +5,10 @@ on:
 
 jobs:
   build:
-    name: Build Nix targets
+    name: Auto formatting
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - name: Check Nix flake inputs
@@ -15,3 +17,7 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@v3
       - name: Check flake
         run: nix flake check
+      - name: Auto Commit
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Apply Code Formatter
