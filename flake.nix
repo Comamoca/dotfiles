@@ -1,6 +1,6 @@
 {
   #ref: https://github.com/yasunori0418/dotfiles/blob/485eee2794c2e5217823b7bba5201e9f9fe16d1e/flake.nix#L2
-  description = "My dotfiles, all my effort, my sword."; 
+  description = "My dotfiles, all my effort, my sword.";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -10,6 +10,8 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    catppuccin.url = "github:catppuccin/nix";
   };
 
   outputs = inputs: {
@@ -19,10 +21,12 @@
         system = "x86_64-linux";
         modules = [
           ./configuration.nix
+          inputs.catppuccin.nixosModules.catppuccin
         ];
         specialArgs = {
           inherit inputs;
         };
+        # inputs.catppuccin.enable = true;
       };
     };
     homeConfigurations = {
@@ -39,5 +43,7 @@
         ];
       };
     };
+
+    # devShells.x86_64-linux = {};
   };
 }

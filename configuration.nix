@@ -25,6 +25,7 @@
       noto-fonts-cjk-serif
       noto-fonts-cjk-sans
       noto-fonts-emoji
+      udev-gothic
       nerdfonts
     ];
     fontDir.enable = true;
@@ -39,7 +40,8 @@
           "Noto Color Emoji"
         ];
         monospace = [
-          "JetBrainsMono Nerd Font"
+          "UDEV Gothic NFLG"
+          # "JetBrainsMono Nerd Font"
           "Noto Color Emoji"
         ];
         emoji = [ "Noto Color Emoji" ];
@@ -66,6 +68,11 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  boot.loader.grub.catppuccin.enable = true;
+  boot.loader.grub.catppuccin.flavor = "mocha";
+
+  catppuccin.enable = true;
+
   networking.hostName = "comabook"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -75,6 +82,20 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+
+  # networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
+  # networking.wireless.environmentFile = "/data/nix-secrets/wireless.env";
+  # networking.wireless.networks = {
+  #   "rs500k-c07beb-3" = {
+  #     psk = "@WIFI_3@";
+  #   };
+  # };
+
+  # NextDNS
+  # services.nextdns = {
+  #   enable = true;
+  #   arguments = [ "-config" "10.0.3.0/24=abcdef" "-cache-size" "10MB" ];
+  # };
 
   # Set your time zone.
   time.timeZone = "Asia/Tokyo";
@@ -212,7 +233,13 @@
     waybar
     swaybg
     swaynotificationcenter
-    # hyprland
+    swaylock
+
+    hyprlock
+    hyprpaper
+    rofi
+    deno
+    wlogout
     # wofi
   ];
 
@@ -242,5 +269,4 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.05"; # Did you read the comment?
-
 }
