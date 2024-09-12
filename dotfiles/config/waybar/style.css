@@ -1,4 +1,6 @@
-@import '../../.cache/wal/colors-waybar.css';
+/* @import '../../.cache/wal/colors-waybar.css'; */
+
+@import './mocha.css';
 
 /* @define-color bg #161320; */
 
@@ -17,16 +19,17 @@
 	margin-left: 8px;
 }
 
+#workspaces button {
+	color: @text;
+	background: @surface2;
+	margin-left: 2px;
+	margin-right: 2px;
+}
+
 #workspaces button.active {
-	/* margin-top: 6px; */
-	/* margin-left: 8px; */
-	/* padding-left: 10px; */
-	/* padding-right: 10px; */
-	/* margin-bottom: 0px; */
 	border-radius: 10px;
-	/* transition: none; */
-	color: @background;
-	background: @color8;
+	color: @mantle;
+	background: @lavender;
 }
 
 window#waybar {
@@ -57,40 +60,6 @@ window#waybar.hidden {
 	transition: none;
 }
 
-#tags button {
-	transition: none;
-	color: #B5E8E0;
-	background: transparent;
-	font-size: 16px;
-	border-radius: 2px;
-}
-
-#tags button.occupied {
-	transition: none;
-	color: #F28FAD;
-	background: transparent;
-	font-size: 4px;
-}
-
-#tags button.focused {
-	color: #ABE9B3;
-    border-top: 2px solid #ABE9B3;
-    border-bottom: 2px solid #ABE9B3;
-}
-
-#tags button:hover {
-	transition: none;
-	box-shadow: inherit;
-	text-shadow: inherit;
-	color: #FAE3B0;
-    border-color: #E8A2AF;
-    color: #E8A2AF;
-}
-
-#tags button.focused:hover {
-    color: #E8A2AF;
-}
-
 #network {
 	margin-top: 6px;
 	margin-left: 8px;
@@ -111,8 +80,14 @@ window#waybar.hidden {
 	margin-bottom: 0px;
 	border-radius: 10px;
 	transition: none;
-	color: #1A1826;
-	background: @color7;
+	color: @text;
+	background: @transparent;
+	transition: color 1s linear;
+}
+
+#pulseaudio:hover {
+	transition: color 0.1s linear;
+  color: @lavender;
 }
 
 #battery {
@@ -123,12 +98,18 @@ window#waybar.hidden {
 	margin-bottom: 0px;
 	border-radius: 10px;
 	transition: none;
-	color: @background;
-	background: @color4;
+	color: @text;
+	background: @base;
+	transition: color 1s linear;
+}
+
+#battery:hover {
+	transition: color 0.1s linear;
+  color: @flamingo;
 }
 
 #battery.charging, #battery.plugged {
-	color: @background;
+	color: @text;
     background-color: @color4;
 }
 
@@ -157,9 +138,16 @@ window#waybar.hidden {
 	margin-bottom: 0px;
 	border-radius: 10px;
 	transition: none;
-	color: @background;
-	background: @color5;
+	color: @text;
+	background: @base;
+	transition: color 1s linear;
 }
+
+#backlight:hover {
+	transition: color 0.1s linear;
+  color: @yellow;
+}
+
 #clock {
 	margin-top: 6px;
 	margin-left: 8px;
@@ -168,10 +156,17 @@ window#waybar.hidden {
 	margin-bottom: 0px;
 	border-radius: 10px;
 	transition: none;
-	color: @background;
-	background: @color8;
-	/*background: #1A1826;*/
+	color: @text;
+	background: @bae;
+  background: @base;
+	transition: color 1s linear;
 }
+
+#clock:hover {
+	transition: color 0.1s linear;
+  color: @maroon ;
+}
+
 
 #memory {
 	margin-top: 6px;
@@ -181,9 +176,16 @@ window#waybar.hidden {
 	padding-right: 10px;
 	border-radius: 10px;
 	transition: none;
-	color: @background;
-	background: @color8;
+	color: @text;
+	background: @base;
+	transition: color 1s linear;
 }
+
+#memory:hover {
+	transition: color 0.1s linear;
+  color: @maroon;
+}
+
 #cpu {
 	margin-top: 6px;
 	margin-left: 8px;
@@ -192,8 +194,14 @@ window#waybar.hidden {
 	padding-right: 10px;
 	border-radius: 10px;
 	transition: none;
-	color: @background;
-	background: @color4;
+	color: @text;
+	background: @base;
+	transition: color 1s linear;
+}
+
+#cpu:hover {
+	transition: color 0.1s linear;
+  color: @yellow;
 }
 
 #tray {
@@ -216,22 +224,34 @@ window#waybar.hidden {
 	padding-right: 5px;
 	border-radius: 10px;
 	transition: none;
-    color: @foreground;
-    background: @background;
+  color: @blue;
+  background: @background;
+	transition: color 1s linear;
+}
+
+#custom-launcher:hover {
+	transition: color 0.1s linear;
+  color: @sky;
 }
 
 #custom-power {
 	font-size: 20px;
 	margin-top: 6px;
-	margin-left: 8px;
-	margin-right: 8px;
-	padding-left: 10px;
+	margin-left: 5px;
+	margin-right: 5px;
+	padding-left: 5px;
 	padding-right: 5px;
 	margin-bottom: 0px;
 	border-radius: 10px;
 	transition: none;
-	color: @background;
-	background: @color11;
+	color: @text;
+	background: @base;
+	transition: color 1s linear;
+}
+
+#custom-power:hover {
+	transition: color 0.1s linear;
+  color: @pink;
 }
 
 #custom-wallpaper {
@@ -266,8 +286,14 @@ window#waybar.hidden {
 	margin-bottom: 0px;
 	border-radius: 10px;
 	transition: none;
-	color: @background;
-	background: @color11;
+	color: @text;
+  background: @base;
+	transition: color 1s linear;
+}
+
+#custom-media:hover {
+	transition: color 0.1s linear;
+  color: @green;
 }
 
 #custom-notification {
@@ -278,7 +304,12 @@ window#waybar.hidden {
 	padding-right: 5px;
 	border-radius: 10px;
 	transition: none;
-    color: @foreground;
-    background: @color6;
+  color: @text;
+  background: @base;
+	transition: color 1s linear;
 }
 
+#custom-notification:hover {
+	transition: color 0.1s linear;
+  color: @sapphire;
+}
