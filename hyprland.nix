@@ -233,7 +233,7 @@ in
     ",Print, exec, hyprctl -j activeworkspace | jq -r '(.monitor)' | xargs -i grim -o {} -- - | wl-copy"
 
     # Screen lock
-    "Super SHIFT, l, exec, swaylock"
+    "Super SHIFT, l, exec, hyprlock"
 
     # bind = Print, exec, slurp | grim -g - - | wl-cop
 
@@ -253,7 +253,7 @@ in
     "conky"
     "swaync"
     "playerctld daemon"
-    "swaybg -i ~/Pictures/wallpaper/wallpaper.png"
-    # "hyprpaper"
+    # "swaybg -i ~/Pictures/wallpaper/wallpaper.png"
+    "hyprpaper"
   ];
 }
