@@ -1,10 +1,11 @@
-#!/bin/bash -u
+#! /usr/bin/env nix-shell
+#! nix-shell -i bash -p bash
 
 nvim_bin="$HOME/.nix-profile/bin/nvim"
 # nvim_bin="nvim"
 
 # kitty_bin="$HOME/.nix-profile/bin/kitty"
-kitty_bin="nixGLIntel kitty"
+kitty_bin="kitty"
 
 if [ $# -ne 1  ]; then
 	env NVIM_APPNAME=ime $nvim_bin /tmp/clip -c startinsert
