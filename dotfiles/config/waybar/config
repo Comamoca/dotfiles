@@ -67,18 +67,17 @@
   "clock": {
     "format": "{:%H:%M}",
     "format-alt": "{:%Y/%m/%d %a (%R)}",
-    "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "tooltip-format": "<big><span color='#cdd6f4'>{:%Y %B}</span></big>\n<tt><small>{calendar}</small></tt>",
     "calendar": {
-      "mode": "year",
+      "mode": "month",
       "mode-mon-col": 3,
       "weeks-pos": "right",
       "on-scroll": 1,
       "format": {
-        "months": "<span color='#ffead3'><b>{}</b></span>",
-        "days": "<span color='#ecc6d9'><b>{}</b></span>",
-        "weeks": "<span color='#99ffdd'><b>W{}</b></span>",
-        "weekdays": "<span color='#ffcc66'><b>{}</b></span>",
-        "today": "<span color='#ff6699'><b><u>{}</u></b></span>"
+        "months": "<span color='#cdd6f4'><b>{}</b></span>",
+        "days": "<span color='#89dceb'><b>{}</b></span>",
+        "weekdays": "<span color='#fab387'><b>{}</b></span>",
+        "today": "<span color='#f2cdcd'><b><u>{}</u></b></span>"
       }
     },
     "actions": {
@@ -102,13 +101,13 @@
   "custom/media": {
     "interval": 5,
     "format": "{icon} {}",
-    "max-length": 15,
+    "max-length": 30,
     "format-icons": {
       "default": " ",
       "spotify": " "
     },
     "escape": true,
-    "exec": "nowplaying",
+    "exec": "playerctl metadata --format '{{ title }}'",
     "on-click": "playerctl play-pause"
   },
   "cava": {
@@ -133,7 +132,7 @@
     }
   },
   "custom/launcher": {
-    "format": "󱘊 ",
+    "format": "",
     "on-click": "rofi -show drun",
     "on-click-right": "killall rofi"
   },
@@ -154,6 +153,7 @@
     "interval": 10
   },
   "custom/notification": {
+    "tooltip": false,
     "format": " ",
     "on-click": "swaync-client -t -sw"
   }

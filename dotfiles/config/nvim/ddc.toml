@@ -15,6 +15,7 @@ local pum_visible = vim.fn["pum#visible"]
 local pum_entered = vim.fn["pum#entered"]
 
 vim.fn["ddc#custom#load_config"](vim.fn.expand("~/.config/nvim/ddc.ts"))
+vim.fn["ddc#enable"]({context_filetype = "treesitter"})
 
 vim.api.nvim_create_autocmd("InsertEnter", {
 	callback = function(event)
@@ -129,6 +130,10 @@ repo = 'Shougo/ddc-sorter_rank'
 on_source = 'ddc.vim'
 
 [[plugins]]
+repo = 'Shougo/ddc-filter-sorter_head'
+on_source = 'ddc.vim'
+
+[[plugins]]
 repo = "Shougo/ddc-source-lsp"
 on_source = 'nvim-lspconfig'
 
@@ -139,7 +144,7 @@ on_source = 'nvim-lspconfig'
 
 [[plugins]]
 repo = 'matsui54/denops-signature_help'
-on_source = 'ddc.vim'
+# on_source = 'ddc.vim'
 lua_source = '''
  vim.fn["signature_help#enable"]()
 '''
@@ -204,7 +209,7 @@ hook_source = '''
 call skkeleton#azik#add_table("jis")
 
 call skkeleton#config(#{
-\   globalDictionaries: [[ "~/.vim/skk/SKK-JISYO.L", "euc-jp" ]],
+\   globalDictionaries: [[ "~/.skk/SKK-JISYO.L", "utf-8" ]],
 \   databasePath: "~/.vim/skk/database",
 \   kanaTable: "azik"
 \   })

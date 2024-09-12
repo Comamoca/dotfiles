@@ -84,7 +84,7 @@ vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
   end,
 })
 
-vim.cmd("colorscheme kanagawa-dragon")
+vim.cmd("colorscheme catppuccin-mocha")
 
 -- vim.g.seiya_auto_enable = 1
 
@@ -140,4 +140,4 @@ vim.cmd([[let maplocalleader = ' ']])
 -- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-spotify"))
 
 
-vim.g['denops_server_addr'] = "127.0.0.1:32123"
+-- vim.g['denops_server_addr'] = "127.0.0.1:32123"
