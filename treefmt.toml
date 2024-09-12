@@ -1,2 +1,4 @@
 [formatter.stylua]
-options = ["indent_type=Spaces", "indent_width=2"]
+command = "stylua"
+options = ["--indent-type", "Spaces", "--indent-width", "2"]
+includes = ["*.lua"]
