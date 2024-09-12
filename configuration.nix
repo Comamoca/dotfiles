@@ -74,28 +74,31 @@
   catppuccin.enable = true;
 
   networking.hostName = "comabook"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
-  networking.networkmanager.enable = true;
+  # networking.networkmanager.enable = true;
 
   # networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
-  # networking.wireless.environmentFile = "/data/nix-secrets/wireless.env";
-  # networking.wireless.networks = {
-  #   "rs500k-c07beb-3" = {
-  #     psk = "@WIFI_3@";
-  #   };
-  # };
+  networking.wireless.environmentFile = "/data/secrets/wireless.env";
+  networking.wireless.networks = {
+    "rs500k-c07beb-3" = {
+      psk = "@PSK_HOME@";
+    };
+  };
 
   # NextDNS
-  # services.nextdns = {
-  #   enable = true;
-  #   arguments = [ "-config" "10.0.3.0/24=abcdef" "-cache-size" "10MB" ];
-  # };
+  services.nextdns = {
+    enable = true;
+    arguments = [ "-config" "10.0.3.0/24=abcdef" "-cache-size" "10MB" ];
+  };
+
+  # use NextDNS
+  networking.nameservers = [ "2a07:a8c0::f2:3b72" "2a07:a8c1::f2:3b72" ];
 
   # Set your time zone.
   time.timeZone = "Asia/Tokyo";
@@ -159,6 +162,9 @@
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
+
+  # services.mako.enable = true;
+  # services.mako.catppuccin.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.coma = {
@@ -227,8 +233,6 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    #  wget
     kitty
     waybar
     swaybg
@@ -241,7 +245,7 @@
     deno
     wlogout
     # wofi
-  ];
+  ]; 
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

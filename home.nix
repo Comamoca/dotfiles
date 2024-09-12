@@ -505,7 +505,7 @@ rec {
   home.file =
     let
       symlink = config.lib.file.mkOutOfStoreSymlink;
-      dotfilesRoot = /${home.homeDirectory}/.ghq/github.com/comamoca/dotfiles;
+      dotfilesRoot = /${home.homeDirectory}/.ghq/github.com/Comamoca/dotfiles;
       dotfiles = /${dotfilesRoot}/dotfiles;
       xdgConfigHome = /${home.homeDirectory}/.config;
       homeBin = /${home.homeDirectory}/.bin;
@@ -585,6 +585,14 @@ rec {
         source = (symlink /${dotfiles}/config/kitty);
         recursive = true;
       };
+      
+      # ".config/kitty/kitty.conf" = {
+      #   source = pkgs.substituteAll {
+      #     name = "kitty_themes";
+      #     kitty_themes = "${inputs.catppuccin-kitty}/themes";
+      #     src = /${dotfiles}/config/kitty/kitty.conf;
+      #   }; 
+      # };
 
       ".config/lazygit" = {
         source = (symlink /${dotfiles}/config/lazygit);
