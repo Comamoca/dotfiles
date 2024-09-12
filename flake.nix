@@ -61,9 +61,10 @@
         };
       };
 
-      devShells.x86_64-linux = pkgs.mkShell {
+      devShells.x86_64-linux.default = pkgs.mkShell {
         packages = with pkgs; [
           lua-language-server
+          stylua
           nil
         ];
 
