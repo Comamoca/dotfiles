@@ -17,8 +17,10 @@ fish_add_path $HOME/.local/share/coursier/bin
 
 fish_add_path $HOME/.gleam/bin
 
+fish_add_path $HOME/.bin/scripts/ime
 fish_add_path $HOME/.bin/scripts/nowplaying
 fish_add_path $HOME/.bin/scripts/pywal
+
 # fish_add_path $HOME/.bin/scripts/nowplaying
 fish_add_path $HOME/.roswell/bin/
 
@@ -161,7 +163,7 @@ set PATH /home/coma/.luarocks/bin/ $PATH
 
 #set PATH /home/coma/go/bin $PATH
 starship init fish | source
-arduino-cli completion fish | source
+# arduino-cli completion fish | source
 
 set -ga fish_user_paths /home/coma/.nimble/bin
 set -ga fish_user_paths /home/coma/.nimble/pkgs
@@ -228,7 +230,7 @@ export WASMER_DIR="/home/coma/.wasmer"
 
 alias rad='./build/packages/rad/priv/rad'
 
-wal -i ~/Pictures/wallpaper/wallpaper-1.jpg &> /dev/null
+# wal -i ~/Pictures/wallpaper/wallpaper-1.jpg &> /dev/null
 
 # opam configuration
 
