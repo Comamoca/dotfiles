@@ -33,8 +33,11 @@ require("oil").setup({
 [[plugins]]
 repo = "nvim-lua/plenary.nvim"
 
+# [[plugins]]
+# repo = "nordtheme/vim"
+
 [[plugins]]
-repo = "nordtheme/vim"
+repo = "catppuccin/nvim"
 
 [[plugins]]
 repo = "rebelot/kanagawa.nvim"
