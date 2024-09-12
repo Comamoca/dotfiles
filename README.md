@@ -12,7 +12,7 @@
 
 This is Comamoca's dotfiles repository.
 
-<img src="https://r2.comamoca.dev/unixporn-nixos.jpg" alt="Desktop Image" height="300">
+<img src="https://r2.comamoca.dev/unixporn-nixos.jpg" alt="Desktop Image" width="400">
 
 <br>
 <br>
