@@ -84,7 +84,7 @@ vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
   end,
 })
 
-vim.cmd("colorscheme kanagawa-dragon")
+vim.cmd("colorscheme catppuccin-mocha")
 
 -- vim.g.seiya_auto_enable = 1
 
