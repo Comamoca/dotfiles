@@ -1,7 +1,0 @@
-; ~/.nirc
-
-; fallback when no lock found
-defaultAgent=pnpm
-
-; for global installs
-globalAgent=pnpm
