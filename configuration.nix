@@ -189,7 +189,11 @@
     shell = pkgs.fish;
   };
 
-  programs.gnupg.agent.enable = true;
+  # GnuPG
+  programs.gnupg.agent = {
+    enable = true;
+    pinentryPackage = pkgs.pinentry-curses;
+  };
 
   # Install firefox.
   programs.firefox = {
@@ -206,9 +210,6 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
   programs = {
-    git = {
-      enable = true;
-    };
     neovim = {
       enable = true;
       defaultEditor = true; # $EDITOR=nvimに設定
@@ -241,6 +242,8 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    # gnupg
+
     kitty
     waybar
     swaybg
