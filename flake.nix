@@ -73,10 +73,9 @@
           nil
         ];
 
-        inputsFrom = with pkgs; [
-          hello
-          gnutar
-        ];
+        inputsFrom =
+          [
+          ];
 
         # shellHook = ''
         #   export DEBUG=1
