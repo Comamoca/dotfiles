@@ -33,6 +33,10 @@
       # formatter.x86_64-linux = inputs.nixpkgs.legacyPackages.x86_64-linux.nixfmt-rfc-style;
       formatter.x86_64-linux = treefmtEval.config.build.wrapper;
 
+      checks.x86_64-linux = {
+        format = treefmtEval.config.build.wrapper;
+      };
+
       nixosConfigurations = {
         NixOS = inputs.nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
@@ -57,6 +61,7 @@
           };
           modules = [
             ./home.nix
+            inputs.catppuccin.homeManagerModules.catppuccin
           ];
         };
       };

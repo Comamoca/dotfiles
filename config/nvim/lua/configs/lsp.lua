@@ -83,6 +83,16 @@ local lsp_settings = {
       end
 
       opts.root_dir = node_root_dir
+    elseif name == "efm" then
+      opts.init_options = {
+        rootMarkers = {
+          ".git/",
+        },
+
+        -- languages = {
+        --   lua = {}
+        -- }
+      }
     end
 
     opts.on_attach = function(_, bufnr) end
@@ -122,9 +132,9 @@ for _, name in ipairs(servers) do
     lsp_settings.denols_tsserver(name)
   elseif name == "tailwindcss" then
     lsp_settings.tailwindcss(name)
-
-    lspconfig[name].setup({})
   end
+
+  lspconfig[name].setup({})
 end
 
 -- lsp keymaps
