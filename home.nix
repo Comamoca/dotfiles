@@ -107,7 +107,6 @@ rec {
     mkspiffs-presets.esp-idf
 
     # ========== SHELL ========== 
-    fish
 
     # ========== BROWSER ========== 
     # firefox
@@ -116,7 +115,7 @@ rec {
     # ========== SECURITY TOOLS ========== 
     keybase
     lssecret
-    gnupg
+    pinentry-curses
 
     # ========== RUNTIME & COMPILER ========== 
     deno
@@ -566,10 +565,10 @@ rec {
         recursive = true;
       };
 
-      ".config/fish" = {
-        source = (symlink /${dotfiles}/config/fish);
-        recursive = true;
-      };
+      # ".config/fish" = {
+      #   source = (symlink /${dotfiles}/config/fish);
+      #   recursive = true;
+      # };
 
       ".config/i3" = {
         source = (symlink /${dotfiles}/config/i3);
@@ -629,6 +628,22 @@ rec {
         recursive = true;
       };
 
+      ".config/rofi" = {
+        source = (symlink /${dotfiles}/config/rofi);
+        # source = ;
+        recursive = true;
+      };
+
+      ".config/bat" = {
+        source = (symlink /${dotfiles}/config/bat);
+        recursive = true;
+      };
+
+      ".config/swaync" = {
+        source = (symlink /${dotfiles}/config/swaync);
+        recursive = true;
+      };
+
       ".czrc".source = (symlink /${dotfiles}/czrc);
       ".nirc".source = (symlink /${dotfiles}/nirc);
       ".zshrc".source = (symlink /${dotfiles}/zshrc);
@@ -673,5 +688,14 @@ rec {
 
   wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.settings = import ./hyprland.nix { inherit pkgs; };
+
+  programs = {
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+    };
+    fish = import ./fish.nix { inherit pkgs; };
+  };
+
   # programs.lem-editor.enable = true 
 }
