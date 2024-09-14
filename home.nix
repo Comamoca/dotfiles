@@ -504,8 +504,7 @@ rec {
   home.file =
     let
       symlink = config.lib.file.mkOutOfStoreSymlink;
-      dotfilesRoot = /${home.homeDirectory}/.ghq/github.com/Comamoca/dotfiles;
-      dotfiles = /${dotfilesRoot}/dotfiles;
+      dotfiles = /${home.homeDirectory}/.ghq/github.com/Comamoca/dotfiles;
       xdgConfigHome = /${home.homeDirectory}/.config;
       homeBin = /${home.homeDirectory}/.bin;
     in
@@ -651,6 +650,7 @@ rec {
       ".vsnip".source = (symlink /${dotfiles}/vsnip);
       ".gitconfig".source = (symlink /${dotfiles}/gitconfig);
       ".Xmodmap".source = (symlink /${dotfiles}/Xmodmap);
+      ".tmux.conf".source = (symlink /${dotfiles}/tmux.conf);
     };
 
   # Home Manager can also manage your environment variables through
