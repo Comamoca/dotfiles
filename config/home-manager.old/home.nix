@@ -35,14 +35,11 @@ rec {
     # # "Hello, world!" when run.
     # pkgs.hello
 
-    # theme 
-    catppuccin
-
     # Nix
     nixVersions.nix_2_23
 
     # ========== NIXGL ========== 
-    # nixgl.nixGLIntel
+    nixgl.nixGLIntel
 
     # ========== TERMINAL ========== 
     wezterm
@@ -69,7 +66,6 @@ rec {
     # textql-git
     cachix
 
-    ghq
     cava
     lsd
     bat
@@ -84,7 +80,6 @@ rec {
     jwt-cli
 
     slack
-    teams-for-linux
     discord
     beeper
 
@@ -99,7 +94,6 @@ rec {
     k6
 
     # esp32
-    easyeffects
     espup
     espflash
     esptool
@@ -107,6 +101,7 @@ rec {
     mkspiffs-presets.esp-idf
 
     # ========== SHELL ========== 
+    fish
 
     # ========== BROWSER ========== 
     # firefox
@@ -115,15 +110,9 @@ rec {
     # ========== SECURITY TOOLS ========== 
     keybase
     lssecret
-    pinentry-curses
 
     # ========== RUNTIME & COMPILER ========== 
     deno
-    nodejs
-    bun
-
-    pnpm
-
     gleam
 
     sbcl
@@ -139,9 +128,6 @@ rec {
     noto-fonts
     noto-fonts-cjk
     # ttf-udev-gothic
-
-    # ========== UTILS ========== 
-    nix-prefetch-scripts
 
     # ========== FROM PKGLIST ========== 
     acpi
@@ -220,11 +206,10 @@ rec {
 
     fastfetch
 
-    # fcitx5
-    # fcitx5-configtool
-    # fcitx5-gtk
-    # fcitx5-skk
-
+    fcitx5
+    fcitx5-configtool
+    fcitx5-gtk
+    fcitx5-skk
     fd
 
     ffmpeg
@@ -504,7 +489,8 @@ rec {
   home.file =
     let
       symlink = config.lib.file.mkOutOfStoreSymlink;
-      dotfiles = /${home.homeDirectory}/.ghq/github.com/Comamoca/dotfiles;
+      dotfilesRoot = /${home.homeDirectory}/.ghq/github.com/comamoca/dotfiles;
+      dotfiles = /${dotfilesRoot}/dotfiles;
       xdgConfigHome = /${home.homeDirectory}/.config;
       homeBin = /${home.homeDirectory}/.bin;
     in
@@ -515,11 +501,11 @@ rec {
         recursive = true;
       };
       ".bin/scripts/mit" = {
-        source = (symlink /${dotfiles}/bin/scripts/mit);
+        source = (symlink /${dotfiles}/bin/scripts/ime);
         recursive = true;
       };
       ".bin/scripts/shift" = {
-        source = (symlink /${dotfiles}/bin/scripts/shift);
+        source = (symlink /${dotfiles}/bin/scripts/ime);
         recursive = true;
       };
 
@@ -544,16 +530,6 @@ rec {
         recursive = true;
       };
 
-      # ".config/hypr" = {
-      #   source = (symlink /${dotfiles}/config/hypr);
-      #   recursive = true;
-      # };
-
-      ".config/swaylock" = {
-        source = (symlink /${dotfiles}/config/swaylock);
-        recursive = true;
-      };
-
       ".config/cava" = {
         source = (symlink /${dotfiles}/config/cava);
         recursive = true;
@@ -564,10 +540,10 @@ rec {
         recursive = true;
       };
 
-      # ".config/fish" = {
-      #   source = (symlink /${dotfiles}/config/fish);
-      #   recursive = true;
-      # };
+      ".config/fish" = {
+        source = (symlink /${dotfiles}/config/fish);
+        recursive = true;
+      };
 
       ".config/i3" = {
         source = (symlink /${dotfiles}/config/i3);
@@ -583,14 +559,6 @@ rec {
         source = (symlink /${dotfiles}/config/kitty);
         recursive = true;
       };
-
-      # ".config/kitty/kitty.conf" = {
-      #   source = pkgs.substituteAll {
-      #     name = "kitty_themes";
-      #     kitty_themes = "${inputs.catppuccin-kitty}/themes";
-      #     src = /${dotfiles}/config/kitty/kitty.conf;
-      #   }; 
-      # };
 
       ".config/lazygit" = {
         source = (symlink /${dotfiles}/config/lazygit);
@@ -627,22 +595,6 @@ rec {
         recursive = true;
       };
 
-      ".config/rofi" = {
-        source = (symlink /${dotfiles}/config/rofi);
-        # source = ;
-        recursive = true;
-      };
-
-      ".config/bat" = {
-        source = (symlink /${dotfiles}/config/bat);
-        recursive = true;
-      };
-
-      ".config/swaync" = {
-        source = (symlink /${dotfiles}/config/swaync);
-        recursive = true;
-      };
-
       ".czrc".source = (symlink /${dotfiles}/czrc);
       ".nirc".source = (symlink /${dotfiles}/nirc);
       ".zshrc".source = (symlink /${dotfiles}/zshrc);
@@ -650,7 +602,6 @@ rec {
       ".vsnip".source = (symlink /${dotfiles}/vsnip);
       ".gitconfig".source = (symlink /${dotfiles}/gitconfig);
       ".Xmodmap".source = (symlink /${dotfiles}/Xmodmap);
-      ".tmux.conf".source = (symlink /${dotfiles}/tmux.conf);
     };
 
   # Home Manager can also manage your environment variables through
@@ -671,11 +622,10 @@ rec {
 
   home.sessionVariables = {
     # EDITOR = "nvim";
-    XDG_CONFIG_HOME = "${home.homeDirectory}/.config";
   };
 
-  # programs.neovim.package = pkgs.neovim;
-  # programs.neovim.enable = true;
+  programs.neovim.package = pkgs.neovim;
+  programs.neovim.enable = true;
 
   # neovim-nightly
   # programs.neovim = {
@@ -685,17 +635,8 @@ rec {
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
-
-  wayland.windowManager.hyprland.enable = true;
-  wayland.windowManager.hyprland.settings = import ./hyprland.nix { inherit pkgs; };
-
-  programs = {
-    direnv = {
-      enable = true;
-      nix-direnv.enable = true;
-    };
-    fish = import ./fish.nix { inherit pkgs; };
-  };
-
   # programs.lem-editor.enable = true 
+
+  # wayland.windowManager.hyprland.enable = true;
+  # wayland.windowManager.hyprland.settings = import ./hyprland.nix { inherit pkgs; };
 }

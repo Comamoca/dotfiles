@@ -29,3 +29,13 @@ This is Comamoca's dotfiles repository.
 - fish
 - Neovim
 - and more...
+
+## 📖 License
+
+### catppuccin
+
+- [catppuccin/nix](https://github.com/catppuccin/nix)
+- [catppuccin/fish](https://github.com/catppuccin/fish)
+- [catppuccin/swaync](https://github.com/catppuccin/swaync)
+- [catppuccin/bat](https://github.com/catppuccin/bat)
+- [catppuccin/kitty](https://github.com/catppuccin/kitty)
