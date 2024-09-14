@@ -1,1 +1,0 @@
-/home/coma/.dotfiles/config/nvim/lua//configs/ddc.lua
