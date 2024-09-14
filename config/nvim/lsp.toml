@@ -2,6 +2,9 @@
 repo = 'neovim/nvim-lspconfig'
 # on_event = ['BufEnter']
 on_event = ['BufRead', 'CursorHold']
+lua_source = """
+require("configs/lsp")
+"""
 # on_event = ['LspAttach']
 
 # Add `vim.*` in LSP suggestion
@@ -10,13 +13,12 @@ repo = 'folke/lazydev.nvim'
 on_source = 'nvim-lspconfig'
 
 # Language Server management
-[[plugins]]
-repo = 'williamboman/mason.nvim'
-on_source = 'nvim-lspconfig'
+# [[plugins]]
+# repo = 'williamboman/mason.nvim'
+# on_source = 'nvim-lspconfig'
 
-[[plugins]]
-repo = 'williamboman/mason-lspconfig.nvim'
-on_source = 'mason.nvim'
-lua_source = """
-require("configs/lsp")
-"""
+# [[plugins]]
+# repo = 'williamboman/mason-lspconfig.nvim'
+# on_source = 'mason.nvim'
+# lua_source = """
+# """
