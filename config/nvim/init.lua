@@ -1,5 +1,5 @@
 if vim.loader then
-	vim.loader.enable()
+  vim.loader.enable()
 end
 
 -- start prelude
@@ -30,13 +30,13 @@ vim.opt.runtimepath:prepend(denops_src)
 -- call dpp#min#load_state("~/.cache/dpp")
 -- call dpp#make_state("~/.cache/dpp", "~/.config/nvim/dpp.ts")
 if dpp.load_state(dppBase) then
-	vim.api.nvim_create_autocmd("User", {
-		pattern = "DenopsReady",
-		callback = function()
-			vim.notify("dpp load_state() is failed")
-			dpp.make_state(dppBase, dpp_config)
-		end,
-	})
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "DenopsReady",
+    callback = function()
+      vim.notify("dpp load_state() is failed")
+      dpp.make_state(dppBase, dpp_config)
+    end,
+  })
 end
 
 -- vim.api.nvim_create_autocmd("User", {
@@ -48,8 +48,8 @@ end
 
 -- autocmd BufRead *.rs let g:rustfmt_autosave = 0
 vim.api.nvim_create_autocmd("BufRead", {
-	pattern = "*.ab",
-	command = "set filetype=amber",
+  pattern = "*.ab",
+  command = "set filetype=amber",
 })
 
 vim.cmd("filetype indent plugin on")
@@ -58,30 +58,30 @@ vim.cmd("syntax on")
 vim.api.nvim_create_user_command("DppInstall", "call dpp#async_ext_action('installer', 'install')", { nargs = 0 })
 vim.api.nvim_create_user_command("DppUpdate", "call dpp#async_ext_action('installer', 'update')", { nargs = 0 })
 vim.api.nvim_create_user_command("DppMakestate", function(val)
-	dpp.make_state(dppBase, dpp_config)
+  dpp.make_state(dppBase, dpp_config)
 end, { nargs = 0 })
 
 vim.api.nvim_create_user_command("Ddu", function(args)
-	local subcmd = args.args
-	print(subcmd)
-	vim.fn["ddu#start"]({ sources = { { name = subcmd } } })
+  local subcmd = args.args
+  print(subcmd)
+  vim.fn["ddu#start"]({ sources = { { name = subcmd } } })
 end, { nargs = 1 })
 
 vim.api.nvim_create_user_command("Deol", function(args)
-	vim.fn["deol#new"]({ command = "fish" })
+  vim.fn["deol#new"]({ command = "fish" })
 end, {})
 
 vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
-	callback = function()
-		vim.opt.clipboard = "unnamedplus"
-		require("configs/keymap")
-		-- require("configs/cmd")
+  callback = function()
+    vim.opt.clipboard = "unnamedplus"
+    require("configs/keymap")
+    -- require("configs/cmd")
 
-		-- vim.cmd("colorscheme gruvbox")
-		-- vim.cmd("colorscheme wal")
-		-- vim.cmd("colorscheme nord")
-		vim.cmd("SeiyaEnable")
-	end,
+    -- vim.cmd("colorscheme gruvbox")
+    -- vim.cmd("colorscheme wal")
+    -- vim.cmd("colorscheme nord")
+    vim.cmd("SeiyaEnable")
+  end,
 })
 
 vim.cmd("colorscheme catppuccin-mocha")
@@ -108,7 +108,7 @@ vim.opt.relativenumber = true
 vim.cmd("set completeopt=menuone,noinsert")
 
 vim.keymap.set("n", "<leader>k", function()
-	print("Hop!")
+  print("Hop!")
 end)
 
 vim.cmd([[const mapleader = " "]])

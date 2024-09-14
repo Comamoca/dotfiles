@@ -500,94 +500,94 @@ let g:rainbow_active = 1
 repo = 'lambdalisue/vim-mr'
 on_event = ['BufRead', 'CursorHold']
 
-[[plugins]]
-repo = 'nvimtools/none-ls.nvim'
-on_event = ['BufRead', 'CursorHold']
+# [[plugins]]
+# repo = 'nvimtools/none-ls.nvim'
+# on_event = ['BufRead', 'CursorHold']
 
-[[plugins]]
-repo = "nvimtools/none-ls-extras.nvim"
-on_source = "none-ls.nvim"
-lua_source = '''
-local null_ls = require("null-ls")
-local methods = require("null-ls").methods
-
-
-local h = require("null-ls.helpers")
-local u = require("null-ls.utils")
-
-
-local handle_output = function(params)
-    params.messages = params.output and params.output[1] and params.output[1].messages or {}
-    if params.err then
-        table.insert(params.messages, { message = params.err })
-    end
-
-    local parser = h.diagnostics.from_json({
-        attributes = {
-            severity = "severity",
-        },
-        severities = {
-            h.diagnostics.severities["warning"],
-            h.diagnostics.severities["error"],
-        },
-    })
-
-    return parser({ output = params.messages })
-end
-
-local textlint = h.make_builtin({
-	-- generator_opts,
-	method = methods.DIAGNOSTICS,
-	meta = {},
-	filetypes = { "txt", "markdown" },
-	generator = h.generator_factory({
-	command = {"bunx", "textlint"},
-	args = { "-f", "json", "--stdin", "-c", "$ROOT/.textlintrc.json", "--stdin-filename", "$FILENAME" },
-	format = "json_raw",
-	check_exit_code = { 0, 1 },
-	to_stdin = true,
-	cwd = h.cache.by_bufnr(function(params)
-            return u.root_pattern(
-                ".textlintrc",
-                -- ".textlintrc.js",
-                ".textlintrc.json"
-                -- ".textlintrc.yml",
-                -- ".textlintrc.yaml",
-                -- "package.json"
-            )(params.bufname)
-        end),
-	on_output = handle_output,
-    }),
-})
-
-
--- local cspell = require('cspell')
-
--- local cspell_config = {
---   config_file_preferred_name = 'cspell.json',
--- }
-
-local config = {
-		diagnostics_format = "#{m} (#{s}: #{c})",
-		sources = {
-			null_ls.builtins.formatting.stylua,
-			null_ls.builtins.formatting.black,
-			-- null_ls.builtins.completion.spell,
-			-- cspell.diagnostics.with({config = cspell_config}),
-		},
-	}
-
-
-if vim.fn["isdirectory"]("node_modules") == 1 then
-	config.sources[#config.sources + 1] = textlint
-end
-
-null_ls.setup(config)
-'''
+# [[plugins]]
+# repo = "nvimtools/none-ls-extras.nvim"
+# on_source = "none-ls.nvim"
+# lua_source = '''
+# local null_ls = require("null-ls")
+# local methods = require("null-ls").methods
+#
+#
+# local h = require("null-ls.helpers")
+# local u = require("null-ls.utils")
+#
+#
+# local handle_output = function(params)
+#     params.messages = params.output and params.output[1] and params.output[1].messages or {}
+#     if params.err then
+#         table.insert(params.messages, { message = params.err })
+#     end
+#
+#     local parser = h.diagnostics.from_json({
+#         attributes = {
+#             severity = "severity",
+#         },
+#         severities = {
+#             h.diagnostics.severities["warning"],
+#             h.diagnostics.severities["error"],
+#         },
+#     })
+#
+#     return parser({ output = params.messages })
+# end
+#
+# local textlint = h.make_builtin({
+# 	-- generator_opts,
+# 	method = methods.DIAGNOSTICS,
+# 	meta = {},
+# 	filetypes = { "txt", "markdown" },
+# 	generator = h.generator_factory({
+# 	command = {"bunx", "textlint"},
+# 	args = { "-f", "json", "--stdin", "-c", "$ROOT/.textlintrc.json", "--stdin-filename", "$FILENAME" },
+# 	format = "json_raw",
+# 	check_exit_code = { 0, 1 },
+# 	to_stdin = true,
+# 	cwd = h.cache.by_bufnr(function(params)
+#             return u.root_pattern(
+#                 ".textlintrc",
+#                 -- ".textlintrc.js",
+#                 ".textlintrc.json"
+#                 -- ".textlintrc.yml",
+#                 -- ".textlintrc.yaml",
+#                 -- "package.json"
+#             )(params.bufname)
+#         end),
+# 	on_output = handle_output,
+#     }),
+# })
+#
+#
+# -- local cspell = require('cspell')
+#
+# -- local cspell_config = {
+# --   config_file_preferred_name = 'cspell.json',
+# -- }
+#
+# local config = {
+# 		diagnostics_format = "#{m} (#{s}: #{c})",
+# 		sources = {
+# 			null_ls.builtins.formatting.stylua,
+# 			null_ls.builtins.formatting.black,
+# 			-- null_ls.builtins.completion.spell,
+# 			-- cspell.diagnostics.with({config = cspell_config}),
+# 		},
+# 	}
+#
+#
+# if vim.fn["isdirectory"]("node_modules") == 1 then
+# 	config.sources[#config.sources + 1] = textlint
+# end
+#
+# null_ls.setup(config)
+# '''
 
 [[plugins]]
 repo = "davidmh/cspell.nvim"
-on_source = "none-ls.nvim"
+# on_source = "none-ls.nvim"
 
 [[plugins]]
 repo = "lambdalisue/vim-kensaku"

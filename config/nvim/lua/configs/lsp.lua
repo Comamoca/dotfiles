@@ -1,6 +1,6 @@
 local lspconfig = require("lspconfig")
-local mason = require("mason")
-local mason_lspconfig = require("mason-lspconfig")
+-- local mason = require("mason")
+-- local mason_lspconfig = require("mason-lspconfig")
 
 require("lazydev").setup()
 
@@ -100,22 +100,6 @@ local lsp_settings = {
     lspconfig[name].setup(opts)
   end,
 }
-
--- maosn config
--- mason.setup()
--- mason_lspconfig.setup()
-
--- mason_lspconfig.setup_handlers({
---   function(name)
---     -- if name == "denols" or name == "tsserver" then
---     --   lsp_settings.denols_tsserver(name)
---     -- elseif name == "tailwindcss" then
---     --   lsp_settings.tailwindcss(name)
---
---     print(name)
---     require("lspconfig")[name].setup({})
---   end,
--- })
 
 local servers = {
   "clangd",
