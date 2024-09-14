@@ -1,0 +1,17 @@
+[ghq]
+	root = ~/.ghq
+[user]
+	email = comamoca.dev@gmail.com
+	name = Comamoca
+	signingKey = 35CFBFA289634E3ECAC96FCE0C8FA6582E5474A5
+[commit]
+	gpgsign = true
+[gpg]
+	program = gpg
+[init]
+	defaultBranch = main
+
+[alias]
+	undo = reset --sort HEAD^
+[http]
+	postBuffer = 524288000

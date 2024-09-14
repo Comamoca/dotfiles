@@ -1,0 +1,1 @@
+/home/coma/.dotfiles/config/nvim/lua//configs/cmd.lua
