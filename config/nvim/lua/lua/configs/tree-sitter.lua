@@ -1,0 +1,1 @@
+/home/coma/.dotfiles/config/nvim/lua//configs/tree-sitter.lua

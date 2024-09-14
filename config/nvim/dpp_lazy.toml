@@ -1,0 +1,992 @@
+[[plugins]]
+repo = "lambdalisue/fern.vim"
+on_cmd = ["Fern"]
+lua_source = """
+vim.keymap.set('n', '<leader>f', "<cmd>Fern . -reveal=% -drawer -toggle -width=40<CR>")
+"""
+
+[[plugins]]
+repo = "dstein64/vim-startuptime"
+on_cmd = ["StartupTime"]
+
+[[plugins]]
+repo = "mhinz/vim-sayonara"
+on_cmd = ["Sayonara"]
+hook_source = """
+nnoremap <C-f> <cmd>Sayonara<CR>
+"""
+
+[[plugins]]
+repo = "hrsh7th/nvim-insx"
+on_event = ['InsertEnter']
+lua_source = """
+-- require('insx.preset.standard').setup()
+"""
+
+[[plugins]]
+repo = 'm4xshen/autoclose.nvim'
+on_event = ['InsertEnter']
+lua_source = """
+require("autoclose").setup()
+"""
+
+[[plugins]]
+repo = 'nvim-treesitter/nvim-treesitter'
+on_event = ['BufRead', 'CursorHold']
+hook_post_update = 'TSUpdate'
+lua_source = '''
+ --    require("nvim-treesitter.configs").setup({
+ --      -- ensure_installed = { "c", "lua", "vim", "vimdoc", "query" },
+ --      sync_install = false,
+ --      auto_install = true,
+ --
+ --      textobjects = {
+ --        select = {
+ --          enable = true,
+ --          lookahead = true,
+ --          keymaps = {
+ --            ["af"] = "@function.outer",
+ --            ["if"] = "@function.inner",
+ --            ["ac"] = "@class.outer",
+ --            ["ic"] = "@class.inner",
+ --          },
+ --        },
+ --      },
+ --
+ --      highlight = {
+ --        enable = true,
+ -- -- disable = { "markdown" },
+ --
+ --        -- disable highlight in big file
+ --        disable = function(lang, buf)
+ --          local max_filesize = 100 * 1024 -- 100 KB
+ --          local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+ --          if ok and stats and stats.size > max_filesize then
+ --            return true
+ --          end
+ --        end,
+ --
+ --        additional_vim_regex_highlighting = false,
+ --      },
+ --      autotag = {
+ --        enable = true
+ --        },
+ --    })
+
+ require'nvim-treesitter.configs'.setup {
+   ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "gleam", "haxe"},
+   sync_install = false,
+   auto_install = false,
+   ignore_install = {},
+
+   highlight = {
+     enable = true,
+     disable = function(lang, buf)
+         local max_filesize = 100 * 1024 -- 100 KB
+         local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+         if ok and stats and stats.size > max_filesize then
+             return true
+         end
+     end,
+     additional_vim_regex_highlighting = false,
+   },
+ }
+
+ local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
+
+ parser_config.haxe = {
+   install_info = {
+     url = "https://github.com/vantreeseba/tree-sitter-haxe",
+     files = {"src/parser.c"},
+     -- optional entries:
+     branch = "main",
+   },
+   filetype = "haxe",
+ }
+'''
+
+[[plugins]]
+repo = 'nvim-treesitter/nvim-treesitter-textobjects'
+on_source = ["nvim-treesitter"]
+
+[[plugins]]
+repo = 'vantreeseba/tree-sitter-haxe'
+on_source = ["nvim-treesitter"]
+
+[[plugins]]
+repo = 'nvim-treesitter/playground'
+on_source = ["nvim-treesitter"]
+
+[[plugins]]
+repo = 'hiphish/rainbow-delimiters.nvim'
+# on_source = ["nvim-treesitter"]
+on_event = ['BufRead', 'CursorHold']
+lua_source = '''
+local rainbow_delimiters = require('rainbow-delimiters')
+
+require('rainbow-delimiters.setup').setup(
+    {
+        strategy = {
+            [''] = rainbow_delimiters.strategy['global'],
+            vim = rainbow_delimiters.strategy['local'],
+        },
+        query = {
+            [''] = 'rainbow-delimiters',
+            lua = 'rainbow-blocks',
+        },
+        priority = {
+            [''] = 110,
+            lua = 210,
+        },
+        -- highlight = {
+        --     'RainbowDelimiterRed',
+        --     'RainbowDelimiterYellow',
+        --     'RainbowDelimiterBlue',
+        --     'RainbowDelimiterOrange',
+        --     'RainbowDelimiterGreen',
+        --     'RainbowDelimiterViolet',
+        --     'RainbowDelimiterCyan',
+        -- },
+    }
+)
+
+-- vim.g.rainbow_delimiters = {
+--     strategy = {
+--         [''] = rainbow_delimiters.strategy['global'],
+--         vim = rainbow_delimiters.strategy['local'],
+--     },
+--     query = {
+--         [''] = 'rainbow-delimiters',
+--         lua = 'rainbow-blocks',
+--     },
+--     priority = {
+--         [''] = 110,
+--         lua = 210,
+--     },
+--     -- highlight = {
+--     --     'RainbowDelimiterRed',
+--     --     'RainbowDelimiterYellow',
+--     --     'RainbowDelimiterBlue',
+--     --     'RainbowDelimiterOrange',
+--     --     'RainbowDelimiterGreen',
+--     --     'RainbowDelimiterViolet',
+--     --     'RainbowDelimiterCyan',
+--     -- },
+-- }
+'''
+
+[[plugins]]
+repo = "numToStr/Comment.nvim"
+# on_event = ['BufEnter']
+on_event = ['BufRead', 'CursorHold']
+lua_source = """
+require('Comment').setup()
+"""
+
+[[plugins]]
+repo = "yuttie/comfortable-motion.vim"
+# on_event = ['BufEnter']
+# on_event = ['BufRead', 'CursorHold']
+hook_source = """
+nnoremap <silent><C-k> :<C-u>call comfortable_motion#flick(-70)<CR>
+nnoremap <silent><C-j> :<C-u>call comfortable_motion#flick(70)<CR>
+
+let g:comfortable_motion_no_default_key_mappings = 1
+"""
+
+
+[[plugins]]
+repo = 'stevearc/oil.nvim'
+lua_source = "require(\"oil\").setup()\n"
+on_cmd = ["Oil"]
+on_event = ['BufRead', 'CursorHold']
+
+# color theme
+[[plugins]]
+repo = "ellisonleao/gruvbox.nvim"
+on_event = ['BufRead', 'CursorHold']
+lua_source = """
+require("gruvbox").setup({
+  terminal_colors = true,
+  contrast = "soft",
+  transparent_mode = true,
+  palette_overrides = {
+    bright_green = "#98971a",
+  },
+})
+"""
+
+[[plugins]]
+repo = "miyakogi/seiya.vim"
+# on_event = ['BufRead', 'CursorHold']
+on_event = ["ColorSchemePre", 'BufRead', 'CursorHold']
+# on_cmd = ["SeiyaEnable"]
+lua_source = """
+vim.cmd("let g:seiya_target_groups = has('nvim') ? ['guibg'] : ['ctermbhhg']")
+-- vim.g.seiya_auto_enable = 1
+-- vim.cmd("SeiyaEnable")
+"""
+
+[[plugins]]
+repo = "wakatime/vim-wakatime"
+on_event = ['BufRead', 'CursorHold', "BufReadPre"]
+
+[[plugins]]
+repo = "Shougo/context_filetype.vim"
+on_event = ['BufRead', 'CursorHold', "BufReadPre"]
+
+[[plugins]]
+repo = 'thinca/vim-partedit'
+on_event = ['BufRead', 'CursorHold', "BufReadPre"]
+hook_add = '''
+    let g:partedit#prefix_pattern = '\s*'
+    let g:partedit#auto_prefix = 0
+'''
+
+[[plugins]]
+repo = 'monaqa/nvim-treesitter-clipping'
+depends = ['nvim-treesitter', 'vim-partedit']
+on_lua = 'nvim-treesitter-clipping'
+lua_add = '''
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = { "toml", "markdown" },
+      callback = function()
+        vim.keymap.set("n", "<C-p>", function()
+          require("nvim-treesitter-clipping.internal").clip()
+          vim.keymap.set("n", "Q", "<Cmd>w<CR><Cmd>ParteditEnd<CR>", { buffer = true })
+        end, { buffer = true })
+      end,
+    })
+'''
+
+[[plugins]]
+repo = 'stevearc/conform.nvim'
+# on_event = ['BufRead', 'CursorHold']
+lua_source = """
+    local conform = require("conform")
+
+    conform.formatters.stylua = {
+      prepend_args = { "--indent-type", "Spaces", "--indent-width", "2" },
+    }
+
+    conform.setup({
+      formatters_by_ft = {
+        lua = {
+          "stylua",
+        },
+        python = { "ruff_format" , "black", "isort" },
+        javascript = {
+          "deno_fmt",
+        },
+        typescript = {
+          "deno_fmt",
+        },
+        typescriptreact = {
+          "deno_fmt",
+        },
+        javascriptreact = {
+          "deno_fmt",
+        },
+        json = {
+          "deno_fmt",
+        },
+        jsonc = {
+          "deno_fmt",
+        },
+        go = {
+          "gofmt", "goimoprts",
+        },
+        gleam = {
+          "gleam"
+        },
+        php = {
+          "phpinsights",
+          "phpcbf"
+        }
+      },
+      format_on_save = function(bufnr)
+    	  return {
+    		  timeout_ms = 500,
+    		  lsp_format = "fallback",
+    		  bufnr = bufnr
+    	  }
+      end,
+    })
+
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      pattern = "*",
+      callback = function(args)
+        -- require("conform").format({ bufnr = args.buf })
+        require("conform").format({ async = true, lsp_fallback = true, bufnr = args.buf })
+      end,
+    })
+"""
+
+[[plugins]]
+repo = 'folke/zen-mode.nvim'
+on_cmd = ["ZenMode"]
+lua_source = """
+    require("zen-mode").setup(
+    {
+      window = {
+        backdrop = 0.95,
+ width = 120,
+        height = 1,
+        options = {},
+      },
+      plugins = {
+        options = {
+          enabled = true,
+          ruler = true,
+          showcmd = false,
+          laststatus = 0,
+        },
+        wezterm = {
+          enabled = false,
+          font = "+4",
+        },
+      },
+      on_open = function(win)
+      end,
+      on_close = function()
+      end,
+    })
+"""
+
+[[plugins]]
+repo = 'skanehira/denops-translate.vim'
+on_cmd = ['Translate']
+
+# [[plugins]]
+# repo = 'Allianaab2m/vimskey'
+# on_cmd = ['VimskeyOpenTL', 'VimskeyAuth', 'VimskeyNote', 'VimskeyRenote']
+
+[[plugins]]
+repo = 'yuki-yano/fzf-preview.vim'
+on_event = ['BufRead', 'CursorHold']
+build = './install --all'
+
+
+[[plugins]]
+repo = 'liquidz/dps-parinfer'
+on_ft = ["lisp", "racket", "clojure"]
+
+[[plugins]]
+repo = "hadronized/hop.nvim"
+on_event = ['BufRead', 'CursorHold']
+lua_source = '''
+local hop = require('hop')
+local directions = require('hop.hint').HintDirection
+
+hop.setup()
+
+vim.keymap.set('n', '<Leader>k', function()
+	vim.cmd('hi HopNextKey guifg=#f72f38')
+	vim.cmd('hi HopNextKey1 guifg=#f72f38')
+	vim.cmd('hi HopNextKey2 guifg=#f72f38')
+
+	hop.hint_lines({})
+end,
+{noremap = true})
+'''
+
+# status line
+[[plugins]]
+repo = 'nvim-lualine/lualine.nvim'
+# on_event = ['BufRead', 'CursorHold']
+lua_source = '''
+require('lualine').setup {
+  options = {
+    globalstatus = true,
+    icons_enabled = true,
+    theme = 'auto',
+    component_separators = { left = '', right = ''},
+    section_separators = { left = '', right = ''},
+    disabled_filetypes = {
+      statusline = {},
+      winbar = {},
+    },
+    ignore_focus = {},
+    always_divide_middle = true,
+    refresh = {
+      statusline = 1000,
+      tabline = 1000,
+      winbar = 1000,
+    }
+  },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch', 'diff', 'diagnostics'},
+    lualine_c = {'filename'},
+    lualine_x = {'encoding', 'fileformat', 'filetype'},
+    lualine_y = {'progress'},
+    lualine_z = { 'totalchars' } -- 'location'
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {'filename'},
+    lualine_x = {'location'},
+    lualine_y = {},
+    lualine_z = {}
+  },
+  tabline = {},
+  winbar = {},
+  inactive_winbar = {},
+  extensions = {}
+}
+
+local function totalchars()
+	-- return vim.fn.wordcount()["words"]
+	return "Hello!"
+end
+'''
+
+[[plugins]]
+repo = 'itchyny/lightline.vim'
+on_event = ['BufRead', 'CursorHold']
+hook_source = '''
+let g:lightline = {
+      \ 'colorscheme': 'seoul256',
+      \ 'active': {
+      \   'left': [
+      \     [ 'mode', 'paste' ],
+      \     [ 'filename', 'lsp_errors', 'lsp_warnings', 'lsp_ok' ],
+      \   ],
+      \   'right': [
+      \     ['percent'],
+      \     ['fileformat', 'fileencoding', 'filetype', 'lineinfo', 'bufchar'],
+      \   ],
+      \ },
+      \ 'component_type': {
+      \   'lsp_warnings': 'warning',
+      \   'lsp_errors':   'error',
+      \   'lsp_ok':       'middle',
+      \ },
+			\ 'component_expand': {
+			\   'pomodoro': ''
+			\	},
+      \ 'component_function': {
+      \   'bufchar': 'Bufchar',
+      \   'nowplaying': 'NowPlaying',
+      \   'pomodoro': 'Pomodoro'
+      \ }
+    \ }
+
+let g:lightline.component = {
+    \ 'lineinfo': '%3l[%L]:%-2v'
+    \ }
+
+function! Bufchar() abort
+	return wordcount()['chars'] 
+endfunction
+
+function! NowPlaying() abort
+  let status = $"󰓇 {spotify#nowplaying()}"
+  call lightline#update()  
+
+	return status
+endfunction
+'''
+
+[[plugins]]
+repo = 'luochen1990/rainbow'
+on_event = ['BufRead', 'CursorHold']
+hook_source = '''
+let g:rainbow_active = 1 
+'''
+
+[[plugins]]
+repo = 'lambdalisue/vim-mr'
+on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = 'nvimtools/none-ls.nvim'
+on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = "nvimtools/none-ls-extras.nvim"
+on_source = "none-ls.nvim"
+lua_source = '''
+local null_ls = require("null-ls")
+local methods = require("null-ls").methods
+
+
+local h = require("null-ls.helpers")
+local u = require("null-ls.utils")
+
+
+local handle_output = function(params)
+    params.messages = params.output and params.output[1] and params.output[1].messages or {}
+    if params.err then
+        table.insert(params.messages, { message = params.err })
+    end
+
+    local parser = h.diagnostics.from_json({
+        attributes = {
+            severity = "severity",
+        },
+        severities = {
+            h.diagnostics.severities["warning"],
+            h.diagnostics.severities["error"],
+        },
+    })
+
+    return parser({ output = params.messages })
+end
+
+local textlint = h.make_builtin({
+	-- generator_opts,
+	method = methods.DIAGNOSTICS,
+	meta = {},
+	filetypes = { "txt", "markdown" },
+	generator = h.generator_factory({
+	command = {"bunx", "textlint"},
+	args = { "-f", "json", "--stdin", "-c", "$ROOT/.textlintrc.json", "--stdin-filename", "$FILENAME" },
+	format = "json_raw",
+	check_exit_code = { 0, 1 },
+	to_stdin = true,
+	cwd = h.cache.by_bufnr(function(params)
+            return u.root_pattern(
+                ".textlintrc",
+                -- ".textlintrc.js",
+                ".textlintrc.json"
+                -- ".textlintrc.yml",
+                -- ".textlintrc.yaml",
+                -- "package.json"
+            )(params.bufname)
+        end),
+	on_output = handle_output,
+    }),
+})
+
+
+-- local cspell = require('cspell')
+
+-- local cspell_config = {
+--   config_file_preferred_name = 'cspell.json',
+-- }
+
+local config = {
+		diagnostics_format = "#{m} (#{s}: #{c})",
+		sources = {
+			null_ls.builtins.formatting.stylua,
+			null_ls.builtins.formatting.black,
+			-- null_ls.builtins.completion.spell,
+			-- cspell.diagnostics.with({config = cspell_config}),
+		},
+	}
+
+
+if vim.fn["isdirectory"]("node_modules") == 1 then
+	config.sources[#config.sources + 1] = textlint
+end
+
+null_ls.setup(config)
+'''
+
+[[plugins]]
+repo = "davidmh/cspell.nvim"
+on_source = "none-ls.nvim"
+
+[[plugins]]
+repo = "lambdalisue/vim-kensaku"
+on_event = ['BufRead', 'CursorHold']
+hook_source = """
+"""
+
+[[plugins]]
+repo = "lambdalisue/vim-kensaku-search"
+on_source = ["vim-kensaku"]
+hook_source = '''
+" cnoremap <CR> <Plug>(kensaku-search-replace)<CR>
+'''
+
+[[plugins]]
+repo = "mattn/emmet-vim"
+on_ft = ["html"]
+
+[[plugins]]
+repo = 'kat0h/bufpreview.vim'
+build = 'deno task prepare'
+on_ft = ["markdown"]
+
+[[plugins]]
+repo = "vim-jp/vimdoc-ja"
+on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = 'monaqa/dial.nvim'
+on_event = ['BufRead', 'CursorHold']
+lua_source = '''
+local augend = require("dial.augend")
+
+require("dial.config").augends:register_group{
+  default = {
+    augend.integer.alias.decimal,
+    augend.integer.alias.hex,
+    augend.date.alias["%Y/%m/%d"],
+    augend.constant.alias.alpha,
+    augend.constant.alias.Alpha,
+    augend.constant.alias.ja_weekday,
+    augend.constant.alias.ja_weekday_full,
+    augend.constant.alias.bool,
+    augend.date.alias["%H:%M:%S"],
+    augend.date.alias["%H:%M"]
+  },
+  typescript = {
+    augend.integer.alias.decimal,
+    augend.integer.alias.hex,
+    augend.constant.new{ elements = {"let", "const"} },
+  },
+  visual = {
+    augend.integer.alias.decimal,
+    augend.integer.alias.hex,
+    augend.date.alias["%Y/%m/%d"],
+    augend.constant.alias.alpha,
+    augend.constant.alias.Alpha,
+    augend.constant.alias.ja_weekday,
+    augend.constant.alias.ja_weekday_full,
+    augend.constant.alias.bool,
+    augend.date.alias["%H:%M:%S"],
+    augend.date.alias["%H:%M"]
+  },
+}
+
+vim.cmd([[
+nmap  <C-a>  <Plug>(dial-increment)
+nmap  <C-x>  <Plug>(dial-decrement)
+nmap g<C-a> g<Plug>(dial-increment)
+nmap g<C-x> g<Plug>(dial-decrement)
+vmap  <C-a>  <Plug>(dial-increment)
+vmap  <C-x>  <Plug>(dial-decrement)
+vmap g<C-a> g<Plug>(dial-increment)
+vmap g<C-x> g<Plug>(dial-decrement)
+]])
+'''
+
+[[plugins]]
+repo = 'akinsho/flutter-tools.nvim'
+on_ft = ["dart"]
+lua_source = """
+require("flutter-tools").setup {
+  fvm = true,
+}
+"""
+
+[[plugins]]
+repo = 'mattn/vim-maketable'
+on_ft = 'markdown'
+
+[[plugins]]
+repo = 'lambdalisue/vim-gin'
+on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = 'lukas-reineke/indent-blankline.nvim'
+on_event = ['BufRead', 'CursorHold']
+lua_source = """
+local highlight = {
+    "RainbowRed",
+    "RainbowYellow",
+    "RainbowBlue",
+    "RainbowOrange",
+    "RainbowGreen",
+    "RainbowViolet",
+    "RainbowCyan",
+}
+
+local hooks = require "ibl.hooks"
+-- create the highlight groups in the highlight setup hook, so they are reset
+-- every time the colorscheme changes
+hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+    vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
+    vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
+    vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
+    vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
+    vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
+    vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
+    vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
+end)
+
+require("ibl").setup { indent = { highlight = highlight } }
+"""
+
+[[plugins]]
+repo = 'elixir-tools/elixir-tools.nvim'
+on_ft = ["elixir"]
+lua_source = """
+local elixir = require("elixir")
+local elixirls = require("elixir.elixirls")
+
+elixir.setup {
+  nextls = {
+	  enable = true
+  },
+  credo = {},
+  elixirls = {
+    enable = true,
+    settings = elixirls.settings {
+      dialyzerEnabled = false,
+      enableTestLenses = false,
+    },
+    on_attach = function(client, bufnr)
+      vim.keymap.set("n", "<leader>fp", ":ElixirFromPipe<cr>", { buffer = true, noremap = true })
+      vim.keymap.set("n", "<leader>tp", ":ElixirToPipe<cr>", { buffer = true, noremap = true })
+      vim.keymap.set("v", "<leader>em", ":ElixirExpandMacro<cr>", { buffer = true, noremap = true })
+    end,
+  }
+}
+"""
+
+[[plugins]]
+repo = "jdonaldson/vaxe"
+on_ft = ["haxe"]
+
+# format
+[[plugins]]
+repo = 'dense-analysis/ale'
+# on_event = ['BufRead', 'CursorHold']
+
+# [[plugins]]
+# repo = "scalameta/nvim-metals"
+# on_ft = ["scala", "sbt", "java"]
+# # on_event = ['BufRead', 'CursorHold']
+# lua_source = """
+# local metals_config = require("metals").bare_config()
+#
+# metals_config.on_attach = function(client, bufnr)
+#   -- your on_attach function
+# end
+#
+# require("metals").initialize_or_attach(metals_config)
+# """
+
+[[plugins]]
+repo = '4513ECHO/nvim-keycastr'
+on_event = ['BufRead', 'CursorHold']
+lua_source = """
+local keycastr = require('keycastr')
+
+local prefix = "KeyCaster"
+
+keycastr.config.set {
+    ignore_mouse = true,
+    position = "SE",
+    win_config = {
+        border = "rounded",
+    },
+}
+
+vim.api.nvim_create_user_command(prefix .. 'Enable',  function(opts) require('keycastr').enable() end, {})
+vim.api.nvim_create_user_command(prefix .. 'Show',    function(opts) require('keycastr').show() end, {})
+vim.api.nvim_create_user_command(prefix .. 'Hide',    function(opts) require('keycastr').hide() end, {})
+vim.api.nvim_create_user_command(prefix .. 'Disable', function(opts) require('keycastr').disable() end, {})
+
+-- vim.api.nvim_create_user_command("KeyCaster", function() print("hello") end, {})
+"""
+
+[[plugins]]
+repo = 'fukamachi/vlime'
+on_ft = ["lisp"]
+rtp = "vim"
+hook_source = '''
+map <buffer> <Space> <LocalLeader>
+nnoremap <silent> <localleader>rr :call VlimeStart()<CR>
+
+let g:vlime_cl_impl = "mondo"
+
+" let script_path = expand("~/.cache/dpp/repos/github.com/fukamachi/vlime/lisp/start-vlime.lisp")
+" let g:vlime_cl_impl = "sbcl --load " .. script_path
+
+let g:vlime_cl_use_terminal = v:true
+let g:vlime_window_settings = {
+    \ 'server': {'pos': 'botright', 'size': v:null, 'vertical': v:true}
+    \ }
+
+function! VlimeBuildServerCommandFor_mondo(vlime_loader, vlime_eval)
+    return ["mondo", "--server", "vlime"]
+endfunction
+
+function! VlimeStart()
+    call vlime#server#New(v:true, get(g:, "vlime_cl_use_terminal", v:false))
+endfunction
+'''
+
+[[plugins]]
+repo = 'Shougo/deol.nvim'
+on_event = ['BufRead', 'CursorHold']
+hook_source = """
+autocmd FileType deol call s:deol_settings()
+function! s:deol_settings()
+  nnoremap <buffer> <C-n>  <Plug>(deol_next_prompt)
+  nnoremap <buffer> <C-p>  <Plug>(deol_previous_prompt)
+  nnoremap <buffer> <CR>   <Plug>(deol_execute_line)
+  nnoremap <buffer> A      <Plug>(deol_start_append_last)
+  nnoremap <buffer> I      <Plug>(deol_start_insert_first)
+  nnoremap <buffer> a      <Plug>(deol_start_append)
+  nnoremap <buffer> e      <Plug>(deol_edit)
+  nnoremap <buffer> i      <Plug>(deol_start_insert)
+  nnoremap <buffer> q      <Plug>(deol_quit)
+endfunction
+
+autocmd BufEnter deol-edit@default call s:deol_edit_settings()
+function! s:deol_edit_settings()
+  nnoremap <buffer> <CR>  <Plug>(deol_execute_line)
+  nnoremap <buffer> <BS>  <Plug>(deol_backspace)
+  nnoremap <buffer> <C-h> <Plug>(deol_backspace)
+  nnoremap <buffer> q     <Plug>(deol_quit)
+  nnoremap <buffer> <C-c> <Plug>(deol_ctrl_c)
+  inoremap <buffer> <CR>  <Plug>(deol_execute_line)
+  inoremap <buffer> <BS>  <Plug>(deol_backspace)
+  inoremap <buffer> <C-h> <Plug>(deol_backspace)
+  inoremap <buffer> <C-c> <Plug>(deol_ctrl_c)
+  inoremap <buffer> <C-d> <Plug>(deol_ctrl_d)
+endfunction
+
+" deol ddu-kind
+" switch
+" new
+" delete
+" edit
+
+command! -nargs=1 Deol :call deol#start(#{command: <args>})
+"""
+
+[[plugins]]
+repo = 'gw31415/mstdn.vim'
+on_event = ['BufRead', 'CursorHold']
+hook_source = '''
+" command! MstdnHome :e mstdn://Comamoca@mstdn.jp/home
+" execute $"e mstdn://Comamoca@mstdn.jp/home"
+
+let s:username = "Comamoca"
+let s:server = "mstdn.jp"
+
+command! MstdnHome execute $":e mstdn://{s:username}@{s:server}/home"
+
+command! MstdnPublic execute  $":e mstdn://{s:username}@{s:server}/public"
+command! MstdnPublicMedia execute $":e mstdn://{s:username}@{s:server}/public/media"
+command! MstdnPublicHashtag execute $":e mstdn://{s:username}@{s:server}/public/tag/:hashtag"
+
+command! MstdnLocal execute $":e mstdn://{s:username}@{s:server}/local"
+command! MstdnLocalMedia execute $":e mstdn://{s:username}@{s:server}/local/media"
+command! MstdnLocalHashtag execute $":e mstdn://{s:username}@{s:server}/local/tag/:hashtag"
+
+command! MstdnRemote execute $":e mstdn://{s:username}@{s:server}/remote"
+command! MstdnRemoveMedia execute $":e mstdn://{s:username}@{s:server}/remote/media"
+
+autocmd BufReadCmd mstdn://* call s:mstdn_config()
+
+function s:mstdn_config() abort
+  " Some preferences
+  setl nonu so=0 scl=yes
+
+  " Key mappings
+  nn <buffer> <enter> <cmd>call mstdn#timeline#load_more()<cr>
+  nn <buffer> <expr> G getcurpos()[1] == line('$') ? "\<cmd>call mstdn#timeline#load_more()\<cr>" : "\<cmd>norm! G\<cr>"
+  nn <buffer><nowait> > <cmd>call mstdn#timeline#favourite()<cr>
+  nn <buffer><nowait> < <cmd>call mstdn#timeline#unfavourite()<cr>
+  nn <buffer><nowait> <C-r> <cmd>call mstdn#timeline#reconnect()<cr>
+
+  " mstdn#editor#open(user, opts = {}
+  " mstdn#editor#set_user(user)
+  " mstdn#editor#get_statusparams({bufnr})
+
+
+  " Configuration for mstdn-editor.vim
+  nn <buffer> i <Plug>(mstdn-editor-open)
+endfunction
+
+" auto reconnect
+autocmd BufReadCmd mstdn://* call timer_start(1500, {-> mstdn#timeline#reconnect_all()}, #{repeat: -1})
+'''
+
+[[plugins]]
+repo = 'gw31415/mstdn-editor.vim'
+on_source = ["mstdn.vim"]
+
+[[plugins]]
+repo = 'Olical/conjure'
+on_ft = ["racket", "clojure"]
+lua_source = """
+-- Disable the documentation mapping
+vim.g["conjure#mapping#doc_word"] = false
+
+-- Rebind it from K to <prefix>gk
+-- vim.g["conjure#mapping#doc_word"] = "gk"
+
+-- Reset it to the default unprefixed K (note the special table wrapped syntax)
+-- vim.g["conjure#mapping#doc_word"] = {"K"}
+"""
+
+[[plugins]]
+repo = 'ryoppippi/ray-so.vim'
+on_cmd = ["RaySo"]
+hook_source = """
+" Theme (default: 'vercel')
+let g:ray_so_theme = 'vercel'
+
+" Padding (default: 16)
+let g:ray_so_padding = 16
+
+" Background (default: v:true)
+let g:ray_so_background = v:true
+
+" Dark mode (default: v:true)
+let g:ray_so_darkmode = v:true
+"""
+
+[[plugins]]
+repo = 'windwp/nvim-ts-autotag'
+on_event = ['BufRead', 'CursorHold']
+lua_source = """
+require('nvim-ts-autotag').setup({
+  opts = {
+    -- Defaults
+    enable_close = true, -- Auto close tags
+    enable_rename = true, -- Auto rename pairs of tags
+    enable_close_on_slash = false -- Auto close on trailing </
+  },
+})
+"""
+
+[[plugins]]
+repo = 'gleam-lang/gleam.vim'
+ft = ["gleam"]
+
+[[plugins]]
+repo = 'sheerun/vim-polyglot'
+on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = 'uki00a/denops-pomodoro.vim'
+on_cmd = [
+  "PomodoroStart",
+  "PomodoroPause",
+  "PomodoroResume",
+  "PomodoroReset",
+  "PomodoroEcho",
+]
+
+[[plugins]]
+repo = 'lambdalisue/vim-gin'
+on_cmd = [
+  "Gin",
+  "GinBuffer",
+  "GinBranch",
+  "GinBrowse",
+  "GinCd",
+  "GinLcd",
+  "GinTcd",
+  "GinChaperon",
+  "GinDiff",
+  "GinEdit",
+  "GinLog",
+  "GinPatch",
+  "GinStatus",
+]
+
+[[plugins]]
+repo = 'vim-denops/denops-shared-server.vim'
+on_event = ['BufRead', 'CursorHold']

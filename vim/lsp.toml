@@ -1,0 +1,166 @@
+[[plugins]]
+repo = 'prabirshrestha/vim-lsp'
+on_event = ['BufRead', 'CursorHold']
+hook_source = '''
+let g:lsp_log_file = expand('~/.vim/log/vim-lsp.log')
+let g:lsp_settings_filetype_typescript = [
+\	'typescript-language-server',
+\       'eslint-language-server',
+\       'deno'
+\ ]
+let g:lsp_diagnostics_virtual_text_enabled = 1
+let g:lsp_diagnostics_virtual_text_insert_mode_enabled = 1
+let g:lsp_diagnostics_virtual_text_enabled = "after"
+let g:lsp_diagnostics_enabled = 1
+
+" if executable('gop')
+"   au User lsp_setup call lsp#register_server({
+"       \ 'name': 'Go+ language server',
+"       \ 'cmd': ["gop", "serve"],
+"       \ 'allowlist': ['gop'],
+"       \ })
+" endif
+
+" if executable('gleam')
+"   au User lsp_setup call lsp#register_server({
+"       \ 'name': 'gleam',
+"       \ 'cmd': ["gleam", "lsp"],
+"       \ 'allowlist': ['gleam'],
+"       \ })
+" endif
+
+" if executable('glas')
+"     au User lsp_setup call lsp#register_server({
+"         \ 'name': 'glas',
+" 	\ 'cmd': {server_info->['glas', '--stdio']},
+"         \ 'whitelist': ['gleam'],
+"         \ })
+" endif
+
+if executable('erg')
+  au User lsp_setup call lsp#register_server({
+      \ 'name': 'erg',
+      \ 'cmd': ["erg", "server"],
+      \ 'allowlist': ['erg'],
+      \ })
+endif
+
+if executable('haxe-lsp')
+  au User lsp_setup call lsp#register_server({
+      \ 'name': 'haxe-language-server',
+      \ 'cmd': ["haxe-lsp", "--stdio"],
+      \ 'allowlist': ['haxe'],
+      \ })
+endif
+
+if executable('rescript-language-server')
+  au User lsp_setup call lsp#register_server({
+      \ 'name': 'rescript-language-server',
+      \ 'cmd': ["rescript-language-server", "--stdio"],
+      \ 'allowlist': ['rescript'],
+      \ })
+endif
+
+if executable('nextls')
+  au User lsp_setup call lsp#register_server({
+      \ 'name': 'next_ls',
+      \ 'cmd': ["nextls", "--stdio"],
+      \ 'allowlist': ['elixir'],
+      \ })
+endif
+
+
+if executable('haskell-language-server-wrapper')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'haskell-ls',
+        \ 'cmd': {server_info->['haskell-language-server-wrapper', '--lsp']},
+        \ 'root_uri':{server_info->lsp#utils#path_to_uri(
+        \     lsp#utils#find_nearest_parent_file_directory(
+        \         lsp#utils#get_buffer_path(),
+        \         ['.cabal', 'stack.yaml', 'cabal.project', 'package.yaml', 'hie.yaml', '.git'],
+        \     ))},
+        \ 'allowlist': ['haskell', 'lhaskell'],
+        \ })
+endif
+
+if executable('janet-lsp')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'Janet Language Server',
+	\ 'cmd': {server_info->['janet-lsp']},
+        \ 'whitelist': ['janet'],
+        \ })
+endif
+
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=yes
+    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+
+    nmap <buffer> gd <plug>(lsp-definition)
+    nmap <buffer> gs <plug>(lsp-document-symbol-search)
+    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+    nmap <buffer> gr <plug>(lsp-references)
+    nmap <buffer> gi <plug>(lsp-implementation)
+    nmap <buffer> gt <plug>(lsp-type-definition)
+    nmap <buffer> <leader>rn <plug>(lsp-rename)
+    nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+    nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+    nmap <buffer> K <plug>(lsp-hover)
+    " nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
+    " nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
+
+    let g:lsp_format_sync_timeout = 0
+    " autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
+    
+    " refer to doc to add more commands
+endfunction
+
+augroup lsp_install
+    au!
+    " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+
+augroup vimspector
+    autocmd!
+    autocmd User VimspectorJumpedToFrame * call s:vimspector_my_settings()
+augroup END
+
+function! s:vimspector_my_settings() abort
+	echom "Vimspector!"
+	nnoremap <Leader>r <Plug>VimspectorContinue
+	nnoremap <Leader>s <plug>VimspectorStop
+	nnoremap <C-b> <cmd>call vimspector#ToggleBreakpoint()<CR>
+        nnoremap <S-q> <cmd>vimspector#Reset()<CR>
+endfunction
+
+call lsp#activate()
+'''
+
+[[plugins]]
+repo = 'mattn/vim-lsp-settings'
+on_source = 'vim-lsp'
+
+[[plugins]]
+repo = 'dense-analysis/ale'
+on_event = ['BufRead', 'CursorHold']
+hook_source = '''
+let g:ale_disable_lsp = 1
+
+let g:ale_sign_error = ' '
+let g:ale_sign_warning = ' '
+let g:ale_sign_info = ' '
+
+let g:ale_fix_on_save = 1
+let g:rustfmt_on_save = 0
+let g:ale_floating_window_border = ['│', '─', '╭', '╮', '╯', '╰', '│', '─']
+
+
+let g:ale_fixers = {
+      \ 'javascript': ['deno'],
+      \ 'typescript': ['deno'],
+      \ 'python': ['ruff', 'isort'],
+      \ 'nix': ['nixfmt', 'nixpkgs-fmt'],
+      \ 'gleam': ["gleam_format"],
+      \ }
+'''

@@ -1,0 +1,161 @@
+{
+  "reload_style_on_change": true,
+  "layer": "top",
+  "modules-left": [
+    "custom/launcher",
+    "cpu",
+    "memory",
+    "tray",
+    "hyprland/workspaces"
+  ],
+  "modules-center": ["custom/media"],
+  "modules-right": [
+    "custom/notification",
+    "backlight",
+    "pulseaudio",
+    "clock",
+    "battery",
+    "custom/power"
+  ],
+
+  "pulseaudio": {
+    "tooltip": false,
+    "scroll-step": 5,
+    "format": "{icon} {volume}%",
+    "format-muted": " {volume}%",
+    "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+    "format-icons": {
+      "default": ["", "", ""]
+    }
+  },
+  "hyprland/workspaces": {
+    "format": "{icon}",
+    "on-scroll-up": "hyprctl dispatch workspace e+1",
+    "on-scroll-down": "hyprctl dispatch workspace e-1"
+  },
+  "river/tags": {
+    "num-tags": 6
+  },
+  "network": {
+    "tooltip": false,
+    "format-wifi": "  {essid}",
+    "format-ethernet": ""
+  },
+  "backlight": {
+    "tooltip": false,
+    "format": " {}%",
+    "interval": 1,
+    "on-scroll-up": "light -A 5",
+    "on-scroll-down": "light -U 5"
+  },
+  "battery": {
+    "states": {
+      "good": 95,
+      "warning": 30,
+      "critical": 20
+    },
+    "format": "{icon}   {capacity}%",
+    "format-charging": " {capacity}%",
+    "format-plugged": " {capacity}%",
+    "format-alt": "{time} {icon}",
+    "format-icons": ["", "", "", "", ""]
+  },
+  "tray": {
+    "icon-size": 18,
+    "spacing": 10
+  },
+  "clock": {
+    "format": "{:%H:%M}",
+    "format-alt": "{:%Y/%m/%d %a (%R)}",
+    "tooltip-format": "<big><span color='#cdd6f4'>{:%Y %B}</span></big>\n<tt><small>{calendar}</small></tt>",
+    "calendar": {
+      "mode": "month",
+      "mode-mon-col": 3,
+      "weeks-pos": "right",
+      "on-scroll": 1,
+      "format": {
+        "months": "<span color='#cdd6f4'><b>{}</b></span>",
+        "days": "<span color='#89dceb'><b>{}</b></span>",
+        "weekdays": "<span color='#fab387'><b>{}</b></span>",
+        "today": "<span color='#f2cdcd'><b><u>{}</u></b></span>"
+      }
+    },
+    "actions": {
+      "on-click-right": "mode",
+      "on-click-forward": "tz_up",
+      "on-click-backward": "tz_down",
+      "on-scroll-up": "shift_up",
+      "on-scroll-down": "shift_down"
+    }
+  },
+  "cpu": {
+    "interval": 15,
+    "format": " {}%",
+    "max-length": 10
+  },
+  "memory": {
+    "interval": 30,
+    "format": " {}%",
+    "max-length": 10
+  },
+  "custom/media": {
+    "interval": 5,
+    "format": "{icon} {}",
+    "max-length": 30,
+    "tooltip": false,
+    "format-icons": {
+      "default": " ",
+      "spotify": " "
+    },
+    "escape": true,
+    "exec": "playerctl metadata --format '{{ title }}'",
+    "on-click": "playerctl play-pause"
+  },
+  "cava": {
+    // "cava_config": "$HOME/.config/cava/cava.conf",
+    "autosens": 1,
+    "sensitivity": 1,
+    "bars": 14,
+    "lower_cutoff_freq": 50,
+    "higher_cutoff_freq": 10000,
+    "method": "pulse",
+    "source": "auto",
+    "stereo": true,
+    "reverse": false,
+    "bar_delimiter": 0,
+    "monstercat": false,
+    "waves": false,
+    "noise_reduction": 0.77,
+    "input_delay": 2,
+    "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+    "actions": {
+      "on-click-right": "mode"
+    }
+  },
+  "custom/launcher": {
+    "format": "",
+    "on-click": "rofi -show drun",
+    "on-click-right": "killall rofi"
+  },
+  "custom/power": {
+    "format": " ",
+    "on-click": "rofi -show p -modi p:rofi-power-menu"
+  },
+  "custom/updates": {
+    "format": "{} Update(s)",
+    "exec": "checkupdates | wc -l",
+    "exec-if": "[[ $(checkupdates | wc -l) != 0 ]]",
+    "interval": 15,
+    "on-click": "wezterm -- yay -Syu && notify-send 'The system has been updated' "
+  },
+  "bluetooth": {
+    "format": "{}%",
+    "exec": "bluetoothctl info | grep 'Battery Percentage' | cut -f 2 -d '(' | sed -z -e 's/)//' -e 's/\n//'",
+    "interval": 10
+  },
+  "custom/notification": {
+    "tooltip": false,
+    "format": " ",
+    "on-click": "swaync-client -t -sw"
+  }
+}

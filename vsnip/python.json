@@ -1,0 +1,24 @@
+{
+  "input-map-int": {
+    "prefix": ["input;map;int"],
+    "body": [
+      "$1 = map(int, input().split())"
+    ]
+  },
+  "input-int": {
+    "prefix": ["input;int"],
+    "body": ["$1 = int(input())"]
+  },
+  "input-split": {
+    "prefix": ["input;split"],
+    "body": ["$1 = input().split()"]
+  },
+  "input-multi-int": {
+    "prefix": ["input;multi;int;N"],
+    "body": ["$1 = [int(input()) for i in range($2)]"]
+  },
+  "input-multi": {
+    "prefix": ["input;multi;str;N"],
+    "body": ["$1 = [input() for i in range($2)]"]
+  }
+}
