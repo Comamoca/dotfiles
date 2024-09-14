@@ -102,6 +102,7 @@
     "interval": 5,
     "format": "{icon} {}",
     "max-length": 30,
+    "tooltip": false,
     "format-icons": {
       "default": " ",
       "spotify": " "
