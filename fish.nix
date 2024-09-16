@@ -87,9 +87,9 @@ in
     fish_add_path /home/coma/go/bin
     fish_add_path /home/coma/local/
 
-    # alias to get date by yymmdd 
-    alias emacs="emacsclient -nw"
+    alias supa "bunx supabase"
 
+    # alias to get date by yymmdd
     alias today="date '+%Y-%m-%d' | tr -d '\n' | wl-copy"
     alias today-1="date -d yesterday '+%Y-%m-%d' | tr -d '\n' | wl-copy"
 
@@ -109,7 +109,6 @@ in
     # alias fzvim='nvim (fzf)'
     alias fzhq='string  join / (ghq root) (ghq list | fzf --preview "bat --color=always --style=header,grid --line-range :80 $(ghq root)/{}/README.*")'
 
-    # alias frea='freasearcher'
     alias ghostscript='gs'
 
     # alias g='git'
@@ -156,9 +155,7 @@ in
     export GOPATH=$HOME/go
 
     abbr --add e $EDITOR
-    abbr --add supa "bunx supabase"
-
-    abbr --add emacs emacs -nw
+    abbr --add a emacsclient -nw
 
     set -x ELIXIR_ERL_OPTIONS "+fnu"
     set -gx FYNE_FONT /usr/share/fonts/PlemolJP/PlemolJP-Regular.ttf
