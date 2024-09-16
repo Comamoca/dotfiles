@@ -1014,3 +1014,7 @@ require("catppuccin").setup({
 
 vim.cmd("colorscheme catppuccin-mocha")
 """
+
+[[plugins]]
+repo = 'thinca/vim-submode'
+on_event = ['BufRead', 'CursorHold']
