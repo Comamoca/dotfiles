@@ -52,6 +52,11 @@ vim.api.nvim_create_autocmd("BufRead", {
   command = "set filetype=amber",
 })
 
+vim.api.nvim_create_autocmd("BufRead", {
+  pattern = "*.astro",
+  command = "set filetype=astro",
+})
+
 vim.cmd("filetype indent plugin on")
 vim.cmd("syntax on")
 
@@ -84,8 +89,6 @@ vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
   end,
 })
 
-vim.cmd("colorscheme catppuccin-mocha")
-
 -- vim.g.seiya_auto_enable = 1
 
 vim.cmd("inoremap jj <C-[>")
@@ -103,7 +106,8 @@ vim.cmd("au BufRead .denoflare set filetype=json")
 
 vim.opt.laststatus = 3
 vim.opt.cursorline = true
-vim.opt.relativenumber = true
+
+-- vim.opt.relativenumber = true
 
 vim.cmd("set completeopt=menuone,noinsert")
 
