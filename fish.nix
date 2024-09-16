@@ -88,6 +88,8 @@ in
     fish_add_path /home/coma/local/
 
     # alias to get date by yymmdd 
+    alias emacs="emacsclient -nw"
+
     alias today="date '+%Y-%m-%d' | tr -d '\n' | wl-copy"
     alias today-1="date -d yesterday '+%Y-%m-%d' | tr -d '\n' | wl-copy"
 
