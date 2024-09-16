@@ -14,6 +14,8 @@
     catppuccin.url = "github:catppuccin/nix";
     treefmt-nix.url = "github:numtide/treefmt-nix";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+    emacs-overlay.url = "github:nix-community/emacs-overlay";
+    emacs-overlay-tarball.url = "https://github.com/nix-community/emacs-overlay/archive/master.tar.gz";
   };
 
   outputs =
@@ -25,12 +27,17 @@
       treefmt-nix,
       catppuccin,
       neovim-nightly-overlay,
+      emacs-overlay,
+      emacs-overlay-tarball
     }@inputs:
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
       treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
       overlays = [
         neovim-nightly-overlay.overlays.default
+	(import (builtins.fetchTarball {
+	  url = emacs-overlay-tarball.url;
+	}))
       ];
     in
     # code = _: s: s;
