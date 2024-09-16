@@ -2,3 +2,6 @@ fish_variables
 skk
 
 .direnv
+
+eln-cache
+config/emacs/elpa
