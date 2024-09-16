@@ -22,10 +22,11 @@
 
   fonts = {
     fonts = with pkgs; [
+      udev-gothic-nf
       noto-fonts-cjk-serif
       noto-fonts-cjk-sans
       noto-fonts-emoji
-      udev-gothic
+      twemoji-color-font
       nerdfonts
     ];
     fontDir.enable = true;
@@ -56,6 +57,10 @@
         "nix-command"
         "flakes"
       ];
+      trusted-users = [
+        "root"
+        "coma"
+      ];
     };
     gc = {
       automatic = true;
@@ -84,10 +89,12 @@
   # networking.networkmanager.enable = true;
 
   # networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
-  networking.wireless.environmentFile = "/data/secrets/wireless.env";
+  # networking.wireless.environmentFile = "/data/secrets/wireless.env";
+  networking.wireless.secretsFile = "/data/secrets/wireless.env";
   networking.wireless.networks = {
     "rs500k-c07beb-3" = {
-      psk = "@PSK_HOME@";
+      # psk = "@PSK_HOME@";
+      pskRaw = "ext:PSK_HOME";
     };
   };
 
@@ -131,7 +138,8 @@
 
   # Enable the X11 windowing system.
   # You can disable this if you're only using the Wayland session.
-  services.xserver.enable = true;
+
+  services.xserver.enable = false;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -168,8 +176,10 @@
   # services.xserver.libinput.enable = true;
 
   # Enable the KDE Plasma Desktop Environment.
-  services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
+  # services.displayManager.sddm.enable = true;
+  # services.desktopManager.plasma6.enable = true; 
+
+  services.displayManager.ly.enable = true;
 
   # services.mako.enable = true;
   # services.mako.catppuccin.enable = true;
@@ -183,7 +193,6 @@
       "wheel"
     ];
     packages = with pkgs; [
-      kdePackages.kate
       #  thunderbird
     ];
     shell = pkgs.fish;
@@ -241,7 +250,7 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = with pkgs; [ 
     # gnupg
 
     kitty

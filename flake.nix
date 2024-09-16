@@ -13,6 +13,7 @@
 
     catppuccin.url = "github:catppuccin/nix";
     treefmt-nix.url = "github:numtide/treefmt-nix";
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
   };
 
   outputs =
@@ -23,14 +24,17 @@
       home-manager,
       treefmt-nix,
       catppuccin,
+      neovim-nightly-overlay,
     }@inputs:
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
       treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
+      overlays = [
+        neovim-nightly-overlay.overlays.default
+      ];
     in
     # code = _: s: s;
     {
-      # formatter.x86_64-linux = inputs.nixpkgs.legacyPackages.x86_64-linux.nixfmt-rfc-style;
       formatter.x86_64-linux = treefmtEval.config.build.wrapper;
 
       checks.x86_64-linux = {
@@ -62,6 +66,9 @@
           modules = [
             ./home.nix
             inputs.catppuccin.homeManagerModules.catppuccin
+            {
+              nixpkgs.overlays = overlays;
+            }
           ];
         };
       };
