@@ -169,7 +169,10 @@ in
     set PATH /home/coma/.luarocks/bin/ $PATH
 
     #set PATH /home/coma/go/bin $PATH
+
     starship init fish | source
+    just --completions fish | source
+
     # arduino-cli completion fish | source
 
     set -ga fish_user_paths /home/coma/.nimble/bin

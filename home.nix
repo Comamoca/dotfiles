@@ -64,9 +64,13 @@ rec {
 
     tig
 
+    just
+
     # ========== OTHER TOOLS ========== 
     # textimg
     # textql-git
+    vim-startuptime
+
     cachix
 
     ghq
