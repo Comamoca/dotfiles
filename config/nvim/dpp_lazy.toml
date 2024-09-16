@@ -955,9 +955,9 @@ require('nvim-ts-autotag').setup({
 repo = 'gleam-lang/gleam.vim'
 ft = ["gleam"]
 
-[[plugins]]
-repo = 'sheerun/vim-polyglot'
-on_event = ['BufRead', 'CursorHold']
+# [[plugins]]
+# repo = 'sheerun/vim-polyglot'
+# on_event = ['BufRead', 'CursorHold']
 
 [[plugins]]
 repo = 'uki00a/denops-pomodoro.vim'
@@ -990,3 +990,27 @@ on_cmd = [
 [[plugins]]
 repo = 'vim-denops/denops-shared-server.vim'
 on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = 'kdheepak/lazygit.nvim'
+on_cmd = [
+  "LazyGit",
+  "LazyGitConfig",
+  "LazyGitCurrentFile",
+  "LazyGitFilter",
+  "LazyGitFilterCurrentFile",
+]
+lua_source = """
+"""
+
+[[plugins]]
+repo = "catppuccin/nvim"
+on_event = ['BufRead', 'CursorHold']
+lua_source = """
+require("catppuccin").setup({
+    flavour = "mocha",
+    transparent_background = true
+})
+
+vim.cmd("colorscheme catppuccin-mocha")
+"""

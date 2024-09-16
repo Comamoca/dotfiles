@@ -36,35 +36,26 @@ repo = "nvim-lua/plenary.nvim"
 # [[plugins]]
 # repo = "nordtheme/vim"
 
-[[plugins]]
-repo = "catppuccin/nvim"
-lua_add = """
-require("catppuccin").setup({
-    flavour = "mocha",
-    transparent_background = true
-})
-"""
-
-[[plugins]]
-repo = "rebelot/kanagawa.nvim"
+# [[plugins]]
+# repo = "rebelot/kanagawa.nvim"
 # on_event = ['BufRead', 'CursorHold']
-lua_add = '''
-require('kanagawa').setup({
-  compile = true,
-  transparent = true
-})
-'''
+# lua_add = '''
+# require('kanagawa').setup({
+#   compile = true,
+#   transparent = true
+# })
+# '''
 
-[[plugins]]
-repo = 'VDuchauffour/neodark.nvim'
+# [[plugins]]
+# repo = 'VDuchauffour/neodark.nvim'
 # on_event = ['BufRead', 'CursorHold']
 
-[[plugins]]
-repo = "sainnhe/gruvbox-material"
+# [[plugins]]
+# repo = "sainnhe/gruvbox-material"
 # on_event = ['BufRead', 'CursorHold']
 
-[[plugins]]
-repo = "dylanaraps/wal.vim"
+# [[plugins]]
+# repo = "dylanaraps/wal.vim"
 # on_event = ['BufRead', 'CursorHold']
 
 # dpp.vim
