@@ -108,10 +108,13 @@ local servers = {
   "ts_ls",
   "lua_ls",
   "nil_ls",
+  "ruby_lsp",
+  "gopls",
 }
 
 -- Auto start language servers.
 for _, name in ipairs(servers) do
+  -- for _, name in ipairs(lspconfig.util.available_servers()) do
   if name == "denols" or name == "tsserver" then
     lsp_settings.denols_tsserver(name)
   elseif name == "tailwindcss" then
