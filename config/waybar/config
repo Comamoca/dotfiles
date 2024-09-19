@@ -134,6 +134,7 @@
   },
   "custom/launcher": {
     "format": "",
+    "tooltip": false,
     "on-click": "rofi -show drun",
     "on-click-right": "killall rofi"
   },
