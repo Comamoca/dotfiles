@@ -699,6 +699,8 @@ rec {
       nix-direnv.enable = true;
     };
     fish = import ./fish.nix { inherit pkgs; };
+    hyprlock.settings = import ./hyprlock.nix {};
+    hyprlock.enable = true;
   };
 
   # programs.lem-editor.enable = true 
