@@ -3,7 +3,11 @@ let
   kitty = "kitty";
 in
 {
-  monitor = [ ",preferred,auto,auto" ];
+  monitor = [
+    ",preferred,auto,auto"
+    # mirroring
+    # "HDMI-A-1,preferred,auto,auto,mirror,eDP-1"
+  ];
 
   source = "~/.config/hypr/mocha.conf";
 
