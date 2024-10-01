@@ -27,80 +27,6 @@ if vim.fn.executable("racket") then
 end
 
 -- Language server settings
-local lsp_settings = {
-  tailwindcss = function(name)
-    local fs = vim.fs
-    local root_dir = fs.find({ "tailwind.config.js", "tailwind.config.ts" }, { upward = false })[1]
-
-    if root_dir == nil then
-      return
-    end
-
-    if fs.dirname(root_dir[1]) then
-      lspconfig[name].setup({
-        capabilities = capabilities,
-      })
-    end
-  end,
-  denols_tsserver = function(name)
-    local node_root_dir = lspconfig.util.root_pattern("package.json")
-
-    local is_node_repo = node_root_dir(vim.api.nvim_buf_get_name(0)) ~= nil
-
-    local opts = {}
-
-    if name == "denols" then
-      if is_node_repo then
-        return
-      end
-
-      -- opts.root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc", "deps.ts", "import_map.json")
-      opts.root_dir = lspconfig.util.root_pattern("*")
-
-      opts.init_options = {
-        lint = true,
-        unstable = true,
-        suggest = {
-          imports = {
-            hosts = {
-              ["https://deno.land"] = true,
-              ["https://jsr.io"] = true,
-              ["https://cdn.nest.land"] = true,
-              ["https://crux.land"] = true,
-            },
-          },
-        },
-      }
-    elseif name == "tsserver" then
-      if not is_node_repo then
-        return
-      end
-
-      opts.root_dir = node_root_dir
-    elseif name == "eslint" then
-      if not is_node_repo then
-        return
-      end
-
-      opts.root_dir = node_root_dir
-    elseif name == "efm" then
-      opts.init_options = {
-        rootMarkers = {
-          ".git/",
-        },
-
-        -- languages = {
-        --   lua = {}
-        -- }
-      }
-    end
-
-    opts.on_attach = function(_, bufnr) end
-
-    lspconfig[name].setup(opts)
-  end,
-}
-
 local servers = {
   "clangd",
   "rust_analyzer",
@@ -110,18 +36,48 @@ local servers = {
   "nil_ls",
   "ruby_lsp",
   "gopls",
+  "denols",
 }
 
 -- Auto start language servers.
 for _, name in ipairs(servers) do
   -- for _, name in ipairs(lspconfig.util.available_servers()) do
   if name == "denols" or name == "tsserver" then
-    lsp_settings.denols_tsserver(name)
-  elseif name == "tailwindcss" then
-    lsp_settings.tailwindcss(name)
-  end
+    local is_node_dir = function()
+      return lspconfig.util.root_pattern('package.json')(vim.fn.getcwd() ~= nil)
+    end
 
-  lspconfig[name].setup({})
+    -- ts_ls
+    local ts_opts = {}
+    ts_opts.on_attach = function(client)
+      if not is_node_dir() then
+        client.stop(true)
+      end
+    end
+    lspconfig.ts_ls.setup(ts_opts)
+
+    -- denols
+    local deno_opts = {}
+    deno_opts.on_attach = function(client)
+      if is_node_dir() then
+        client.stop(true)
+      end
+    end
+    lspconfig.denols.setup(deno_opts)
+
+  elseif name == "tailwindcss" then
+    lspconfig.tailwindcss.setup({})
+  -- lspconfig[name].setup({})
+
+  elseif name == "efm" then
+    lspconfig.tailwindcss.setup({
+      init_options = {
+        rootMarkers = {
+          ".git/",
+        },
+      }
+    })
+  end
 end
 
 -- lsp keymaps

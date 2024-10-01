@@ -120,7 +120,7 @@ on_source = ["nvim-treesitter"]
 [[plugins]]
 repo = 'hiphish/rainbow-delimiters.nvim'
 # on_source = ["nvim-treesitter"]
-on_event = ['BufRead', 'CursorHold']
+# on_event = ['BufRead', 'CursorHold']
 lua_source = '''
 local rainbow_delimiters = require('rainbow-delimiters')
 
@@ -1018,3 +1018,56 @@ vim.cmd("colorscheme catppuccin-mocha")
 [[plugins]]
 repo = 'thinca/vim-submode'
 on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = 'thinca/vim-quickrun'
+on_event = ['BufRead', 'CursorHold']
+hook_add = '''
+" ref: https://github.com/4513ECHO/dotfiles/blob/c9f6da61c24da5742a81a89b1f9efa437d2df86e/config/nvim/dein/plugin.toml#L605
+let g:quickrun_config = {
+\   "gleam" : #{
+\     type: 'gleam/run',
+\   },
+\  'typescript': #{
+\    type: 'deno/run',
+\  },
+\  'deno/run': #{
+\    cmdopt: '--no-check --allow-all',
+\    command: 'deno',
+\    exec: 'NO_COLOR=1 %c run %o %s %a',
+\    tempfile: '%{tempname()}.ts',
+\  },
+\  'gleam/run': #{
+\    cmdopt: 'run --no-print-progress',
+\    command: 'gleam',
+\  },
+\  "_" : {
+\    "outputter/buffer/split" : ":botright",
+\    "outputter/buffer/close_on_empty" : 1
+\  },
+\}
+'''
+
+[[plugins]]
+repo = 'kovisoft/slimv'
+on_ft = ["lisp"]
+hook_add = '''
+''''
+
+[[plugins]]
+repo = 'previm/previm'
+on_cmd = ["PrevimOpen"]
+hook_add = '''
+let g:previm_open_cmd = "firefox"
+''''
+
+# [[plugins]]
+# repo = "fukamachi/vlime"
+# on_cmd = [""]
+# hook_add = '''
+# let g:previm_open_cmd = "firefox"
+# ''''
+
+[[plugins]]
+repo = "vim-jp/vital.vim"
+on_cmd = ["Vitalize"]
