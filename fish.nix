@@ -83,9 +83,10 @@ in
 
     set -gx DENO_INSTALL "/home/coma/.deno"
     fish_add_path $DENO_INSTALL/bin
+    fish_add_path $HOME/.deno/bin
 
-    fish_add_path /home/coma/go/bin
-    fish_add_path /home/coma/local/
+    fish_add_path $HOME/go/bin
+    fish_add_path $HOME/local/
 
     alias supa "bunx supabase"
 
@@ -147,6 +148,7 @@ in
 
     # .bin scripts
     alias MIT="ruby ~/.bin/scripts/mit/mit.rb"
+    alias ZLIB="ruby ~/.bin/scripts/zlib/zlib.rb"
 
     # set -x EDITOR vim
     set -x EDITOR nvim
