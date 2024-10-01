@@ -39,6 +39,9 @@ if dpp.load_state(dppBase) then
   })
 end
 
+-- dpp.load_state("~/.cache/dpp")
+-- dpp.make_state("~/.cache/dpp", "~/.config/nvim/dpp.ts")
+
 -- vim.api.nvim_create_autocmd("User", {
 --   pattern = "Dpp:makeStatePost",
 --   callback = function()
@@ -141,6 +144,7 @@ vim.opt.virtualedit = "none"
 vim.cmd([[let maplocalleader = ' ']])
 
 -- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/sandbox/ex_gleam_denops"))
--- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-spotify"))
+vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-yasunori"))
+vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/vim-spotify"))
 
 -- vim.g['denops_server_addr'] = "127.0.0.1:32123"

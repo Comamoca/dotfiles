@@ -11,6 +11,9 @@ keymap("n", "<C-[><C-[>", ":noh<CR>")
 keymap("n", "<C-u>", "<cmd>Ddu source<CR>")
 
 keymap("n", "s", "<C-w>", opts)
+keymap("n", "sl", "<c-w>l", opts)
+keymap("n", "sh", "<c-w>h", opts)
+
 keymap("i", "jj", "<ESC>", opts)
 -- keymap("n", "<S-k>", "{", opts)
 -- keymap("n", "<S-j>", "}", opts)
@@ -59,7 +62,7 @@ keymap("n", "<C-i>", "<cmd>Ddu buffer<CR>", opts) -- buffer ope
 -- keymap("n", "<C-u>", "<cmd>Ddu source<CR>") -- search sources
 
 -- call ddu#start({'sources': [{'name': 'buffer'}]})
-keymap("n", "<C-l>", ddu_start("line"), opts)
+keymap("n", "<C-l>", ddu_start("lsp_codeAction"), opts)
 
 keymap("t", "<Esc>", [[<C-\><C-n>]])
 
