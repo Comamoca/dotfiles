@@ -96,6 +96,9 @@
       # psk = "@PSK_HOME@";
       pskRaw = "ext:PSK_HOME";
     };
+    "koufu_teacher_free" = {
+      pskRaw = "ext:PSK_2";
+    };
   };
 
   # NextDNS
@@ -253,6 +256,8 @@
   environment.systemPackages = with pkgs; [ 
     # gnupg
 
+    arduino
+
     kitty
     waybar
     swaybg
@@ -264,7 +269,10 @@
     rofi
     deno
     wlogout
-    # wofi
+    # wofiif
+
+    # cursor theme
+    phinger-cursors
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -284,6 +292,8 @@
     enable = true;
     package = pkgs.emacs;
   };
+
+  programs.nix-ld.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
