@@ -13,9 +13,9 @@
     :ensure t
     :init
     ;; optional packages if you want to use :hydra, :el-get, :blackout,,,
-    (leaf hydra :ensure t)
-    (leaf el-get :ensure t)
-    (leaf blackout :ensure t)
+    ;; (leaf hydra :ensure t)
+    ;; (leaf el-get :ensure t)
+    ;; (leaf blackout :ensure t)
 
     :config
     ;; initialize leaf-keywords.el
@@ -24,30 +24,88 @@
 
 ;; ================================================
 
-;; (leaf kanagawa-theme :ensure t
-;;   :preface
+;; TODO: 
+;; (leaf popwin :ensure t
 ;;   :config
-;;   (load-theme 'kanagawa t))
+;;   (setq display-buffer-function 'popwin:display-buffer)
+;;   ;; Apropos
+;;   (push '("*slime-apropos*") popwin:special-display-config)
+;;   ;; Macroexpand
+;;   (push '("*slime-macroexpansion*") popwin:special-display-config)
+;;   ;; Help
+;;   (push '("*slime-description*") popwin:special-display-config)
+;;   ;; Compilation
+;;   (push '("*slime-compilation*" :noselect t) popwin:special-display-config)
+;;   ;; Cross-reference
+;;   (push '("*slime-xref*") popwin:special-display-config)
+;;   ;; Debugger
+;;   (push '(sldb-mode :stick t) popwin:special-display-config)
+;;   ;; REPL
+;;   (push '(slime-repl-mode) popwin:special-display-config)
+;;   ;; Connections
+;;   (push '(slime-connection-list-mode) popwin:special-display-config)
+;;   :init)
 
 (leaf catppuccin-theme :ensure t
   :preface
   :config
   (load-theme 'catppuccin t))
 
+(leaf vertico :ensure t
+  :config
+  (setq vertico-count 10)
+  :init 
+  (vertico-mode))
 
-(leaf lsp-mode :ensure t)
-(leaf ivy :ensure t)
-(leaf paredit :ensure t)
-(leaf highlight-indent-guides :ensure t
+(leaf consult :ensure t)
+(leaf consult-ghq :ensure t
+  :url "https://github.com/tomoya/consult-ghq"
+  :config
+  (setq consult-ghq-find-function #'consult-find))
 
 ;; Emacs evil-mode
- (leaf evil
+(leaf evil
    :ensure t
    :init
    (evil-mode 1)
-   (define-key evil-insert-state-map "jj" #'evil-normal-state)))
+   (define-key evil-insert-state-map "jj" #'evil-normal-state)
+   (define-key evil-normal-state-map (kbd "S-j") #'evil-scroll-down ))
+
+;; For edit
+(leaf paredit :ensure t)
+(leaf highlight-indent-guides :ensure t)
+
+;; SKK
+(leaf ddskk :ensure t
+  :config
+  (skk-latin-mode 1))
+
+;; Lisp
+(leaf slime :ensure t
+  :config
+  (setq inferior-lisp-program "sbcl"))
+
+(leaf sly :ensure t
+  :config
+  (setq inferior-lisp-program "sbcl"))
+
+(leaf sly-contribs :ensure t)
+(leaf sly-asdf :ensure t)
+
+;; LSP
+(leaf eglot :ensure t)
+
+;; ======================= My Configuration =======================
+
+(push '(menu-bar-lines . 0) default-frame-alist)
+(push '(tool-bar-lines . 0) default-frame-alist)
+
+(add-hook 'find-file-hooks 'my/always-enable-skk-latin-mode-hook)
 
 (setq vc-follow-symlinks t)
+
+(add-to-list 'default-frame-alist
+             '(font . "UDEV Gothic NFLG-13"))
 
 ;; initel function that behaves like `:e $MYVIMRC`
 (defun initel ()
@@ -62,14 +120,20 @@
   (setq wl-copy-process (make-process :name "wl-copy"
                                       :buffer nil
                                       :command '("wl-copy" "-f" "-n")
+				      ;; :command '("wl-copy")
                                       :connection-type 'pipe))
   (process-send-string wl-copy-process text)
   (process-send-eof wl-copy-process))
+
 (defun wl-paste ()
   (if (and wl-copy-process (process-live-p wl-copy-process))
       nil ; should return nil if we're the current paste owner
-      (shell-command-to-string "wl-paste -n | tr -d \r")))
+      (shell-command-to-string "wl-paste -n | tr -d \r")
+      ;; (shell-command-to-string "wl-paste -n")
+      (shell-command-to-string "wl-paste -n | tr -d \r")
+    )
 
+(setq interprogram-cut-function 'wl-copy)
 (setq interprogram-paste-function 'wl-paste)
 
 ;; ================================================
