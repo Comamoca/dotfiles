@@ -35,6 +35,10 @@ rec {
     # # "Hello, world!" when run.
     # pkgs.hello
 
+    # Knowledge tool for terminal
+    nb
+    w3m
+
     # theme 
     catppuccin
 
@@ -121,7 +125,16 @@ rec {
     lssecret
     pinentry-curses
 
+    # ========== LANGUAGE SERVER ========== 
+    lua-language-server
+
     # ========== RUNTIME & COMPILER ========== 
+    # ref: https://cons.io/
+    gerbil
+
+    erlang_27
+    rebar3
+
     deno
     nodejs
     bun
@@ -130,10 +143,12 @@ rec {
 
     gleam
 
+    # Common Lisp
     sbcl
+    roswell
+    sbclPackages.qlot-cli
+
     ruby
-    # ref: https://cons.io/
-    gerbil
 
     # roswell
 
@@ -520,6 +535,10 @@ rec {
       };
       ".bin/scripts/mit" = {
         source = (symlink /${dotfiles}/bin/scripts/mit);
+        recursive = true;
+      };
+      ".bin/scripts/zlib" = {
+        source = (symlink /${dotfiles}/bin/scripts/zlib);
         recursive = true;
       };
       ".bin/scripts/shift" = {
