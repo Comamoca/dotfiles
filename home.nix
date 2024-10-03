@@ -83,6 +83,7 @@ rec {
     bat
     jnv
     jq
+    dasel
 
     lazydocker
     lazygit
@@ -718,7 +719,7 @@ rec {
       nix-direnv.enable = true;
     };
     fish = import ./fish.nix { inherit pkgs; };
-    hyprlock.settings = import ./hyprlock.nix {};
+    hyprlock.settings = import ./hyprlock.nix { };
     hyprlock.enable = true;
   };
 
