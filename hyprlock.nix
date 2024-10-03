@@ -1,14 +1,15 @@
-{}: {
+{ }:
+{
   "$accent" = "$mauve";
   "$accentAlpha" = "$mauveAlpha";
   "$font" = "JetBrainsMono Nerd Font";
-  
+
   # GENERAL
   "general" = {
     "disable_loading_bar" = true;
     "hide_cursor" = true;
   };
-  
+
   # BACKGROUND
   "background" = {
     "monitor" = "";
@@ -16,7 +17,7 @@
     "blur_passes" = 0;
     "color" = "$base";
   };
-  
+
   # LAYOUT
   label = [
     {
@@ -30,7 +31,7 @@
       "valign" = "top";
     }
 
-  # TIME
+    # TIME
     {
       "monitor" = "";
       "text" = "$TIME";
@@ -41,19 +42,19 @@
       "halign" = "right";
       "valign" = "top";
     }
-  # DATE
+    # DATE
     {
-    "monitor" = "";
-    "text" = ''cmd[update:43200000] date +"%A, %d %B %Y"'';
-    "color" = "$text";
-    "font_size" = 25;
-    "font_family" = "$font";
-    "position" = "-30, -150";
-    "halign" = "right";
-    "valign" = "top";
-  }
-  ]; 
-  
+      "monitor" = "";
+      "text" = ''cmd[update:43200000] date +"%A, %d %B %Y"'';
+      "color" = "$text";
+      "font_size" = 25;
+      "font_family" = "$font";
+      "position" = "-30, -150";
+      "halign" = "right";
+      "valign" = "top";
+    }
+  ];
+
   # USER AVATAR
   image = {
     "monitor" = "";
@@ -64,7 +65,7 @@
     "halign" = "center";
     "valign" = "center";
   };
-  
+
   # INPUT FIELD
   input-field = {
     "monitor" = "";
