@@ -44,7 +44,7 @@ for _, name in ipairs(servers) do
   -- for _, name in ipairs(lspconfig.util.available_servers()) do
   if name == "denols" or name == "tsserver" then
     local is_node_dir = function()
-      return lspconfig.util.root_pattern('package.json')(vim.fn.getcwd() ~= nil)
+      return lspconfig.util.root_pattern("package.json")(vim.fn.getcwd() ~= nil)
     end
 
     -- ts_ls
@@ -64,18 +64,16 @@ for _, name in ipairs(servers) do
       end
     end
     lspconfig.denols.setup(deno_opts)
-
   elseif name == "tailwindcss" then
     lspconfig.tailwindcss.setup({})
   -- lspconfig[name].setup({})
-
   elseif name == "efm" then
     lspconfig.tailwindcss.setup({
       init_options = {
         rootMarkers = {
           ".git/",
         },
-      }
+      },
     })
   end
 end
