@@ -15,6 +15,7 @@
     treefmt-nix.url = "github:numtide/treefmt-nix";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     emacs-overlay.url = "github:nix-community/emacs-overlay";
+    emacs.url = "github:cmacrae/emacs";
   };
 
   outputs =
@@ -27,13 +28,15 @@
       catppuccin,
       neovim-nightly-overlay,
       emacs-overlay,
+      emacs,
     }@inputs:
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
       treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
       overlays = [
         neovim-nightly-overlay.overlays.default
-	(import emacs-overlay)
+        (import emacs-overlay)
+	# (import emacs.overlay)
       ];
     in
     # code = _: s: s;
