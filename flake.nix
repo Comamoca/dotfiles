@@ -16,6 +16,7 @@
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     emacs-overlay.url = "github:nix-community/emacs-overlay";
     emacs.url = "github:cmacrae/emacs";
+    nak.url = "github:comamoca/flake-nak";
   };
 
   outputs =
@@ -29,14 +30,17 @@
       neovim-nightly-overlay,
       emacs-overlay,
       emacs,
+      nak,
     }@inputs:
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
       treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
+
       overlays = [
         neovim-nightly-overlay.overlays.default
         (import emacs-overlay)
-	# (import emacs.overlay)
+        nak.overlays.default
+        # (import emacs.overlay)
       ];
     in
     # code = _: s: s;
@@ -73,7 +77,11 @@
             ./home.nix
             inputs.catppuccin.homeManagerModules.catppuccin
             {
-              nixpkgs.overlays = overlays;
+              nixpkgs.overlays = overlays ++ [
+                (final: prev: {
+                  nak = inputs.nak.packages.x86_64-linux.default;
+                })
+              ];
             }
           ];
         };
