@@ -71,8 +71,12 @@ rec {
     just
 
     # ========== OTHER TOOLS ========== 
+    zellij
+
     # textimg
     # textql-git
+    nak
+
     vim-startuptime
 
     cachix
