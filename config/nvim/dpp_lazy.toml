@@ -1025,6 +1025,14 @@ on_event = ['BufRead', 'CursorHold']
 hook_add = '''
 " ref: https://github.com/4513ECHO/dotfiles/blob/c9f6da61c24da5742a81a89b1f9efa437d2df86e/config/nvim/dein/plugin.toml#L605
 let g:quickrun_config = {
+\   "moonbit" : #{
+\     type: 'moonbit/run',
+\   },
+\  'moonbit/run': #{
+\    cmdopt: 'run',
+\    command: 'moon',
+\    tempfile: '%{tempname()}.mbt',
+\  },
 \   "gleam" : #{
 \     type: 'gleam/run',
 \   },
