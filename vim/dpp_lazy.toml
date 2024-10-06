@@ -1,6 +1,15 @@
 [[plugins]]
-repo = "morhetz/gruvbox"
+repo = 'catppuccin/vim'
 on_event = ['BufRead', 'CursorHold']
+hook_source = """
+set background=dark
+let g:lightline = {'colorscheme': 'catppuccin_mocha'}
+catppuccin_mocha
+"""
+
+[[plugins]]
+repo = "morhetz/gruvbox"
+# on_event = ['BufRead', 'CursorHold']
 hook_source = """
 set background=dark
 colorscheme gruvbox
@@ -45,7 +54,6 @@ repo = "AlessandroYorba/Sierra"
 on_event = ['BufRead', 'CursorHold']
 hook_source = """
 " set background=dark
-colorscheme gruvbox-material
 """
 
 [[plugins]]
