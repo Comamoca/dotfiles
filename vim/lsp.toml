@@ -21,6 +21,14 @@ let g:lsp_diagnostics_enabled = 1
 "       \ })
 " endif
 
+if executable('moonbit-lsp')
+  au User lsp_setup call lsp#register_server({
+      \ 'name': 'moonbit',
+      \ 'cmd': ["moonbit-lsp" ],
+      \ 'allowlist': ['moonbit'],
+      \ })
+endif
+
 " if executable('gleam')
 "   au User lsp_setup call lsp#register_server({
 "       \ 'name': 'gleam',
