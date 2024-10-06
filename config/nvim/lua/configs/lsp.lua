@@ -1,14 +1,17 @@
 local lspconfig = require("lspconfig")
+local server_config = require('lspconfig.configs')
 -- local mason = require("mason")
 -- local mason_lspconfig = require("mason-lspconfig")
-
 require("lazydev").setup()
-
 require("ddc_source_lsp_setup").setup()
 local capabilities = require("ddc_source_lsp").make_client_capabilities()
-
 local lspconfig = require("lspconfig")
 
+local util = lspconfig.util
+
+server_config.moonbit = require "configs/moonbit_lsp"
+
+lspconfig.moonbit.setup({})
 lspconfig.metals.setup({})
 
 -- when find `gleam.toml` in project root, start gleam lsp server.
@@ -37,6 +40,7 @@ local servers = {
   "ruby_lsp",
   "gopls",
   "denols",
+  "moonbit"
 }
 
 -- Auto start language servers.
