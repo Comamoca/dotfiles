@@ -559,7 +559,8 @@ rec {
       };
       # # ========== SKK ========== 
       # skk-dicts
-      ".skk/SKK-JISYO.L".source = "${pkgs.skk-dicts}/share/SKK-JISYO.L";
+      # ".skk/SKK-JISYO.L".source = "${pkgs.skk-dicts}/share/SKK-JISYO.L";
+      ".skk/SKK-JISYO.L".source = "${pkgs.skkDictionaries.l}/share/SKK-JISYO.L"; 
 
       # TODO: 後で消す
       # ".config/" = {
