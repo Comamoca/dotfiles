@@ -132,6 +132,7 @@ rec {
 
     # ========== LANGUAGE SERVER ========== 
     lua-language-server
+    vim-language-server
 
     # ========== RUNTIME & COMPILER ========== 
     # ref: https://cons.io/
