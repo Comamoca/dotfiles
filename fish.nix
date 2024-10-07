@@ -26,7 +26,9 @@ in
 
     fish_add_path $HOME/.bin/scripts/ime
     fish_add_path $HOME/.bin/scripts/nowplaying
-    fish_add_path $HOME/.bin/scripts/pywal
+    fish_add_path $HOME/.bin/scripts/pywalfish_add_path
+
+    fish_add_path "$HOME/.moon/bin"
 
     # fish_add_path $HOME/.bin/scripts/nowplaying
     fish_add_path $HOME/.roswell/bin/
