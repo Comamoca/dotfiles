@@ -9,7 +9,8 @@ local lspconfig = require("lspconfig")
 
 local util = lspconfig.util
 
-server_config.moonbit = require "configs/moonbit_lsp"
+-- server_config.moonbit = require "configs/moonbit_lsp"
+server_config.moonbit = require("moonbit_lsp")
 
 lspconfig.moonbit.setup({})
 lspconfig.metals.setup({})
@@ -40,7 +41,8 @@ local servers = {
   "ruby_lsp",
   "gopls",
   "denols",
-  "moonbit"
+  "moonbit",
+  "vimls"
 }
 
 -- Auto start language servers.
@@ -48,8 +50,9 @@ for _, name in ipairs(servers) do
   -- for _, name in ipairs(lspconfig.util.available_servers()) do
   if name == "denols" or name == "tsserver" then
     local is_node_dir = function()
-      return lspconfig.util.root_pattern("package.json")(vim.fn.getcwd() ~= nil)
+      return lspconfig.util.root_pattern("package.json")(vim.fn.getcwd())
     end
+
 
     -- ts_ls
     local ts_opts = {}
@@ -71,7 +74,6 @@ for _, name in ipairs(servers) do
   elseif name == "tailwindcss" then
     lspconfig.tailwindcss.setup({})
   -- lspconfig[name].setup({})
-  elseif name == "efm" then
     lspconfig.tailwindcss.setup({
       init_options = {
         rootMarkers = {
@@ -79,6 +81,8 @@ for _, name in ipairs(servers) do
         },
       },
     })
+  else
+    lspconfig[name].setup({})
   end
 end
 
