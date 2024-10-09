@@ -133,16 +133,18 @@ rec {
     # ========== LANGUAGE SERVER ========== 
     lua-language-server
     vim-language-server
+    typescript-language-server
 
     # ========== RUNTIME & COMPILER ========== 
     # ref: https://cons.io/
     gerbil
+    # gambit
 
     erlang_27
     rebar3
 
     deno
-    nodejs
+    nodejs_22
     bun
 
     pnpm
@@ -475,6 +477,8 @@ rec {
     # ========== OTHER TOOLS ========== 
     # hyprland
     # hyprlock
+    hyperfine
+
     hyprpaper
     hyprshade
 
@@ -561,7 +565,8 @@ rec {
       # # ========== SKK ========== 
       # skk-dicts
       # ".skk/SKK-JISYO.L".source = "${pkgs.skk-dicts}/share/SKK-JISYO.L";
-      ".skk/SKK-JISYO.L".source = "${pkgs.skkDictionaries.l}/share/SKK-JISYO.L"; 
+      ".skk/SKK-JISYO.L".source = "${pkgs.skkDictionaries.l}/share/skk/SKK-JISYO.L"; 
+      ".skk/SKK-JISYO.im@sparql.all.utf8".source = "${pkgs.skk-imas}/share/SKK-JISYO.im@sparql.all.utf8";
 
       # TODO: 後で消す
       # ".config/" = {
