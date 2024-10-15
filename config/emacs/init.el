@@ -53,49 +53,88 @@
 
 (leaf vertico :ensure t
   :config
-  (setq vertico-count 10)
+  (defvar vertico-count 10)
   :init 
   (vertico-mode))
+
+;; Fuzzy match for vertico
+(leaf orderless
+  :ensure t
+  :config
+  (setq completion-styles '(orderless basic)
+	completion-category-overrides '((file (styles basic partial-completion)))))
 
 (leaf consult :ensure t)
 (leaf consult-ghq :ensure t
   :url "https://github.com/tomoya/consult-ghq"
   :config
-  (setq consult-ghq-find-function #'consult-find))
+  (defvar consult-ghq-find-function #'consult-find))
 
 ;; Emacs evil-mode
 (leaf evil
    :ensure t
+   :config
+   ;; (define-key evil-insert-state-map "jk" #'evil-normal-state)
+   ;; (define-key evil-normal-state-map (kbd "S-j") nil)
+   ;; (define-key evil-normal-state-map (kbd "S-j") #'evil-scroll-down)
    :init
-   (evil-mode 1)
-   (define-key evil-insert-state-map "jj" #'evil-normal-state)
-   (define-key evil-normal-state-map (kbd "S-j") #'evil-scroll-down ))
+   (evil-mode 1))
+
+;; key-chord library for evil's 
+(leaf key-chord :ensure t)
 
 ;; For edit
-(leaf paredit :ensure t)
+(leaf paredit :ensure t
+  :init
+  (paredit-mode))
+
 (leaf highlight-indent-guides :ensure t)
+
 
 ;; SKK
 (leaf ddskk :ensure t
   :config
-  (skk-latin-mode 1))
+  (skk-latin-mode 1)
+  (global-set-key (kbd "C-x C-j") 'skk-mode))
 
 ;; Lisp
 (leaf slime :ensure t
   :config
-  (setq inferior-lisp-program "sbcl"))
+  (defvar inferior-lisp-program "sbcl"))
 
 (leaf sly :ensure t
   :config
-  (setq inferior-lisp-program "sbcl"))
+  ;; (defvar inferior-lisp-program "sbcl")
+  )
 
 (leaf sly-contribs :ensure t)
 (leaf sly-asdf :ensure t)
 
+(leaf parinfer-rust-mode
+  :ensure t
+  :hook emacs-lisp-mode lisp-mode)
+
 ;; LSP
-(leaf eglot :ensure t)
+(leaf eglot
+  :ensure t
+  :hook
+  (c++-mode . eglot-ensure)
+  (lua-mode . eglot-ensure))
+
+;; Lua support
+(leaf lua-mode :ensure t)
+
+;; Completion
+(leaf corfu :ensure t
+  :config
+  (setq corfu-auto t)
+  :init
+  (global-corfu-mode))
+
 
 ;; ======================= My Configuration =======================
+
+(electric-pair-mode 1)
 
 (push '(menu-bar-lines . 0) default-frame-alist)
 (push '(tool-bar-lines . 0) default-frame-alist)
@@ -115,6 +154,8 @@
 
 ;; Copy & Paste with wl-clipboard
 ;; ref: https://gist.github.com/yorickvP/6132f237fbc289a45c808d8d75e0e1fb
+(setenv "WAYLAND_DISPLAY" "wayland-1")
+
 (setq wl-copy-process nil)
 (defun wl-copy (text)
   (setq wl-copy-process (make-process :name "wl-copy"
@@ -125,13 +166,13 @@
   (process-send-string wl-copy-process text)
   (process-send-eof wl-copy-process))
 
+
 (defun wl-paste ()
   (if (and wl-copy-process (process-live-p wl-copy-process))
-      nil ; should return nil if we're the current paste owner
-      (shell-command-to-string "wl-paste -n | tr -d \r")
-      ;; (shell-command-to-string "wl-paste -n")
-      (shell-command-to-string "wl-paste -n | tr -d \r")
-    )
+      nil	  ; should return nil if we're the current paste owner
+    ;; (shell-command-to-string "wl-paste -n | tr -d \r")
+    (shell-command-to-string "wl-paste -n")
+    ))
 
 (setq interprogram-cut-function 'wl-copy)
 (setq interprogram-paste-function 'wl-paste)
