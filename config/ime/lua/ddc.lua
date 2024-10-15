@@ -24,7 +24,7 @@ ddc_custom_patch_global("sourceOptions", {
 ddc_custom_patch_global("sourceOptions", {
   skkeleton = {
     mark = "SKK",
-    matchers = { "" },
+    matchers = {},
     sorters = {},
     isVolatile = true,
   },
