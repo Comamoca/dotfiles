@@ -10,3 +10,6 @@ config/emacs/elpa
 parinfer-rust
 *~
 config/emacs/projects
+
+# Nix
+result
