@@ -30,7 +30,30 @@ This is Comamoca's dotfiles repository.
 - Neovim
 - and more...
 
+## ⬆️ How to update
+
+### ❄  Flake
+
+```sh
+nix flake update
+```
+
+## ✨ Apply changes
+
+### ❄  NixOS
+
+```sh
+sudo nixos-rebuild switch --flake .#Home
+```
+
+### 🏠 Home manager
+
+```sh
+home-manager switch --flake .#Home
+```
+
 ## 📖 License
+
 
 ### catppuccin
 
