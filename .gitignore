@@ -5,3 +5,8 @@ skk
 
 eln-cache
 config/emacs/elpa
+
+# Emacs
+parinfer-rust
+*~
+config/emacs/projects
