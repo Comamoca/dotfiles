@@ -194,6 +194,9 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "kvm"
+      "adbusers"
+      "plugdev"
     ];
     packages = with pkgs; [
       #  thunderbird
@@ -256,6 +259,8 @@
   environment.systemPackages = with pkgs; [
     # gnupg
 
+    android-studio
+
     arduino
 
     kitty
@@ -294,6 +299,9 @@
   };
 
   programs.nix-ld.enable = true;
+
+  # Android Debug Bridge
+  programs.adb.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
