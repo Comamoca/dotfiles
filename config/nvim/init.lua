@@ -60,6 +60,20 @@ vim.api.nvim_create_autocmd("BufRead", {
   command = "set filetype=astro",
 })
 
+vim.api.nvim_create_autocmd("BufRead", {
+  pattern = "*.mbt",
+  callback = function ()
+    vim.bo.filetype = "moonbit"
+
+    local quickrun_config = vim.g.quickrun_config
+    local moonbit= vim.fn["moonbit_settings#moonbit_quickrun"]()
+
+    -- Vim scriptとLua間で辞書型/table型を操作するのが上手くいかない
+    vim.g.quickrun_config["moonbit"] = moonbit
+    vim.print(vim.g.quickrun_config)
+  end
+})
+
 vim.cmd("filetype indent plugin on")
 vim.cmd("syntax on")
 
@@ -74,10 +88,6 @@ vim.api.nvim_create_user_command("Ddu", function(args)
   print(subcmd)
   vim.fn["ddu#start"]({ sources = { { name = subcmd } } })
 end, { nargs = 1 })
-
-vim.api.nvim_create_user_command("Deol", function(args)
-  vim.fn["deol#new"]({ command = "fish" })
-end, {})
 
 vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
   callback = function()
@@ -144,7 +154,12 @@ vim.opt.virtualedit = "none"
 vim.cmd([[let maplocalleader = ' ']])
 
 -- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/sandbox/ex_gleam_denops"))
-vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-yasunori"))
+-- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-yasunori"))
+
 vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/vim-spotify"))
+vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-moonbit-settings"))
+
+vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-junky"))
+vim.g.junky_path = "~/.junky"
 
 -- vim.g['denops_server_addr'] = "127.0.0.1:32123"

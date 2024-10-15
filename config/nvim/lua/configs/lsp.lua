@@ -42,7 +42,9 @@ local servers = {
   "gopls",
   "denols",
   "moonbit",
-  "vimls"
+  "vimls",
+  "efm",
+  "kotlin_language_server"
 }
 
 -- Auto start language servers.
@@ -81,6 +83,32 @@ for _, name in ipairs(servers) do
         },
       },
     })
+  elseif name == "efm" then
+    print("efm")
+
+    lspconfig.efm.setup({
+      init_options = { documentFormatting = true },
+      single_file_support = true,
+      filetypes = { 'markdown' },
+      on_attach = function ()
+	      print("efm attached.")
+      end,
+      settings = {
+          rootMarkers = { ".git/" },
+          languages = {
+              markdown = { {
+                  lintIgnoreExitCode = true,
+                  -- lintCommand = [[textlint -f json ${INPUT} | jq -r '.[] | .filePath as $filePath | .messages[] | "1;\($filePath):\(.line):\(.column):\n2;\(.message | split("\n")[0])\n3;[\(.ruleId)]"']],
+		  lintCommand  = "textlint -f unix --stdin --stdin-filename ${INPUT}",
+		  lintStdin = true,
+                  lintFormats = { '%f:%l:%c: %m [%trror/%r]', '%E1;%E%f:%l:%c:', '%C2;%m', '%C3;%m%Z' },
+                  -- lintFormats = '%f:%l:%c: %m [%trror/%r]',
+              } }
+
+          }
+      }
+    })
+
   else
     lspconfig[name].setup({})
   end
