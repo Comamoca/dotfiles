@@ -12,6 +12,7 @@ rec {
     permittedInsecurePackages = [
       "electron-29.4.6"
     ];
+    android_sdk.accept_license = true;
   };
 
   # Home Manager needs a bit of information about you and the paths it should
@@ -53,12 +54,16 @@ rec {
     alacritty
     kitty
 
-    # ========== EDITOR & TOOLS ========== 
+    # ========== EDITOR & TOOLS ==========  
+
+    # TODO: change to vim-overlay
     vim-full
     emacs
     felix
     micro
     neovim
+    jetbrains.idea-community
+
     # visual-studio-code-bin
     # inputs.lem-editor.packages.x86_64-linux.lem-ncurses
 
@@ -134,8 +139,11 @@ rec {
     lua-language-server
     vim-language-server
     typescript-language-server
+    efm-langserver
 
     # ========== RUNTIME & COMPILER ========== 
+    babashka
+
     # ref: https://cons.io/
     gerbil
     # gambit
