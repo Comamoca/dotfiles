@@ -154,6 +154,7 @@ set autoindent
 
 autocmd BufRead,ColorScheme * highlight Normal ctermbg=none
 autocmd BufRead *.lark set filetype=lark
+autocmd BufRead *.mbt set filetype=moonbit
 autocmd BufRead *.rs let g:rustfmt_autosave = 0
 
 set statusline=─
