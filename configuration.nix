@@ -79,27 +79,27 @@
   catppuccin.enable = true;
 
   networking.hostName = "comabook"; # Define your hostname.
-  networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
+  # networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
-  # networking.networkmanager.enable = true;
+  networking.networkmanager.enable = true;
 
   # networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
   # networking.wireless.environmentFile = "/data/secrets/wireless.env";
-  networking.wireless.secretsFile = "/data/secrets/wireless.env";
-  networking.wireless.networks = {
-    "rs500k-c07beb-3" = {
-      # psk = "@PSK_HOME@";
-      pskRaw = "ext:PSK_HOME";
-    };
-    "koufu_teacher_free" = {
-      pskRaw = "ext:PSK_2";
-    };
-  };
+  # networking.wireless.secretsFile = "/data/secrets/wireless.env";
+  # networking.wireless.networks = {
+  #   "rs500k-c07beb-3" = {
+  #     # psk = "@PSK_HOME@";
+  #     pskRaw = "ext:PSK_HOME";
+  #   };
+  #   "koufu_teacher_free" = {
+  #     pskRaw = "ext:PSK_2";
+  #   };
+  # };
 
   # NextDNS
   services.nextdns = {
