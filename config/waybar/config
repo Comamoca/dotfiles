@@ -112,7 +112,6 @@
     "on-click": "playerctl play-pause"
   },
   "cava": {
-    // "cava_config": "$HOME/.config/cava/cava.conf",
     "autosens": 1,
     "sensitivity": 1,
     "bars": 14,
