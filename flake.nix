@@ -60,6 +60,7 @@
           modules = [
             ./configuration.nix
             inputs.catppuccin.nixosModules.catppuccin
+            home-manager.nixosModules.home-manager
           ];
           specialArgs = {
             inherit inputs;
