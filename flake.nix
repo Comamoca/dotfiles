@@ -11,6 +11,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    mozilla-overlay.url = "github:mozilla/nixpkgs-mozilla";
     catppuccin.url = "github:catppuccin/nix";
     treefmt-nix.url = "github:numtide/treefmt-nix";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
@@ -33,6 +34,7 @@
       emacs,
       nak,
       skk-imas,
+      mozilla-overlay
     }@inputs:
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
@@ -44,6 +46,7 @@
         nak.overlays.default
         skk-imas.overlays.default
         # (import emacs.overlay)
+	mozilla-overlay.overlays.firefox
       ];
     in
     # code = _: s: s;
