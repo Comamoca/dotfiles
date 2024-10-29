@@ -10,7 +10,7 @@ local lspconfig = require("lspconfig")
 local util = lspconfig.util
 
 -- server_config.moonbit = require "configs/moonbit_lsp"
-server_config.moonbit = require("moonbit_lsp")
+server_config.moonbit = require("configs/moonbit_lsp")
 
 lspconfig.moonbit.setup({})
 lspconfig.metals.setup({})
