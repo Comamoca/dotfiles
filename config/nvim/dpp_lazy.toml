@@ -74,7 +74,15 @@ lua_source = '''
  --    })
 
  require'nvim-treesitter.configs'.setup {
-   ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "gleam", "haxe"},
+   ensure_installed = {
+     "c",
+     "lua",
+     "vim",
+     "vimdoc",
+     "query",
+     "gleam",
+   --  "haxe"
+   },
    sync_install = false,
    auto_install = false,
    ignore_install = {},
@@ -94,15 +102,15 @@ lua_source = '''
 
  local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
 
- parser_config.haxe = {
-   install_info = {
-     url = "https://github.com/vantreeseba/tree-sitter-haxe",
-     files = {"src/parser.c"},
-     -- optional entries:
-     branch = "main",
-   },
-   filetype = "haxe",
- }
+-- parser_config.haxe = {
+--   install_info = {
+--     url = "https://github.com/vantreeseba/tree-sitter-haxe",
+--     files = {"src/parser.c"},
+--     -- optional entries:
+--     branch = "main",
+--   },
+--   filetype = "haxe",
+-- }
 '''
 
 [[plugins]]
