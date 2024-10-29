@@ -295,7 +295,14 @@
 
   services.emacs = {
     enable = true;
-    package = pkgs.emacs;
+    package = (
+      with pkgs;
+      ((emacsPackagesFor emacs29-pgtk).emacsWithPackages (
+        epkgs: with epkgs; [
+	  vterm
+        ]
+      ))
+    );
   };
 
   programs.nix-ld.enable = true;
