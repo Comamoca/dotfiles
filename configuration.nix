@@ -9,6 +9,8 @@
   ...
 }:
 
+let
+in
 {
   imports =
     [
@@ -210,7 +212,7 @@
     pinentryPackage = pkgs.pinentry-curses;
   };
 
-  # Install firefox.
+  # Install irefox.
   programs.firefox = {
     enable = true;
     # profiles = {
@@ -264,7 +266,6 @@
     arduino
 
     kitty
-    waybar
     swaybg
     swaynotificationcenter
     swaylock
@@ -309,6 +310,10 @@
 
   # Android Debug Bridge
   programs.adb.enable = true;
+
+  programs.waybar = {
+    enable = true;
+  };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
