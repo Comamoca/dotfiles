@@ -31,12 +31,12 @@ vim.keymap.set("i", "jj", "<C-[>")
 
 -- kanagawa.nvim
 require("kanagawa").setup({
-  compile = true,
-  undercurl = true,
-  commentStyle = { italic = true },
-  keywordStyle = { italic = true },
-  statementStyle = { bold = true },
-  transparent = true,
+	compile = true,
+	undercurl = true,
+	commentStyle = { italic = true },
+	keywordStyle = { italic = true },
+	statementStyle = { bold = true },
+	transparent = true,
 })
 
 vim.cmd("colorscheme kanagawa-dragon")
