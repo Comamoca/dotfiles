@@ -98,7 +98,7 @@ vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
     -- vim.cmd("colorscheme gruvbox")
     -- vim.cmd("colorscheme wal")
     -- vim.cmd("colorscheme nord")
-    vim.cmd("SeiyaEnable")
+    -- vim.cmd("SeiyaEnable")
   end,
 })
 
