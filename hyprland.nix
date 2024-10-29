@@ -9,7 +9,7 @@ in
     # "HDMI-A-1,preferred,auto,auto,mirror,eDP-1"
   ];
 
-  source = "~/.config/hypr/mocha.conf";
+  # source = "~/.config/hypr/mocha.conf";
 
   env = [
     "XCURSOR_SIZE,32"
@@ -66,6 +66,7 @@ in
     drop_shadow = "yes";
     shadow_range = 4;
     shadow_render_power = 3;
+    # TODO: Enable this
     "col.shadow" = "$surface0Alpha";
   };
 
