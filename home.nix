@@ -53,8 +53,10 @@ rec {
     wezterm
     alacritty
     kitty
+    foot
 
     # ========== EDITOR & TOOLS ==========  
+    arduino
 
     # TODO: change to vim-overlay
     vim-full
@@ -125,6 +127,7 @@ rec {
     mkspiffs-presets.esp-idf
 
     # ========== SHELL ========== 
+    nushell
 
     # ========== BROWSER ========== 
     # firefox
@@ -172,7 +175,7 @@ rec {
 
     # ========== FONTS ========== 
     noto-fonts
-    noto-fonts-cjk
+    noto-fonts-cjk-sans
     # ttf-udev-gothic
 
     # ========== UTILS ========== 
@@ -483,6 +486,8 @@ rec {
     wpa_supplicant
 
     # ========== OTHER TOOLS ========== 
+    wakatime
+
     # hyprland
     # hyprlock
     hyperfine
@@ -730,6 +735,7 @@ rec {
 
   wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.settings = import ./hyprland.nix { inherit pkgs; };
+  wayland.windowManager.hyprland.catppuccin.enable = true;
 
   programs = {
     direnv = {
@@ -740,6 +746,5 @@ rec {
     hyprlock.settings = import ./hyprlock.nix { };
     hyprlock.enable = true;
   };
-
   # programs.lem-editor.enable = true 
 }
