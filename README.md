@@ -32,7 +32,7 @@ This is Comamoca's dotfiles repository.
 
 ## ⬆️ How to update
 
-### ❄  Flake
+### ❄ Flake
 
 ```sh
 nix flake update
@@ -40,7 +40,7 @@ nix flake update
 
 ## ✨ Apply changes
 
-### ❄  NixOS
+### ❄ NixOS
 
 ```sh
 sudo nixos-rebuild switch --flake .#Home
@@ -54,6 +54,7 @@ home-manager switch --flake .#Home
 
 ## 📖 License
 
+MIT
 
 ### catppuccin
 
