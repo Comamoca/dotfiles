@@ -572,9 +572,8 @@ rec {
       };
       # # ========== SKK ========== 
       # skk-dicts
-      # ".skk/SKK-JISYO.L".source = "${pkgs.skk-dicts}/share/SKK-JISYO.L";
-      ".skk/SKK-JISYO.L".source = "${pkgs.skkDictionaries.l}/share/skk/SKK-JISYO.L"; 
-      ".skk/SKK-JISYO.im@sparql.all.utf8".source = "${pkgs.skk-imas}/share/SKK-JISYO.im@sparql.all.utf8";
+      ".skk-jisyo/SKK-JISYO.L".source = "${pkgs.skkDictionaries.l}/share/skk/SKK-JISYO.L";
+      ".skk-jisyo/SKK-JISYO.im@sparql.all.utf8".source = "${pkgs.skk-imas}/share/SKK-JISYO.im@sparql.all.utf8";
 
       # TODO: 後で消す
       # ".config/" = {
