@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs, wallpaper }:
 let
   kitty = "kitty";
 in
@@ -258,7 +258,7 @@ in
     "conky"
     "swaync"
     "playerctld daemon"
-    # "swaybg -i ~/Pictures/wallpaper/wallpaper.png"
+    "swaybg -i ${wallpaper}"
     "hyprpaper"
   ];
 }
