@@ -708,6 +708,9 @@ in rec {
       ".skk.el".text = ''
         (setq skk-large-jisyo "${pkgs.skkDictionaries.l}/share/skk/SKK-JISYO.L")  
         ;; (setq skk-azik-keyboard-type 'jp106)
+        (setq skk-use-azik t)
+        (setq skk-sticky-key ";")
+
         (setq skk-extra-jisyo-file-list
               (list '("${pkgs.skk-imas}/share/SKK-JISYO.im@sparql.all.utf8" . utf-8)))
 
