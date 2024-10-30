@@ -67,7 +67,7 @@ in rec {
 
     # TODO: change to vim-overlay
     vim-full
-    emacs
+    emacs30-pgtk
     felix
     micro
     neovim
@@ -676,11 +676,6 @@ in rec {
         recursive = true;
       };
 
-      ".config/emacs" = {
-        source = (symlink /${dotfiles}/config/emacs);
-        recursive = true;
-      };
-
       ".config/rofi" = {
         source = (symlink /${dotfiles}/config/rofi);
         # source = ;
@@ -705,6 +700,18 @@ in rec {
       ".gitconfig".source = (symlink /${dotfiles}/gitconfig);
       ".Xmodmap".source = (symlink /${dotfiles}/Xmodmap);
       ".tmux.conf".source = (symlink /${dotfiles}/tmux.conf);
+
+      ".emacs.d" = {
+        source = (symlink /${dotfiles}/emacs.d);
+        recursive = true;
+      };
+      ".skk.el".text = ''
+        (setq skk-large-jisyo "${pkgs.skkDictionaries.l}/share/skk/SKK-JISYO.L")  
+        ;; (setq skk-azik-keyboard-type 'jp106)
+        (setq skk-extra-jisyo-file-list
+              (list '("${pkgs.skk-imas}/share/SKK-JISYO.im@sparql.all.utf8" . utf-8)))
+
+      '';
     };
 
   # Home Manager can also manage your environment variables through
