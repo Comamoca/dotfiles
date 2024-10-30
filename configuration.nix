@@ -301,7 +301,7 @@ in
     enable = true;
     package = (
       with pkgs;
-      ((emacsPackagesFor emacs29-pgtk).emacsWithPackages (
+      ((emacsPackagesFor emacs30-pgtk).emacsWithPackages (
         epkgs: with epkgs; [
 	  vterm
         ]
