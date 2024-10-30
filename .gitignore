@@ -10,6 +10,8 @@ config/emacs/elpa
 parinfer-rust
 *~
 config/emacs/projects
+emacs.d/elpa
+emacs.d/transient
 
 # Nix
 result
