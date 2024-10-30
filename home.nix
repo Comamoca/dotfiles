@@ -6,7 +6,14 @@
   ...
 }:
 
-rec {
+let
+  wallpapers = builtins.fetchTarball {
+    url =  "https://github.com/zhichaoh/catppuccin-wallpapers/archive/refs/heads/main.zip";
+    sha256 = "sha256:0rd6hfd88bsprjg68saxxlgf2c2lv1ldyr6a8i7m4lgg6nahbrw7";
+  };
+
+  wallpaper = "${wallpapers}/misc/cat-sound.png";
+in rec {
   nixpkgs.config = {
     allowUnfree = true;
     permittedInsecurePackages = [
@@ -734,7 +741,7 @@ rec {
   programs.home-manager.enable = true;
 
   wayland.windowManager.hyprland.enable = true;
-  wayland.windowManager.hyprland.settings = import ./hyprland.nix { inherit pkgs; };
+  wayland.windowManager.hyprland.settings = import ./hyprland.nix { inherit pkgs wallpaper; };
   wayland.windowManager.hyprland.catppuccin.enable = true;
 
   programs = {
