@@ -23,7 +23,7 @@ in
     ]);
 
   fonts = {
-    fonts = with pkgs; [
+    packages = with pkgs; [
       udev-gothic-nf
       noto-fonts-cjk-serif
       noto-fonts-cjk-sans
