@@ -140,6 +140,16 @@
   :init
   (global-corfu-mode))
 
+;; Hydra
+(leaf hydra :ensure t)
+(leaf major-mode-hydra :ensure t)
+
+;; Nix support
+(leaf nix-mode :ensure t)
+
+;; Gleam support
+(leaf gleam-ts-mode :ensure t)
+
 ;; ======================= My Configuration =======================
 
 (electric-pair-mode 1)
