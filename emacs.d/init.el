@@ -64,6 +64,7 @@
   (setq completion-styles '(orderless basic)
 	completion-category-overrides '((file (styles basic partial-completion)))))
 
+
 (leaf consult :ensure t)
 (leaf consult-ghq :ensure t
   :url "https://github.com/tomoya/consult-ghq"
@@ -95,7 +96,9 @@
 (leaf ddskk :ensure t
   :config
   (skk-latin-mode 1)
-  (global-set-key (kbd "C-x C-j") 'skk-mode))
+  (global-set-key (kbd "C-x C-j") 'skk-mode)
+  (setq skk-show-candidates-always-pop-to-buffer t)
+  (setq skk-henkan-show-candidates-rows 5))
 
 ;; Lisp
 (leaf slime :ensure t
@@ -112,7 +115,13 @@
 
 (leaf parinfer-rust-mode
   :ensure t
-  :hook emacs-lisp-mode lisp-mode)
+  :hook
+  emacs-lisp-mode
+  lisp-mode
+  :config
+  (parinfer-rust-preferred-mode "indent")
+  :init
+  (setq parinfer-rust-auto-download t))
 
 ;; LSP
 (leaf eglot
@@ -135,15 +144,11 @@
 
 (electric-pair-mode 1)
 
-(push '(menu-bar-lines . 0) default-frame-alist)
-(push '(tool-bar-lines . 0) default-frame-alist)
-
-(add-hook 'find-file-hooks 'my/always-enable-skk-latin-mode-hook)
 
 (setq vc-follow-symlinks t)
 
 (add-to-list 'default-frame-alist
-             '(font . "UDEV Gothic NFLG-13"))
+             '(font . "UDEV Gothic NFLG-13.5"))
 
 ;; initel function that behaves like `:e $MYVIMRC`
 (defun initel ()
