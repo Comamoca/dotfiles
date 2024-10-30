@@ -260,6 +260,9 @@ in
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     # gnupg
+    light
+
+    waybar
 
     android-studio
 
