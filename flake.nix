@@ -68,7 +68,6 @@
           specialArgs = {
             inherit inputs;
           };
-          # inputs.catppuccin.enable = true;
         };
       };
       homeConfigurations = {
