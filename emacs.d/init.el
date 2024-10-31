@@ -96,9 +96,14 @@
 (leaf ddskk :ensure t
   :config
   (skk-latin-mode 1)
-  (global-set-key (kbd "C-x C-j") 'skk-mode)
-  (setq skk-show-candidates-always-pop-to-buffer t)
-  (setq skk-henkan-show-candidates-rows 5))
+  (global-set-key (kbd "C-x C-j") 'skk-mode))
+
+(leaf skk :ensure ddskk
+  :custom ((default-input-method . "japanease-skk"))
+  :config
+  (leaf ddskk-posframe
+    :ensure t
+    :global-minor-mode t))
 
 ;; Lisp
 (leaf slime :ensure t
