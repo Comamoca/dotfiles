@@ -705,16 +705,7 @@ in rec {
         source = (symlink /${dotfiles}/emacs.d);
         recursive = true;
       };
-      ".skk.el".text = ''
-        (setq skk-large-jisyo "${pkgs.skkDictionaries.l}/share/skk/SKK-JISYO.L")  
-        ;; (setq skk-azik-keyboard-type 'jp106)
-        (setq skk-use-azik t)
-        (setq skk-sticky-key ";")
-
-        (setq skk-extra-jisyo-file-list
-              (list '("${pkgs.skk-imas}/share/SKK-JISYO.im@sparql.all.utf8" . utf-8)))
-
-      '';
+      ".skk".source = (symlink /${dotfiles}/ddskk-config.el);
     };
 
   # Home Manager can also manage your environment variables through
