@@ -46,6 +46,7 @@
 ;;   (push '(slime-connection-list-mode) popwin:special-display-config)
 ;;   :init)
 
+
 (leaf catppuccin-theme :ensure t
   :preface
   :config
@@ -91,6 +92,12 @@
 
 (leaf highlight-indent-guides :ensure t)
 
+;; Magit
+(leaf magit
+  :ensure t
+  :config
+  (global-set-key (kbd "C-x g") 'magit-status)
+  (setq transient-default-level 5))
 
 ;; SKK
 (leaf ddskk :ensure t
