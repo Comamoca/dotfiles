@@ -60,7 +60,6 @@ in rec {
     wezterm
     alacritty
     kitty
-    foot
 
     # ========== EDITOR & TOOLS ==========  
     arduino
@@ -754,5 +753,18 @@ in rec {
     hyprlock.settings = import ./hyprlock.nix { };
     hyprlock.enable = true;
   };
+
+  programs.foot = {
+    enable = true;
+    catppuccin.enable = true;
+    settings = {
+    main = {
+      term = "xterm-256color";
+      font = "UDEV Gothic NFLG:size=15";
+      dpi-aware = "yes";
+  };
+    };
+  };
+
   # programs.lem-editor.enable = true 
 }

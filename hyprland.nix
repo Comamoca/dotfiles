@@ -157,6 +157,9 @@ in
   ];
 
   windowrulev2 = [
+    "float,class:(foot),title:(Floaterm)"
+    "move 70% 65%,class:(foot),title:(Floaterm)"
+    "size 25% 30%,class:(foot),title:(Floaterm)"
     "float,class:^(firefox),title:^(ピクチャーインピクチャー)"
     "pin,class:^(firefox),title:^(ピクチャーインピクチャー)"
     "suppressevent maximize, class:.*"
