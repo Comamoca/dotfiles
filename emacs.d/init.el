@@ -24,34 +24,13 @@
 
 ;; ================================================
 
-;; TODO: 
-;; (leaf popwin :ensure t
-;;   :config
-;;   (setq display-buffer-function 'popwin:display-buffer)
-;;   ;; Apropos
-;;   (push '("*slime-apropos*") popwin:special-display-config)
-;;   ;; Macroexpand
-;;   (push '("*slime-macroexpansion*") popwin:special-display-config)
-;;   ;; Help
-;;   (push '("*slime-description*") popwin:special-display-config)
-;;   ;; Compilation
-;;   (push '("*slime-compilation*" :noselect t) popwin:special-display-config)
-;;   ;; Cross-reference
-;;   (push '("*slime-xref*") popwin:special-display-config)
-;;   ;; Debugger
-;;   (push '(sldb-mode :stick t) popwin:special-display-config)
-;;   ;; REPL
-;;   (push '(slime-repl-mode) popwin:special-display-config)
-;;   ;; Connections
-;;   (push '(slime-connection-list-mode) popwin:special-display-config)
-;;   :init)
-
-
+;; Theme
 (leaf catppuccin-theme :ensure t
   :preface
   :config
   (load-theme 'catppuccin t))
 
+;; Fuzzy finder
 (leaf vertico :ensure t
   :config
   (defvar vertico-count 10)
@@ -65,7 +44,7 @@
   (setq completion-styles '(orderless basic)
 	completion-category-overrides '((file (styles basic partial-completion)))))
 
-
+;; Sources for vertico
 (leaf consult :ensure t)
 (leaf consult-ghq :ensure t
   :url "https://github.com/tomoya/consult-ghq"
@@ -91,6 +70,54 @@
   (paredit-mode))
 
 (leaf highlight-indent-guides :ensure t)
+
+;; org-mode
+(leaf org
+  :ensure t
+  :hook
+  org-capture-before-finalize-hook
+  :config
+  (set-language-environment "Japanese")
+  (prefer-coding-system 'utf-8)
+  (set-default 'buffer-file-coding-system 'utf-8)
+  (setq org-directory (expand-file-name "~/.ghq/github.com/Comamoca/org"))
+  (setq org-default-notes-file "notes.org")
+  (setq diary-file-path (format-time-string "diary/%Y/%m-%d.org"))
+
+  ;; org-capture
+  (setq org-capture-templates
+	'(("d" "Diary" plain (file diary-file-path)
+	 "** 今日やったこと\n\n** 明日以降やりたいこと")))
+
+  (setq diary-path (concat org-directory "/diary"))
+
+  (setq org-publish-project-alist
+	'(("Diary"
+	   :base-directory "~/.ghq/github.com/Comamoca/org/diary"
+	   :base-extension "org"  
+	   :recursive t
+	   :publishing-directory  "~/.ghq/github.com/Comamoca/org/dist"
+	   :publishing-function org-html-publish-to-html
+	   :include ("index.org")
+	   :exclude ()
+	   )))
+  )
+
+(leaf org-journal
+  :ensure t
+  :hook
+  org-journal-after-header-create-hook
+  :config
+  (setq org-journal-time-format "")
+  (setq org-journal-time-prefix "")
+  (setq org-journal-dir (concat org-directory (format-time-string "/diary/%Y")))
+  (setq org-journal-file-format (format-time-string "%m-%d.org"))
+  (setq org-directory (expand-file-name "~/.ghq/github.com/Comamoca/org"))
+
+  (add-hook 'org-journal-after-header-create-hook 'org-journal-date-format-func)
+
+  (defun org-journal-date-format-func ()
+    (insert-file-contents (concat org-directory "/templates/diary.org"))))
 
 ;; Magit
 (leaf magit
@@ -166,11 +193,14 @@
 
 (electric-pair-mode 1)
 
+(hl-line-mode)
 
 (setq vc-follow-symlinks t)
 
+;; Font
 (add-to-list 'default-frame-alist
              '(font . "UDEV Gothic NFLG-13.5"))
+
 
 ;; initel function that behaves like `:e $MYVIMRC`
 (defun initel ()
@@ -224,9 +254,18 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default-input-method "japanese" nil nil "Customized with leaf in `skk' block at `/home/coma/.emacs.d/init.el'")
  '(package-selected-packages
-   '(macrostep leaf-tree leaf-convert "jj" evil-insert-state-map define-key 1 evil-mode :init :ensure evil highlight-indent-guides paredit ivy lsp-mode kanagawa-theme blackout el-get hydra leaf-keywords leaf)))
-(custom-set-faces)
+   '(macrostep leaf-tree leaf-convert "jj" evil-insert-state-map
+	       define-key 1 evil-mode :init :ensure evil
+	       highlight-indent-guides paredit ivy lsp-mode
+	       kanagawa-theme blackout el-get hydra leaf-keywords leaf)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "UDEV Gothic NFLG" :foundry "TWR" :slant normal :weight regular :height 128 :width normal)))))
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
