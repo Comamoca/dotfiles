@@ -18,24 +18,5 @@
 	    ))
 
 
-;; (setq skk-rom-kana-rule-list
-;;       (skk-del-alist "'" skk-rom-kana-rule-list))
 
 
-;; (setq skk-show-candidates-always-pop-to-buffer t)
-;; (setq skk-henkan-show-candidates-rows 5)
-;; (setq skk-comp-mode t)
-
-;; (setq skk-use-azik t)
-;; (setq skk-sticky-key ";")
-
-;; (setq skk-rom-kana-rule-list
-;;       (assoc-delete-all ";" skk-rom-kana-rule-list))
-
-;; (add-to-list 'skk-rom-kana-rule-list '(";" nil skk-start-henkan))
-
-;; (defun my/skk-azik-hook (
-;;   (setq skk-rom-kana-rule-list
-;; 	(assoc-delete-all ";" skk-rom-kana-rule-list))
-
-;;   (add-to-list 'skk-rom-kana-rule-list '(";" nil skk-start-henkan)))
