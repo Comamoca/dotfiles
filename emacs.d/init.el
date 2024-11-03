@@ -153,7 +153,9 @@
 (leaf ddskk :ensure t
   :config
   (skk-latin-mode 1)
-  (global-set-key (kbd "C-x C-j") 'skk-mode))
+  (global-set-key (kbd "C-x C-j") 'skk-mode)
+  (global-set-key (kbd "<henkan>") 'skk-kakutei)
+  (global-set-key (kbd "<muhenkan>") 'skk-latin-mode))
 
 (leaf skk :ensure ddskk
   :custom ((default-input-method . "japanease-skk"))
