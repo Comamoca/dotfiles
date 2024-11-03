@@ -5,7 +5,7 @@
 
 (setq skk-large-jisyo "~/.skk-dict/SKK-JISYO.L")
 (setq skk-extra-jisyo-file-list
-     (list '("~/.skk-dict/SKK-JISYO.im@sparql.all.utf8" 'utf-8)))
+     (list '("~/.skk-dict/SKK-JISYO.im@sparql.all.utf8" . "utf-8")))
 
 (add-hook 'skk-azik-load-hook
 	  (lambda ()
@@ -13,10 +13,23 @@
 		  (skk-del-alist ";" skk-rom-kana-rule-list))
 
 	    (setq skk-rom-kana-rule-list
+		  (skk-del-alist "l" skk-rom-kana-rule-list))
+
+	    (setq skk-rom-kana-rule-list
+		  (skk-del-alist "-" skk-rom-kana-rule-list))
+
+	    (setq skk-rom-kana-rule-list
+		  (skk-del-alist ":" skk-rom-kana-rule-list))
+
+	    (setq skk-rom-kana-rule-list
+		  (skk-del-alist "z-" skk-rom-kana-rule-list))
+
+	    (setq skk-rom-kana-rule-list
 		  (append skk-rom-kana-rule-list
-			  '((";" nil skk-sticky-set-henkan-point))))
+			  '((";" nil skk-sticky-set-henkan-point)
+			    ("l" nil "っ")
+			    ("z:" nil "：")
+			    ("z-" nil "ー")
+			    ("z " nil "　")
+			    ("z~" nil "〜"))))
 	    ))
-
-
-
-
