@@ -262,7 +262,7 @@ in
     # gnupg
     light
 
-    waybar
+    # waybar
 
     android-studio
 
@@ -313,6 +313,8 @@ in
 
   # Android Debug Bridge
   programs.adb.enable = true;
+
+  programs.waybar.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
