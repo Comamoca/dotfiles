@@ -18,6 +18,7 @@
     emacs-overlay.url = "github:nix-community/emacs-overlay";
     emacs.url = "github:cmacrae/emacs";
     nak.url = "github:comamoca/flake-nak";
+    nur-packages.url = "github:Comamoca/nur-packages";
   };
 
   outputs =
@@ -32,7 +33,7 @@
       emacs-overlay,
       emacs,
       nak,
-      mozilla-overlay
+      mozilla-overlay,
       nur-packages,
     }@inputs:
     let
@@ -83,7 +84,8 @@
             {
               nixpkgs.overlays = overlays ++ [
                 (final: prev: {
-                  nak = inputs.nak.packages.x86_64-linux.default;
+                  # nak = inputs.nak.packages.x86_64-linux.default;
+                })	
               ];
             }
           ];
