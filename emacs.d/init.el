@@ -222,6 +222,10 @@
 
 (setq vc-follow-symlinks t)
 
+;; Disable menu bar and tool bar
+(menu-bar-mode -1)
+(tool-bar-mode 0)
+
 ;; Font
 (add-to-list 'default-frame-alist
              '(font . "UDEV Gothic NFLG-13.5"))
