@@ -7,6 +7,7 @@
 }:
 
 let
+  system = "x86_64-linux";
   nurpkgs = inputs.nur-packages.legacyPackages.${system};
 
   wallpapers = builtins.fetchTarball {
@@ -145,6 +146,7 @@ in rec {
     keybase
     lssecret
     pinentry-curses
+    (pkgs.lib.hiPrio pinentry-emacs)
 
     # ========== LANGUAGE SERVER ========== 
     lua-language-server
@@ -185,6 +187,10 @@ in rec {
     noto-fonts
     noto-fonts-cjk-sans
     # ttf-udev-gothic
+
+    # ========== Writing ========== 
+    textlint
+    textlint-rule-preset-ja-technical-writing
 
     # ========== UTILS ========== 
     nix-prefetch-scripts
@@ -586,10 +592,11 @@ in rec {
       # # ========== SKK ========== 
       # skk-dicts
       ".skk-dict/SKK-JISYO.L".source = "${pkgs.skkDictionaries.l}/share/skk/SKK-JISYO.L";
-      ".skk-dict/SKK-JISYO.im@sparql.all.utf8".source = "${pkgs.skk-imas}/share/SKK-JISYO.im@sparql.all.utf8";
       ".skk-dict/SKK-JISYO.im@sparql.all.utf8".source = "${nurpkgs.skk-jisyo-imasparql}/share/SKK-JISYO.im@sparql.all.utf8";
 
       ".spell-dict/programming-english-dict".source = "${nurpkgs.programming-english}/share/dict/programming-english-dict";
+      ".spell-dict/dict.txt".source = ./word_dicts/dict.txt;
+
       # TODO: 後で消す
       # ".config/" = {
       #   source = (symlink /${dotfiles}/config);
@@ -754,7 +761,6 @@ in rec {
       nix-direnv.enable = true;
     };
     fish = import ./fish.nix { inherit pkgs; };
-    hyprlock.settings = import ./hyprlock.nix { };
     hyprlock.settings = import ./hyprlock.nix { inherit wallpaper; };
     hyprlock.enable = true;
   };
@@ -765,7 +771,7 @@ in rec {
     settings = {
     main = {
       term = "xterm-256color";
-      font = "UDEV Gothic NFLG:size=15";
+      font = "UDEV Gothic NFLG:size=12.5";
       dpi-aware = "yes";
   };
     };
