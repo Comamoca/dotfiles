@@ -44,7 +44,9 @@ local servers = {
   "moonbit",
   "vimls",
   "efm",
-  "kotlin_language_server"
+  "kotlin_language_server",
+  "nimls",
+  "nim_langserver"
 }
 
 -- Auto start language servers.
