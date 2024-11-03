@@ -71,6 +71,17 @@
 
 (leaf highlight-indent-guides :ensure t)
 
+;; Treesitter
+(leaf treesit-auto
+  :ensure t
+  :config
+  (setq treesit-auto-install t)
+  (global-treesit-auto-mode))
+
+(leaf treesit
+  :config
+  (setq treesit-font-lock-level 4))
+
 ;; org-mode
 (leaf org
   :ensure t
