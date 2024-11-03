@@ -13,6 +13,7 @@ export class Config extends BaseConfig {
         "file",
         "skkeleton",
         "emoji",
+	"dictionary"
       ],
       sourceOptions: {
         "lsp": {
