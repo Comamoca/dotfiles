@@ -755,6 +755,7 @@ in rec {
     };
     fish = import ./fish.nix { inherit pkgs; };
     hyprlock.settings = import ./hyprlock.nix { };
+    hyprlock.settings = import ./hyprlock.nix { inherit wallpaper; };
     hyprlock.enable = true;
   };
 

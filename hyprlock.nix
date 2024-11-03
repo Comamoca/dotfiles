@@ -1,4 +1,4 @@
-{ }:
+{ wallpaper }:
 {
   "$accent" = "$mauve";
   "$accentAlpha" = "$mauveAlpha";
@@ -13,7 +13,7 @@
   # BACKGROUND
   "background" = {
     "monitor" = "";
-    "path" = "~/Pictures/wallpaper/wallpaper.jpg";
+    "path" = wallpaper;
     "blur_passes" = 0;
     "color" = "$base";
   };
