@@ -267,3 +267,24 @@ on_source = 'skkeleton'
 [[plugins]]
 repo = "andymass/vim-matchup"
 on_source = ""
+
+[[plugins]]
+repo = 'matsui54/ddc-source-dictionary'
+on_source = 'ddc.vim'
+hook_source = '''
+call ddc#custom#patch_global('sourceParams', {
+      \ 'dictionary': { 'dictPaths': [
+      \  expand("~/.spell-dict/programming-english-dict"),
+      \  expand("~/.spell-dict/dict.txt"),
+      \  ],
+      \ 'smartCase': v:true,
+      \ 'isVolatile': v:true,
+      \ }
+      \ })
+
+call ddc#custom#patch_global('sources', ['dictionary'])
+call ddc#custom#patch_global('sourceOptions', {
+      \ '_': {'matchers': ['matcher_head']},
+      \ 'dictionary': {'mark': 'D'},
+      \ })
+'''
