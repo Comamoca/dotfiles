@@ -98,10 +98,11 @@
   ;; org-capture
   (setq org-capture-templates
 	'(("d" "Diary" plain (file diary-file-path)
-	 "** 今日やったこと\n\n** 明日以降やりたいこと")))
+	   "** 今日やったこと\n\n** 明日以降やりたいこと")))
 
   (setq diary-path (concat org-directory "/diary"))
 
+  (setq org-publish-use-timestamps-flag nil)
   (setq org-publish-project-alist
 	'(("Diary"
 	   :base-directory "~/.ghq/github.com/Comamoca/org/diary"
@@ -111,6 +112,17 @@
 	   :publishing-function org-html-publish-to-html
 	   :include ("index.org")
 	   :exclude ()
+	   )
+	  ("Note"
+	   :base-directory "~/.ghq/github.com/Comamoca/org/note"
+	   :base-extension "org"  
+	   :recursive t
+	   :publishing-directory  "~/.ghq/github.com/Comamoca/org/note/dist"
+	   :publishing-function org-html-publish-to-html
+	   :auto-sitemap t
+	   :include ("index.org")
+	   :exclude ()
+	   :html-head "<link rel=\"stylesheet\" href=\"https://unpkg.com/mvp.css\">"
 	   )))
   )
 
