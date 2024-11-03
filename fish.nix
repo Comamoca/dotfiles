@@ -134,7 +134,7 @@ in
     alias lg='lazygit'
     alias ablaze_repos='gh repo list Ablaze-MIRAI'
     alias wk='wikitool'
-    alias zenn="npx zenn"
+    # alias zenn="npx zenn"
     alias bt="boost"
     alias ":wq"="exit"
     alias ":wqa"="exit"
