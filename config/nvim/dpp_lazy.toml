@@ -1040,6 +1040,11 @@ hook_add = '''
 " \    tempfile: '%{tempname()}.mbt',
 " \  },
 
+augroup quickrun
+  autocmd!
+  autocmd FileType quickrun nnoremap q <cmd>q<CR>
+augroup END
+
 " ref: https://github.com/4513ECHO/dotfiles/blob/c9f6da61c24da5742a81a89b1f9efa437d2df86e/config/nvim/dein/plugin.toml#L605
 let g:quickrun_config = {
 \   "gleam" : #{
@@ -1059,10 +1064,14 @@ let g:quickrun_config = {
 \    command: 'gleam',
 \  },
 \  "_" : {
-\    "outputter/buffer/split" : ":botright",
+\    "outputter/buffer/opener" : "belowright 10split",
+\    "outputter/buffer/into" : 1,
 \    "outputter/buffer/close_on_empty" : 1
 \  },
 \}
+
+
+" \    "outputter/buffer/split" : "belowright 10",
 '''
 
 [[plugins]]
