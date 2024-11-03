@@ -18,7 +18,6 @@
     emacs-overlay.url = "github:nix-community/emacs-overlay";
     emacs.url = "github:cmacrae/emacs";
     nak.url = "github:comamoca/flake-nak";
-    skk-imas.url = "github:Comamoca/flake-skk-jisyo-imasparql";
   };
 
   outputs =
@@ -33,8 +32,8 @@
       emacs-overlay,
       emacs,
       nak,
-      skk-imas,
       mozilla-overlay
+      nur-packages,
     }@inputs:
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
@@ -44,7 +43,6 @@
         neovim-nightly-overlay.overlays.default
         (import emacs-overlay)
         nak.overlays.default
-        skk-imas.overlays.default
         # (import emacs.overlay)
 	mozilla-overlay.overlays.firefox
       ];
@@ -86,8 +84,6 @@
               nixpkgs.overlays = overlays ++ [
                 (final: prev: {
                   nak = inputs.nak.packages.x86_64-linux.default;
-                  skk-imas = inputs.skk-imas.packages.x86_64-linux.default;
-                })
               ];
             }
           ];

@@ -7,6 +7,8 @@
 }:
 
 let
+  nurpkgs = inputs.nur-packages.legacyPackages.${system};
+
   wallpapers = builtins.fetchTarball {
     url =  "https://github.com/zhichaoh/catppuccin-wallpapers/archive/refs/heads/main.zip";
     sha256 = "sha256:0rd6hfd88bsprjg68saxxlgf2c2lv1ldyr6a8i7m4lgg6nahbrw7";
@@ -585,7 +587,9 @@ in rec {
       # skk-dicts
       ".skk-dict/SKK-JISYO.L".source = "${pkgs.skkDictionaries.l}/share/skk/SKK-JISYO.L";
       ".skk-dict/SKK-JISYO.im@sparql.all.utf8".source = "${pkgs.skk-imas}/share/SKK-JISYO.im@sparql.all.utf8";
+      ".skk-dict/SKK-JISYO.im@sparql.all.utf8".source = "${nurpkgs.skk-jisyo-imasparql}/share/SKK-JISYO.im@sparql.all.utf8";
 
+      ".spell-dict/programming-english-dict".source = "${nurpkgs.programming-english}/share/dict/programming-english-dict";
       # TODO: 後で消す
       # ".config/" = {
       #   source = (symlink /${dotfiles}/config);
