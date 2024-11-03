@@ -230,6 +230,10 @@
 (add-to-list 'default-frame-alist
              '(font . "UDEV Gothic NFLG-13.5"))
 
+;; Pinentry Emacs
+(defun pinentry-emacs (desc prompt ok error)
+  (let ((str (read-passwd (concat (replace-regexp-in-string "%22" "\"" (replace-regexp-in-string "%0A" "\n" desc)) prompt ": "))))
+    str))
 
 ;; initel function that behaves like `:e $MYVIMRC`
 (defun initel ()
