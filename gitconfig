@@ -15,3 +15,9 @@
 	undo = reset --sort HEAD^
 [http]
 	postBuffer = 524288000
+[credential "https://github.com"]
+	helper = 
+	helper = !/home/coma/.nix-profile/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/home/coma/.nix-profile/bin/gh auth git-credential
