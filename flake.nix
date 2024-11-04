@@ -19,6 +19,10 @@
     emacs.url = "github:cmacrae/emacs";
     nak.url = "github:comamoca/flake-nak";
     nur-packages.url = "github:Comamoca/nur-packages";
+    disko = {
+      url = "github:nix-community/disko/latest";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -35,6 +39,7 @@
       nak,
       mozilla-overlay,
       nur-packages,
+      disko,
     }@inputs:
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
@@ -63,6 +68,7 @@
             ./configuration.nix
             inputs.catppuccin.nixosModules.catppuccin
             home-manager.nixosModules.home-manager
+	    disko.nixosModules.disko
           ];
           specialArgs = {
             inherit inputs;
