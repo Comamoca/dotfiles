@@ -65,10 +65,10 @@
         NixOS = inputs.nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
-            ./configuration.nix
             inputs.catppuccin.nixosModules.catppuccin
             home-manager.nixosModules.home-manager
 	    disko.nixosModules.disko
+            ./configuration.nix
           ];
           specialArgs = {
             inherit inputs;
