@@ -87,6 +87,7 @@ in rec {
     just
 
     # ========== OTHER TOOLS ========== 
+    nix-search-cli
     zellij
 
     # textimg
