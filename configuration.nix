@@ -16,7 +16,7 @@ in
     [
       # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./disko.nix
+      # ./disko.nix
     ]
 
     ++ (with inputs.nixos-hardware.nixosModules; [
