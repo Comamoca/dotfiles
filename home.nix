@@ -757,7 +757,7 @@ in rec {
   programs.home-manager.enable = true;
 
   wayland.windowManager.hyprland.enable = true;
-  wayland.windowManager.hyprland.settings = import ./hyprland.nix { inherit pkgs wallpaper home; };
+  wayland.windowManager.hyprland.settings = import ./hyprland.nix { inherit pkgs wallpaper home config; };
   wayland.windowManager.hyprland.catppuccin.enable = true;
 
   programs = {
