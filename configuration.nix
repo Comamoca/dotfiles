@@ -190,6 +190,25 @@ in
   # services.mako.enable = true;
   # services.mako.catppuccin.enable = true;
 
+  services.xremap.config.modmap = [
+    # modmap:
+    #   - name: Global
+    #     remap:
+    #       Enter:
+    #         held: Alt_R
+    #         alone: Enter
+    
+    {
+      name = "Global";
+      remap = {
+        Enter = {
+	  held = "Alt_R";
+	  alone = "Enter";
+	};
+      };
+    }
+  ];
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.coma = {
     isNormalUser = true;
