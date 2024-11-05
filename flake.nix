@@ -23,6 +23,7 @@
       url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    xremap.url = "github:xremap/nix-flake";
   };
 
   outputs =
@@ -40,6 +41,7 @@
       mozilla-overlay,
       nur-packages,
       disko,
+      xremap,
     }@inputs:
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
