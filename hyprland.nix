@@ -1,6 +1,7 @@
-{ pkgs, wallpaper }:
+{ pkgs, wallpaper, home }:
 let
   kitty = "kitty";
+  dotfiles = /${home.homeDirectory}/.ghq/github.com/Comamoca/dotfiles;
 in
 {
   monitor = [
@@ -262,6 +263,7 @@ in
     "swaync"
     "playerctld daemon"
     "swaybg -i ${wallpaper}"
+    "qpwgraph ${dotfiles}/qpwgraph/audio.qpwgraph"
     "hyprpaper"
   ];
 }
