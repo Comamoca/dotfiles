@@ -15,8 +15,9 @@ in
     fish_add_path $HOME/.codon/bin
     fish_add_path $HOME/.rye/shims
 
+    fish_add_path $HOME/.local/share/gem/ruby/3.3.0/bin
     fish_add_path $HOME/.local/share/gem/ruby/3.0.0/bin
-    fish_add_path $HOME/.local/share/gem/ruby/3.0.0/bin/
+    fish_add_path $HOME/.local/share/gem/ruby/3.0.0/bin
 
     fish_add_path $HOME/.roswell/bin
 
