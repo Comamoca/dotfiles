@@ -59,6 +59,10 @@ in rec {
     # ========== NIXGL ========== 
     # nixgl.nixGLIntel
 
+    # ========== Audio ==========
+    sonic-pi
+    qpwgraph
+
     # ========== TERMINAL ========== 
     wezterm
     alacritty
@@ -753,7 +757,7 @@ in rec {
   programs.home-manager.enable = true;
 
   wayland.windowManager.hyprland.enable = true;
-  wayland.windowManager.hyprland.settings = import ./hyprland.nix { inherit pkgs wallpaper; };
+  wayland.windowManager.hyprland.settings = import ./hyprland.nix { inherit pkgs wallpaper home; };
   wayland.windowManager.hyprland.catppuccin.enable = true;
 
   programs = {
