@@ -1,6 +1,8 @@
-{ pkgs, wallpaper, home }:
+{ pkgs, wallpaper, home, config }:
 let
   kitty = "kitty";
+
+  symlink = config.lib.file.mkOutOfStoreSymlink;
   dotfiles = /${home.homeDirectory}/.ghq/github.com/Comamoca/dotfiles;
 in
 {
@@ -263,7 +265,7 @@ in
     "swaync"
     "playerctld daemon"
     "swaybg -i ${wallpaper}"
-    "qpwgraph ${dotfiles}/qpwgraph/audio.qpwgraph"
+    "qpwgraph -am ${symlink /${dotfiles}/qpwgraph/audio.qpwgraph}"
     "hyprpaper"
   ];
 }
