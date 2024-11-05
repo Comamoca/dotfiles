@@ -70,11 +70,12 @@
             inputs.catppuccin.nixosModules.catppuccin
             home-manager.nixosModules.home-manager
             ./configuration.nix
-	    disko.nixosModules.disko
-	    ({ config, ... }: {
-	      # system.stateVersion = config.system.stateVersion;
-	      disko.devices.disk.main.imageSize = "10G";
-	    })
+	    xremap.nixosModules.default
+	    # disko.nixosModules.disko
+	    # ({ config, ... }: {
+	    #   # system.stateVersion = config.system.stateVersion;
+	    #   disko.devices.disk.main.imageSize = "10G";
+	    # })
           ];
           specialArgs = {
             inherit inputs;
