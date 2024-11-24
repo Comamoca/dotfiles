@@ -6,6 +6,7 @@ require("lazydev").setup()
 require("ddc_source_lsp_setup").setup()
 local capabilities = require("ddc_source_lsp").make_client_capabilities()
 local lspconfig = require("lspconfig")
+local u = require("utils")
 
 local util = lspconfig.util
 
@@ -32,10 +33,10 @@ end
 
 -- Language server settings
 local servers = {
-  "clangd",
-  "rust_analyzer",
-  "pyright",
-  "ts_ls",
+  { "clangd", "clangd" },
+  { "rust_analyzer", "rust-analyzer" },
+  { "pyright", "pyright" },
+  { "ts_ls", "ts_ls" },
   "lua_ls",
   "nil_ls",
   "ruby_lsp",
@@ -50,8 +51,10 @@ local servers = {
   "tailwindcss",
   "tinymist",
   "purescriptls",
-  "marksman"
+  "marksman",
 }
+
+u.map(function(server, _) end)
 
 -- Auto start language servers.
 for _, name in ipairs(servers) do

@@ -1,0 +1,302 @@
+[[plugins]]
+repo = 'Shougo/ddu.vim'
+on_event = ['BufRead', 'CursorHold']
+hook_source = '''
+" execute("source" .. expand("~/.vim/ddu.vim"))
+
+const width = &columns * 0.8
+const col = &columns * 0.12
+
+call ddu#custom#patch_global(#{
+\   ui: 'ff',
+\   sourceOptions: #{
+\     _: #{
+\      matchers: ['matcher_fzf']
+\     },
+\     memos: #{
+\       matchers: ['matcher_kensaku'],
+\     },
+\     deol: #{
+\       actions: ['edit'],
+\     },
+\     file_rec: #{
+\       matchers: ['matcher_kensaku'],
+\     },
+\   },
+\   sourceParams: #{
+\     file_rec: #{
+\        ignoredDirectories: [
+\      '.git',
+\      'node_modules',
+\      'vendor',
+\      '.next',
+\      '__pycache__',
+\      '.elixir_ls',
+\      '_build',
+\      'deps',
+\      '.pytest_cache',
+\      '.venv'
+\      ],
+\        expandSymbolicLink: v:true
+\       },
+\   },
+\     filterParams: #{
+\       matcher_fzf: #{
+\         highlightMatched: 'Search',
+\       },
+\       matcher_kensaku: #{
+\       highlightMatched: 'Search',
+\          },
+\       },
+\     kindOptions: #{
+\       file: #{
+\         defaultAction: 'open',
+\       },
+\       buffer: #{
+\         defaultAction: 'open',
+\       },
+\       memos: #{
+\          defaultAction: 'open',
+\        },
+\       deol: #{
+\          defaultAction: 'edit',
+\       },
+\       source: #{
+\          defaultAction: 'execute',
+\       },
+\       command: #{
+\          defaultAction: 'edit',
+\       },
+\       custom-list: #{
+\          defaultAction: 'callback',
+\       },
+\       spotify: #{
+\        defaultAction: "play",
+\       },
+\     }
+\ })
+
+call ddu#custom#patch_global(#{
+\     uiParams: #{
+\        ff: #{
+\          split: "horizontal",
+\          previewFloating: v:false,
+\          previewSplit: "vertical",
+\          previewFloatingBorder: "none",
+\          previewWidth: width * 0.7,
+\          previewHeight: col,
+\          autoAction: #{
+\            name: "preview",
+\          },
+\        },
+\    },
+\ })
+
+setlocal updatetime=500
+autocmd CursorHold ddu-ff call ddu#ui#do_action('preview')
+autocmd CursorHold ddu-ff-filter call ddu#ui#do_action('preview')
+
+autocmd FileType ddu-ff call s:ddu_my_settings()
+function! s:ddu_my_settings() abort
+  nnoremap <buffer><silent> <CR>
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'open'})<CR>
+
+  nnoremap <buffer><silent> q
+    \ <Cmd>call ddu#ui#do_action('quit')<CR> 
+
+endfunction
+
+autocmd FileType ddu-ff-filter call s:ddu_filter_my_settings()
+function! s:ddu_filter_my_settings() abort
+    nnoremap <buffer> q
+    \ <Cmd>call ddu#ui#do_action('closeFilterWindow')<CR>
+    nnoremap <buffer> <CR>
+    \ <Cmd>call ddu#ui#do_action('closeFilterWindow')<CR>
+    inoremap <buffer> <CR>
+    \ <Esc><Cmd>call ddu#ui#do_action('itemAction')<CR>
+    inoremap <buffer> <C-c>
+    \ <Esc><Cmd>call ddu#ui#do_action('closeFilterWindow')<CR>
+    inoremap <buffer> <C-n>
+    \ <Cmd>call ddu#ui#do_action('cursorNext')<CR>
+    inoremap <buffer> <C-p>
+    \ <Cmd>call ddu#ui#do_action('cursorPrevious')<CR>
+endfunction
+
+" ==================== ddu-ui-filer setting ====================  
+call ddu#custom#patch_local('filer', #{
+\   ui: "filer",
+\   sources: [
+\     #{
+\       name: "file",
+\       params: {},
+\     },
+\   ],
+\   sourceOptions: #{
+\     _: #{
+\       columns: ["filename"],
+\     },
+\   },
+\   kindOptions: #{
+\     file: #{
+\       defaultAction: "open",
+\     },
+\   },
+\   uiParams: #{
+\     filer: #{
+\       winWidth: 25,
+\       split: "vertical",
+\       splitDirection: "topleft",
+\     }
+\   },
+\ })
+
+autocmd TabEnter,CursorHold,FocusGained <buffer>
+	\ call ddu#ui#do_action('checkItems')
+
+autocmd FileType ddu-filer call s:ddu_filer_my_settings()
+function! s:ddu_filer_my_settings() abort
+  nnoremap <buffer><silent><expr> l
+    \ ddu#ui#get_item()->get('isTree', v:false) ?
+    \ "<Cmd>call ddu#ui#do_action('itemAction', {'name': 'narrow'})<CR>" :
+    \ "<Cmd>call ddu#ui#do_action('itemAction', {'name': 'open', 'params': {}})<CR>"
+
+  nnoremap <buffer><silent><expr> <CR>
+    \ ddu#ui#get_item()->get('isTree', v:false) ?
+    \ "<Cmd>call ddu#ui#do_action('itemAction', {'name': 'narrow'})<CR>" :
+    \ "<Cmd>call ddu#ui#do_action('itemAction', {'name': 'open', 'params': {}})<CR>"
+
+  nnoremap <buffer><silent><expr> <Space>
+    \ ddu#ui#get_item()->get('isTree', v:false) ?
+    \ "<Cmd>call ddu#ui#do_action('itemAction', {'name': 'narrow'})<CR>" :
+    \ "<Cmd>call ddu#ui#do_action('itemAction', {'name': 'open', 'params': {'command': 'split'}})<CR>"
+
+  nnoremap <buffer><silent> <Esc>
+    \ <Cmd>call ddu#ui#do_action('quit')<CR>
+
+  nnoremap <buffer><silent> q
+    \ <Cmd>call ddu#ui#do_action('quit')<CR>
+
+  nnoremap <buffer><silent> <Leader>f
+    \ <Cmd>call ddu#ui#do_action('quit')<CR>
+
+  nnoremap <buffer><silent> -
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'narrow', 'params': {'path': '..'}})<CR>
+
+  nnoremap <buffer><silent> c
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'copy'})<CR>
+
+  nnoremap <buffer><silent> p
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'paste'})<CR>
+
+  nnoremap <buffer><silent> D
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'delete'})<CR>
+
+  nnoremap <buffer><silent> r
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'rename'})<CR>
+
+  nnoremap <buffer><silent> m
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'move'})<CR>
+
+  nnoremap <buffer><silent> N
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'newFile'})<CR>
+
+  nnoremap <buffer><silent> mk
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'newDirectory'})<CR>
+
+  nnoremap <buffer><silent> yy
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'yank'})<CR>
+endfunction
+'''
+
+# ==================== ddu ui ====================
+[[plugins]]
+repo = 'Shougo/ddu-ui-ff'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'Shougo/ddu-ui-filer'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'Shougo/ddu-column-filename'
+on_source = 'ddu.vim'
+
+# ==================== ddu sources ====================
+[[plugins]]
+repo = 'Shougo/ddu-source-file_rec'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'Shougo/ddu-source-file'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'shun/ddu-source-rg'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = "4513ECHO/ddu-source-ghq"
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = "Shougo/ddu-source-line"
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = "shun/ddu-source-buffer"
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = "liquidz/ddu-source-custom-list"
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = "4513ECHO/ddu-source-source"
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'Shougo/ddu-source-register'
+
+# ==================== ddu matcher ====================
+[[plugins]]
+repo = 'Shougo/ddu-filter-matcher_substring'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'Milly/ddu-filter-kensaku'
+on_source = 'ddu.vim'
+
+# ==================== ddu kind ====================
+[[plugins]]
+repo = 'Shougo/ddu-kind-file'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'Shougo/ddu-kind-word'
+
+# ==================== ddu filter ====================
+[[plugins]]
+repo = "yuki-yano/ddu-filter-fzf"
+on_source = 'ddu.vim'
+
+
+[[plugins]]
+repo = 'Shougo/deol.nvim'
+on_source = 'ddu.vim'
+
+# [[plugins]]
+# repo = "hasundue/ddu-filter-zf"
+# on_source = 'ddu.vim'
+# build = 'deno task fetch' 
+
+[[plugins]]
+repo = 'kyoh86/ddu-source-command'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = 'kuuote/ddu-source-mr'
+on_source = 'ddu.vim'
+
+[[plugins]]
+repo = '~/.ghq/github.com/coma/ddu-source-outline'
+on_source = 'ddu.vim'
