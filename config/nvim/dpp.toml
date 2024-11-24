@@ -66,6 +66,9 @@ repo = "Shougo/dpp.vim"
 repo = "vim-denops/denops.vim"
 
 [[plugins]]
+repo = "Shougo/dpp-ext-local"
+
+[[plugins]]
 repo = "Shougo/dpp-ext-toml"
 
 [[plugins]]

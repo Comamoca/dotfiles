@@ -62,16 +62,16 @@ vim.api.nvim_create_autocmd("BufRead", {
 
 vim.api.nvim_create_autocmd("BufRead", {
   pattern = "*.mbt",
-  callback = function ()
+  callback = function()
     vim.bo.filetype = "moonbit"
 
     local quickrun_config = vim.g.quickrun_config
-    local moonbit= vim.fn["moonbit_settings#moonbit_quickrun"]()
+    local moonbit = vim.fn["moonbit_settings#moonbit_quickrun"]()
 
     -- Vim scriptとLua間で辞書型/table型を操作するのが上手くいかない
     vim.g.quickrun_config["moonbit"] = moonbit
     vim.print(vim.g.quickrun_config)
-  end
+  end,
 })
 
 vim.cmd("filetype indent plugin on")
@@ -159,7 +159,20 @@ vim.cmd([[let maplocalleader = ' ']])
 vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/vim-spotify"))
 vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-moonbit-settings"))
 
+vim.opt.expandtab = true
+
 vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-junky"))
 vim.g.junky_path = "~/.junky"
+
+vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-morg"))
+
+vim.opt.foldmethod = "marker"
+
+vim.api.nvim_create_autocmd("BufEnter", {
+        pattern = {"*.md", "*.markdown"},
+        callback = function ()
+                vim.keymap.set("n", "<leader>er", "<cmd>call morg#run()<CR>")
+        end
+})
 
 -- vim.g['denops_server_addr'] = "127.0.0.1:32123"
