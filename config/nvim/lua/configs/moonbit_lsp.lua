@@ -1,10 +1,10 @@
-local util = require 'lspconfig.util'
+local util = require("lspconfig.util")
 
 return {
   default_config = {
-    cmd = { 'moonbit-lsp' },
+    cmd = { "moonbit-lsp" },
     filetypes = { "moonbit" },
-    root_dir = util.root_pattern 'moon.mod.json',
+    root_dir = util.root_pattern("moon.mod.json"),
   },
   docs = {
     description = [[

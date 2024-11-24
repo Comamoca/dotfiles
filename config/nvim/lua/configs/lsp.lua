@@ -1,5 +1,5 @@
 local lspconfig = require("lspconfig")
-local server_config = require('lspconfig.configs')
+local server_config = require("lspconfig.configs")
 -- local mason = require("mason")
 -- local mason_lspconfig = require("mason-lspconfig")
 require("lazydev").setup()
@@ -46,7 +46,11 @@ local servers = {
   "efm",
   "kotlin_language_server",
   "nimls",
-  "nim_langserver"
+  "nim_langserver",
+  "tailwindcss",
+  "tinymist",
+  "purescriptls",
+  "marksman"
 }
 
 -- Auto start language servers.
@@ -56,7 +60,6 @@ for _, name in ipairs(servers) do
     local is_node_dir = function()
       return lspconfig.util.root_pattern("package.json")(vim.fn.getcwd())
     end
-
 
     -- ts_ls
     local ts_opts = {}
@@ -77,7 +80,7 @@ for _, name in ipairs(servers) do
     lspconfig.denols.setup(deno_opts)
   elseif name == "tailwindcss" then
     lspconfig.tailwindcss.setup({})
-  -- lspconfig[name].setup({})
+    -- lspconfig[name].setup({})
     lspconfig.tailwindcss.setup({
       init_options = {
         rootMarkers = {
@@ -91,26 +94,26 @@ for _, name in ipairs(servers) do
     lspconfig.efm.setup({
       init_options = { documentFormatting = true },
       single_file_support = true,
-      filetypes = { 'markdown' },
-      on_attach = function ()
-	      print("efm attached.")
+      filetypes = { "markdown" },
+      on_attach = function()
+        print("efm attached.")
       end,
       settings = {
-          rootMarkers = { ".git/" },
-          languages = {
-              markdown = { {
-                  lintIgnoreExitCode = true,
-                  -- lintCommand = [[textlint -f json ${INPUT} | jq -r '.[] | .filePath as $filePath | .messages[] | "1;\($filePath):\(.line):\(.column):\n2;\(.message | split("\n")[0])\n3;[\(.ruleId)]"']],
-		  lintCommand  = "textlint -f unix --stdin --stdin-filename ${INPUT}",
-		  lintStdin = true,
-                  lintFormats = { '%f:%l:%c: %m [%trror/%r]', '%E1;%E%f:%l:%c:', '%C2;%m', '%C3;%m%Z' },
-                  -- lintFormats = '%f:%l:%c: %m [%trror/%r]',
-              } }
-
-          }
-      }
+        rootMarkers = { ".git/" },
+        languages = {
+          markdown = {
+            {
+              lintIgnoreExitCode = true,
+              -- lintCommand = [[textlint -f json ${INPUT} | jq -r '.[] | .filePath as $filePath | .messages[] | "1;\($filePath):\(.line):\(.column):\n2;\(.message | split("\n")[0])\n3;[\(.ruleId)]"']],
+              lintCommand = "textlint -f unix --stdin --stdin-filename ${INPUT}",
+              lintStdin = true,
+              lintFormats = { "%f:%l:%c: %m [%trror/%r]", "%E1;%E%f:%l:%c:", "%C2;%m", "%C3;%m%Z" },
+              -- lintFormats = '%f:%l:%c: %m [%trror/%r]',
+            },
+          },
+        },
+      },
     })
-
   else
     lspconfig[name].setup({})
   end

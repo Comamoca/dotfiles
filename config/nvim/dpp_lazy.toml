@@ -20,15 +20,15 @@ nnoremap <C-f> <cmd>Sayonara<CR>
 repo = "hrsh7th/nvim-insx"
 on_event = ['InsertEnter']
 lua_source = """
--- require('insx.preset.standard').setup()
+require('insx.preset.standard').setup()
 """
 
-[[plugins]]
-repo = 'm4xshen/autoclose.nvim'
-on_event = ['InsertEnter']
-lua_source = """
-require("autoclose").setup()
-"""
+# [[plugins]]
+# repo = 'm4xshen/autoclose.nvim'
+# on_event = ['InsertEnter']
+# lua_source = """
+# require("autoclose").setup()
+# """
 
 [[plugins]]
 repo = 'nvim-treesitter/nvim-treesitter'
@@ -916,7 +916,7 @@ on_source = ["mstdn.vim"]
 
 [[plugins]]
 repo = 'Olical/conjure'
-on_ft = ["racket", "clojure"]
+on_ft = ["racket", "clojure", "lisp", "lua", "fennel"]
 lua_source = """
 -- Disable the documentation mapping
 vim.g["conjure#mapping#doc_word"] = false
@@ -1054,9 +1054,8 @@ let g:quickrun_config = {
 \    type: 'deno/run',
 \  },
 \  'deno/run': #{
-\    cmdopt: '--no-check --allow-all',
 \    command: 'deno',
-\    exec: 'NO_COLOR=1 %c run %o %s %a',
+\    exec: 'NO_COLOR=1 %c run --no-check --allow-all %s %a',
 \    tempfile: '%{tempname()}.ts',
 \  },
 \  'gleam/run': #{
@@ -1097,3 +1096,12 @@ let g:previm_open_cmd = "firefox"
 [[plugins]]
 repo = "vim-jp/vital.vim"
 on_cmd = ["Vitalize"]
+
+[[plugins]]
+repo = "yuki-yano/fuzzy-motion.vim"
+on_cmd = ["FuzzyMotion"]
+
+
+[[plugins]]
+repo = "lambdalisue/vim-guise"
+on_event = ['BufRead', 'CursorHold']
