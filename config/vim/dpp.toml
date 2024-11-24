@@ -1,0 +1,35 @@
+# dpp.vim
+[[plugins]]
+repo = 'Shougo/dpp.vim'
+
+[[plugins]]
+repo = "Shougo/dpp-ext-toml"
+
+[[plugins]]
+repo = "Shougo/dpp-ext-lazy"
+
+[[plugins]]
+repo = "Shougo/dpp-ext-installer"
+
+[[plugins]]
+repo = "Shougo/dpp-protocol-git"
+
+[[plugins]]
+repo = "vim-jp/vital.vim"
+
+[[plugins]]
+repo = 'lambdalisue/kensaku.vim'
+
+# denops.vim
+[[plugins]]
+repo = 'vim-denops/denops.vim'
+
+[[plugins]]
+repo = 'jxnblk/vim-mdx-js'
+
+[[plugins]]
+repo = 'catppuccin/vim'
+name = "catpuccin"
+
+[[plugins]]
+repo = 'joshdick/onedark.vim'

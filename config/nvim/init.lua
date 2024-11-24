@@ -169,10 +169,10 @@ vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-morg"))
 vim.opt.foldmethod = "marker"
 
 vim.api.nvim_create_autocmd("BufEnter", {
-        pattern = {"*.md", "*.markdown"},
-        callback = function ()
-                vim.keymap.set("n", "<leader>er", "<cmd>call morg#run()<CR>")
-        end
+  pattern = { "*.md", "*.markdown" },
+  callback = function()
+    vim.keymap.set("n", "<leader>er", "<cmd>call morg#run()<CR>")
+  end,
 })
 
 -- vim.g['denops_server_addr'] = "127.0.0.1:32123"
