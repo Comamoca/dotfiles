@@ -11,12 +11,13 @@ let
   nurpkgs = inputs.nur-packages.legacyPackages.${system};
 
   wallpapers = builtins.fetchTarball {
-    url =  "https://github.com/zhichaoh/catppuccin-wallpapers/archive/refs/heads/main.zip";
+    url = "https://github.com/zhichaoh/catppuccin-wallpapers/archive/refs/heads/main.zip";
     sha256 = "sha256:0rd6hfd88bsprjg68saxxlgf2c2lv1ldyr6a8i7m4lgg6nahbrw7";
   };
 
   wallpaper = "${wallpapers}/misc/cat-sound.png";
-in rec {
+in
+rec {
   nixpkgs.config = {
     allowUnfree = true;
     permittedInsecurePackages = [
@@ -45,6 +46,8 @@ in rec {
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
     # pkgs.hello
+
+    # home-manager
 
     # Knowledge tool for terminal
     nb
@@ -91,6 +94,10 @@ in rec {
     just
 
     # ========== OTHER TOOLS ========== 
+    nix-output-monitor
+    kickstart
+    xsel
+
     nix-search-cli
     zellij
 
@@ -103,7 +110,7 @@ in rec {
     cachix
 
     ghq
-    cava
+    # cava
     lsd
     bat
     jnv
@@ -158,8 +165,9 @@ in rec {
     vim-language-server
     typescript-language-server
     efm-langserver
+    marksman
 
-    # ========== RUNTIME & COMPILER ========== 
+    # ========== RUNTIME & COMPILER ==========  
     babashka
 
     # ref: https://cons.io/
@@ -235,7 +243,7 @@ in rec {
     bottom
     btrfs-progs
     bzip2
-    cava
+    # cava
     ccache
     cliphist
     cloc
@@ -589,11 +597,11 @@ in rec {
       };
 
       # Vim configs.
-      ".vimrc".source = (symlink /${dotfiles}/vimrc);
-      ".vim" = {
-        source = (symlink /${dotfiles}/vim);
-        recursive = true;
-      };
+      # ".vimrc".source = (symlink /${dotfiles}/vimrc);
+      # ".vim" = {
+      #   source = (symlink /${dotfiles}/vim);
+      #   recursive = true;
+      # };
       # # ========== SKK ========== 
       # skk-dicts
       ".skk-dict/SKK-JISYO.L".source = "${pkgs.skkDictionaries.l}/share/skk/SKK-JISYO.L";
@@ -707,6 +715,12 @@ in rec {
         recursive = true;
       };
 
+      # Vim configs.
+      ".config/vim" = {
+        source = (symlink /${dotfiles}/config/vim);
+        recursive = true;
+      };
+
       ".czrc".source = (symlink /${dotfiles}/czrc);
       ".nirc".source = (symlink /${dotfiles}/nirc);
       ".zshrc".source = (symlink /${dotfiles}/zshrc);
@@ -757,7 +771,14 @@ in rec {
   programs.home-manager.enable = true;
 
   wayland.windowManager.hyprland.enable = true;
-  wayland.windowManager.hyprland.settings = import ./hyprland.nix { inherit pkgs wallpaper home config; };
+  wayland.windowManager.hyprland.settings = import ./hyprland.nix {
+    inherit
+      pkgs
+      wallpaper
+      home
+      config
+      ;
+  };
   wayland.windowManager.hyprland.catppuccin.enable = true;
 
   programs = {
@@ -774,12 +795,25 @@ in rec {
     enable = true;
     catppuccin.enable = true;
     settings = {
-    main = {
-      term = "xterm-256color";
-      font = "UDEV Gothic NFLG:size=12.5";
-      dpi-aware = "yes";
-  };
+      main = {
+        term = "xterm-256color";
+        font = "UDEV Gothic NFLG:size=12.5";
+        dpi-aware = "yes";
+      };
     };
+  };
+
+
+  services.emacs = {
+    enable = true;
+    package = (
+      with pkgs;
+      ((emacsPackagesFor emacs30-pgtk).emacsWithPackages (
+        epkgs: with epkgs; [
+          vterm
+        ]
+      ))
+    );
   };
 
   # programs.lem-editor.enable = true 
