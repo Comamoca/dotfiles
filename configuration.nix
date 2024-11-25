@@ -301,18 +301,6 @@ in
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
-  services.emacs = {
-    enable = true;
-    package = (
-      with pkgs;
-      ((emacsPackagesFor emacs30-pgtk).emacsWithPackages (
-        epkgs: with epkgs; [
-          vterm
-        ]
-      ))
-    );
-  };
-
   programs.nix-ld.enable = true;
 
   # Android Debug Bridge
