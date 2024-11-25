@@ -190,25 +190,6 @@ in
   # services.mako.enable = true;
   # services.mako.catppuccin.enable = true;
 
-  services.xremap.config.modmap = [
-    # modmap:
-    #   - name: Global
-    #     remap:
-    #       Enter:
-    #         held: Alt_R
-    #         alone: Enter
-    
-    {
-      name = "Global";
-      remap = {
-        Enter = {
-	  held = "Alt_R";
-	  alone = "Enter";
-	};
-      };
-    }
-  ];
-
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.coma = {
     isNormalUser = true;
@@ -219,6 +200,7 @@ in
       "kvm"
       "adbusers"
       "plugdev"
+      "inputs"
     ];
     packages = with pkgs; [
       #  thunderbird
@@ -279,6 +261,8 @@ in
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    showmethekey
+
     # gnupg
     light
 
@@ -323,7 +307,7 @@ in
       with pkgs;
       ((emacsPackagesFor emacs30-pgtk).emacsWithPackages (
         epkgs: with epkgs; [
-	  vterm
+          vterm
         ]
       ))
     );
