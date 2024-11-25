@@ -9,15 +9,18 @@ let
 
   symlink = config.lib.file.mkOutOfStoreSymlink;
   dotfiles = /${home.homeDirectory}/.ghq/github.com/Comamoca/dotfiles;
-
   xremap-config = (pkgs.formats.yaml { }).generate "config.yml" {
-    name = "Global";
-    remap = {
-      Enter = {
-        held = "Alt_R";
-        alone = "Enter";
-      };
-    };
+    modmap = [
+      {
+        name = "Global";
+        remap = {
+          Enter = {
+            held = "Alt_R";
+            alone = "Enter";
+          };
+        };
+      }
+    ];
   };
 in
 {
