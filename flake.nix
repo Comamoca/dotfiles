@@ -4,6 +4,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    # nixpkgs.url = "github:NixOS/nixpkgs/master";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     home-manager = {
@@ -52,7 +53,7 @@
         (import emacs-overlay)
         nak.overlays.default
         # (import emacs.overlay)
-	mozilla-overlay.overlays.firefox
+        mozilla-overlay.overlays.firefox
       ];
     in
     # code = _: s: s;
@@ -64,18 +65,25 @@
       };
 
       nixosConfigurations = {
-        NixOS = inputs.nixpkgs.lib.nixosSystem {
+        NixOS = inputs.nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
           modules = [
             inputs.catppuccin.nixosModules.catppuccin
             home-manager.nixosModules.home-manager
+            # xremap.nixosModules.default
+            # disko.nixosModules.disko
+            # ({ config, ... }: {
+            #   # system.stateVersion = config.system.stateVersion;
+            #   disko.devices.disk.main.imageSize = "10G";
+            # })
             ./configuration.nix
-	    xremap.nixosModules.default
-	    # disko.nixosModules.disko
-	    # ({ config, ... }: {
-	    #   # system.stateVersion = config.system.stateVersion;
-	    #   disko.devices.disk.main.imageSize = "10G";
-	    # })
+            # {
+            #   nixpkgs.overlays = overlays ++ [
+            #     (final: prev: {
+            #       xremap = xremap.packages.${system}.default;
+            #     })
+            #   ];
+            # }
           ];
           specialArgs = {
             inherit inputs;
@@ -83,7 +91,7 @@
         };
       };
       homeConfigurations = {
-        Home = inputs.home-manager.lib.homeManagerConfiguration {
+        Home = inputs.home-manager.lib.homeManagerConfiguration rec {
           pkgs = import inputs.nixpkgs {
             system = "x86_64-linux";
             config.allowUnfree = true;
@@ -98,7 +106,8 @@
               nixpkgs.overlays = overlays ++ [
                 (final: prev: {
                   # nak = inputs.nak.packages.x86_64-linux.default;
-                })	
+                  xremap = xremap.packages.${"x86_64-linux"}.default;
+                })
               ];
             }
           ];
