@@ -1,9 +1,24 @@
-{ pkgs, wallpaper, home, config }:
+{
+  pkgs,
+  wallpaper,
+  home,
+  config,
+}:
 let
   kitty = "kitty";
 
   symlink = config.lib.file.mkOutOfStoreSymlink;
   dotfiles = /${home.homeDirectory}/.ghq/github.com/Comamoca/dotfiles;
+
+  xremap-config = (pkgs.formats.yaml { }).generate "config.yml" {
+    name = "Global";
+    remap = {
+      Enter = {
+        held = "Alt_R";
+        alone = "Enter";
+      };
+    };
+  };
 in
 {
   monitor = [
@@ -66,11 +81,11 @@ in
       size = 3;
       passes = 1;
     };
-    drop_shadow = "yes";
-    shadow_range = 4;
-    shadow_render_power = 3;
-    # TODO: Enable this
-    "col.shadow" = "$surface0Alpha";
+    # drop_shadow = "yes";
+    # shadow_range = 4;
+    # shadow_render_power = 3;
+    # # TODO: Enable this
+    # "col.shadow" = "$surface0Alpha";
   };
 
   animations = {
@@ -177,7 +192,6 @@ in
     "$mainMod, Return, exec, $terminal"
     "$mainMod, q, killactive,"
     # bind = $mainMod, m, exit, 
-    "$mainMod, e, exec, $fileManager"
     "$mainMod, f, togglefloating,"
     "$mainMod, f, pin,"
     "$mainMod, space, exec, $menu"
@@ -224,6 +238,9 @@ in
     "$mainMod, p, workspace, +1, focuswindow"
     "$mainMod, n, workspace, -1, focuswindow"
 
+    # For Enter-Meta config
+    "$mainMod, o, workspace, -1, focuswindow"
+
     "$mainMod SHIFT, p, movetoworkspace, +1"
     "$mainMod SHIFT, n, movetoworkspace, -1"
 
@@ -250,6 +267,7 @@ in
 
     # Vim as as IME
     "$mainMod, code:34, exec, ime.sh float"
+    "$mainMod, e, exec, ime.sh float"
   ];
 
   bindm = [
@@ -259,6 +277,7 @@ in
   ];
 
   exec-once = [
+    "${pkgs.xremap}/bin/xremap ${xremap-config}]"
     "waybar"
     "fcitx5"
     "conky"
