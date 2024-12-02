@@ -28,6 +28,9 @@ ddu_custom_patch_global({
     spotify = {
       matchers = { "matcher_kensaku" },
     },
+    file_external = {
+      matchers = { "matcher_kensaku" },
+    }
   },
   sourceParams = {
     file_external = {
@@ -55,6 +58,9 @@ ddu_custom_patch_global({
   kindOptions = {
     _ = {
       defaultAction = "open",
+    },
+    action = {
+      defaultAction = "do",
     },
     ["custom-list"] = {
       defaultAction = "callback",
