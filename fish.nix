@@ -91,6 +91,7 @@ in
     fish_add_path $HOME/go/bin
     fish_add_path $HOME/local/
 
+    alias register-asdf="ln -s (pwd) '$HOME/common-lisp/$(basename $(pwd))'"
     alias supa "bunx supabase"
 
     # alias to get date by yymmdd
