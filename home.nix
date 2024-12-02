@@ -89,6 +89,10 @@ rec {
     kitty
 
     # ========== EDITOR & TOOLS ==========  
+    cmigemo
+    wakatime-cli
+
+    tree-sitter
     arduino
 
     # TODO: change to vim-overlay
@@ -110,8 +114,10 @@ rec {
 
     just
 
-    # ========== OTHER TOOLS ========== 
+    # ========== OTHER TOOLS ==========  
+    nodePackages."@antfu/ni"
     nix-output-monitor
+
     kickstart
     xsel
 
@@ -165,7 +171,8 @@ rec {
     mkspiffs-presets.esp-idf
 
     # ========== SHELL ========== 
-    nushell
+    # Because duplicate binary name to ni.
+    # nushell
 
     # ========== BROWSER ========== 
     # firefox
@@ -186,6 +193,7 @@ rec {
     typescript-language-server
     efm-langserver
     marksman
+    tailwindcss-language-server
 
     # ========== RUNTIME & COMPILER ==========  
     babashka
@@ -533,6 +541,8 @@ rec {
     wpa_supplicant
 
     # ========== OTHER TOOLS ========== 
+    # For Emacs markdown-mode
+    multimarkdown
     wakatime
 
     # hyprland
@@ -626,6 +636,8 @@ rec {
       # skk-dicts
       ".skk-dict/SKK-JISYO.L".source = "${pkgs.skkDictionaries.l}/share/skk/SKK-JISYO.L";
       ".skk-dict/SKK-JISYO.im@sparql.all.utf8".source = "${nurpkgs.skk-jisyo-imasparql}/share/SKK-JISYO.im@sparql.all.utf8";
+
+      ".migemo/utf-8/migemo-dict".source = "${pkgs.cmigemo}/share/migemo/utf-8";
 
       ".spell-dict/programming-english-dict".source = "${nurpkgs.programming-english}/share/dict/programming-english-dict";
       ".spell-dict/dict.txt".source = ./word_dicts/dict.txt;
@@ -790,6 +802,7 @@ rec {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
+  # Hyprland
   wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.settings = import ./hyprland.nix {
     inherit
