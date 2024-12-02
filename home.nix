@@ -16,6 +16,15 @@ let
   };
 
   wallpaper = "${wallpapers}/misc/cat-sound.png";
+
+  emacs' = pkgs.emacs-pgtk.overrideAttrs (old: {
+    # configureFlags = old.configureFlags or [] ++ [ "--with-xwidgets" ];
+    withXwidgets = true;
+    withGTK3 = true;
+    buildInputs = (old.buildInputs or []) ++ [
+      pkgs.webkitgtk_6_0
+    ];
+  });
 in
 rec {
   nixpkgs.config = {
@@ -803,18 +812,20 @@ rec {
     };
   };
 
-
   services.emacs = {
     enable = true;
+    # package = pkgs.emacsGit;
     package = (
       with pkgs;
-      ((emacsPackagesFor emacs30-pgtk).emacsWithPackages (
+      # ((emacsPackagesFor emacs').emacsWithPackages (
+      ((emacsPackagesFor emacsGit).emacsWithPackages (
         epkgs: with epkgs; [
           vterm
         ]
       ))
     );
-  };
+    # extraOptions = [ "--with-xwidgets" ];
+  }; 
 
   # programs.lem-editor.enable = true 
 }
