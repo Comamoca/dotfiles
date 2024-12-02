@@ -8,8 +8,8 @@
   pkgs,
   ...
 }:
-
 let
+  xremap = import ./xremap.nix { inherit pkgs; };
 in
 {
   imports =
@@ -103,6 +103,14 @@ in
   #     pskRaw = "ext:PSK_2";
   #   };
   # };
+
+  services.xremap = {
+    enable = true;
+    serviceMode = "user";
+    userName = "coma";
+
+    config = xremap.xremap-config;
+  };
 
   # NextDNS
   services.nextdns = {
@@ -211,7 +219,11 @@ in
   # GnuPG
   programs.gnupg.agent = {
     enable = true;
-    pinentryPackage = pkgs.pinentry-curses;
+    # pinentryPackage = pkgs.pinentry-curses;
+    pinentryPackage = pkgs.pinentry-gnome3;
+    # settings = {
+    #   pinentry-program = "${pkgs.pinentry-gnome3}";
+    # };
   };
 
   # Install irefox.
