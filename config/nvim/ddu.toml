@@ -241,3 +241,7 @@ on_source = "ddu.vim"
 [[plugins]]
 repo = "kuuote/ddu-source-git_diff"
 on_source = "ddu.vim"
+
+[[plugins]]
+repo = "Shougo/ddu-source-action"
+on_source = "ddu.vim"
