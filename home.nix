@@ -174,8 +174,11 @@ rec {
     # ========== SECURITY TOOLS ========== 
     keybase
     lssecret
-    pinentry-curses
-    (pkgs.lib.hiPrio pinentry-emacs)
+
+    gnupg
+    # pinentry-curses
+    # (pkgs.lib.hiPrio pinentry-emacs)
+    # (pkgs.lib.hiPrio pkgs.pinentry-gnome3)
 
     # ========== LANGUAGE SERVER ========== 
     lua-language-server
@@ -834,6 +837,10 @@ rec {
     );
     # extraOptions = [ "--with-xwidgets" ];
   }; 
+
+  # services.gpg-agent = {
+  #   enable = true;
+  # };
 
   # programs.lem-editor.enable = true 
 }
