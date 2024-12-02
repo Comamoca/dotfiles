@@ -648,10 +648,10 @@ rec {
       #   recursive = true;
       # };
 
-      ".config/home-manager" = {
-        source = (symlink /${dotfiles}/config/home-manager);
-        recursive = true;
-      };
+      # ".config/home-manager" = {
+      #   source = (symlink /${dotfiles}/config/home-manager);
+      #   recursive = true;
+      # };
 
       # ".config/hypr" = {
       #   source = (symlink /${dotfiles}/config/hypr);
@@ -673,10 +673,17 @@ rec {
         recursive = true;
       };
 
-      # ".config/fish" = {
-      #   source = (symlink /${dotfiles}/config/fish);
-      #   recursive = true;
-      # };
+      # Fish functions
+      ".config/fish/functions" = {
+        source = (symlink /${dotfiles}/config/fish/functions);
+        recursive = true;
+      };
+
+      # Fish completions
+      ".config/fish/completions" = {
+        source = (symlink /${dotfiles}/config/fish/completions);
+        recursive = true;
+      };
 
       ".config/i3" = {
         source = (symlink /${dotfiles}/config/i3);
