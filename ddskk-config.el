@@ -2,6 +2,8 @@
 (setq skk-sticky-key ";")
 
 (setq skk-jisyo (cons "~/.skk-jisyo" 'utf-8))
+(setq skk-set-henkan-point-key
+      (append '(?L) skk-set-henkan-point-key))
 
 (setq skk-large-jisyo "~/.skk-dict/SKK-JISYO.L")
 (setq skk-extra-jisyo-file-list
