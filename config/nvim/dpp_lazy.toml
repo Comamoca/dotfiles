@@ -242,30 +242,46 @@ on_event = ['BufRead', 'CursorHold', "BufReadPre"]
 [[plugins]]
 repo = "Shougo/context_filetype.vim"
 on_event = ['BufRead', 'CursorHold', "BufReadPre"]
+hook_source = '''
+nnoremap <Leader>p <Cmd>call <SID>operator_partedit()<CR>
+
+function! s:operator_partedit() abort
+  let context = context_filetype#get()
+  if context.range == [[0, 0], [0, 0]]
+    echohl WarningMsg
+    echomsg 'Context is not found'
+    echohl NONE
+    return
+  endif
+  call partedit#start(context.range[0][0], context.range[1][0],
+        \ {'filetype': context.filetype})
+  nnoremap <buffer><nowait> Q <Cmd>w<CR><Cmd>ParteditEnd<CR>
+endfunction
+'''
 
 [[plugins]]
 repo = 'thinca/vim-partedit'
 on_event = ['BufRead', 'CursorHold', "BufReadPre"]
-hook_add = '''
+hook_source = '''
     let g:partedit#prefix_pattern = '\s*'
     let g:partedit#auto_prefix = 0
 '''
 
-[[plugins]]
-repo = 'monaqa/nvim-treesitter-clipping'
-depends = ['nvim-treesitter', 'vim-partedit']
-on_lua = 'nvim-treesitter-clipping'
-lua_add = '''
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = { "toml", "markdown" },
-      callback = function()
-        vim.keymap.set("n", "<C-p>", function()
-          require("nvim-treesitter-clipping.internal").clip()
-          vim.keymap.set("n", "Q", "<Cmd>w<CR><Cmd>ParteditEnd<CR>", { buffer = true })
-        end, { buffer = true })
-      end,
-    })
-'''
+# [[plugins]]
+# repo = 'monaqa/nvim-treesitter-clipping'
+# depends = ['nvim-treesitter', 'vim-partedit']
+# on_lua = 'nvim-treesitter-clipping'
+# lua_add = '''
+#     vim.api.nvim_create_autocmd("FileType", {
+#       pattern = { "toml", "markdown" },
+#       callback = function()
+#         vim.keymap.set("n", "<C-p>", function()
+#           require("nvim-treesitter-clipping.internal").clip()
+#           vim.keymap.set("n", "Q", "<Cmd>w<CR><Cmd>ParteditEnd<CR>", { buffer = true })
+#         end, { buffer = true })
+#       end,
+#     })
+# '''
 
 [[plugins]]
 repo = 'stevearc/conform.nvim'
