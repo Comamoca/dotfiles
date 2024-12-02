@@ -25,6 +25,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     xremap.url = "github:xremap/nix-flake";
+    sops-nix.url = "github:Mic92/sops-nix";
   };
 
   outputs =
@@ -43,6 +44,7 @@
       nur-packages,
       disko,
       xremap,
+      sops-nix
     }@inputs:
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
@@ -77,13 +79,13 @@
             #   disko.devices.disk.main.imageSize = "10G";
             # })
             ./configuration.nix
-            # {
-            #   nixpkgs.overlays = overlays ++ [
-            #     (final: prev: {
-            #       xremap = xremap.packages.${system}.default;
-            #     })
-            #   ];
-            # }
+            {
+              nixpkgs.overlays = overlays ++ [
+                (final: prev: {
+                  xremap = xremap.packages.${system}.default;
+                })
+              ];
+            }
           ];
           specialArgs = {
             inherit inputs;
@@ -102,6 +104,7 @@
           modules = [
             ./home.nix
             inputs.catppuccin.homeManagerModules.catppuccin
+            inputs.sops-nix.homeManagerModules.sops
             {
               nixpkgs.overlays = overlays ++ [
                 (final: prev: {
@@ -116,6 +119,9 @@
 
       devShells.x86_64-linux.default = pkgs.mkShell {
         packages = with pkgs; [
+          sops
+          age
+
           lua-language-server
           stylua
           nil
