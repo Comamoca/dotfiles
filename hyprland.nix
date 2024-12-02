@@ -9,7 +9,8 @@ let
 
   symlink = config.lib.file.mkOutOfStoreSymlink;
   dotfiles = /${home.homeDirectory}/.ghq/github.com/Comamoca/dotfiles;
-  xremap-config = (pkgs.formats.yaml { }).generate "config.yml" {
+
+  xremap-config = (pkgs.formats.yaml { }).generate "xremap.yml" {
     modmap = [
       {
         name = "Global";
@@ -280,7 +281,7 @@ in
   ];
 
   exec-once = [
-    "${pkgs.xremap}/bin/xremap ${xremap-config}]"
+    # "${pkgs.xremap}/bin/xremap ${xremap-config}"
     "waybar"
     "fcitx5"
     "conky"
