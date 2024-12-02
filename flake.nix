@@ -72,7 +72,7 @@
           modules = [
             inputs.catppuccin.nixosModules.catppuccin
             home-manager.nixosModules.home-manager
-            # xremap.nixosModules.default
+            xremap.nixosModules.default
             # disko.nixosModules.disko
             # ({ config, ... }: {
             #   # system.stateVersion = config.system.stateVersion;
