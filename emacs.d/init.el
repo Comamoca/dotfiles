@@ -279,19 +279,23 @@
   :cofig)
 
 ;; For diary
+(setq blog-repo "/home/coma/.ghq/github.com/Comamoca/blog/")
+
 (defun latest-diary ()
   "Open latest diary. This function call in `src/blog/` directory at blog repository."
   (interactive)
   (let* ((date (format-time-string "%Y-%m-%d"))
 	 (file-name (format "%s-diary.md" date))
-	 (path (concat (file-name-as-directory "./src/blog/") file-name)))
+	 (path (concat (expand-file-name blog-repo "/src/blog/") file-name)))
+    (cd blog-repo)
     (find-file file-name)))
 
 (defun consult-diary ()
   (interactive)
-  (let* ((blog-repo "/home/coma/.ghq/github.com/Comamoca/blog/src/blog")
-	(diary (consult--read (sort-by-date (cl-remove-if-not (lambda (str) (string-match-p "-diary.md" str))
-							(directory-files blog-repo))))))
+  (let* ((diary (consult--read
+		 (sort-by-date (cl-remove-if-not (lambda (str) (string-match-p "-diary.md" str))
+						 (directory-files (expand-file-name blog-repo "src/blog")))))))
+
     (find-file (expand-file-name diary blog-repo))))
 
 (defun extract-date (path)
