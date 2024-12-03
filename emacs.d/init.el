@@ -215,6 +215,31 @@
 (leaf gleam-ts-mode :ensure t)
 
 ;; ======================= My Configuration =======================
+;; ================ My extentions ================ 
+
+(defun gitmoji-completion ()
+  (let ((bounds (bounds-of-thing-at-point 'word)))
+    (when bounds
+      (let* ((gitmoji-file-path "~/.emacs.d/gitmoji.json")
+	     (gitmoji-file 
+	      (with-temp-buffer
+		(insert-file-contents gitmoji-file-path)
+		(buffer-substring-no-properties (point-min) (point-max))))
+	     (gitmoji-json (json-parse-string gitmoji-file))
+	     (gitmojis (gethash "gitmojis" gitmoji-json))
+	     (gitmoji-codes (mapcar (lambda (item)
+				      ;; Remove leading “:”
+				      (substring item 1))
+				    (mapcar (lambda (item)
+					      (gethash "code" item)) gitmojis))))
+	(list (car bounds) (cdr bounds)
+	      gitmoji-codes
+	      :exclusive 'no)))))
+
+
+(add-hook 'git-commit-mode-hook (lambda ()
+				 (setq-local completion-at-point-functions #'gitmoji-completion)))
+
 
 (electric-pair-mode 1)
 
