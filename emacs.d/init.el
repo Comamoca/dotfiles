@@ -336,6 +336,15 @@
 (add-hook 'git-commit-mode-hook (lambda ()
 				 (setq-local completion-at-point-functions #'gitmoji-completion)))
 
+;; Display character count in modeline
+(defun update-buffer-char-count ()
+  (interactive)
+  (format "[%d 文字]" (buffer-size)))
+
+(setq mode-line-format
+      (append mode-line-format
+	      '((:eval (update-buffer-char-count)))))
+
 ;; ================ My configuratons ================ 
 
 (electric-pair-mode 1)
