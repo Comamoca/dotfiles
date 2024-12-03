@@ -199,8 +199,6 @@
   :config
   ;; (defvar inferior-lisp-program "sbcl")
   )
-
-(leaf sly-contribs :ensure t)
 (leaf sly-asdf :ensure t)
 
 (leaf parinfer-rust-mode
@@ -225,12 +223,12 @@
 
 ;; Completion
 (leaf corfu :ensure t
-  :custom
-  (setq corfu-auto-prefix 1)
   :config
   (setq corfu-auto t)
+  (setq corfu-auto-prefix 1)
   :init
   (global-corfu-mode))
+
 
 ;; Completin soruce
 (leaf cape :ensure t)
@@ -258,7 +256,21 @@
   (setq projectile-known-projects
         (mapcar
          (lambda (x) (abbreviate-file-name x))
-         (split-string (shell-command-to-string "ghq list --full-path"))))))
+	 (split-string (shell-command-to-string "ghq list --full-path"))))))
+
+;; Migemo
+(leaf migemo :ensure t
+  ;; :hook (after-init-hook . migemo-init)
+  :custom
+  `((migemo-command . "cmigemo")
+    (migemo-dictionary . "/usr/share/cmigemo/utf-8/migemo-dict"))
+  :config
+  (setq migemo- "~/.migemo/utf-8/migemo-dict") 
+  (setq migemo-user-dictionary nil)
+  (setq migemo-regex-dictionary nil)
+  (setq migemo-coding-system 'utf-8-unix)
+  :init
+  (migemo-init))
 
 ;; Nyan-mode
 (leaf nyan-mode :ensure t
@@ -278,41 +290,16 @@
 (leaf yatemplate :ensure t
   :cofig)
 
-;; For diary
-(setq blog-repo "/home/coma/.ghq/github.com/Comamoca/blog/")
-
-(defun latest-diary ()
-  "Open latest diary. This function call in `src/blog/` directory at blog repository."
-  (interactive)
-  (let* ((date (format-time-string "%Y-%m-%d"))
-	 (file-name (format "%s-diary.md" date))
-	 (path (concat (expand-file-name blog-repo "/src/blog/") file-name)))
-    (cd blog-repo)
-    (find-file file-name)))
-
-(defun consult-diary ()
-  (interactive)
-  (let* ((diary (consult--read
-		 (sort-by-date (cl-remove-if-not (lambda (str) (string-match-p "-diary.md" str))
-						 (directory-files (expand-file-name blog-repo "src/blog")))))))
-
-    (find-file (expand-file-name diary blog-repo))))
-
-(defun extract-date (path)
-  (if (string-match "\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\)" path)
-                   (match-string 1 path)))
-
-(defun sort-by-date (diaries)
-  (sort diaries (lambda (a b)
-		       (let ((date-a (extract-date a))
-			     (date-b (extract-date b)))
-			 (string< date-a date-b)))))
-
 ;; Filer
 (leaf direx :ensure t)
 
 ;; HTTP Request
 (leaf request :ensure t)
+
+;; Expand region
+(leaf expand-region :ensure t
+  :config
+  (global-set-key (kbd "C-=") 'er/expand-region))
  
 ;; ================ My extentions ================ 
 
@@ -345,9 +332,41 @@
   (interactive)
   (format "[%d 文字]" (buffer-size)))
 
-(setq mode-line-format
-      (append mode-line-format
-	      '((:eval (update-buffer-char-count)))))
+(defun mode-line-format-update ()
+  (interactive)
+  (setq mode-line-format
+	(append mode-line-format
+		'((:eval (update-buffer-char-count))))))
+
+;; For diary
+(setq blog-repo "/home/coma/.ghq/github.com/Comamoca/blog/")
+
+(defun latest-diary ()
+  "Open latest diary. This function call in `src/blog/` directory at blog repository."
+  (interactive)
+  (let* ((date (format-time-string "%Y-%m-%d"))
+	 (file-name (format "%s-diary.md" date))
+	 (path (concat (expand-file-name blog-repo "/src/blog/") file-name)))
+    (cd blog-repo)
+    (find-file file-name)))
+
+(defun consult-diary ()
+  (interactive)
+  (let* ((diaries (sort-by-date (cl-remove-if-not (lambda (str) (string-match-p "-diary.md" str))
+						 (directory-files (expand-file-name blog-repo "src/blog")))))
+	 (diary (consult--read diaries :sort nil)))
+
+    (find-file (expand-file-name diary blog-repo))))
+
+(defun extract-date (path)
+  (if (string-match "\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\)" path)
+                   (match-string 1 path)))
+
+(defun sort-by-date (diaries)
+  (sort diaries (lambda (a b)
+		       (let ((date-a (extract-date a))
+			     (date-b (extract-date b)))
+			 (string> date-a date-b)))))
 
 ;; ================ My configuratons ================ 
 
