@@ -74,7 +74,7 @@ rec {
     catppuccin
 
     # Nix
-    nixVersions.nix_2_23
+    nixVersions.nix_2_25
 
     # ========== NIXGL ========== 
     # nixgl.nixGLIntel
