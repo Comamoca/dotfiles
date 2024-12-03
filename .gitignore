@@ -12,6 +12,9 @@ parinfer-rust
 config/emacs/projects
 emacs.d/elpa
 emacs.d/transient
+emacs.d/emojis
 
 # Nix
 result
+
+*.raw.yaml
