@@ -1,3 +1,4 @@
+
 ;; <leaf-install-code>
 (eval-and-compile
   (customize-set-variable
@@ -37,6 +38,8 @@
   :init 
   (vertico-mode))
 
+(leaf vertico-directory :ensure t)
+
 ;; Fuzzy match for vertico
 (leaf orderless
   :ensure t
@@ -46,6 +49,14 @@
 
 ;; Sources for vertico
 (leaf consult :ensure t)
+(leaf consult-dir :ensure t)
+(leaf embark-consult :ensure t
+  :bind
+  ((minibuffer-mode-map
+    :package emacs
+    ("M-." . embark-dwin)
+    ("C-." . embark-act))))
+
 (leaf consult-ghq :ensure t
   :url "https://github.com/tomoya/consult-ghq"
   :config
@@ -58,6 +69,21 @@
    ;; (define-key evil-insert-state-map "jk" #'evil-normal-state)
    ;; (define-key evil-normal-state-map (kbd "S-j") nil)
    ;; (define-key evil-normal-state-map (kbd "S-j") #'evil-scroll-down)
+
+   (define-key evil-normal-state-map (kbd "C-k") #'evil-scroll-up)
+   (define-key evil-normal-state-map (kbd "C-j") #'evil-scroll-down)
+
+   (define-key evil-normal-state-map (kbd "M-g") #'projectile-switch-project)
+   (define-key evil-normal-state-map (kbd "C-l") #'consult-line)
+   (define-key evil-normal-state-map (kbd "SPC k") #'avy-goto-line)
+
+   (define-key evil-normal-state-map (kbd "C-i") #'consult-buffer)
+   (define-key evil-normal-state-map (kbd "C-.") #'embark-act)
+
+   (define-key evil-normal-state-map (kbd "C-p") #'puni-slurp-forward)
+   (define-key evil-normal-state-map (kbd "C-n") #'puni-barf-forward)
+
+   ;; (define-key evil-normal-state-map (kbd "C-j") #'evil-scroll-down)
    :init
    (evil-mode 1))
 
@@ -65,9 +91,9 @@
 (leaf key-chord :ensure t)
 
 ;; For edit
-(leaf paredit :ensure t
+(leaf puni :ensure t
   :init
-  (paredit-mode))
+  (puni-global-mode))
 
 (leaf highlight-indent-guides :ensure t)
 
@@ -199,10 +225,21 @@
 
 ;; Completion
 (leaf corfu :ensure t
+  :custom
+  (setq corfu-auto-prefix 1)
   :config
   (setq corfu-auto t)
   :init
   (global-corfu-mode))
+
+;; Completin soruce
+(leaf cape :ensure t)
+
+;; with icon
+(leaf kind-icon :ensure t
+  :custom (kind-icon-default-face 'corfu-default)
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 ;; Hydra
 (leaf hydra :ensure t)
@@ -214,10 +251,69 @@
 ;; Gleam support
 (leaf gleam-ts-mode :ensure t)
 
-;; ======================= My Configuration =======================
+;; Projectile
+(leaf projectile :ensure t
+  :init
+  (when (executable-find "ghq")
+  (setq projectile-known-projects
+        (mapcar
+         (lambda (x) (abbreviate-file-name x))
+         (split-string (shell-command-to-string "ghq list --full-path"))))))
+
+;; Nyan-mode
+(leaf nyan-mode :ensure t
+  :init
+  (nyan-start-animation))
+
+;; Snippets
+(leaf yasnippet :ensure t
+  :config
+  (setq yas-snippet-dirs '("~/emacs.d/snippets/"))
+  (yas-global-mode 1))
+
+;; Snippet collections
+(leaf yasnippet-snippets :ensure t)
+
+;; Templates
+(leaf yatemplate :ensure t
+  :cofig)
+
+;; For diary
+(defun latest-diary ()
+  "Open latest diary. This function call in `src/blog/` directory at blog repository."
+  (interactive)
+  (let* ((date (format-time-string "%Y-%m-%d"))
+	 (file-name (format "%s-diary.md" date))
+	 (path (concat (file-name-as-directory "./src/blog/") file-name)))
+    (find-file file-name)))
+
+(defun consult-diary ()
+  (interactive)
+  (let* ((blog-repo "/home/coma/.ghq/github.com/Comamoca/blog/src/blog")
+	(diary (consult--read (sort-by-date (cl-remove-if-not (lambda (str) (string-match-p "-diary.md" str))
+							(directory-files blog-repo))))))
+    (find-file (expand-file-name diary blog-repo))))
+
+(defun extract-date (path)
+  (if (string-match "\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\)" path)
+                   (match-string 1 path)))
+
+(defun sort-by-date (diaries)
+  (sort diaries (lambda (a b)
+		       (let ((date-a (extract-date a))
+			     (date-b (extract-date b)))
+			 (string< date-a date-b)))))
+
+;; Filer
+(leaf direx :ensure t)
+
+;; HTTP Request
+(leaf request :ensure t)
+ 
 ;; ================ My extentions ================ 
 
 (defun gitmoji-completion ()
+  "Completion source for gitmoji"
   (let ((bounds (bounds-of-thing-at-point 'word)))
     (when bounds
       (let* ((gitmoji-file-path "~/.emacs.d/gitmoji.json")
@@ -236,16 +332,19 @@
 	      gitmoji-codes
 	      :exclusive 'no)))))
 
-
+;; Enable at git-commit-mode
 (add-hook 'git-commit-mode-hook (lambda ()
 				 (setq-local completion-at-point-functions #'gitmoji-completion)))
 
+;; ================ My configuratons ================ 
 
 (electric-pair-mode 1)
 
 (hl-line-mode)
 
 (setq vc-follow-symlinks t)
+
+(setq ring-bell-function 'ignore)
 
 ;; Disable menu bar and tool bar
 (menu-bar-mode -1)
