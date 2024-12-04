@@ -41,11 +41,14 @@
 (leaf vertico-directory :ensure t)
 
 ;; Fuzzy match for vertico
-(leaf orderless
-  :ensure t
-  :config
-  (setq completion-styles '(orderless basic)
-	completion-category-overrides '((file (styles basic partial-completion)))))
+(leaf orderless :ensure t)
+
+;; Yet another completion style
+(leaf hotfuzz :ensure t)
+
+;; completion style config
+(setq completion-styles '(hotfuzz orderless basic)
+      completion-category-overrides '((file (styles basic partial-completion))))
 
 ;; Sources for vertico
 (leaf consult :ensure t)
@@ -231,7 +234,18 @@
 
 
 ;; Completin soruce
-(leaf cape :ensure t)
+(leaf cape :ensure t
+  :init
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-history)
+  (add-to-list 'completion-at-point-functions #'cape-keyword)
+  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+  (add-to-list 'completion-at-point-functions #'cape-line)
+
+  ;; For markdown
+  (add-to-list 'markdown-mode-hook (lambda ()
+				  (add-hook 'completion-at-point-functions #'cape-emoji))))
 
 ;; with icon
 (leaf kind-icon :ensure t
@@ -242,6 +256,14 @@
 ;; Hydra
 (leaf hydra :ensure t)
 (leaf major-mode-hydra :ensure t)
+
+;; Translate
+(leaf google-translate
+  :ensure t
+  :require t
+  :custom
+  (google-translate-translation-directions-alist . '(("en" . "ja")
+                                                     ("ja" . "en"))))
 
 ;; Nix support
 (leaf nix-mode :ensure t)
