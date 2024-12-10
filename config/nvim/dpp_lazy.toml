@@ -1121,3 +1121,7 @@ on_cmd = ["FuzzyMotion"]
 [[plugins]]
 repo = "lambdalisue/vim-guise"
 on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = 'chomosuke/typst-preview.nvim'
+on_ft = ["typst"]
