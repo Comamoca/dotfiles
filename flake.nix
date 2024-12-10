@@ -44,7 +44,7 @@
       nur-packages,
       disko,
       xremap,
-      sops-nix
+      sops-nix,
     }@inputs:
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
@@ -127,9 +127,8 @@
           nil
         ];
 
-        inputsFrom =
-          [
-          ];
+        inputsFrom = [
+        ];
 
         # shellHook = ''
         #   export DEBUG=1
