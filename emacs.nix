@@ -61,7 +61,7 @@ let
       owner = "havarddj";
       repo = "typst-preview.el";
       rev = "master";
-      sha256 = "sha256-AJRWw8c13C6hfwO28hXERN4cIc6cFTbNBcz2EzqqScg=";
+      sha256 = "sha256-c64dRQ7Glkx+QQNWRos33y8nGZDujDk8tGEhb5PMsR0=";
     };
 
     buildInputs = with pkgs.emacsPackages; [ websocket ];
@@ -230,5 +230,8 @@ in
     gptel
 
     elixir-mode
+
+    smartparens
+    evil-smartparens
   ];
 }
