@@ -116,10 +116,9 @@
 
       homeConfigurations = {
         WSL = inputs.home-manager.lib.homeManagerConfiguration rec {
-          system = "x86_64-linux";
 
           pkgs = import inputs.nixpkgs {
-            inherit system;
+            system = "x86_64-linux";
             config.allowUnfree = true;
           };
           extraSpecialArgs = {
@@ -134,18 +133,16 @@
             {
               nixpkgs.overlays = overlays ++ [
                 (final: prev: {
-                  xremap = inputs.xremap.packages.${system}.default;
+                  xremap = inputs.xremap.packages.${pkgs.system}.default;
                 })
               ];
             }
           ];
         };
 
-        Home = inputs.home-manager.lib.homeManagerConfiguration rec {
-          system = "x86_64-linux";
-
+        Home = inputs.home-manager.lib.homeManagerConfiguration rec { 
           pkgs = import inputs.nixpkgs { 
-            inherit system;
+            system = "x86_64-linux";
             config.allowUnfree = true;
           };
           extraSpecialArgs = {
@@ -161,7 +158,7 @@
                 (final: prev: {
                   # nak = inputs.nak.packages.x86_64-linux.default;
                   ghostty = inputs.ghostty.packages.x86_64-linux.default;
-                  xremap = inputs.xremap.packages.${system}.default;
+                  xremap = inputs.xremap.packages.${pkgs.system}.default;
                 })
               ];
             }
