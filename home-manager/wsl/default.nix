@@ -679,7 +679,7 @@ rec {
 
       ".spell-dict/programming-english-dict".source =
         "${nurpkgs.programming-english}/share/dict/programming-english-dict";
-      ".spell-dict/dict.txt".source = ./word_dicts/dict.txt;
+      ".spell-dict/dict.txt".source = ../../word_dicts/dict.txt;
 
       # TODO: 後で消す
       # ".config/" = {
