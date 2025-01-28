@@ -47,18 +47,6 @@
       nixos-hardware,
       home-manager,
       treefmt-nix,
-      catppuccin,
-      neovim-nightly-overlay,
-      emacs-overlay,
-      emacs,
-      nak,
-      mozilla-overlay,
-      nur-packages,
-      disko,
-      xremap,
-      sops-nix,
-      ghostty,
-      lem,
       ...
     }@inputs:
     let
@@ -66,11 +54,11 @@
       treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
 
       overlays = [
-        neovim-nightly-overlay.overlays.default
-        (import emacs-overlay)
-        nak.overlays.default
+        inputs.neovim-nightly-overlay.overlays.default
+        (import inputs.emacs-overlay)
+        inputs.nak.overlays.default
         # (import emacs.overlay)
-        mozilla-overlay.overlays.firefox
+        inputs.mozilla-overlay.overlays.firefox
       ];
     in
     # code = _: s: s;
@@ -103,7 +91,7 @@
             inputs.catppuccin.nixosModules.catppuccin
             inputs.nix-index-database.nixosModules.nix-index
             home-manager.nixosModules.home-manager
-            xremap.nixosModules.default
+            inputs.xremap.nixosModules.default
             # disko.nixosModules.disko
             # ({ config, ... }: {
             #   # system.stateVersion = config.system.stateVersion;
@@ -113,9 +101,9 @@
             {
               nixpkgs.overlays = overlays ++ [
                 (final: prev: {
-                  xremap = xremap.packages.${system}.default;
-                  lem-ncurses = lem.packages.${system}.lem-ncurses;
-                  lem-sdl2 = lem.packages.${system}.lem-sdl2;
+                  xremap = inputs.xremap.packages.${system}.default;
+                  lem-ncurses = inputs.lem.packages.${system}.lem-ncurses;
+                  lem-sdl2 = inputs.lem.packages.${system}.lem-sdl2;
                 })
               ];
             }
@@ -145,7 +133,7 @@
                 (final: prev: {
                   # nak = inputs.nak.packages.x86_64-linux.default;
                   ghostty = inputs.ghostty.packages.x86_64-linux.default;
-                  xremap = xremap.packages.${"x86_64-linux"}.default;
+                  xremap = inputs.xremap.packages.${"x86_64-linux"}.default;
                 })
               ];
             }
