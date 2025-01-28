@@ -116,8 +116,10 @@
 
       homeConfigurations = {
         WSL = inputs.home-manager.lib.homeManagerConfiguration rec {
+          system = "x86_64-linux";
+
           pkgs = import inputs.nixpkgs {
-            system = "x86_64-linux";
+            inherit system;
             config.allowUnfree = true;
           };
           extraSpecialArgs = {
@@ -132,7 +134,7 @@
             {
               nixpkgs.overlays = overlays ++ [
                 (final: prev: {
-                  # xremap = inputs.xremap.packages.${"x86_64-linux"}.default;
+                  xremap = inputs.xremap.packages.${system}.default;
                 })
               ];
             }
