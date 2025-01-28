@@ -115,6 +115,30 @@
       };
 
       homeConfigurations = {
+        WSL = inputs.home-manager.lib.homeManagerConfiguration rec {
+          pkgs = import inputs.nixpkgs {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+          };
+          extraSpecialArgs = {
+            inherit inputs;
+          };
+          modules = [
+            # ./home.nix
+            ./home-manager/wsl
+            inputs.catppuccin.homeManagerModules.catppuccin
+            inputs.sops-nix.homeManagerModules.sops
+            inputs.nix-index-database.hmModules.nix-index
+            {
+              nixpkgs.overlays = overlays ++ [
+                (final: prev: {
+                  # xremap = inputs.xremap.packages.${"x86_64-linux"}.default;
+                })
+              ];
+            }
+          ];
+        };
+
         Home = inputs.home-manager.lib.homeManagerConfiguration rec {
           pkgs = import inputs.nixpkgs {
             system = "x86_64-linux";
