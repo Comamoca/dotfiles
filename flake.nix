@@ -4,7 +4,10 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    # nixpkgs.url = "github:NixOS/nixpkgs/master";
+    # nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    # nixpkgs.url = "git+https://github.com/nixos/nixpkgs?shallow=1&ref=nixos-unstable-small";
+    # nixpkgs.url = "github:NixOS/nixpkgs/336eda0d07dc5e2be1f923990ad9fdb6bc8e28e3";
+
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     home-manager = {
@@ -26,6 +29,15 @@
     };
     xremap.url = "github:xremap/nix-flake";
     sops-nix.url = "github:Mic92/sops-nix";
+    ghostty.url = "github:ghostty-org/ghostty";
+    lem.url = "github:lem-project/lem";
+
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
   };
 
   outputs =
@@ -45,6 +57,9 @@
       disko,
       xremap,
       sops-nix,
+      ghostty,
+      lem,
+      ...
     }@inputs:
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
@@ -70,7 +85,9 @@
         NixOS = inputs.nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
           modules = [
+            inputs.nixosModules.default
             inputs.catppuccin.nixosModules.catppuccin
+            inputs.nix-index-database.nixosModules.nix-index
             home-manager.nixosModules.home-manager
             xremap.nixosModules.default
             # disko.nixosModules.disko
@@ -83,8 +100,11 @@
               nixpkgs.overlays = overlays ++ [
                 (final: prev: {
                   xremap = xremap.packages.${system}.default;
+                  lem-ncurses = lem.packages.${system}.lem-ncurses;
+                  lem-sdl2 = lem.packages.${system}.lem-sdl2;
                 })
               ];
+              wsl.enable = true;
             }
           ];
           specialArgs = {
@@ -105,10 +125,12 @@
             ./home.nix
             inputs.catppuccin.homeManagerModules.catppuccin
             inputs.sops-nix.homeManagerModules.sops
+            inputs.nix-index-database.hmModules.nix-index
             {
               nixpkgs.overlays = overlays ++ [
                 (final: prev: {
                   # nak = inputs.nak.packages.x86_64-linux.default;
+                  ghostty = inputs.ghostty.packages.x86_64-linux.default;
                   xremap = xremap.packages.${"x86_64-linux"}.default;
                 })
               ];
