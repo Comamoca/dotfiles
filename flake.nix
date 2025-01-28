@@ -142,8 +142,10 @@
         };
 
         Home = inputs.home-manager.lib.homeManagerConfiguration rec {
-          pkgs = import inputs.nixpkgs {
-            system = "x86_64-linux";
+          system = "x86_64-linux";
+
+          pkgs = import inputs.nixpkgs { 
+            inherit system;
             config.allowUnfree = true;
           };
           extraSpecialArgs = {
@@ -159,7 +161,7 @@
                 (final: prev: {
                   # nak = inputs.nak.packages.x86_64-linux.default;
                   ghostty = inputs.ghostty.packages.x86_64-linux.default;
-                  xremap = inputs.xremap.packages.${"x86_64-linux"}.default;
+                  xremap = inputs.xremap.packages.${system}.default;
                 })
               ];
             }
