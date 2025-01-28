@@ -90,6 +90,9 @@
             {
               system.stateVersion = "24.05";
               wsl.enable = true;
+              environment.systemPackages = with pkgs; [
+                vim
+              ];
             }
           ];
         };
