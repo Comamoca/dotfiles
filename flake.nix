@@ -85,7 +85,7 @@
         WSL = inputs.nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
           modules = [
-            inputs.nixosModules.default
+            inputs.nixos-wsl.nixosModules.default
             home-manager.nixosModules.home-manager
             {
               system.stateVersion = "24.05";
