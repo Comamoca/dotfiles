@@ -82,10 +82,21 @@
       };
 
       nixosConfigurations = {
-        NixOS = inputs.nixpkgs.lib.nixosSystem rec {
+        WSL = inputs.nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
           modules = [
             inputs.nixosModules.default
+            home-manager.nixosModules.home-manager
+            {
+              system.stateVersion = "24.05";
+              wsl.enable = true;
+            }
+          ];
+        };
+
+        NixOS = inputs.nixpkgs.lib.nixosSystem rec {
+          system = "x86_64-linux";
+          modules = [
             inputs.catppuccin.nixosModules.catppuccin
             inputs.nix-index-database.nixosModules.nix-index
             home-manager.nixosModules.home-manager
@@ -104,7 +115,6 @@
                   lem-sdl2 = lem.packages.${system}.lem-sdl2;
                 })
               ];
-              wsl.enable = true;
             }
           ];
           specialArgs = {
@@ -112,6 +122,7 @@
           };
         };
       };
+
       homeConfigurations = {
         Home = inputs.home-manager.lib.homeManagerConfiguration rec {
           pkgs = import inputs.nixpkgs {
