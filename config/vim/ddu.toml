@@ -103,7 +103,6 @@ function! s:ddu_my_settings() abort
 
   nnoremap <buffer><silent> q
     \ <Cmd>call ddu#ui#do_action('quit')<CR> 
-
 endfunction
 
 autocmd FileType ddu-ff-filter call s:ddu_filter_my_settings()
@@ -297,6 +296,6 @@ on_source = 'ddu.vim'
 repo = 'kuuote/ddu-source-mr'
 on_source = 'ddu.vim'
 
-[[plugins]]
-repo = '~/.ghq/github.com/coma/ddu-source-outline'
-on_source = 'ddu.vim'
+# [[plugins]]
+# repo = '~/.ghq/github.com/coma/ddu-source-outline'
+# on_source = 'ddu.vim'

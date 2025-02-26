@@ -36,13 +36,13 @@ export class Config extends BaseConfig {
         },
 
         _: {
-          // -- matchers = { "matcher_head" },
-          // -- sorters = { "sorter_rank" },
+          // matchers: ["matcher_head"],
+          // sorters: ["sorter_head"],
 
           matchers: ["matcher_fuzzy"],
           sorters: ["sorter_fuzzy"],
           converters: ["converter_fuzzy"],
-          // -- keywordPattern: "[a-zA-Z_:]\\w*",
+          // keywordPattern: "[a-zA-Z_:]\\w*",
           keywordPattern: "\\k+",
         },
         around: { mark: "around" },

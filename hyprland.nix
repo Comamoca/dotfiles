@@ -63,9 +63,9 @@ in
     sensitivity = 0; # -1.0 to 1.0, 0 means no modification.
   };
 
-  xwayland = {
-    force_zero_scaling = true;
-  };
+  # xwayland = {
+  #   force_zero_scaling = true;
+  # };
 
   general = {
     gaps_in = 5;
@@ -195,7 +195,7 @@ in
     # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
     "$mainMod, Return, exec, $terminal"
     "$mainMod, q, killactive,"
-    # bind = $mainMod, m, exit, 
+    # bind = $mainMod, m, exit,
     "$mainMod, f, togglefloating,"
     "$mainMod, f, pin,"
     "$mainMod, space, exec, $menu"
@@ -259,7 +259,7 @@ in
     "$mainMod SHIFT, s, exec, slurp | grim -g - - | wl-copy"
     # Take screenshot active window
     # ",Print, exec, hyprctl -j activewindow | jq -r '\"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])\"' | grim -g - - | wl-copy"
-    # ",Print, exec, grim -o (hyprctl monitors -j | jq -r '.[] | select(.focused) | .name') - | wl-copy" 
+    # ",Print, exec, grim -o (hyprctl monitors -j | jq -r '.[] | select(.focused) | .name') - | wl-copy"
     # Take screenshot active monitor
     # "$mainMod, s, exec, hyprctl -j activeworkspace | jq -r '(.monitor)' | xargs -i grim -o {} -- - | wl-copy"
     ",Print, exec, hyprctl -j activeworkspace | jq -r '(.monitor)' | xargs -i grim -o {} -- - | wl-copy"

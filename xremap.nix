@@ -1,4 +1,5 @@
-{ pkgs }: rec {
+{ pkgs }:
+rec {
   xremap-config = {
     modmap = [
       {
@@ -7,9 +8,10 @@
           Enter = {
             held = "Alt_R";
             alone = "Enter";
-
           };
           KatakanaHiragana = "Ctrl_R";
+          Alt_L = "Super";
+          Super = "Alt_L";
         };
       }
     ];

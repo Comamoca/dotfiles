@@ -17,89 +17,48 @@ local pum_entered = vim.fn["pum#entered"]
 vim.fn["ddc#custom#load_config"](vim.fn.expand("~/.config/nvim/ddc.ts"))
 vim.fn["ddc#enable"]({context_filetype = "treesitter"})
 
-vim.api.nvim_create_autocmd("InsertEnter", {
-	callback = function(event)
-		vim.keymap.set({ "i", "s" }, "<Tab>", function()
-			return vim.fn["vsnip#available"](1) == 1 and "<Plug>(vsnip-expand-or-jump)" or "<C-l>"
-		end, { expr = true, noremap = false })
+-- vim.api.nvim_create_autocmd("InsertEnter", {
+-- 	callback = function(event)
+-- 	end
+-- })
 
-		vim.keymap.set({ "i", "s" }, "<C-k>", function()
-			return vim.fn["vsnip#jumpable"](1) == 1 and "<Plug>(vsnip-jump-next)" or "<Tab>"
-		end, { expr = true, noremap = false })
+vim.keymap.set({ "i", "s" }, "<Tab>", function()
+	return vim.fn["vsnip#available"](1) == 1 and "<Plug>(vsnip-expand-or-jump)" or "<CR>"
+end, { expr = true, noremap = false })
 
-		vim.keymap.set({ "i", "s" }, "<C-j>", function()
-			return vim.fn["vsnip#jumpable"](-1) == 1 and "<Plug>(vsnip-jump-prev)" or "<S-Tab>"
-		end, { expr = true, noremap = false })
+vim.keymap.set({ "i", "s" }, "<C-k>", function()
+	return vim.fn["vsnip#jumpable"](1) == 1 and "<Plug>(vsnip-jump-next)" or "<Tab>"
+end, { expr = true, noremap = false })
 
-		vim.keymap.set({ "n", "s" }, "<s>", [[<Plug>(vsnip-select-text)]], { expr = true, noremap = false })
-		vim.keymap.set({ "n", "s" }, "<S>", [[<Plug>(vsnip-cut-text)]], { expr = true, noremap = false })
+vim.keymap.set({ "i", "s" }, "<C-j>", function()
+	return vim.fn["vsnip#jumpable"](-1) == 1 and "<Plug>(vsnip-jump-prev)" or "<S-Tab>"
+end, { expr = true, noremap = false })
 
-		vim.keymap.set("i", "<C-p>", function()
-			pum_map_select_relative(-1)
-		end, {})
+vim.keymap.set("i", "<C-p>", function()
+	pum_map_select_relative(-1)
+end, {})
 
-		vim.keymap.set("i", "<C-n>", function()
-			pum_map_select_relative(1)
-		end, {})
+vim.keymap.set("i", "<C-n>", function()
+	pum_map_select_relative(1)
+end, {})
 
-		vim.keymap.set("i", "<C-y>", function()
-			return '<Cmd>call pum#map#confirm()<CR>'
-		end, { expr = true, silent = true })
+vim.keymap.set("i", "<C-y>", function()
+	return '<Cmd>call pum#map#confirm()<CR>'
+end, { expr = true, silent = true })
 
-		vim.keymap.set("i", "<CR>", function()
-			return pum_visible() and '<Cmd>call pum#map#confirm()<CR>' or '<CR>'
-		end, { expr = true, silent = true })
-	end
-})
+vim.keymap.set("i", "<CR>", function()
+	return pum_visible() and '<Cmd>call pum#map#confirm()<CR>' or '<CR>'
+end, { expr = true, silent = true })
+
+-- vim.keymap.set("i", "<CR>", function()
+-- 	return '<Cmd>call pum#map#confirm()<CR>'
+-- end, { expr = true, silent = true })
+
+-- vim.cmd([[inoremap <silent><expr> <CR> pum#visible() ? '<cmd>call pum#map#confirm()<CR>' : '<cr>']])
+
+-- vim.keymap.set({ "n", "s" }, "<s>", [[<Plug>(vsnip-select-text)]], { expr = true, noremap = false })
+-- vim.keymap.set({ "n", "s" }, "<S>", [[<Plug>(vsnip-cut-text)]], { expr = true, noremap = false })
 '''
-
-# lua_source = """
-# local fn = vim.fn
-#
-# local pum_map_select_relative = vim.fn["pum#map#select_relative"]
-# local pum_visible = vim.fn["pum#visible"]
-#
-# vim.api.nvim_create_autocmd("InsertEnter", {
-# 	callback = function(event)
-# 		vim.keymap.set({ "i", "s" }, "<Tab>", function()
-# 			return vim.fn["vsnip#available"](1) == 1 and "<Plug>(vsnip-expand-or-jump)" or "<C-l>"
-# 		end, { expr = true, noremap = false })
-#
-# 		vim.keymap.set({ "i", "s" }, "<C-k>", function()
-# 			return vim.fn["vsnip#jumpable"](1) == 1 and "<Plug>(vsnip-jump-next)" or "<Tab>"
-# 		end, { expr = true, noremap = false })
-#
-# 		vim.keymap.set({ "i", "s" }, "<C-j>", function()
-# 			return vim.fn["vsnip#jumpable"](-1) == 1 and "<Plug>(vsnip-jump-prev)" or "<S-Tab>"
-# 		end, { expr = true, noremap = false })
-#
-# 		vim.keymap.set({ "n", "s" }, "<s>", [[<Plug>(vsnip-select-text)]], { expr = true, noremap = false })
-# 		vim.keymap.set({ "n", "s" }, "<S>", [[<Plug>(vsnip-cut-text)]], { expr = true, noremap = false })
-#
-# 		vim.keymap.set("i", "<C-p>", function()
-# 			pum_map_select_relative(-1)
-# 		end, {})
-#
-# 		vim.keymap.set("i", "<C-n>", function()
-# 			pum_map_select_relative(1)
-# 		end, {})
-#
-# 		vim.keymap.set("i", "<C-y>", function()
-# 			return '<Cmd>call pum#map#confirm()<CR>'
-# 		end, { expr = true, silent = true })
-#
-# 		vim.keymap.set("i", "<CR>", function()
-# 			return pum_visible() and '<Cmd>call pum#map#confirm()<CR>' or '<CR>'
-# 		end, { expr = true, silent = true })
-# 	end
-# })
-#
-#
-# fn["ddc#custom#load_config"](fn.expand("~/.config/nvim/ddc.ts"))
-# fn["ddc#enable"]()
-# fn["ddc#enable"]({context_filetype = "treesitter"})
-# fn["ddc#enable_terminal_completion"]()
-# """
 
 [[plugins]]
 repo = 'Shougo/pum.vim'
@@ -113,9 +72,9 @@ on_source = 'ddc.vim'
 # repo = 'Shougo/ddc-ui-native'
 # on_source = 'ddc.vim'
 
-[[plugins]]
-repo = "uga-rosa/ddc-source-vsnip"
-on_source = 'ddc.vim'
+# [[plugins]]
+# repo = "uga-rosa/ddc-source-vsnip"
+# on_source = 'ddc.vim'
 
 [[plugins]]
 repo = 'Shougo/ddc-around'
@@ -156,9 +115,9 @@ hook_source = '''
 " call popup_preview#enable()
 '''
 
-# [[plugins]]
-# repo = 'tani/ddc-path'
-# on_source = 'ddc.vim'
+[[plugins]]
+repo = 'tani/ddc-path'
+on_source = 'ddc.vim'
 
 [[plugins]]
 repo = 'LumaKernel/ddc-source-file'
@@ -192,7 +151,6 @@ on_source = 'ddc.vim'
 repo = 'matsui54/ddc-matcher_fuzzy'
 on_source = 'ddc.vim'
 
-
 [[plugins]]
 repo = 'uga-rosa/ddc-source-vsnip'
 on_source = 'ddc.vim'
@@ -211,7 +169,8 @@ call skkeleton#azik#add_table("jis")
 call skkeleton#config(#{
 \   globalDictionaries: [ "~/.skk-dict/SKK-JISYO.L", "~/.skk-dict/SKK-JISYO.im@sparql.all.utf8" ],
 \   databasePath: "~/.vim/skk/database",
-\   kanaTable: "azik"
+\   kanaTable: "azik",
+\   eggLikeNewline: v:true
 \   })
 
 
@@ -252,8 +211,8 @@ autocmd InsertEnter * ++once call skkeleton#register_kanatable('azik', {
     \ })
 
 
-imap <C-i> <Plug>(skkeleton-enable)
-imap <C-l> <Plug>(skkeleton-disable)
+inoremap <C-i> <Plug>(skkeleton-enable)
+inoremap <C-l> <Plug>(skkeleton-disable)
 '''
 
 [[plugins]]

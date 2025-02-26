@@ -27,8 +27,9 @@ vim.opt.runtimepath:prepend(denops_src)
 
 -- local fn = vim.fn
 
--- call dpp#min#load_state("~/.cache/dpp")
--- call dpp#make_state("~/.cache/dpp", "~/.config/nvim/dpp.ts")
+-- dpp.load_state("~/.cache/dpp")
+-- dpp.make_state("~/.cache/dpp", "~/.config/nvim/dpp.ts")
+
 if dpp.load_state(dppBase) then
   vim.api.nvim_create_autocmd("User", {
     pattern = "DenopsReady",
@@ -42,12 +43,16 @@ end
 -- dpp.load_state("~/.cache/dpp")
 -- dpp.make_state("~/.cache/dpp", "~/.config/nvim/dpp.ts")
 
--- vim.api.nvim_create_autocmd("User", {
---   pattern = "Dpp:makeStatePost",
---   callback = function()
---     vim.notify("dpp make_state() is done")
---   end,
--- })
+vim.api.nvim_create_autocmd("User", {
+  pattern = "Dpp:makeStatePost",
+  callback = function()
+    vim.notify("dpp make_state() is done")
+  end,
+})
+
+---------------------------------------------------------
+
+vim.opt.runtimepath:append(vim.fn.expand("~/.config/nvim"))
 
 -- autocmd BufRead *.rs let g:rustfmt_autosave = 0
 vim.api.nvim_create_autocmd("BufRead", {
@@ -72,6 +77,11 @@ vim.api.nvim_create_autocmd("BufRead", {
     vim.g.quickrun_config["moonbit"] = moonbit
     vim.print(vim.g.quickrun_config)
   end,
+})
+
+vim.api.nvim_create_autocmd("BufRead", {
+  pattern = "rebar.config",
+  command = "set filetype=erlang",
 })
 
 vim.cmd("filetype indent plugin on")
@@ -122,7 +132,7 @@ vim.opt.cursorline = true
 
 -- vim.opt.relativenumber = true
 
-vim.cmd("set completeopt=menuone,noinsert")
+vim.cmd("set completeopt+=noinsert")
 
 vim.keymap.set("n", "<leader>k", function()
   print("Hop!")
@@ -146,8 +156,7 @@ vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-spotify"))
 -- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-codecrop"))
 
 -- ddu local
-vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Shougo/ddu-ui-ff"))
-require("configs/ddu")
+-- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Shougo/ddu-ui-ff"))
 
 vim.opt.virtualedit = "none"
 
@@ -156,15 +165,17 @@ vim.cmd([[let maplocalleader = ' ']])
 -- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/sandbox/ex_gleam_denops"))
 -- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-yasunori"))
 
-vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/vim-spotify"))
-vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-moonbit-settings"))
+-- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/vim-spotify"))
+-- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-moonbit-settings"))
 
 vim.opt.expandtab = true
 
-vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-junky"))
+-- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-junky"))
 vim.g.junky_path = "~/.junky"
 
-vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-morg"))
+-- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Shougo/ddt.vim"))
+
+-- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-morg"))
 
 vim.opt.foldmethod = "marker"
 
@@ -176,3 +187,5 @@ vim.api.nvim_create_autocmd("BufEnter", {
 })
 
 -- vim.g['denops_server_addr'] = "127.0.0.1:32123"
+
+-- require("configs/kastel")

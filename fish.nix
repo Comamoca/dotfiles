@@ -1,10 +1,9 @@
 { pkgs }:
-let
-
-in
 {
   enable = true;
   shellInit = ''
+    fish_add_path $HOME/.config/v-analyzer/bin/
+
     fish_add_path /usr/local/bin
     fish_add_path $HOME/.local/bin
 
@@ -91,6 +90,7 @@ in
     fish_add_path $HOME/go/bin
     fish_add_path $HOME/local/
 
+    alias magit="emacsclient -nw --eval '(magit)'"
     alias register-asdf="ln -s (pwd) '$HOME/common-lisp/$(basename $(pwd))'"
     alias supa "bunx supabase"
 

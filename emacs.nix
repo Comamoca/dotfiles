@@ -4,12 +4,22 @@
   nurpkgs,
 }:
 let
+  kdl-ts-mode = pkgs.emacsPackages.trivialBuild {
+    pname = "kdl-ts-mode";
+    version = "main";
+    src = pkgs.fetchurl {
+      url = "https://raw.githubusercontent.com/dataphract/kdl-ts-mode/refs/heads/main/kdl-ts-mode.el";
+      hash = "sha256-NGC3Fecf9fzw0Gp64afagKCe+4tObXjjkzwtA+L6YKs=";
+    };
+    buildInputs = with pkgs.emacsPackages; [ ];
+  };
+
   slite = pkgs.emacsPackages.trivialBuild {
     pname = "slite";
     version = "main";
     src = pkgs.fetchurl {
       url = "https://raw.githubusercontent.com/tdrhq/slite/refs/heads/main/slite.el";
-      hash = "sha256-ohVZUSpHNDLna6BmFtgtUSKV7Pj6Nj+67imVWXWn+mQ=";
+      hash = "sha256-Y+d54a9QbqecqVky7MXbPaToliEsFMn4JcRBVB2uxwQ=";
     };
     buildInputs = with pkgs.emacsPackages; [ ];
   };
@@ -61,7 +71,7 @@ let
       owner = "havarddj";
       repo = "typst-preview.el";
       rev = "master";
-      sha256 = "sha256-c64dRQ7Glkx+QQNWRos33y8nGZDujDk8tGEhb5PMsR0=";
+      sha256 = "sha256-7Tak6YavVwjUz03AlnO6JyP7xv3qTdH8aMefXk8HC6U=";
     };
 
     buildInputs = with pkgs.emacsPackages; [ websocket ];
@@ -105,6 +115,71 @@ let
 
     buildInputs = with pkgs.emacsPackages; [ compat ];
   };
+
+  gleam-mode = pkgs.emacsPackages.trivialBuild {
+    pname = "gleam-mode";
+    version = "master";
+    src = pkgs.fetchFromGitHub {
+      owner = "gleam-lang";
+      repo = "gleam-mode";
+      rev = "master";
+      sha256 = "sha256-OUP6AoD01b73A8hbSg5lC9+TJDcD0tXWhqpipZUnbfQ=";
+    };
+
+    buildInputs = with pkgs.emacsPackages; [
+      tree-sitter
+      tree-sitter-indent
+    ];
+  };
+
+  org-bullets = pkgs.emacsPackages.trivialBuild {
+    pname = "org-bullets";
+    version = "master";
+    src = pkgs.fetchFromGitHub {
+      owner = "sabof";
+      repo = "org-bullets";
+      rev = "master";
+      sha256 = "sha256-HODL+qhUFRjGwHnbEu9Z2Xof9zVT1Wc2pQtb56Qm2YI=";
+    };
+
+    buildInputs = with pkgs.emacsPackages; [
+      tree-sitter
+      tree-sitter-indent
+    ];
+  };
+
+  eglot-booster = pkgs.emacsPackages.trivialBuild {
+    pname = "eglot-booster";
+    version = "main";
+
+    src = pkgs.fetchurl {
+      url = "https://raw.githubusercontent.com/jdtsmith/eglot-booster/refs/heads/main/eglot-booster.el";
+      hash = "sha256-MGMKFtivqM979xf2H0XinLvlVhp23Ynd1+UqTxD3eZY=";
+    };
+
+    buildInputs = with pkgs.emacsPackages; [ ];
+  }; 
+
+  copilot = pkgs.emacsPackages.trivialBuild {
+    pname = "copilot.el";
+    version = "main";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "copilot-emacs";
+      repo = "copilot.el";
+      rev = "master";
+      sha256 = "sha256-NRW2ReiJ62hJtT98Qk6qcrdXmMYhmHZL7NcW9Eacml4=";
+    };
+
+    buildInputs = with pkgs.emacsPackages; [
+      pkgs.nodejs_23
+      jsonrpc
+      f
+      s
+      dash
+      editorconfig
+    ];
+  }; 
 in
 {
   epkgs = with epkgs; [
@@ -148,6 +223,10 @@ in
     kaocha-runner
 
     eglot
+    eglot-booster
+
+    lsp-mode
+    lsp-ui
 
     corfu
     cape
@@ -173,8 +252,10 @@ in
     lua-mode
     nix-mode
     nix-ts-mode
+    gleam-mode
     gleam-ts-mode
     markdown-mode
+    astro-ts-mode
 
     projectile
     migemo
@@ -202,6 +283,7 @@ in
     avy
 
     python-mode
+
     enh-ruby-mode
     ruby-electric
 
@@ -230,8 +312,29 @@ in
     gptel
 
     elixir-mode
+    inf-elixir
+    mix
 
     smartparens
     evil-smartparens
+    plz
+
+    dash
+
+    ox-zenn
+    rg
+    
+    # lsp-bridge
+
+    org-bullets
+    editorconfig
+    open-junk-file
+    reformatter
+
+    copilot
+    kdl-ts-mode
+    dotnet
+    web-mode
+    sharper
   ];
 }

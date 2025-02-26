@@ -4,11 +4,9 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    # nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
-    # nixpkgs.url = "git+https://github.com/nixos/nixpkgs?shallow=1&ref=nixos-unstable-small";
-    # nixpkgs.url = "github:NixOS/nixpkgs/336eda0d07dc5e2be1f923990ad9fdb6bc8e28e3";
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master"; 
 
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -38,6 +36,7 @@
     };
 
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+    niri.url = "github:sodiboo/niri-flake";
   };
 
   outputs =
@@ -47,6 +46,7 @@
       nixos-hardware,
       home-manager,
       treefmt-nix,
+      chaotic,
       ...
     }@inputs:
     let
@@ -59,6 +59,7 @@
         inputs.nak.overlays.default
         # (import emacs.overlay)
         inputs.mozilla-overlay.overlays.firefox
+        inputs.niri.overlays.niri
       ];
     in
     # code = _: s: s;
@@ -90,14 +91,18 @@
           modules = [
             inputs.catppuccin.nixosModules.catppuccin
             inputs.nix-index-database.nixosModules.nix-index
-            home-manager.nixosModules.home-manager
+            # home-manager.nixosModules.home-manager
             inputs.xremap.nixosModules.default
+            inputs.niri.nixosModules.niri 
             # disko.nixosModules.disko
             # ({ config, ... }: {
             #   # system.stateVersion = config.system.stateVersion;
             #   disko.devices.disk.main.imageSize = "10G";
             # })
             ./configuration.nix
+            chaotic.nixosModules.nyx-cache
+            chaotic.nixosModules.nyx-overlay
+            chaotic.nixosModules.nyx-registry
             {
               nixpkgs.overlays = overlays ++ [
                 (final: prev: {
@@ -116,7 +121,6 @@
 
       homeConfigurations = {
         WSL = inputs.home-manager.lib.homeManagerConfiguration rec {
-
           pkgs = import inputs.nixpkgs {
             system = "x86_64-linux";
             config.allowUnfree = true;

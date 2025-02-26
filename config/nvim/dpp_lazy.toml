@@ -17,11 +17,61 @@ nnoremap <C-f> <cmd>Sayonara<CR>
 """
 
 [[plugins]]
+repo = "Shougo/deol.nvim"
+on_event = ['BufRead', 'CursorHold']
+hook_source = """
+command! Deol call deol#start()
+"""
+
+[[plugins]]
 repo = "hrsh7th/nvim-insx"
 on_event = ['InsertEnter']
-lua_source = """
-require('insx.preset.standard').setup()
-"""
+lua_source = '''
+-- require('insx.preset.standard').setup()
+
+local insx = require('insx')
+local esc = require('insx').helper.regex.esc
+
+insx.add(
+  "'",
+  insx.with(require('insx.recipe.auto_pair')({
+    open = "'",
+    close = "'"
+  }), {
+    insx.with.in_string(false),
+    insx.with.in_comment(false),
+    insx.with.nomatch([[\\\%#]]),
+    insx.with.nomatch([[\a\%#]])
+  })
+)
+
+insx.add(
+  '"',
+  insx.with(require('insx.recipe.auto_pair')({
+    open = '"',
+    close = '"'
+  }), {
+    insx.with.in_string(false),
+    insx.with.in_comment(false),
+    insx.with.nomatch([[\\\%#]]),
+    insx.with.nomatch([[\a\%#]])
+  })
+)
+
+local brackets = { ["("] = ")", ["["] = "]", ["{"] = "}"}
+
+for k, v in pairs(brackets) do
+  require('insx').add(k, require('insx.recipe.auto_pair')({
+    open = k,
+    close = v
+  }))
+
+  require('insx').add('<BS>', require('insx.recipe.delete_pair')({
+    open_pat = esc(k),
+    close_pat = esc(v)
+  }))
+end
+'''
 
 # [[plugins]]
 # repo = 'm4xshen/autoclose.nvim'
@@ -838,44 +888,115 @@ endfunction
 '''
 
 [[plugins]]
-repo = 'Shougo/deol.nvim'
+repo = 'Shougo/ddt.vim'
 on_event = ['BufRead', 'CursorHold']
-hook_source = """
-autocmd FileType deol call s:deol_settings()
-function! s:deol_settings()
-  nnoremap <buffer> <C-n>  <Plug>(deol_next_prompt)
-  nnoremap <buffer> <C-p>  <Plug>(deol_previous_prompt)
-  nnoremap <buffer> <CR>   <Plug>(deol_execute_line)
-  nnoremap <buffer> A      <Plug>(deol_start_append_last)
-  nnoremap <buffer> I      <Plug>(deol_start_insert_first)
-  nnoremap <buffer> a      <Plug>(deol_start_append)
-  nnoremap <buffer> e      <Plug>(deol_edit)
-  nnoremap <buffer> i      <Plug>(deol_start_insert)
-  nnoremap <buffer> q      <Plug>(deol_quit)
-endfunction
+depends = 'denops.vim'
+hook_source = '''
+" hook_add 
+nnoremap [Space]s  <Cmd>call ddt#start(#{
+      \   name: t:->get('ddt_ui_terminal_last_name',
+      \                 'terminal-' .. win_getid()),
+      \   ui: 'terminal',
+      \ })<CR>
+nnoremap sD  <Cmd>call ddt#ui#terminal#kill_editor()<CR>
+nnoremap <C-t> <Cmd>Ddu -name=ddt -sync
+      \ -ui-param-ff-split=`has('nvim') ? 'floating' : 'horizontal'`
+      \ -ui-param-ff-winRow=1
+      \ -ui-param-ff-autoResize
+      \ -ui-param-ff-cursorPos=`tabpagenr()`
+      \ ddt_tab<CR>
+" }}}
 
-autocmd BufEnter deol-edit@default call s:deol_edit_settings()
-function! s:deol_edit_settings()
-  nnoremap <buffer> <CR>  <Plug>(deol_execute_line)
-  nnoremap <buffer> <BS>  <Plug>(deol_backspace)
-  nnoremap <buffer> <C-h> <Plug>(deol_backspace)
-  nnoremap <buffer> q     <Plug>(deol_quit)
-  nnoremap <buffer> <C-c> <Plug>(deol_ctrl_c)
-  inoremap <buffer> <CR>  <Plug>(deol_execute_line)
-  inoremap <buffer> <BS>  <Plug>(deol_backspace)
-  inoremap <buffer> <C-h> <Plug>(deol_backspace)
-  inoremap <buffer> <C-c> <Plug>(deol_ctrl_c)
-  inoremap <buffer> <C-d> <Plug>(deol_ctrl_d)
-endfunction
+" hook_source
+call ddt#custom#patch_global(#{
+      \   uiParams: #{
+      \     terminal: #{
+      \       nvimServer: '~/.cache/nvim/server.pipe',
+      \       command: ['zsh'],
+      \       promptPattern: has('win32') ? '\f\+>' : '\w*% \?',
+      \     },
+      \   },
+      \ })
 
-" deol ddu-kind
-" switch
-" new
-" delete
-" edit
+" Set terminal colors
+if has('nvim')
+  let g:terminal_color_0  = '#6c6c6c'
+  let g:terminal_color_1  = '#ff6666'
+  let g:terminal_color_2  = '#66ff66'
+  let g:terminal_color_3  = '#ffd30a'
+  let g:terminal_color_4  = '#1e95fd'
+  let g:terminal_color_5  = '#ff13ff'
+  let g:terminal_color_6  = '#1bc8c8'
+  let g:terminal_color_7  = '#c0c0c0'
+  let g:terminal_color_8  = '#383838'
+  let g:terminal_color_9  = '#ff4444'
+  let g:terminal_color_10 = '#44ff44'
+  let g:terminal_color_11 = '#ffb30a'
+  let g:terminal_color_12 = '#6699ff'
+  let g:terminal_color_13 = '#f820ff'
+  let g:terminal_color_14 = '#4ae2e2'
+  let g:terminal_color_15 = '#ffffff'
+else
+  let g:terminal_ansi_colors = [
+        \ '#6c6c6c', '#ff6666', '#66ff66', '#ffd30a',
+        \ '#1e95fd', '#ff13ff', '#1bc8c8', '#c0c0c0',
+        \ '#383838', '#ff4444', '#44ff44', '#ffb30a',
+        \ '#6699ff', '#f820ff', '#4ae2e2', '#ffffff',
+        \ ]
+endif
 
-command! Deol :call deol#start(#{command: "fish"})
-"""
+tnoremap <C-t> <Tab>
+tnoremap <expr> <Tab>
+      \ pum#visible()
+      \ ? '<Cmd>call pum#map#select_relative(+1)<CR>'
+      \ : '<Tab>'
+tnoremap <expr> <S-Tab>
+      \   pum#visible()
+      \ ? '<Cmd>call pum#map#select_relative(-1)<CR>'
+      \ : '<S-Tab>'
+tnoremap <Down>   <Cmd>call pum#map#insert_relative(+1)<CR>
+tnoremap <Up>     <Cmd>call pum#map#insert_relative(-1)<CR>
+tnoremap <C-y>    <Cmd>call pum#map#confirm()<CR>
+tnoremap <C-o>    <Cmd>call pum#map#confirm()<CR>
+" }}}
+
+" ddt-terminal 
+nnoremap <buffer> <C-n>
+      \ <Cmd>call ddt#ui#do_action('nextPrompt')<CR>
+nnoremap <buffer> <C-p>
+      \ <Cmd>call ddt#ui#do_action('previousPrompt')<CR>
+nnoremap <buffer> <C-y>
+      \ <Cmd>call ddt#ui#do_action('pastePrompt')<CR>
+nnoremap <buffer> <CR>
+      \ <Cmd>call ddt#ui#do_action('executeLine')<CR>
+nnoremap <buffer> [Space]gc
+      \ <Cmd>call ddt#ui#do_action('send', #{
+      \   str: 'git commit',
+      \ })<CR>
+nnoremap <buffer> [Space]gs
+      \ <Cmd>call ddt#ui#do_action('send', #{
+      \   str: 'git status',
+      \ })<CR>
+nnoremap <buffer> [Space]gA
+      \ <Cmd>call ddt#ui#do_action('send', #{
+      \   str: 'git commit --amend',
+      \ })<CR>
+
+augroup ddt-ui-terminal
+  autocmd!
+  autocmd DirChanged <buffer>
+        \ :if t:->get('ddt_ui_terminal_directory') !=# v:event.cwd
+        \ | call ddt#ui#do_action('cd', #{
+        \     directory: v:event.cwd,
+        \   })
+        \ | endif
+augroup END
+
+if exists('b:ddt_terminal_directory')
+  execute 'tcd' b:ddt_terminal_directory->fnameescape()
+endif
+" }}}
+'''
 
 [[plugins]]
 repo = 'gw31415/mstdn.vim'
@@ -932,7 +1053,7 @@ on_source = ["mstdn.vim"]
 
 [[plugins]]
 repo = 'Olical/conjure'
-on_ft = ["racket", "clojure", "lisp", "lua", "fennel"]
+on_ft = ["racket", "clojure", "lisp", "lua", "fennel", "python"]
 lua_source = """
 -- Disable the documentation mapping
 vim.g["conjure#mapping#doc_word"] = false
@@ -1116,7 +1237,6 @@ on_cmd = ["Vitalize"]
 [[plugins]]
 repo = "yuki-yano/fuzzy-motion.vim"
 on_cmd = ["FuzzyMotion"]
-
 
 [[plugins]]
 repo = "lambdalisue/vim-guise"

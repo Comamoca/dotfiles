@@ -1,6 +1,10 @@
 (setq skk-use-azik t)
 (setq skk-sticky-key ";")
 
+(setq skk-comp-mode t)
+(setq skk-dcomp-activate t)
+(setq skk-dcomp-multiple-activate t)
+
 (setq skk-jisyo (cons "~/.skk-jisyo" 'utf-8))
 (setq skk-set-henkan-point-key
       (append '(?L) skk-set-henkan-point-key))

@@ -237,3 +237,7 @@ on_event = ['BufRead', 'CursorHold']
 hook_source = '''
 let g:rainbow_active = 1 
 '''
+
+[[plugins]]
+repo = 'editorconfig/editorconfig-vim'
+on_event = ['BufRead', 'CursorHold']
