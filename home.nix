@@ -19,6 +19,11 @@ let
 
   emacs' = pkgs.emacs-pgtk.overrideAttrs (old: {
     # configureFlags = old.configureFlags or [] ++ [ "--with-xwidgets" ];
+  gitmoji = pkgs.fetchurl {
+      url = "https://gitmoji.dev/api/gitmojis";
+      hash = "sha256-GOSuBuc3/S1vsMvQLF49Shd/3SN4w1Rpzhwn63tMe2Q=";
+  };
+
     withXwidgets = true;
     withGTK3 = true;
     buildInputs = (old.buildInputs or []) ++ [
@@ -773,6 +778,7 @@ rec {
         source = (symlink /${dotfiles}/emacs.d);
         recursive = true;
       };
+      ".data/gitmoji.json".source = (symlink gitmoji);
       ".skk".source = (symlink /${dotfiles}/ddskk-config.el);
     };
 
