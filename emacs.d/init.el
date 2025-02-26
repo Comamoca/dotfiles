@@ -485,19 +485,28 @@
 
 ;; ================ My extentions ================ 
 
-(setq gitmoji--codes (lambda ()
-		      (gitmoji-file-path "~/.emacs.d/gitmoji.json")
-		      (gitmoji-file 
-		       (with-temp-buffer
-			 (insert-file-contents gitmoji-file-path)
-			 (buffer-substring-no-properties (point-min) (point-max))))
-		      (gitmoji-json (json-parse-string gitmoji-file))
-		      (gitmojis (gethash "gitmojis" gitmoji-json))
-		      (gitmoji-codes (mapcar (lambda (item)
-					       ;; Remove leading “:”
-					       (substring item 1))
-					     (mapcar (lambda (item)
-						       (gethash "code" item)) gitmojis)))))
+;; 起動時にJSONファイルをパースした結果を予め用意しておく
+(setq gitmoji--json-data (let* ((gitmoji-file-path "~/.data/gitmoji.json")
+				(gitmoji-file (with-temp-buffer
+						(insert-file-contents gitmoji-file-path)
+						(buffer-substring-no-properties (point-min) (point-max))))
+				(gitmoji-json (json-parse-string gitmoji-file)))
+
+			   gitmoji-json))
+
+(defun setup-gitmoji ()
+  (interactive)
+  (unless (boundp 'gitmoji--codes) 
+
+    (setq gitmoji--codes
+	  (let* ((gitmojis (gethash "gitmojis" gitmoji--json-data))
+		 (gitmoji-codes (mapcar (lambda (item)
+					  ;; Remove leading “:”
+					  (substring item 1))
+					(mapcar (lambda (item)
+						  (gethash "code" item)) gitmojis))))
+	    gitmoji-codes)))
+  gitmoji--codes)
 
 (defun gitmoji-completion ()
   "Completion source for gitmoji"
