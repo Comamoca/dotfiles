@@ -42,7 +42,7 @@ ddc_custom_patch_global("sourceParams", {
 ddc_custom_patch_global("sourceOptions", {
   skkeleton = {
     mark = "SKK",
-    matchers = {},
+    matchers = { "skkeleton" },
     sorters = {},
     isVolatile = true,
   },
@@ -103,12 +103,12 @@ ddc_custom_patch_global("sourceParams", {
 vim.fn["ddc#enable_terminal_completion"]()
 vim.fn["ddc#enable"]()
 
--- vim.cmd([[
--- inoremap <expr> <TAB>
--- 	\ pumvisible() ? '<C-n>' :
--- 	\ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
--- 	\ '<TAB>' : ddc#map#manual_complete()
--- ]])
+vim.cmd([[
+inoremap <expr> <TAB>
+	\ pumvisible() ? '<C-n>' :
+	\ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
+	\ '<TAB>' : ddc#map#manual_complete()
+]])
 
 vim.api.nvim_create_autocmd("InsertEnter", {
   callback = function(event)
@@ -139,8 +139,15 @@ vim.api.nvim_create_autocmd("InsertEnter", {
       return "<Cmd>call pum#map#confirm()<CR>"
     end, { expr = true, silent = true })
 
+    vim.cmd([[imap <silent><expr> <CR>() ? pum#map#confirm() : "\<CR>"]])
+
     vim.keymap.set("i", "<CR>", function()
-      return pum_visible() and "<Cmd>call pum#map#confirm()<CR>" or "<CR>"
+      if vim.fn["pum#visible"]() then
+        -- return  "<Cmd>call pum#map#confirm()<CR>"
+        return "<C-y>"
+      else
+        return "<CR>"
+      end
     end, { expr = true, silent = true })
   end,
 })

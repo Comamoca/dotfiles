@@ -35,7 +35,8 @@ local servers = {
   "clangd",
   "rust_analyzer",
   "pyright",
-  "ts_ls",
+  -- "ts_ls",
+  "gopls",
   "lua_ls",
   "nil_ls",
   "ruby_lsp",
@@ -51,35 +52,43 @@ local servers = {
   "tinymist",
   "purescriptls",
   "marksman",
-  "r_language_server"
+  "r_language_server",
+  -- "v_analyzer",
+  "vls",
+  "ruff",
+  "jdtls",
+  "dockerls",
 }
 
 -- Auto start language servers.
 for _, name in ipairs(servers) do
   -- for _, name in ipairs(lspconfig.util.available_servers()) do
-  if name == "denols" or name == "tsserver" then
-    local is_node_dir = function()
-      return lspconfig.util.root_pattern("package.json")(vim.fn.getcwd())
-    end
+  -- if name == "denols" or name == "tsserver" then
+  --   local is_node_dir = function()
+  --     return lspconfig.util.root_pattern("package.json")(vim.fn.getcwd())
+  --   end
+  --
+  --   -- ts_ls
+  --   local ts_opts = {}
+  --   ts_opts.on_attach = function(client)
+  --     if not is_node_dir() then
+  --       client.stop(true)
+  --     end
+  --   end
+  --   lspconfig.ts_ls.setup(ts_opts)
+  --
+  --   -- denols
+  --   local deno_opts = {}
+  --   deno_opts.on_attach = function(client)
+  --     if is_node_dir() then
+  --       client.stop(true)
+  --     end
+  --   end
+  --   lspconfig.denols.setup(deno_opts)
 
-    -- ts_ls
-    local ts_opts = {}
-    ts_opts.on_attach = function(client)
-      if not is_node_dir() then
-        client.stop(true)
-      end
-    end
-    lspconfig.ts_ls.setup(ts_opts)
+  -- elseif name == "tailwindcss" then
 
-    -- denols
-    local deno_opts = {}
-    deno_opts.on_attach = function(client)
-      if is_node_dir() then
-        client.stop(true)
-      end
-    end
-    lspconfig.denols.setup(deno_opts)
-  elseif name == "tailwindcss" then
+  if name == "tailwindcss" then
     lspconfig.tailwindcss.setup({})
     -- lspconfig[name].setup({})
     lspconfig.tailwindcss.setup({

@@ -44,8 +44,14 @@
 (setq completion-styles '(orderless hotfuzz basic)
       completion-category-overrides '((file (styles basic partial-completion))))
 
+;; embark
+(leaf embark
+  :config
+  (evil-define-key 'normal 'insert (kbd "C-.") 'embark-act)
+  (define-key evil-normal-state-map (kbd "C--") #'embark-export))
+
 ;; Sources for vertico
-(leaf consult)
+(leaf consult :require t)
 (leaf consult-dir)
 (leaf embark-consult
   :bind
@@ -64,44 +70,38 @@
 
 ;; Emacs evil-mode
 (leaf evil
-   :config
-   ;; (define-key evil-insert-state-map "jk" #'evil-normal-state)
-   ;; (define-key evil-normal-state-map (kbd "S-j") nil)
-   ;; (define-key evil-normal-state-map (kbd "S-j") #'evil-scroll-down)
+  :defer-config
+  ;; (define-key evil-insert-state-map "jk" #'evil-normal-state)
+  ;; (define-key evil-normal-state-map (kbd "S-j") nil)
+  ;; (define-key evil-normal-state-map (kbd "S-j") #'evil-scroll-down)
 
-   (define-key evil-normal-state-map (kbd "C-k") #'evil-scroll-up)
-   (define-key evil-normal-state-map (kbd "C-j") #'evil-scroll-down)
+  (define-key evil-normal-state-map (kbd "C-k") #'evil-scroll-up)
+  (define-key evil-normal-state-map (kbd "C-j") #'evil-scroll-down)
 
-   (define-key evil-normal-state-map (kbd "M-g") #'projectile-switch-project)
-   (define-key evil-normal-state-map (kbd "C-l") #'consult-line)
-   (define-key evil-normal-state-map (kbd "SPC k") #'avy-goto-line)
+  (define-key evil-normal-state-map (kbd "M-g") #'projectile-switch-project)
+  (define-key evil-normal-state-map (kbd "C-o") #'projectile-find-file)
 
-   (define-key evil-normal-state-map (kbd "C-i") #'consult-buffer)
-   (define-key evil-normal-state-map (kbd "C-o") #'projectile-find-file)
-   (define-key evil-normal-state-map (kbd "C-.") #'embark-act)
+  (define-key evil-normal-state-map (kbd "C-l") #'consult-line)
+  (define-key evil-normal-state-map (kbd "C-i") #'consult-buffer) 
 
-   ;; Puni
-   (define-key evil-normal-state-map (kbd "C-p") #'puni-slurp-forward)
-   (define-key evil-normal-state-map (kbd "C-n") #'puni-barf-forward)
+  (define-key evil-normal-state-map (kbd "SPC k") #'avy-goto-line)
+  (define-key evil-insert-state-map (kbd "C-h") #'delete-backward-char)
 
-   (define-key evil-normal-state-map (kbd "s") nil)
-   (define-key evil-normal-state-map (kbd "sd") #'puni-splice)
+  ;; (define-key evil-normal-state-map (kbd "C-j") #'evil-scroll-down)
+  :init
+  (evil-mode 1))
 
-   (define-key evil-insert-state-map (kbd "C-i") #'puni-mark-sexp-at-point) 
-
-   (global-set-key (kbd "C--") 'puni-expand-region)
-
-   ;; For hydra
-   (define-key evil-normal-state-map (kbd "SPC w") #'manage-window-hydra/body)
-
-   ;; For neotree
-   (define-key evil-normal-state-map (kbd "SPC f") #'neotree-toggle)
-   ;; (define-key evil-normal-state-map (kbd "C-j") #'evil-scroll-down)
-   :init
-   (evil-mode 1))
 
 ;; For edit
 (leaf puni
+  :config
+  (global-set-key (kbd "C--") 'puni-expand-region)
+  (define-key evil-normal-state-map (kbd "s") nil) 
+  (define-key evil-normal-state-map (kbd "sd") #'puni-splice)
+  (define-key evil-insert-state-map (kbd "C-i") #'puni-mark-sexp-at-point)
+  (define-key evil-normal-state-map (kbd "C-p") #'puni-slurp-forward)
+  (define-key evil-normal-state-map (kbd "C-n") #'puni-barf-forward)
+
   :init
   (puni-global-mode))
 
@@ -109,13 +109,25 @@
 
 ;; Treesitter
 (leaf treesit-auto
-  :config
+  :custom
+  (treesit-auto-install 'prompt)
+  :init
   (setq treesit-auto-install t)
-  :global-minor-mode global-treesit-auto-mode)
-
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
 
 (leaf treesit
-  :config
+  :init
+  (add-to-list 'auto-mode-alist '("\\.cshtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.ex\\'" . elixir-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.gleam\\'" . gleam-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.rust\\'" . rust-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.typ\\'" . typst-ts-mode)) 
+  (add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-ts-mode))
+
   (setq treesit-font-lock-level 4))
 
 ;; for envrc
@@ -129,7 +141,7 @@
 (leaf org
   :hook
   (org-capture-before-finalize-hook)
-  (org-mode . org-nix-shell-mode)
+  (org-mode . org-nix-shell-mode) 
   :config
   (set-language-environment "Japanese")
   (prefer-coding-system 'utf-8)
@@ -138,12 +150,18 @@
   (setq diary-file-path (format-time-string "diary/%Y/%m-%d.org"))
   (setq memo-file-path (format-time-string "memo/%Y/%m/%d.org"))
 
+  ;; org-calendar
+  (define-key calendar-mode-map (kbd "C-c c") 'org-capture-from-calendar)
+
   ;; org-capture
   (setq org-capture-templates
-   '(("d" "Diary" plain (file diary-file-path)
-      "** 今日やったこと\n\n** 明日以降やりたいこと")
+	'(("d" "Diary" plain (file diary-file-path)
+	   "** 今日やったこと\n\n** 明日以降やりたいこと")
+	  ("m" "Memo" plain (file memo-file-path) "")
 
-     ("m" "Memo" plain (file memo-file-path) "")))
+	 ;;  ("t" "Todo" entry (file+headline "/home/coma/.ghq/github.com/Comamoca/org/todo.org" "INBOX")
+         ;; "* TODO %?\n")
+	  ))
 
   (setq diary-path (concat org-directory "/diary"))
 
@@ -181,8 +199,10 @@
      (clojure . t)
      (hy . t)
      (ruby . t)
-     ))
-  )
+     )))
+
+;; (add-hook 'org-mode-hook (lambda ()
+;; 			   (define-key 'evil-normal-state-map (kbd "M-v") #'org-paste-image)))
 
 (leaf ob-hy)
 
@@ -200,21 +220,36 @@
   (defun org-journal-date-format-func ()
     (insert-file-contents (concat org-directory "/templates/diary.org"))))
 
+
 ;; org-roam
 (leaf org-roam
   :config
-  (setq org-roam-db-location (expand-file-name "~/.emacs.d/org-roam/database.db"))
   (setq org-roam-directory (expand-file-name "roam" org-directory))
+  (setq org-roam-db-location (expand-file-name "~/.emacs.d/org-roam/database.db"))
   (setq org-roam-index-file (expand-file-name "index.org" org-roam-directory))
+  (setq org-roam-directory (expand-file-name "roam" org-directory))
   ;; :init
   (org-roam-db-autosync-mode))
 
+;; Deft
+;; For search roam files.
+(leaf deft
+  :after (org-roam-mode)
+  :config
+  (setq deft-directory (expand-file-name "roam" org-directory))
+  (setq deft-extensions '("txt" "tex" "org")))
+
 (leaf org-roam-ui)
+
+;; org-bullets
+(leaf org-bullets
+  :hook org-mode-hook (org-bullets-mode 1))
 
 ;; org-modern
 (leaf org-modern
   :init
-  (with-eval-after-load 'org (global-org-modern-mode)))
+  ;; (with-eval-after-load 'org (global-org-modern-mode))
+  )
 
 (leaf org-modern-indent)
 
@@ -225,6 +260,8 @@
 (leaf magit
   :config
   (global-set-key (kbd "C-x g") 'magit-status)
+  (define-key magit-mode-map (kbd "/") 'isearch-forward)
+  (define-key magit-mode-map (kbd "C-"))
   (setq transient-default-level 5))
 
 ;; SKK
@@ -237,7 +274,7 @@
   (global-set-key (kbd "<muhenkan>") 'skk-latin-mode)
   (leaf ddskk-posframe :global-minor-mode t))
 
-;; Lisp
+;; Common Lisp
 (leaf slime
   :config
   (defvar inferior-lisp-program "sbcl"))
@@ -245,18 +282,139 @@
 (leaf sly
   :config)
   ;; (defvar inferior-lisp-program "sbcl")
-  
 
 (leaf sly-asdf)
 
-;; LSP
-(leaf eglot
+;; Clojure
+(leaf cider)
+
+(leaf kaocha-runner
+  :after (cider-mode))
+  
+
+;; flycheck
+(leaf flycheck
   :hook
-  ((c++-mode
-    lua-mode
-    gleam-ts-mode
-    nix-ts-mode)
-   . eglot-ensure))
+  (after-init . global-flycheck-mode)
+  ((text-mode-hook markdown-mode-hook gfm-mode-hook org-mode-hook) . flycheck-mode)
+  :custom ((flycheck-display-errors-delay . 0.3)
+           (flycheck-indication-mode . 'left-margin))
+  :config
+  (add-hook 'flycheck-mode-hook #'flycheck-set-indication-mode)
+  :hook
+  (global-flycheck-mode))
+
+(leaf flycheck-pos-tip)
+(leaf flycheck-inline
+  :hook (flycheck-mode-hook . flycheck-inline-mode))
+
+;; for textlint
+(flycheck-define-checker textlint
+  "A linter for prose."
+  :command ("textlint" "--format" "unix" source-inplace)
+  :error-patterns
+  ((warning line-start (file-name) ":" line ":" column ": "
+      (id (one-or-more (not (any " "))))
+      (message (one-or-more not-newline)
+        (zero-or-more "\n" (any " ") (one-or-more not-newline)))
+      line-end))
+  :modes (text-mode markdown-mode gfm-mode org-mode web-mode))
+
+;; Copilot
+(leaf copilot
+  :config
+  (add-to-list 'copilot-major-mode-alist '("enh-ruby" . "ruby"))
+  (add-to-list 'copilot-major-mode-alist '("typescript-ts-mode" . "typescript"))
+
+  ;; keymap
+  (define-key copilot-completion-map (kbd "TAB") #'copilot-accept-completion))
+
+
+;; LSP
+;; (leaf lsp-bridge :require t
+;;   :config
+;;   (setq acm-enable-capf t)
+;;   :init
+;;   (global-lsp-bridge-mode))
+
+
+(leaf lsp-mode :require t
+  :config
+  (define-key evil-normal-state-map (kbd "K") 'lsp-ui-doc-glance)
+  :hook
+  (add-hook 'prog-mode-hook #'lsp-deferred)
+  ;; (add-hook 'prog-mode-hook #'lsp-deferred)
+  )
+
+;; Eglot
+;; (defun node-project-p ()
+;;   (let ((p-root (car (last (project-current)))))
+;;     (file-exists-p (concat p-root "package.json"))))
+
+;; (defun es-server-program (_)
+;;   (message (node-project-p))
+;;   (cond ((node-project-p) '("typescript-language-server" "--stdio"))
+;; 	(t '("deno" "lsp" :initializationOptions (:enable t :lint t)))))
+
+;; (defun my/eglot-capf ()
+;;     (setq-local completion-at-point-functions
+;; 		(list (cape-capf-super
+;; 		       #'eglot-completion-at-point
+;; 		       #'cape-file))))
+
+;; (leaf eglot
+;;   ;; eglot-completion-at-point 
+;;   :config
+;;   (add-to-list 'eglot-server-programs '((js-mode typescript-mode) . es-server-program))
+
+;;   :hook
+;;   (elixir-ts-mode . eglot-ensure)
+;;   (c++-mode . eglot-ensure)
+;;   (lua-ts-mode . eglot-ensure)
+;;   (gleam-ts-mode . eglot-ensure)
+;;   (nix-ts-mode . eglot-ensure)
+;;   (python-ts-mode . eglot-ensure)
+;;   (typescript-ts-mode . eglot-ensure)
+;;   (typst-ts-mode . eglot-ensure)
+;;   (scala-ts-mode . eglot-ensure)
+;;   ;; (eglot-managed-mode-hook . #'my/eglot-capf)
+;;   )
+
+;; (add-hook 'eglot-managed-mode-hook #'my/eglot-capf)
+
+;; LSP Booster
+(defun lsp-booster--advice-json-parse (old-fn &rest args)
+  "Try to parse bytecode instead of json."
+  (or
+   (when (equal (following-char) ?#)
+     (let ((bytecode (read (current-buffer))))
+       (when (byte-code-function-p bytecode)
+         (funcall bytecode))))
+   (apply old-fn args)))
+
+(advice-add (if (progn (require 'json)
+                       (fboundp 'json-parse-buffer))
+                'json-parse-buffer
+              'json-read)
+            :around
+            #'lsp-booster--advice-json-parse)
+
+(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+  "Prepend emacs-lsp-booster command to lsp CMD."
+  (let ((orig-result (funcall old-fn cmd test?)))
+    (if (and (not test?)                             ;; for check lsp-server-present?
+             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+             lsp-use-plists
+             (not (functionp 'json-rpc-connection))  ;; native json-rpc
+             (executable-find "emacs-lsp-booster"))
+        (progn
+          (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+            (setcar orig-result command-from-exec-path))
+          (message "Using emacs-lsp-booster for %s!" orig-result)
+          (cons "emacs-lsp-booster" orig-result))
+      orig-result)))
+
+(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 
 ;; Lua support
 (leaf lua-mode)
@@ -269,9 +427,9 @@
   :init
   (global-corfu-mode))
 
+
 ;; Cursor moation
 (leaf avy)
-
 
 ;; Completin soruce
 (leaf cape
@@ -293,15 +451,21 @@
 
 (leaf all-the-icons
   :init
-  (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
+  (setq-default neo-theme (if (display-graphic-p) 'icons 'arrow)))
 
 ;; Hydra
 (leaf hydra)
 (leaf hydra-posframe
   ;; :require t
   ;; :vc (:url "https://github.com/Ladicle/hydra-posframe")
+
+  :init
+  ;; For hydra
+  (define-key evil-normal-state-map (kbd "SPC w") #'manage-window-hydra/body)
+
   :hook
   (add-hook 'after-init-hook 'hydra-posframe-mode))
+
 (leaf major-mode-hydra)
 
 ;; For Nix
@@ -312,7 +476,6 @@
 
    "Update"
    (("u" nix-flake-update "Update"))))
-    
 
 ;; For manage window
 (pretty-hydra-define manage-window-hydra
@@ -375,7 +538,10 @@
     (evil-define-key 'normal neotree-mode-map (kbd "N") 'neotree-create-node)
     (evil-define-key 'normal neotree-mode-map (kbd "K") 'neotree-create-node)
     (evil-define-key 'normal neotree-mode-map (kbd "D") 'neotree-delete-node)
-    (evil-define-key 'normal neotree-mode-map (kbd "M") 'neotree-rename-node)))
+    (evil-define-key 'normal neotree-mode-map (kbd "M") 'neotree-rename-node))
+  
+  ;; For neotree
+  (define-key evil-normal-state-map (kbd "SPC f") #'neotree-toggle))
   
 
 ;; Translate
@@ -389,11 +555,7 @@
   :init
   (global-wakatime-mode))
 
-;; Typst support
-
-;; (leaf typst-ts-mode
-;;   :vc (:url "https://codeberg.org/meow_king/typst-ts-mode")
-;;   :require t)
+;; Typst
 
 ;; Preview
 (leaf typst-preview
@@ -402,15 +564,62 @@
   :config
   (setq typst-preview-browser "firefox"))
 
+;; Ruby support
+(leaf inf-ruby)
+
+(leaf enh-ruby-mode)
+
 ;; Python support
+(add-hook 'python-ts-mode-hook (lambda ()
+				 (require 'python-mode)))
+
+;; Language supports
+
+;; dotnet
+(leaf dotnet
+  :after csharp-mode)
+
+;; C#
+(leaf csharp-mode)
 
 ;; Nix support
-(leaf nix-mode)
+(leaf nix-mode
+  :hook
+  (nix-ts-mode))
+
+;; Scala suppport
+;; (leaf scala-ts-mode
+;;   :config
+;;   (add-to-list 'auto-mode-alist '("\\.scala\\'" . scala-mode)))
+
+(leaf scala-mode
+  :interpreter ("scala" . scala-mode))
+
+(leaf sbt-mode
+  :commands sbt-start sbt-command
+  :config
+  (substitute-key-definition
+   'minibuffer-complete-word
+   'self-insert-command
+   minibuffer-local-completion-map)
+
+   (setq sbt:program-options '("-Dsbt.supershell=false")))
+
+;; Astro support
+(leaf astro-ts-mode)
+
+;; Elixir support
+(leaf inf-elixir)
+(leaf mix)
+
+(leaf elixir-ts-mode
+  :hook ((elixir-ts-mode . mix-minor-mode)))
+
+;; KDL supports
+(leaf kdl-ts-mode)
 
 ;; Gleam support
-(leaf gleam-ts-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.gleam\\'" . gleam-ts-mode)))
+(leaf gleam-ts-mode :require t)
 
 ;; Markdown suppot
 (leaf markdown-mode
@@ -418,13 +627,17 @@
   (add-to-list 'completion-at-point-functions #'cape-emoji))
 
 ;; Projectile
+(defun update-projectlist ()
+  (interactive)
+  (setq projectile-known-projects
+         (mapcar
+          (lambda (x) (abbreviate-file-name x))
+          (split-string (shell-command-to-string "ghq list --full-path")))))
+
 (leaf projectile 
   :init
   (when (executable-find "ghq")
-   (setq projectile-known-projects
-         (mapcar
-          (lambda (x) (abbreviate-file-name x))
-          (split-string (shell-command-to-string "ghq list --full-path"))))))
+   (update-projectlist)))
 
 ;; Migemo
 (leaf migemo
@@ -453,6 +666,7 @@
 (leaf yasnippet
   :config
   (setq yas-snippet-dirs '("~/emacs.d/snippets/"))
+  (setq yas-trigger-key nil)
   (yas-global-mode 1))
 
 ;; Snippet collections
@@ -460,30 +674,184 @@
 
 ;; Templates
 (leaf yatemplate)
+(leaf auto-insert
+  :config
+  (setq auto-insert-directory "~/.emacs.d/templates/")
+  (setq auto-insert-alist
+      (append '(
+                ((expand-file-name "~/.ghq/github.com/Comamoca/blog/src/blog/.*\\-diary.md$") . "diary.md")
+		) auto-insert-alist))
+  :init
+  (auto-insert 1))
 
 ;; Complation
 (leaf yasnippet-capf) 
 
 ;; HTTP Request
 (leaf request)
+(leaf plz)
 
-;; Gauche
-(defun gauche-mode ()
-  (interactive)
+(autoload 'newsticker-start "newsticker" "Start Newsticker" t)
+(autoload 'newsticker-show-news "newsticker" "Goto Newsticker buffer" t)
 
-  (kill-all-local-variables)
-  (setq mode-name "gauche")
-  (setq major-mode 'gauche-mode) 
+(setq newsticker-url-list
+      '(("Gleam Weekly" "https://gleamweekly.com/atom.xml")
+        ("Zenn Gleam" "https://zenn.dev/topics/gleam/feed")
+	("Gleam Releases" "https://github.com/gleam-lang/gleam/releases.atom")
+	("Zenn Trend" "https://zenn.dev/feed")
+	("Zenn Emacs" "https://zenn.dev/topics/emacs/feed")
+        ("Zenn TS" "https://zenn.dev/topics/typescript/feed")
+        ("Zenn CL" "https://zenn.dev/topics/commonlisp/feed")
+        ("Zenn Deno" "https://zenn.dev/topics/deno/feed")
+        ("Zenn Bun" "https://zenn.dev/topics/bun/feed")
+        ("Zenn Rust" "https://zenn.dev/topics/rust/feed")
+        ("Zenn Vim" "https://zenn.dev/topics/vim/feed")
+        ("Zenn Neovim" "https://zenn.dev/topics/neovim/feed")
+        ("Zenn Scheme" "https://zenn.dev/topics/scheme/feed")
+        ("Zenn Hono" "https://zenn.dev/topics/hono/feed")
+        ("Zenn React" "https://zenn.dev/topics/react/feed")
+        ("Zenn GCP" "https://zenn.dev/topics/googlecloud/feed")
+        ("Zenn AWS" "https://zenn.dev/topics/aws/feed")
+        ("TechFeed" "https://techfeed.io/feeds/categories/all")
+	("Hacker News" "https://hnrss.org/frontpage")
+        ("輪ごむの空き箱" "https://wagomu.me/rss.xml")))
 
-  (modify-coding-system-alist 'process "gosh" '(utf-8 . utf-8))
+;; newsticker keybinds
+(evil-define-key 'normal newsticker-treeview-mode-map (kbd "o") 'newsticker-treeview-browse-url)
+(evil-define-key 'normal newsticker-treeview-mode-map (kbd "q") 'newsticker-treeview-quit)
 
-  (if (executable-find "gosh")
-      (setq scheme-program-mode "gosh -i")
-    (message "gosh is not found"))
+(evil-define-key 'normal newsticker-treeview-list-mode-map (kbd "o") 'newsticker-treeview-browse-url)
+(evil-define-key 'normal newsticker-treeview-list-mode-map (kbd "q") 'newsticker-treeview-quit)
 
-  (run-hooks 'gauche-mode-hook))
+(evil-define-key 'normal newsticker-treeview-mode-map (kbd "j") 'newsticker-treeview-next-feed)
+(evil-define-key 'normal newsticker-treeview-mode-map (kbd "k") 'newsticker-treeview-prev-feed)
+
+(evil-define-key 'normal newsticker-treeview-mode-map (kbd "n") 'newsticker-treeview-next-item)
+(evil-define-key 'normal newsticker-treeview-mode-map (kbd "p") 'newsticker-treeview-prev-item)
+
+(leaf eww
+  :config
+  (evil-define-key 'normal eww-mode-map
+    (kbd "r") 'eww-reload))
+
+(leaf gptel
+  :config
+  (setq
+     ;; gptel-model 'gemini-1.5-flash-8b
+     ;; gptel-backend (gptel-make-gemini "Gemini"
+     ;; 		     :key "AIzaSyAc48YOf5odBCNfHwTBNbO0_Z2efhoT5pQ"
+     ;; 		     :stream t))
+
+  gptel-model 'starcoder2
+  gptel-backend (gptel-make-ollama "Ollama"
+                 :host "localhost:11434"
+                 :stream t
+                 :models '(starcoder2))))
+
+(leaf dash)
+
+(leaf editorconfig
+  :config
+  (editorconfig-mode 1))
+
+(leaf reformatter
+  :config
+  (reformatter-define dprint
+    :program "dprint" :args `("fmt" "--stdin" ,buffer-file-name))
+  (reformatter-define deno
+    :program "deno" :args `("fmt" ,buffer-file-name)))
 
 ;; ================ My extentions ================ 
+
+;; Incriment/Decriment like Vim
+(defun replace-at-point (callback)
+  (interactive) 
+  (let ((word (thing-at-point 'word t))
+	(word-at (bounds-of-thing-at-point 'word)))
+
+    (delete-region (car word-at) (cdr word-at))
+    (insert (funcall callback word))))
+
+(defun incr-point ()
+  (interactive)
+  (replace-at-point (lambda (word)
+		      (number-to-string (+ (string-to-number word) 1)))))
+
+(defun decr-point ()
+  (interactive)
+  (replace-at-point (lambda (word)
+		      (let* ((num (string-to-number word))
+			     (incr-num (- num 1)))
+			(if (> 0 incr-num)
+			    word
+			    (number-to-string incr-num))))))
+
+(defun nyan-region ()
+  "選択範囲をにゃーんで置換する"
+  (interactive)
+  (when (use-region-p)
+    (let* ((beg (region-beginning))
+           (end (region-end))
+	   (len (- end beg)))
+      (delete-region beg end)
+      (cond ((= len 1) (insert "にゃ"))
+	    ((= len 2) (insert "にゃん"))
+	    (t (insert (format "にゃ%sん" (make-string (- len 3) ?ー))))))))
+
+(defun blackening-region ()
+  "選択範囲を█で置換する"
+  (interactive)
+  (when (use-region-p)
+    (let ((beg (region-beginning))
+          (end (region-end)))
+      (delete-region beg end)
+      (insert (make-string (- end beg) ?█)))))
+
+(defun fortune ()
+  (require 'plz)
+
+  (let-alist (plz 'get "https://api.yasunori.dev/awesome/random" :as #'json-read)
+    (format "%s \n『%s』 by %s" .content .title .senpan)))
+
+(defun open-google ()
+  (interactive)
+  (require 'url-util)
+
+  (let* ((query (read-from-minibuffer "query? > "))
+	 (url (concat "https://www.google.com/search?client=firefox-b-d&q=" (url-hexify-string query))))
+  
+    (shell-command (concat "open " "'" url "'"))))
+
+(defun home-manager ()
+  (interactive)
+  (let ((default-directory (expand-file-name "~/.ghq/github.com/Comamoca/dotfiles"))
+	(proc (start-process "home-manager-process"
+			     "*home-manager*"
+			     "home-manager"
+			     "switch"
+			     "--flake"
+			     ".#Home"
+			     "-b"
+			     "backup")))))
+
+    ;; (set-process-sentinel proc
+    ;;                           (lambda (process event)
+    ;;                             (when (string= event "finished\n"))))
+
+
+(defun notify-send (title msg)
+  ;; " -i " notify-icon
+  (let ((cmd (mapconcat #'shell-quote-argument (list "notify-send"
+						     title
+						     msg) " ")))
+    (shell-command-to-string cmd)))
+
+(defun all (pred lst)
+  "Returns t if all elements of the list satisfy the predicate."
+  (catch 'done
+    (dolist (item lst t)
+      (unless (funcall pred item)
+        (throw 'done nil)))))
 
 ;; 起動時にJSONファイルをパースした結果を予め用意しておく
 (setq gitmoji--json-data (let* ((gitmoji-file-path "~/.data/gitmoji.json")
@@ -509,27 +877,26 @@
   gitmoji--codes)
 
 (defun gitmoji-completion ()
-  "Completion source for gitmoji"
-  (let ((bounds (bounds-of-thing-at-point 'word)))
-    (when bounds
-      list (car bounds) (cdr bounds)
-              gitmoji--codes
-              :exclusive 'no)))
+  (when-let ((bounds (bounds-of-thing-at-point 'symbol)))
+    (list (car bounds) (cdr bounds) (setup-gitmoji))))
 
+;; Collect gitmoji when startup
+;; (add-hook 'emacs-startup-hook 'setup-gitmoji)
 ;; Enable at git-commit-mode
 (add-hook 'git-commit-mode-hook (lambda ()
-                                 (setq-local completion-at-point-functions #'gitmoji-completion)))
+				  (setup-gitmoji
+				   (setq-local completion-at-point-functions (list #'gitmoji-completion)))))
 
 ;; Display character count in modeline
 (defun update-buffer-char-count ()
   (interactive)
-  (format " [%d 文字] " (buffer-size)))
+  (format " [%d] " (buffer-size)))
 
 (defun mode-line-time ()
   ;; Update every second
   (setq display-time-interval 1)
   (setq display-time-string-forms
-	'((format "%s:%s:%s" 24-hours minutes seconds)))
+   '((format "%s/%s %s:%s" (string-to-number month) (string-to-number day) 24-hours minutes seconds)))
   (setq display-time-day-and-date t)
   (display-time-mode t))
 
@@ -537,9 +904,9 @@
   (interactive)
   (setq-default mode-line-format
    (append mode-line-format
-	   '((:eval (update-buffer-char-count))
-	     (:eval (mode-line-time))
-	     ))))
+     '((:eval (update-buffer-char-count))
+       (:eval (mode-line-time))))))
+       
 
 ;; For diary
 (setq blog-repo "/home/coma/.ghq/github.com/Comamoca/blog/")
@@ -550,17 +917,17 @@
   (let* ((date (format-time-string "%Y-%m-%d"))
          (file-name (format "%s-diary.md" date))
          (path (concat (expand-file-name "src/blog/" blog-repo) file-name)))
-    (projectile-switch-project-by-name "blog")
+    ;; (projectile-switch-project-by-name "blog")
     (find-file path)))
 
 (defun new-blog-article ()
   "Open latest diary. This function call in `src/blog/` directory at blog repository."
   (interactive)
   (let* ((date (format-time-string "%Y-%m-%d"))
-	 (title (read-string "title > "))
+         (title (read-string "title > "))
          (file-name (format "%s-%s.md" date title))
          (path (concat (expand-file-name "src/blog/" blog-repo) file-name)))
-    (projectile-switch-project-by-name "blog")
+    ;; (projectile-switch-project-by-name "blog")
     (find-file path)))
 
 (defun consult-diary ()
@@ -569,6 +936,17 @@
          (diaries (sort-by-date (cl-remove-if-not (lambda (str) (string-match-p "-diary.md" str))
                                  (directory-files diary-dir))))
          (diary (consult--read diaries :sort nil)))
+
+    (find-file (expand-file-name diary diary-dir))))
+
+(defun consult-blog ()
+  (interactive)
+  (let* ((diary-dir (expand-file-name "src/blog" blog-repo))
+         (diaries (sort-by-date (cl-remove-if-not (lambda (str)
+                                                   (or (string-match "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}-" str)
+                                                    (string-match-p "-diary.md" str
+                                                                              (directory-files diary-dir)
+                                                      (diary (consult--read diaries :sort nil)))))))))
 
     (find-file (expand-file-name diary diary-dir))))
 
@@ -582,17 +960,115 @@
                        (date-b (extract-date b)))
                   (string> date-a date-b)))))
 
-(defun org-screenshot ()
+(defun org-paste-image ()
   (interactive)
   (setq filename (concat
-		  (expand-file-name (format-time-string "%Y-%m-%d-%H%M%S")
-				    "~/.ghq/github.com/Comamoca/org/imgs") ".png"))
-  ;; (call-process "wl-paste -t image/png" nil nil nil filename)
+                  (expand-file-name (format-time-string "%Y-%m-%d-%H%M%S")
+                   "~/.ghq/github.com/Comamoca/org/imgs") ".png"))
   (shell-command (concat  "wl-paste -t image/png > " filename))
   (insert (concat "[[" filename "]]"))
   (org-display-inline-images))
 
-;; ================ My configuratons ================ 
+(defun blog-paste-image ()
+  (interactive)
+  (setq filename (concat
+                  (expand-file-name (format-time-string "%Y-%m-%d-%H%M%S")
+                   "~/.ghq/github.com/Comamoca/blog/src/images") ".png"))
+  (shell-command (concat  "wl-paste -t image/png > " filename))
+  (insert (concat "![](" filename ")"))
+  (org-display-inline-images))
+
+
+;; Gauche
+(defun gauche-mode ()
+  (interactive)
+
+  (kill-all-local-variables)
+  (setq mode-name "gauche")
+  (setq major-mode 'gauche-mode) 
+
+  (modify-coding-system-alist 'process "gosh" '(utf-8 . utf-8))
+
+  (if (executable-find "gosh")
+      (setq scheme-program-mode "gosh -i")
+    (message "gosh is not found"))
+
+  (run-hooks 'gauche-mode-hook))
+
+;; consult for org-roam
+(defun consult-roam ()
+  (interactive)
+  (let* ((node-items (mapcar (lambda (node)
+			       (cons (org-roam-node-title node) node)) (org-roam-node-list)))
+	 (select-node-title (consult--read
+			     (mapcar #'car node-items)))
+	 (select-node (cdr (assoc select-node-title node-items))))
+
+    (find-file (org-roam-node-file select-node))))
+
+;; Search
+(leaf rg
+  :require t)
+
+(leaf open-junk-file
+  :bind (("C-x j" . open-junk-file))
+  :config
+  (setq open-junk-file-format "/tmp/junk/%Y_%m_%d_%H%M%S."))
+
+
+;; nano-tools
+;; (leaf nano-theme)
+;; (leaf nano-popup)
+
+;; (leaf nano-box
+;;   :init
+;;   (nano-box))
+
+;; (leaf nano-theme
+;;   :preface
+;;   :config
+;;   (load-theme 'nano-dark))
+
+;; (leaf nano-modeline
+;;   :config
+;;   (add-hook 'prog-mode-hook            #'nano-modeline-prog-mode)
+;;   (add-hook 'text-mode-hook            #'nano-modeline-text-mode)
+;;   (add-hook 'org-mode-hook             #'nano-modeline-org-mode)
+;;   (add-hook 'pdf-view-mode-hook        #'nano-modeline-pdf-mode)
+;;   (add-hook 'mu4e-headers-mode-hook    #'nano-modeline-mu4e-headers-mode)
+;;   (add-hook 'mu4e-view-mode-hook       #'nano-modeline-mu4e-message-mode)
+;;   (add-hook 'elfeed-show-mode-hook     #'nano-modeline-elfeed-entry-mode)
+;;   (add-hook 'elfeed-search-mode-hook   #'nano-modeline-elfeed-search-mode)
+;;   (add-hook 'term-mode-hook            #'nano-modeline-term-mode)
+;;   (add-hook 'xwidget-webkit-mode-hook  #'nano-modeline-xwidget-mode)
+;;   (add-hook 'messages-buffer-mode-hook #'nano-modeline-message-mode)
+;;   (add-hook 'org-capture-mode-hook     #'nano-modeline-org-capture-mode)
+;;   (add-hook 'org-agenda-mode-hook      #'nano-modeline-org-agenda-mode)
+;; )
+
+;; (setq-default fringes-outside-margins t)
+;; (setq window-margins nil)
+
+;; (defun my/display-buffer-box (window)
+;;   (with-current-buffer (window-buffer window)
+;;     (nano-box-on)))
+
+;; (setq display-buffer-alist '(((derived-mode . (prog-mode))
+;; 			      display-buffer-reuse-window
+;; 			      display-buffer-same-window
+;; 			      (body-function . my/display-buffer-box))))
+
+;; ================ My configuratons ================
+
+(setq create-lockfiles nil)
+
+;; Key mapping
+(define-key evil-normal-state-map (kbd "C-a") 'incr-point)
+(define-key evil-normal-state-map (kbd "C-x") 'decr-point)
+(define-key global-map (kbd "C-x s") 'blackening-region)
+
+;; Enable debug
+;; (setq debug-on-error t)
 
 ;; Custom modeline
 (mode-line-format-update)
@@ -601,8 +1077,8 @@
 
 ;; When org-mode
 (add-hook 'org-mode
-	  (lambda ()
-	    (local-set-key evil-insert-state-map (kbd "C-h") #'org-insert-heading)))
+    (lambda ()
+      (local-set-key evil-insert-state-map (kbd "C-h") #'org-insert-heading)))
 
 ;; Byte compile
 (leaf *byte-compile
@@ -689,14 +1165,21 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("94bed81ca0be98f58d2cfa2676221c492c8fd5f76b40abd9d73ac00c0d0c9711"
+     "de8f2d8b64627535871495d6fe65b7d0070c4a1eb51550ce258cd240ff9394b0"
+     "1781e8bccbd8869472c09b744899ff4174d23e4f7517b8a6c721100288311fa5"
+     default))
  '(default-input-method "japanese" nil nil "Customized with leaf in `skk' block at `/home/coma/.emacs.d/init.el'")
- '(package-selected-packages nil)
+ '(package-selected-packages '(typst-mode typst-ts-mode))
  '(package-vc-selected-packages
-   '((showkey :url "https://github.com/emacsmirror/showkey")
+   '((typst-mode :url "https://git.sr.ht/~meow_king/typst-mode")
+     (typst-ts-mode :url "https://git.sr.ht/~meow_king/typst-ts-mode")
+     (showkey :url "https://github.com/emacsmirror/showkey")
      (hydra-posframe :url "https://github.com/Ladicle/hydra-posframe")
      (typst-preview :url
-        "https://github.com/havarddj/typst-preview.el")
-     (typst-ts-mode :url "https://git.sr.ht/~meow_king/typst-ts-mode"))))
+        "https://github.com/havarddj/typst-preview.el")))
+ '(skk-jisyo-edit-user-accepts-editing t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -708,3 +1191,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right. 
 (put 'downcase-region 'disabled nil)
+(put 'erase-buffer 'disabled nil)

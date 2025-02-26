@@ -17,19 +17,33 @@ let
 
   wallpaper = "${wallpapers}/misc/cat-sound.png";
 
-  emacs' = pkgs.emacs-pgtk.overrideAttrs (old: {
-    # configureFlags = old.configureFlags or [] ++ [ "--with-xwidgets" ];
   gitmoji = pkgs.fetchurl {
       url = "https://gitmoji.dev/api/gitmojis";
       hash = "sha256-GOSuBuc3/S1vsMvQLF49Shd/3SN4w1Rpzhwn63tMe2Q=";
   };
 
+  # pgtkでビルドするとエラーこそ出ないものの有効にならない
+  # Gitでビルドするとwebkitがない旨のエラーが出る
+  # emacs' = pkgs.emacs-pgtk.overrideAttrs (old: {
+  emacs' = pkgs.emacs-git.overrideAttrs (old: {
+    # configureFlags = old.configureFlags or [] ++ [ "--with-cairo" "--with-xwidgets" "--with-x-toolkit=gtk3" ];
     withXwidgets = true;
     withGTK3 = true;
-    buildInputs = (old.buildInputs or []) ++ [
-      pkgs.webkitgtk_6_0
-    ];
+    # buildInputs = (old.buildInputs or []) ++ [
+    #   pkgs.webkitgtk_4_0
+    # ];
   });
+
+  emacs = (pkgs.emacsPackagesFor pkgs.emacs-git).emacsWithPackages (
+    epkgs: (import ./emacs.nix { inherit pkgs epkgs nurpkgs; }).epkgs
+  );
+
+  sbcl' = pkgs.sbcl.withPackages (
+    ps: with ps; [
+      slite
+      slynk
+    ]
+  );
 in
 rec {
   nixpkgs.config = {
@@ -46,12 +60,14 @@ rec {
     # # It's also possible to use a ssh key, but only when it has no password:
     # # age.sshKeyPaths = [ "/home/user/path-to-ssh-key" ];
     defaultSopsFile = ./secrets.yaml;
-  }; 
+  };
 
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "coma";
   home.homeDirectory = "/home/coma";
+
+  # systemd.user.services.mbsync.Unit.After = [ "sops-nix.service" ];
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
@@ -69,31 +85,39 @@ rec {
     # # "Hello, world!" when run.
     # pkgs.hello
 
+    immersed
+
     # home-manager
+
+    comma
 
     # Knowledge tool for terminal
     nb
     w3m
 
-    # theme 
-    catppuccin
+    # theme
+    # catppuccin
 
     # Nix
     nixVersions.nix_2_25
 
-    # ========== NIXGL ========== 
+    # ========== NIXGL ==========
     # nixgl.nixGLIntel
 
     # ========== Audio ==========
     sonic-pi
     qpwgraph
 
-    # ========== TERMINAL ========== 
+    # ========== TERMINAL ==========
     wezterm
     alacritty
     kitty
+    # ghostty
 
-    # ========== EDITOR & TOOLS ==========  
+    # ========== EDITOR & TOOLS ==========
+    # For Emacs
+    emacs-lsp-booster
+
     cmigemo
     wakatime-cli
 
@@ -102,24 +126,41 @@ rec {
 
     # TODO: change to vim-overlay
     vim-full
-    emacs30-pgtk
+    emacs
     felix
     micro
     neovim
-    jetbrains.idea-community
+
+    # NOTE: 2024/12/31 アプデしたらビルドできなくなった
+    # jetbrains.idea-community
 
     # visual-studio-code-bin
-    # inputs.lem-editor.packages.x86_64-linux.lem-ncurses
+    # inputs.lem.packages.x86_64-linux.lem-ncurses
+    # inputs.lem.packages.x86_64-linux.lem-sdl2
 
-    metals
     meson
-    leiningen
 
     tig
 
     just
 
-    # ========== OTHER TOOLS ==========  
+    # ========== SOCIAL NET ==========
+    nurpkgs.bsky
+
+    # ========== OTHER TOOLS ==========
+    polybarFull
+    devenv
+
+    libnotify
+
+    zf
+    jo
+
+    signal-desktop
+
+    # Show key stroke
+    showmethekey
+
     nodePackages."@antfu/ni"
     nix-output-monitor
 
@@ -140,7 +181,6 @@ rec {
     ghq
     # cava
     lsd
-    bat
     jnv
     jq
     dasel
@@ -155,7 +195,6 @@ rec {
     slack
     teams-for-linux
     discord
-    beeper
 
     # Teams for linux is depends to Electron-29 but EOL.
     # teams-for-linux
@@ -168,60 +207,69 @@ rec {
     k6
 
     # esp32
-    easyeffects
-    espup
-    espflash
-    esptool
-    cargo-espmonitor
-    mkspiffs-presets.esp-idf
+    # easyeffects
+    # espup
+    # espflash
+    # esptool
+    # cargo-espmonitor
+    # mkspiffs-presets.esp-idf
 
-    # ========== SHELL ========== 
+    # ========== SHELL ==========
     # Because duplicate binary name to ni.
     # nushell
 
-    # ========== BROWSER ========== 
+    # ========== BROWSER ==========
     # firefox
     # google-chrome
 
-    # ========== SECURITY TOOLS ========== 
+    # ========== SECURITY TOOLS ==========
     keybase
     lssecret
 
-    gnupg
+    # gnupg
     # pinentry-curses
+    # pinentry-gnome3
+    pinentry-qt
+    # pinentry-rofi
+    # pinentry-gtk2
     # (pkgs.lib.hiPrio pinentry-emacs)
     # (pkgs.lib.hiPrio pkgs.pinentry-gnome3)
 
-    # ========== LANGUAGE SERVER ========== 
-    lua-language-server
-    vim-language-server
-    typescript-language-server
-    efm-langserver
-    marksman
-    tailwindcss-language-server
+    # ========== LANGUAGE SERVER ==========
+    # lua-language-server
+    # vim-language-server
+    # typescript-language-server
+    # efm-langserver
+    # marksman
+    # tailwindcss-language-server
 
-    # ========== RUNTIME & COMPILER ==========  
+    # ========== RUNTIME & COMPILER ========== 
+    vlang
+
+    clojure
     babashka
+    # clasp-common-lisp
 
     # ref: https://cons.io/
-    gerbil
+    # NOTE: 2024/12/30 アプデしたらビルドできなくなった
+    # gerbil
     # gambit
 
-    erlang_27
-    rebar3
+    # erlang_27
+    # rebar3
 
     deno
     nodejs_22
     bun
 
-    pnpm
+    # pnpm
 
-    gleam
+    # gleam
 
     # Common Lisp
-    sbcl
-    roswell
-    sbclPackages.qlot-cli
+    # sbcl'
+    # roswell
+    # sbclPackages.qlot-cli
 
     ruby
 
@@ -229,19 +277,19 @@ rec {
 
     # swift ==> Flake
 
-    # ========== FONTS ========== 
+    # ========== FONTS ==========
     noto-fonts
     noto-fonts-cjk-sans
     # ttf-udev-gothic
 
-    # ========== Writing ========== 
-    textlint
-    textlint-rule-preset-ja-technical-writing
+    # ========== Writing ==========
+    # textlint
+    # textlint-rule-preset-ja-technical-writing
 
-    # ========== UTILS ========== 
+    # ========== UTILS ==========
     nix-prefetch-scripts
 
-    # ========== FROM PKGLIST ========== 
+    # ========== FROM PKGLIST ==========
     acpi
     acpid
     act
@@ -258,15 +306,14 @@ rec {
     avahi
 
     # b43-fwcutter
-    b43FirmwareCutter
-
-    babashka
+    b43FirmwareCutter 
 
     # base
     # base-devel
 
     bison
-    bitwarden-cli
+    # NOTE 2/13 ビルドできなくなった
+    # bitwarden-cli
 
     bluez
     # bluez-utils
@@ -290,7 +337,6 @@ rec {
     # cronie
 
     cryptsetup
-    deno
 
     # device-mapper
 
@@ -314,9 +360,7 @@ rec {
     # esptool
 
     exfatprogs
-    f2fs-tools
-
-    fastfetch
+    f2fs-tools 
 
     # fcitx5
     # fcitx5-configtool
@@ -334,18 +378,18 @@ rec {
     fzf
     gammastep
     # gcc-fortran
-    gfortran9
+    # gfortran9
 
     gd
     github-cli
     glava
 
-    glibcLocales
+    # glibcLocales
 
     glow
     gnome-epub-thumbnailer
     gnome-keyring
-    go
+    # go
     gomi
 
     # greetd
@@ -387,22 +431,20 @@ rec {
     # liboggz
     # libsixel
     # libva-mesa-driver
-    # libva-vdpau-driver
-
-    lightdm
+    # libva-vdpau-driver 
 
     # linux61
 
-    logrotate
+    # logrotate
 
-    luarocks
+    # luarocks
     lvm2
-    ly
-    gnumake
+    # ly
+    # gnumake
     man-db
     man-pages
 
-    mdadm
+    # mdadm
     mediainfo
 
     # memtest86plus
@@ -415,7 +457,9 @@ rec {
     # mkinitcpio-openswap
 
     # nfs-utils
-    mplayer
+
+    # NOTE: 2024/12/30 アプデしたらビルドできなくなった
+    # mplayer
 
     # multilib-devel
     # ncurses5-compat-libs
@@ -427,19 +471,19 @@ rec {
 
     # ntfs-3g
 
-    oh-my-zsh
+    # oh-my-zsh
 
     # openssh-askpass
 
-    opusfile
-    os-prober
+    # opusfile
+    # os-prober
     p7zip
 
     pass
     patch
     pavucontrol
 
-    perl
+    # perl
     playerctl
 
     polkit_gnome
@@ -470,7 +514,7 @@ rec {
     ranger
     # rcm
     re2c
-    redis
+    # redis
     reiserfsprogs
     ripgrep
 
@@ -481,14 +525,17 @@ rec {
 
     rsync
 
-    samurai
+    # samurai
     sd
+
+    # NOTE: 2024/12/31 アプデしたらビルドできなくなった
     shotcut
+
     siege
 
     slurp
-    sof-firmware
-    spectre-meltdown-checker
+    # sof-firmware
+    # spectre-meltdown-checker
 
     spotify
     # spotify-tui
@@ -502,13 +549,16 @@ rec {
 
     # swaycwd
     # swaylock-effects
-    # swaync
+
+    swaybg
+    swaynotificationcenter
+    swaylock
 
     # sworkstyle
 
-    swww
-    sysfsutils
-    systemd
+    # swww
+    # sysfsutils
+    # systemd
 
     # taglib1
     # teams-for-linux
@@ -520,7 +570,8 @@ rec {
     # timeshift-autosnap-manjaro
 
     usbutils
-    uucp
+    # NOTE: 2024/12/30 アプデしたらビルドできなくなった
+    # uucp
 
     # v4l2loopback-dkms
 
@@ -530,9 +581,9 @@ rec {
     # vulkan-intel
     # vulkan-radeon
 
-    way-displays
-    waypaper
-    wdisplays
+    # way-displays
+    # waypaper
+    # wdisplays
 
     wev
     wf-recorder
@@ -543,9 +594,14 @@ rec {
     wlay
     wlsunset
     wofi
+    fuzzel
     wpa_supplicant
 
-    # ========== OTHER TOOLS ========== 
+    # ========== OTHER TOOLS ==========
+    # For org-roam
+    sqlite
+    graphviz
+
     # For Emacs markdown-mode
     multimarkdown
     wakatime
@@ -554,15 +610,17 @@ rec {
     # hyprlock
     hyperfine
 
-    hyprpaper
-    hyprshade
+    # hyprpaper
+    # hyprshade
 
     # wqy-microhei
     # wxwidgets-gtk3
     # xclip
 
-    xdg-desktop-portal-wlr
+    # xdg-desktop-portal-wlr 
     xdg-user-dirs
+
+    xremap
 
     # xf86-video-amdgpu
     # xf86-video-ati
@@ -571,12 +629,12 @@ rec {
     # xfsprogs
 
     # xorg-xwayland
-    xsv
+    # xsv
     yq
 
     # zeit
-    zeitgeist
-    # ================================== 
+    # zeitgeist
+    # ==================================
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
@@ -604,15 +662,28 @@ rec {
   # ".gradle/gradle.properties".text = ''
   #   org.gradle.console=verbose
   #   org.gradle.daemon.idletimeout=3600000
-  # '';
+  # ''; 
+
   home.file =
     let
       symlink = config.lib.file.mkOutOfStoreSymlink;
       dotfiles = /${home.homeDirectory}/.ghq/github.com/Comamoca/dotfiles;
       xdgConfigHome = /${home.homeDirectory}/.config;
       homeBin = /${home.homeDirectory}/.bin;
+      base = ".cache/dpp/_generated";
     in
     {
+      "${base}/nvim-treesitter" =
+        let
+          ts = pkgs.vimPlugins.nvim-treesitter;
+        in {
+          source = pkgs.symlinkJoin {
+            name = "ts-all";
+            paths = [
+              ts
+            ] ++ ts.withAllGrammars.dependencies;
+          };
+        };
       # scripts
       ".bin/scripts/ime" = {
         source = (symlink /${dotfiles}/bin/scripts/ime);
@@ -637,14 +708,16 @@ rec {
       #   source = (symlink /${dotfiles}/vim);
       #   recursive = true;
       # };
-      # # ========== SKK ========== 
+      # # ========== SKK ==========
       # skk-dicts
       ".skk-dict/SKK-JISYO.L".source = "${pkgs.skkDictionaries.l}/share/skk/SKK-JISYO.L";
-      ".skk-dict/SKK-JISYO.im@sparql.all.utf8".source = "${nurpkgs.skk-jisyo-imasparql}/share/SKK-JISYO.im@sparql.all.utf8";
+      ".skk-dict/SKK-JISYO.im@sparql.all.utf8".source =
+        "${nurpkgs.skk-jisyo-imasparql}/share/SKK-JISYO.im@sparql.all.utf8";
 
       ".migemo/utf-8/migemo-dict".source = "${pkgs.cmigemo}/share/migemo/utf-8";
 
-      ".spell-dict/programming-english-dict".source = "${nurpkgs.programming-english}/share/dict/programming-english-dict";
+      ".spell-dict/programming-english-dict".source =
+        "${nurpkgs.programming-english}/share/dict/programming-english-dict";
       ".spell-dict/dict.txt".source = ./word_dicts/dict.txt;
 
       # TODO: 後で消す
@@ -710,7 +783,7 @@ rec {
       #     name = "kitty_themes";
       #     kitty_themes = "${inputs.catppuccin-kitty}/themes";
       #     src = /${dotfiles}/config/kitty/kitty.conf;
-      #   }; 
+      #   };
       # };
 
       ".config/lazygit" = {
@@ -733,6 +806,11 @@ rec {
         recursive = true;
       };
 
+      ".config/niri" = {
+        source = (symlink /${dotfiles}/config/niri);
+        recursive = true;
+      };
+
       ".config/waybar" = {
         source = (symlink /${dotfiles}/config/waybar);
         recursive = true;
@@ -749,10 +827,10 @@ rec {
         recursive = true;
       };
 
-      ".config/bat" = {
-        source = (symlink /${dotfiles}/config/bat);
-        recursive = true;
-      };
+      # ".config/bat" = {
+      #   source = (symlink /${dotfiles}/config/bat);
+      #   recursive = true;
+      # };
 
       ".config/swaync" = {
         source = (symlink /${dotfiles}/config/swaync);
@@ -780,6 +858,7 @@ rec {
       };
       ".data/gitmoji.json".source = (symlink gitmoji);
       ".skk".source = (symlink /${dotfiles}/ddskk-config.el);
+      "Pictures/wallpapers".source = (symlink wallpapers); 
     };
 
   # Home Manager can also manage your environment variables through
@@ -801,6 +880,7 @@ rec {
   home.sessionVariables = {
     # EDITOR = "nvim";
     XDG_CONFIG_HOME = "${home.homeDirectory}/.config";
+    # SECRET = sops.secrets.spotify.spotify_secret;
   };
 
   # programs.neovim.package = pkgs.neovim;
@@ -816,16 +896,17 @@ rec {
   programs.home-manager.enable = true;
 
   # Hyprland
-  wayland.windowManager.hyprland.enable = true;
-  wayland.windowManager.hyprland.settings = import ./hyprland.nix {
-    inherit
-      pkgs
-      wallpaper
-      home
-      config
-      ;
-  };
-  wayland.windowManager.hyprland.catppuccin.enable = true;
+  # wayland.windowManager.hyprland.enable = true;
+  # wayland.windowManager.hyprland.settings = import ./hyprland.nix {
+  #   inherit
+  #     pkgs
+  #     wallpaper
+  #     home
+  #     config
+  #     ;
+  # };
+
+
 
   programs = {
     direnv = {
@@ -839,7 +920,6 @@ rec {
 
   programs.foot = {
     enable = true;
-    catppuccin.enable = true;
     settings = {
       main = {
         term = "xterm-256color";
@@ -849,24 +929,37 @@ rec {
     };
   };
 
+  programs.bat = {
+    enable = true;
+    config = {
+      theme = "Catppuccin Mocha";
+    };
+  };
+
   services.emacs = {
     enable = true;
-    # package = pkgs.emacsGit;
-    package = (
-      with pkgs;
-      # ((emacsPackagesFor emacs').emacsWithPackages (
-      ((emacsPackagesFor emacsGit).emacsWithPackages (
-        epkgs: with epkgs; [
-          vterm
-        ]
-      ))
-    );
+    # package = pkgs.emacs-git;
+    package = emacs;
+    # package = (
+    #   with pkgs;
+    #   # ((emacsPackagesFor emacs').emacsWithPackages (
+    #   ((emacsPackagesFor emacs-git).emacsWithPackages (
+    #     epkgs: (import ./emacs.nix { inherit pkgs epkgs; }).epkgs
+    #   ))
+    # );
     # extraOptions = [ "--with-xwidgets" ];
-  }; 
+  };
+
+  catppuccin = {
+    hyprland.enable = true;
+    foot.enable = true;
+    bat.enable = true;
+    sway.enable = true;
+  };
 
   # services.gpg-agent = {
   #   enable = true;
   # };
 
-  # programs.lem-editor.enable = true 
+  # programs.lem-editor.enable = true
 }

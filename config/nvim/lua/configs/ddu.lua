@@ -30,7 +30,7 @@ ddu_custom_patch_global({
     },
     file_external = {
       matchers = { "matcher_kensaku" },
-    }
+    },
   },
   sourceParams = {
     file_external = {

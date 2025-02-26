@@ -225,7 +225,8 @@ call skkeleton#azik#add_table("jis")
 call skkeleton#config(#{
 \   globalDictionaries: [[ "~/.skk-dict/SKK-JISYO.L", "utf-8" ]],
 \   databasePath: "~/.skk/database",
-\   kanaTable: "azik"
+\   kanaTable: "azik",
+\   eggLikeNewline: v:true
 \   })
 
 
