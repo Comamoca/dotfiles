@@ -786,8 +786,7 @@
   :init
   (good-scroll-mode 1))
 
-(leaf sublimity
-  )
+(leaf sublimity)
 
 (leaf iscroll)
 
