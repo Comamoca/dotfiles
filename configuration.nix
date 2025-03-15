@@ -284,7 +284,7 @@ in
   };
 
   # services.flatpak.enable = true;
-  xdg.portal.enable = pkgs.lib.mkDefault true;
+  # xdg.portal.enable = pkgs.lib.mkDefault true;
   xdg.portal.wlr.enable = true;
 
   # List packages installed in system profile. To search, run:
@@ -302,7 +302,7 @@ in
     # gnupg
     light
 
-    # waybar 
+    # waybar
 
     # android-studio
 
