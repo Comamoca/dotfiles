@@ -104,11 +104,11 @@ export class Config extends BaseConfig {
       if (toml.hooks_file) {
         hooksFiles.push(toml.hooks_file);
       }
-    }); 
-
-    localPlugins.forEach((plugin: Plugin) => {
-      recordPlugins[plugin.name] = plugin;
     });
+
+    // localPlugins.forEach((plugin: Plugin) => {
+    //   recordPlugins[plugin.name] = plugin;
+    // });
 
     const lazyResult = await args.dpp.extAction(
       args.denops,
@@ -121,7 +121,7 @@ export class Config extends BaseConfig {
       },
     ) as LazyMakeStateResult;
 
-    // console.log(Object.values(recordPlugins)); 
+    // console.log(Object.values(recordPlugins));
 
     return {
       plugins: lazyResult.plugins,
