@@ -243,7 +243,7 @@ rec {
     # marksman
     # tailwindcss-language-server
 
-    # ========== RUNTIME & COMPILER ========== 
+    # ========== RUNTIME & COMPILER ==========
     vlang
 
     clojure
@@ -306,7 +306,7 @@ rec {
     avahi
 
     # b43-fwcutter
-    b43FirmwareCutter 
+    b43FirmwareCutter
 
     # base
     # base-devel
@@ -360,7 +360,7 @@ rec {
     # esptool
 
     exfatprogs
-    f2fs-tools 
+    f2fs-tools
 
     # fcitx5
     # fcitx5-configtool
@@ -431,7 +431,7 @@ rec {
     # liboggz
     # libsixel
     # libva-mesa-driver
-    # libva-vdpau-driver 
+    # libva-vdpau-driver
 
     # linux61
 
@@ -617,7 +617,7 @@ rec {
     # wxwidgets-gtk3
     # xclip
 
-    # xdg-desktop-portal-wlr 
+    # xdg-desktop-portal-wlr
     xdg-user-dirs
 
     xremap
@@ -662,7 +662,7 @@ rec {
   # ".gradle/gradle.properties".text = ''
   #   org.gradle.console=verbose
   #   org.gradle.daemon.idletimeout=3600000
-  # ''; 
+  # '';
 
   home.file =
     let
@@ -676,7 +676,8 @@ rec {
       "${base}/nvim-treesitter" =
         let
           ts = pkgs.vimPlugins.nvim-treesitter;
-        in {
+        in
+        {
           source = pkgs.symlinkJoin {
             name = "ts-all";
             paths = [
@@ -843,6 +844,8 @@ rec {
         recursive = true;
       };
 
+      ".config/xremap/config.yaml".source = (symlink xremap-config.xremap-config-yaml);
+
       ".czrc".source = (symlink /${dotfiles}/czrc);
       ".nirc".source = (symlink /${dotfiles}/nirc);
       ".zshrc".source = (symlink /${dotfiles}/zshrc);
@@ -856,9 +859,10 @@ rec {
         source = (symlink /${dotfiles}/emacs.d);
         recursive = true;
       };
+      # ".local/share/tree-sitter".source = (symlink "${pkgs.tree-sitter-grammars}/lib");
       ".data/gitmoji.json".source = (symlink gitmoji);
       ".skk".source = (symlink /${dotfiles}/ddskk-config.el);
-      "Pictures/wallpapers".source = (symlink wallpapers); 
+      "Pictures/wallpapers".source = (symlink wallpapers);
     };
 
   # Home Manager can also manage your environment variables through
@@ -905,8 +909,6 @@ rec {
   #     config
   #     ;
   # };
-
-
 
   programs = {
     direnv = {
