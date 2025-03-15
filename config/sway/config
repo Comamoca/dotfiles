@@ -33,7 +33,8 @@
 # Mod4 -> Super
 # Mod1 -> Alt
 
-set $mod Mod1
+set $mod Mod4
+set $alt Mod1
 
 font pango:monospace 8
 
@@ -79,7 +80,8 @@ set $right semicolon
 
 # start a terminal
 # bindsym $mod+Return exec xfce4-terminal
-bindsym $mod+Return exec wezterm
+# bindsym $mod+Return exec wezterm
+bindsym $mod+Return exec kitty
 
 # kill focused window
 bindsym $mod+q kill
@@ -87,7 +89,7 @@ bindsym $mod+q kill
 # start dmenu (a program launcher)
 # bindsym $mod+d exec --no-startup-id dmenu_run
 bindsym $mod+d exec --no-startup-id "rofi -show combi"
-bindsym ctrl+space exec --no-startup-id "rofi -show drun"
+bindsym $mod+space exec --no-startup-id "rofi -show drun"
 # A more modern dmenu replacement is rofi:
 # bindsym $mod+d exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
@@ -137,18 +139,21 @@ bindsym $mod+ctrl+h split h
 bindsym $mod+ctrl+v split v
 
 # enter fullscreen mode for the focused container
-bindsym $mod+f fullscreen toggle
+# bindsym $mod+f fullscreen toggle
+# bindsym $mod+f floating enable, move scratchpad, scratchpad show
+# bindsym $mod+f floating toggle, move scratchpad, scratchpad show
+bindsym $mod+f scratchpad show
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
+# bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
+# bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
-bindsym $mod+Shift+space floating toggle
+# bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
+# bindsym $mod+space focus mode_toggle
 
 # focus the parent container
 bindsym $mod+a focus parent
@@ -175,6 +180,11 @@ set $ws7 "7"
 set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
+
+bindsym $mod+p workspace next
+bindsym $mod+n workspace prev
+bindsym $mod+Shift+p move container to workspace next $ws1
+bindsym $mod+Shift+n move container to workspace prev $ws2
 
 # switch to workspace
 bindsym $mod+1 workspace number $ws1
@@ -259,11 +269,12 @@ bindsym $mod+r mode "resize"
 ########################################################################
 #exec i3-config-wizard
 
-bindsym $mod+Shift+s exec swaymsg -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' | grim -g - - | wl-copy
+bindsym Print exec swaymsg -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' | grim -g - - | wl-copy
 
-bindsym Print exec slurp | grim -g - - | wl-copy
-bindsym $mod+p exec grim -g "$(slurp -d)" - | wl-copy
+bindsym $mod+Shift+s exec slurp | grim -g - - | wl-copy
+# bindsym $mod+Shift+s exec grim -g "$(slurp -d)" - | wl-copy
 bindsym $mod+b exec firefox
+bindsym $alt+e exec ime.sh float
 
 exec_always --no-startup-id picom
 exec --no-startup-id fcitx5
@@ -285,13 +296,33 @@ input * {
     xkb_options ctrl:nocaps
 }
 
-output * bg $HOME/Pictures/wallpapelar/benjamin-hersh-_69DlG4rMm4-unsplash.jpg fill
+# output * bg $HOME/Pictures/wallpapelar/benjamin-hersh-_69DlG4rMm4-unsplash.jpg fill
 
 for_window [app_id="firefox" title="^ピクチャーインピクチャー$"] \
     floating enable, move position 877 450, sticky enable
 
-for_window [app_id="" title="^ピクチャー イン ピクチャー$"] \
+for_window [title="ピクチャー イン ピクチャー"] \
     floating enable, move position 877 450, sticky enable
+
+# for_window [title="動画再生 - Google Chrome"] {
+#     floating enable
+#     move position 877 450
+#     sticky enable
+#     default_border none
+#     default_floating_border none
+#     titlebar_padding 1
+#     titlebar_border_thickness 0
+# }
+
+for_window [app_id="" title="^Floaterm$"] {
+    floating enable
+    move position 877 450
+    sticky enable
+}
+
+# for_window [app_id="" title="^ピクチャー イン ピクチャー$"] \
+#     floating enable, move position 877 450, sticky enable
+
 
 bindsym XF86MonBrightnessUp exec light -A 10
 bindsym XF86MonBrightnessDown exec light -U 10
