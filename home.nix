@@ -220,7 +220,7 @@ rec {
 
     # ========== BROWSER ==========
     # firefox
-    # google-chrome
+    google-chrome
 
     # ========== SECURITY TOOLS ==========
     keybase
