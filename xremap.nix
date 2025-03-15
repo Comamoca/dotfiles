@@ -10,12 +10,11 @@ rec {
             alone = "Enter";
           };
           KatakanaHiragana = "Ctrl_R";
-          Alt_L = "Super";
-          Super = "Alt_L";
+          Alt_L = "Super_L";
+          Super_L = "Alt_L";
         };
       }
     ];
   };
-
   xremap-config-yaml = (pkgs.formats.yaml { }).generate "config.yml" xremap-config;
 }
