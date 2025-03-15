@@ -126,6 +126,10 @@
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.rust\\'" . rust-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.typ\\'" . typst-ts-mode)) 
+  (add-to-list 'auto-mode-alist '("\\.dat$" . ledger-mode))
+  (add-to-list 'auto-mode-alist '("\\.yaml" . yaml-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.yml" . yaml-ts-mode))
+  (add-to-list 'auto-mode-alist '("templates" . lisp-data-mode))
   (add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-ts-mode))
 
   (setq treesit-font-lock-level 4))
@@ -158,48 +162,44 @@
 	'(("d" "Diary" plain (file diary-file-path)
 	   "** 今日やったこと\n\n** 明日以降やりたいこと")
 	  ("m" "Memo" plain (file memo-file-path) "")
-
-	 ;;  ("t" "Todo" entry (file+headline "/home/coma/.ghq/github.com/Comamoca/org/todo.org" "INBOX")
-         ;; "* TODO %?\n")
 	  ))
 
   (setq diary-path (concat org-directory "/diary"))
 
   (setq org-publish-use-timestamps-flag nil)
   (setq org-publish-project-alist
-   '(("Diary"
-      :base-directory "~/.ghq/github.com/Comamoca/org/diary"
-      :base-extension "org"  
-      :recursive t
-      :publishing-directory  "~/.ghq/github.com/Comamoca/org/dist"
-      :publishing-function org-html-publish-to-html
-      :include ("index.org")
-      :exclude ())
+	'(("Diary"
+	   :base-directory "~/.ghq/github.com/Comamoca/org/diary"
+	   :base-extension "org"  
+	   :recursive t
+	   :publishing-directory  "~/.ghq/github.com/Comamoca/org/dist"
+	   :publishing-function org-html-publish-to-html
+	   :include ("index.org")
+	   :exclude ())
      
-     ("Note"
-      :base-directory "~/.ghq/github.com/Comamoca/org/note"
-      :base-extension "org"  
-      :recursive t
-      :publishing-directory  "~/.ghq/github.com/Comamoca/org/note/dist"
-      :publishing-function org-html-publish-to-html
-      :auto-sitemap t
-      :include ("index.org")
-      :exclude ()
-      :html-head "<link rel=\"stylesheet\" href=\"https://unpkg.com/mvp.css\">")))
+	  ("Note"
+	   :base-directory "~/.ghq/github.com/Comamoca/org/note"
+	   :base-extension "org"  
+	   :recursive t
+	   :publishing-directory  "~/.ghq/github.com/Comamoca/org/note/dist"
+	   :publishing-function org-html-publish-to-html
+	   :auto-sitemap t
+	   :include ("index.org")
+	   :exclude ()
+	   :html-head "<link rel=\"stylesheet\" href=\"https://unpkg.com/mvp.css\">")))
 
-;; org-babel
-(setq org-confirm-babel-evaluate nil)
-(setq python-shell-interpreter "python3")
+  ;; org-babel
+  (setq org-confirm-babel-evaluate nil)
+  (setq python-shell-interpreter "python3")
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '(
-     (C . t)
+   '((C . t)
      (shell . t)
      (python . t)
      (clojure . t)
      (hy . t)
      (ruby . t)
-     )))
+     (ledger . t))))
 
 ;; (add-hook 'org-mode-hook (lambda ()
 ;; 			   (define-key 'evil-normal-state-map (kbd "M-v") #'org-paste-image)))
@@ -431,15 +431,10 @@
 ;; Cursor moation
 (leaf avy)
 
-;; Completin soruce
-(leaf cape
-  :init
-  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-file)
-  (add-to-list 'completion-at-point-functions #'cape-history)
-  (add-to-list 'completion-at-point-functions #'cape-keyword)
-  (add-to-list 'completion-at-point-functions #'yasnippet-capf))
+;; Completion soruce
+(leaf cape :after corfu)
+
+
   ;; (add-to-list 'completion-at-point-functions #'cape-line)
 
 
@@ -529,6 +524,7 @@
   (progn
     (evil-define-key 'normal neotree-mode-map (kbd "q") 'neotree-hide)
     (evil-define-key 'normal neotree-mode-map (kbd "l") 'neotree-enter)
+    (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
     (evil-define-key 'normal neotree-mode-map (kbd "h") 'neotree-enter)
     (evil-define-key 'normal neotree-mode-map (kbd "g") 'neotree-refresh)
     (evil-define-key 'normal neotree-mode-map (kbd "j") 'neotree-next-line)
@@ -663,29 +659,32 @@
    (nyan-start-animation)))
 
 ;; Snippets
-(leaf yasnippet
+
+(leaf tempel
   :config
-  (setq yas-snippet-dirs '("~/emacs.d/snippets/"))
-  (setq yas-trigger-key nil)
-  (yas-global-mode 1))
+  (defun tempel-setup-capf ()
+    (setq-local completion-at-point-functions
+                (cons #'tempel-complete
+                      completion-at-point-functions)))
 
-;; Snippet collections
-(leaf yasnippet-snippets)
+  (add-hook 'conf-mode-hook 'tempel-setup-capf)
+  (add-hook 'prog-mode-hook 'tempel-setup-capf)
+  (add-hook 'text-mode-hook 'tempel-setup-capf)
 
-;; Templates
-(leaf yatemplate)
-(leaf auto-insert
-  :config
-  (setq auto-insert-directory "~/.emacs.d/templates/")
-  (setq auto-insert-alist
-      (append '(
-                ((expand-file-name "~/.ghq/github.com/Comamoca/blog/src/blog/.*\\-diary.md$") . "diary.md")
-		) auto-insert-alist))
-  :init
-  (auto-insert 1))
+  (add-hook 'markdown-mode-hook (lambda ()
+				  (setq-local
+				   completion-at-point-functions
+				   #'tempel-complete
+				   )))
 
-;; Complation
-(leaf yasnippet-capf) 
+  (add-hook 'git-commit-mode-hook (lambda ()
+				    (setup-gitmoji)
+				    (setq-local completion-at-point-functions
+						(list (cape-capf-super
+						       #'tempel-complete
+						       #'gitmoji-completion))))))
+
+(leaf tempel-collection)
 
 ;; HTTP Request
 (leaf request)
@@ -761,30 +760,40 @@
   (reformatter-define deno
     :program "deno" :args `("fmt" ,buffer-file-name)))
 
+(leaf ledger
+  :config)
+
+(leaf grugru
+  :config
+  ;; ref: https://github.com/ROCKTAKEY/grugru/issues/44
+  (defun +grugru--getter-number ()
+    (if (string-match-p "^-?\\(?:[0-9]*[.]\\)?[0-9]+$" (thing-at-point 'word))
+	(bounds-of-thing-at-point 'number)))
+
+  (add-to-list 'grugru-getter-alist '(number . +grugru--getter-number))
+
+  (grugru-define-global
+   'number
+   (lambda (arg &optional rev)
+     (let ((num (string-to-number arg)))
+       (number-to-string (if rev (- num 1) (+ num 1))))))
+
+  (define-key evil-normal-state-map (kbd "C-a") 'grugru)
+  (define-key evil-normal-state-map (kbd "C-x") 'grugru-backward)
+  )
+
+(leaf good-scroll
+  :init
+  (good-scroll-mode 1))
+
+(leaf sublimity
+  )
+
+(leaf iscroll)
+
+
 ;; ================ My extentions ================ 
 
-;; Incriment/Decriment like Vim
-(defun replace-at-point (callback)
-  (interactive) 
-  (let ((word (thing-at-point 'word t))
-	(word-at (bounds-of-thing-at-point 'word)))
-
-    (delete-region (car word-at) (cdr word-at))
-    (insert (funcall callback word))))
-
-(defun incr-point ()
-  (interactive)
-  (replace-at-point (lambda (word)
-		      (number-to-string (+ (string-to-number word) 1)))))
-
-(defun decr-point ()
-  (interactive)
-  (replace-at-point (lambda (word)
-		      (let* ((num (string-to-number word))
-			     (incr-num (- num 1)))
-			(if (> 0 incr-num)
-			    word
-			    (number-to-string incr-num))))))
 
 (defun nyan-region ()
   "選択範囲をにゃーんで置換する"
@@ -883,9 +892,6 @@
 ;; Collect gitmoji when startup
 ;; (add-hook 'emacs-startup-hook 'setup-gitmoji)
 ;; Enable at git-commit-mode
-(add-hook 'git-commit-mode-hook (lambda ()
-				  (setup-gitmoji
-				   (setq-local completion-at-point-functions (list #'gitmoji-completion)))))
 
 ;; Display character count in modeline
 (defun update-buffer-char-count ()
@@ -916,9 +922,12 @@
   (interactive)
   (let* ((date (format-time-string "%Y-%m-%d"))
          (file-name (format "%s-diary.md" date))
-         (path (concat (expand-file-name "src/blog/" blog-repo) file-name)))
+         (path (concat (expand-file-name "src/blog/" blog-repo) file-name))
+	 (buf (find-file path)))
     ;; (projectile-switch-project-by-name "blog")
-    (find-file path)))
+    
+    (if (= (buffer-size) 0)
+	(tempel-insert 'diary))))
 
 (defun new-blog-article ()
   "Open latest diary. This function call in `src/blog/` directory at blog repository."
@@ -1063,9 +1072,8 @@
 (setq create-lockfiles nil)
 
 ;; Key mapping
-(define-key evil-normal-state-map (kbd "C-a") 'incr-point)
-(define-key evil-normal-state-map (kbd "C-x") 'decr-point)
 (define-key global-map (kbd "C-x s") 'blackening-region)
+(define-key global-map (kbd "C-;") 'comment-dwim)
 
 ;; Enable debug
 ;; (setq debug-on-error t)
