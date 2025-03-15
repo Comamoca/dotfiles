@@ -126,7 +126,7 @@ rec {
 
     # TODO: change to vim-overlay
     vim-full
-    emacs
+    emacs'
     felix
     micro
     neovim
@@ -939,7 +939,7 @@ rec {
   services.emacs = {
     enable = true;
     # package = pkgs.emacs-git;
-    package = emacs;
+    package = emacs';
     # package = (
     #   with pkgs;
     #   # ((emacsPackagesFor emacs').emacsWithPackages (

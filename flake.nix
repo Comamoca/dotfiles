@@ -4,7 +4,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master"; 
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
 
@@ -93,7 +93,7 @@
             inputs.nix-index-database.nixosModules.nix-index
             # home-manager.nixosModules.home-manager
             inputs.xremap.nixosModules.default
-            inputs.niri.nixosModules.niri 
+            inputs.niri.nixosModules.niri
             # disko.nixosModules.disko
             # ({ config, ... }: {
             #   # system.stateVersion = config.system.stateVersion;
@@ -144,8 +144,8 @@
           ];
         };
 
-        Home = inputs.home-manager.lib.homeManagerConfiguration rec { 
-          pkgs = import inputs.nixpkgs { 
+        Home = inputs.home-manager.lib.homeManagerConfiguration rec {
+          pkgs = import inputs.nixpkgs {
             system = "x86_64-linux";
             config.allowUnfree = true;
           };
