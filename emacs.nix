@@ -169,7 +169,7 @@ let
     };
 
     buildInputs = with pkgs.emacsPackages; [ ];
-  }; 
+  };
 
   copilot = pkgs.emacsPackages.trivialBuild {
     pname = "copilot.el";
@@ -190,162 +190,181 @@ let
       dash
       editorconfig
     ];
-  }; 
+  };
 in
 {
-  epkgs = with epkgs; [
-    vterm
-    catppuccin-theme
-    vertico
-    orderless
-    hotfuzz
+  epkgs =
+    with epkgs;
+    [
+      vterm
+      catppuccin-theme
+      vertico
+      orderless
+      hotfuzz
 
-    consult
-    affe
+      consult
+      affe
 
-    embark-consult
-    consult-ghq
-    evil
-    puni
-    highlight-indent-guides
-    treesit-auto
+      embark-consult
+      consult-ghq
+      evil
+      puni
+      highlight-indent-guides
+      treesit-auto
 
-    org
-    org-journal
-    org-roam
-    org-roam-ui
-    deft
+      org
+      org-journal
+      org-roam
+      org-roam-ui
+      deft
 
-    org-modern
-    org-modern-indent
-    org-nix-shell
+      org-modern
+      org-modern-indent
+      org-nix-shell
 
-    magit
-    ddskk
+      magit
+      ddskk
 
-    slime
-    sly
-    sly-asdf
-    # nurpkgs.emacs-slite.slite
+      slime
+      sly
+      sly-asdf
+      # nurpkgs.emacs-slite.slite
 
-    cider
-    cider-hydra
-    cider-eval-sexp-fu
-    kaocha-runner
+      cider
+      cider-hydra
+      cider-eval-sexp-fu
+      kaocha-runner
 
-    eglot
-    eglot-booster
+      eglot
+      eglot-booster
 
-    lsp-mode
-    lsp-ui
+      lsp-mode
+      lsp-ui
 
-    corfu
-    cape
+      corfu
+      cape
 
-    kind-icon
-    all-the-icons
+      kind-icon
+      all-the-icons
 
-    hydra
-    hydra-posframe
-    major-mode-hydra
+      hydra
+      hydra-posframe
+      major-mode-hydra
 
-    kind-icon
-    all-the-icons
-    transient-dwim
-    neotree
-    google-translate
-    wakatime-mode
+      kind-icon
+      all-the-icons
+      transient-dwim
+      neotree
+      google-translate
+      wakatime-mode
 
-    typst-preview
-    typst-ts-mode
-    typst-mode
+      typst-preview
+      typst-ts-mode
+      typst-mode
 
-    lua-mode
-    nix-mode
-    nix-ts-mode
-    gleam-mode
-    gleam-ts-mode
-    markdown-mode
-    astro-ts-mode
+      lua-mode
+      nix-mode
+      nix-ts-mode
+      gleam-mode
+      gleam-ts-mode
+      markdown-mode
+      astro-ts-mode
 
-    projectile
-    migemo
-    nyan-mode
+      projectile
+      migemo
+      nyan-mode
 
-    yasnippet
-    yatemplate
-    yasnippet-snippets
-    yasnippet-capf
+      yasnippet
+      yatemplate
+      yasnippet-snippets
+      yasnippet-capf
 
-    request
-    macrostep
+      request
+      macrostep
 
-    leaf
-    leaf-keywords
-    leaf-tree
-    leaf-convert
+      leaf
+      leaf-keywords
+      leaf-tree
+      leaf-convert
 
-    ddskk
-    ddskk-posframe
+      ddskk
+      ddskk-posframe
 
-    direnv
-    skk-capf
+      direnv
+      skk-capf
 
-    avy
+      avy
 
-    python-mode
+      python-mode
 
-    enh-ruby-mode
-    ruby-electric
+      enh-ruby-mode
+      ruby-electric
 
-    # for org-babel
-    ob-hy
-    envrc
+      # for org-babel
+      ob-hy
+      envrc
 
-    flycheck
-    flycheck-pos-tip
-    flycheck-inline
+      flycheck
+      flycheck-pos-tip
+      flycheck-inline
 
-    nano-theme
-    nurpkgs.nano-tools.box
-    nurpkgs.nano-tools.read
-    nurpkgs.nano-tools.modeline
-    nurpkgs.nano-tools.journal
-    nurpkgs.nano-tools.popup
+      nano-theme
+      nurpkgs.nano-tools.box
+      nurpkgs.nano-tools.read
+      nurpkgs.nano-tools.modeline
+      nurpkgs.nano-tools.journal
+      nurpkgs.nano-tools.popup
 
-    inf-ruby
+      inf-ruby
 
-    slite
+      slite
 
-    scala-ts-mode
-    scala-mode
+      scala-ts-mode
+      scala-mode
 
-    gptel
+      gptel
 
-    elixir-mode
-    inf-elixir
-    mix
+      elixir-mode
+      inf-elixir
+      mix
 
-    smartparens
-    evil-smartparens
-    plz
+      smartparens
+      evil-smartparens
+      plz
 
-    dash
+      dash
 
-    ox-zenn
-    rg
-    
-    # lsp-bridge
+      ox-zenn
+      rg
 
-    org-bullets
-    editorconfig
-    open-junk-file
-    reformatter
+      # lsp-bridge
 
-    copilot
-    kdl-ts-mode
-    dotnet
-    web-mode
-    sharper
-  ];
+      org-bullets
+      editorconfig
+      open-junk-file
+      reformatter
+
+      copilot
+      kdl-ts-mode
+      dotnet
+      web-mode
+      sharper
+
+      ledger-mode
+      flycheck-ledger
+      evil-ledger
+      ob-ledger
+
+      forge
+      consult-gh-forge
+
+      tempel
+      tempel-collection
+      aas
+
+      grugru
+      good-scroll
+      sublimity
+      iscroll
+    ];
 }
