@@ -18,23 +18,23 @@ let
   wallpaper = "${wallpapers}/misc/cat-sound.png";
 
   gitmoji = pkgs.fetchurl {
-      url = "https://gitmoji.dev/api/gitmojis";
-      hash = "sha256-GOSuBuc3/S1vsMvQLF49Shd/3SN4w1Rpzhwn63tMe2Q=";
+    url = "https://gitmoji.dev/api/gitmojis";
+    hash = "sha256-deIjmV/50HY0PwVtlQzaXBOQhug4wEQAr5RD1JK2G/4=";
   };
 
   # pgtkでビルドするとエラーこそ出ないものの有効にならない
   # Gitでビルドするとwebkitがない旨のエラーが出る
   # emacs' = pkgs.emacs-pgtk.overrideAttrs (old: {
-  emacs' = pkgs.emacs-git.overrideAttrs (old: {
-    # configureFlags = old.configureFlags or [] ++ [ "--with-cairo" "--with-xwidgets" "--with-x-toolkit=gtk3" ];
-    withXwidgets = true;
-    withGTK3 = true;
-    # buildInputs = (old.buildInputs or []) ++ [
-    #   pkgs.webkitgtk_4_0
-    # ];
-  });
+  # emacs' = pkgs.emacs-git.overrideAttrs (old: {
+  #   # configureFlags = old.configureFlags or [] ++ [ "--with-cairo" "--with-xwidgets" "--with-x-toolkit=gtk3" ];
+  #   withXwidgets = true;
+  #   withGTK3 = true;
+  #   # buildInputs = (old.buildInputs or []) ++ [
+  #   #   pkgs.webkitgtk_4_0
+  #   # ];
+  # });
 
-  emacs = (pkgs.emacsPackagesFor pkgs.emacs-git).emacsWithPackages (
+  emacs' = (pkgs.emacsPackagesFor pkgs.emacs-unstable).emacsWithPackages (
     epkgs: (import ./emacs.nix { inherit pkgs epkgs nurpkgs; }).epkgs
   );
 
