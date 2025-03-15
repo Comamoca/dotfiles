@@ -40,8 +40,8 @@ if dpp.load_state(dppBase) then
   })
 end
 
--- dpp.load_state("~/.cache/dpp")
--- dpp.make_state("~/.cache/dpp", "~/.config/nvim/dpp.ts")
+-- call dpp#min#load_state("~/.cache/dpp")
+-- call dpp#make_state("~/.cache/dpp", "~/.config/nvim/dpp.ts")
 
 vim.api.nvim_create_autocmd("User", {
   pattern = "Dpp:makeStatePost",
