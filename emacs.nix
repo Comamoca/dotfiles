@@ -4,6 +4,17 @@
   nurpkgs,
 }:
 let
+  ob-ledger = pkgs.emacsPackages.trivialBuild {
+    pname = "ob-ledger";
+    version = "main";
+    src = pkgs.fetchurl {
+      url = "https://raw.githubusercontent.com/tkf/org-mode/refs/heads/master/lisp/ob-ledger.el";
+      hash = "sha256-BleW3N4NljKh9mFD/BpyVI1VPO0E9aODC8vH8gFk7KI=";
+    };
+
+    buildInputs = with pkgs.emacsPackages; [ org ];
+  };
+
   kdl-ts-mode = pkgs.emacsPackages.trivialBuild {
     pname = "kdl-ts-mode";
     version = "main";
@@ -19,7 +30,7 @@ let
     version = "main";
     src = pkgs.fetchurl {
       url = "https://raw.githubusercontent.com/tdrhq/slite/refs/heads/main/slite.el";
-      hash = "sha256-Y+d54a9QbqecqVky7MXbPaToliEsFMn4JcRBVB2uxwQ=";
+      hash = "sha256-ibi3H4Jk9ShV/UKborSmhCBtORL6ycLPN2gDzyx943c=";
     };
     buildInputs = with pkgs.emacsPackages; [ ];
   };
@@ -71,7 +82,7 @@ let
       owner = "havarddj";
       repo = "typst-preview.el";
       rev = "master";
-      sha256 = "sha256-7Tak6YavVwjUz03AlnO6JyP7xv3qTdH8aMefXk8HC6U=";
+      sha256 = "sha256-7YWPWLRNgF9N91xW0QpMPhwZ57iCsgkDY4rNY/6lf6c=";
     };
 
     buildInputs = with pkgs.emacsPackages; [ websocket ];
@@ -84,7 +95,7 @@ let
       owner = "jdtsmith";
       repo = "org-modern-indent";
       rev = "master";
-      sha256 = "sha256-9aaaPGCvt51FknRKB5zT8AdHjhH/sQMc1IyQS3KnJsU=";
+      sha256 = "sha256-Fd6PhvgqUaxc6VIOVPd/eXryNdj5g3xGbLLuZomJsxg=";
     };
 
     buildInputs = with pkgs.emacsPackages; [ compat ];
@@ -123,7 +134,7 @@ let
       owner = "gleam-lang";
       repo = "gleam-mode";
       rev = "master";
-      sha256 = "sha256-OUP6AoD01b73A8hbSg5lC9+TJDcD0tXWhqpipZUnbfQ=";
+      sha256 = "sha256-pFG4NjFlYdGsulUwbujA01w1gHt+U67fYvFLNdN5RYg=";
     };
 
     buildInputs = with pkgs.emacsPackages; [
@@ -168,7 +179,7 @@ let
       owner = "copilot-emacs";
       repo = "copilot.el";
       rev = "master";
-      sha256 = "sha256-NRW2ReiJ62hJtT98Qk6qcrdXmMYhmHZL7NcW9Eacml4=";
+      sha256 = "sha256-ATIyNAnd1pU82xdGH7+z9zkOcDVJhYhh65QDQ73NiL0=";
     };
 
     buildInputs = with pkgs.emacsPackages; [
