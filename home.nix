@@ -5,10 +5,11 @@
   inputs,
   ...
 }:
-
 let
   system = "x86_64-linux";
   nurpkgs = inputs.nur-packages.legacyPackages.${system};
+
+  xremap-config = import ./xremap.nix { inherit pkgs; };
 
   wallpapers = builtins.fetchTarball {
     url = "https://github.com/zhichaoh/catppuccin-wallpapers/archive/refs/heads/main.zip";
