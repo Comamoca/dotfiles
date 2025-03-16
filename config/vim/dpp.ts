@@ -108,9 +108,9 @@ export class Config extends BaseConfig {
       }
     });
 
-    localPlugins.forEach((plugin: Plugin) => {
-      recordPlugins[plugin.name] = plugin;
-    });
+    // localPlugins.forEach((plugin: Plugin) => {
+    //   recordPlugins[plugin.name] = plugin;
+    // });
 
     const lazyResult = await args.dpp.extAction(
       args.denops,

@@ -1,0 +1,292 @@
+{
+    "copilot": {
+        "cargoLocks": null,
+        "date": "2025-02-23",
+        "extract": null,
+        "name": "copilot",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "copilot-emacs",
+            "repo": "copilot.el",
+            "rev": "7d105d708a23d16cdfd5240500be8bb02f95a46e",
+            "sha256": "sha256-ATIyNAnd1pU82xdGH7+z9zkOcDVJhYhh65QDQ73NiL0=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "7d105d708a23d16cdfd5240500be8bb02f95a46e"
+    },
+    "eglot-booster": {
+        "cargoLocks": null,
+        "date": "2024-10-29",
+        "extract": null,
+        "name": "eglot-booster",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-MGMKFtivqM979xf2H0XinLvlVhp23Ynd1+UqTxD3eZY=",
+            "type": "url",
+            "url": "https://raw.githubusercontent.com/jdtsmith/eglot-booster/refs/heads/main/eglot-booster.el"
+        },
+        "version": "e6daa6bcaf4aceee29c8a5a949b43eb1b89900ed"
+    },
+    "folding-mode": {
+        "cargoLocks": null,
+        "date": "2025-01-20",
+        "extract": null,
+        "name": "folding-mode",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "jaalto",
+            "repo": "project-emacs--folding-mode",
+            "rev": "b82696bcf894d31c396d3718bfee4aa831013464",
+            "sha256": "sha256-lg3MWb7ddv+YJBUxG3BpECjXgMYXxgpqmJT59JgZxoA=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "b82696bcf894d31c396d3718bfee4aa831013464"
+    },
+    "gleam-mode": {
+        "cargoLocks": null,
+        "date": "2025-02-23",
+        "extract": null,
+        "name": "gleam-mode",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "gleam-lang",
+            "repo": "gleam-mode",
+            "rev": "75b5b1a2eede31969a94322f117b0c82036ff40b",
+            "sha256": "sha256-pFG4NjFlYdGsulUwbujA01w1gHt+U67fYvFLNdN5RYg=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "75b5b1a2eede31969a94322f117b0c82036ff40b"
+    },
+    "hydra-posframe": {
+        "cargoLocks": null,
+        "date": "2023-07-17",
+        "extract": null,
+        "name": "hydra-posframe",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "Ladicle",
+            "repo": "hydra-posframe",
+            "rev": "142a04dd588af6c725e331863c3ca7bd5dda13ec",
+            "sha256": "sha256-9nVBnpaWZIYNDvS2WWBED0HsIRIv4AR4as6wEe463tI=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "142a04dd588af6c725e331863c3ca7bd5dda13ec"
+    },
+    "kdl-ts-mode": {
+        "cargoLocks": null,
+        "date": "2024-01-05",
+        "extract": null,
+        "name": "kdl-ts-mode",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-NGC3Fecf9fzw0Gp64afagKCe+4tObXjjkzwtA+L6YKs=",
+            "type": "url",
+            "url": "https://raw.githubusercontent.com/dataphract/kdl-ts-mode/refs/heads/main/kdl-ts-mode.el"
+        },
+        "version": "3dbf116cd19261d8d70f456ae3385e1d20208452"
+    },
+    "ob-ledger": {
+        "cargoLocks": null,
+        "date": "2012-11-06",
+        "extract": null,
+        "name": "ob-ledger",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-BleW3N4NljKh9mFD/BpyVI1VPO0E9aODC8vH8gFk7KI=",
+            "type": "url",
+            "url": "https://raw.githubusercontent.com/tkf/org-mode/refs/heads/master/lisp/ob-ledger.el"
+        },
+        "version": "c2ebeea6f68f2ef804d387c238e4acccf655dc64"
+    },
+    "org-bullets": {
+        "cargoLocks": null,
+        "date": "2014-09-18",
+        "extract": null,
+        "name": "org-bullets",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "sabof",
+            "repo": "org-bullets",
+            "rev": "b70ac2ec805bcb626a6e39ea696354577c681b36",
+            "sha256": "sha256-HODL+qhUFRjGwHnbEu9Z2Xof9zVT1Wc2pQtb56Qm2YI=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "b70ac2ec805bcb626a6e39ea696354577c681b36"
+    },
+    "org-modern-indent": {
+        "cargoLocks": null,
+        "date": "2025-02-25",
+        "extract": null,
+        "name": "org-modern-indent",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "jdtsmith",
+            "repo": "org-modern-indent",
+            "rev": "2b3ee1f8cb8be859970ffaee62f12e635f161cd3",
+            "sha256": "sha256-Fd6PhvgqUaxc6VIOVPd/eXryNdj5g3xGbLLuZomJsxg=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "2b3ee1f8cb8be859970ffaee62f12e635f161cd3"
+    },
+    "python-mode": {
+        "cargoLocks": null,
+        "date": "2025-02-23",
+        "extract": null,
+        "name": "python-mode",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "emacsmirror",
+            "repo": "python-mode",
+            "rev": "1652ed5e650accdf87611814f35907c9da4a47f6",
+            "sha256": "sha256-XCX0HMZrNt3GPJCQ11vVMV2ieqza2EvoMDLbGpT7JVQ=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "1652ed5e650accdf87611814f35907c9da4a47f6"
+    },
+    "skk-capf": {
+        "cargoLocks": null,
+        "date": "2024-09-23",
+        "extract": null,
+        "name": "skk-capf",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "myuhe",
+            "repo": "skk-capf",
+            "rev": "b2aa36d5fec2ac3cea2cf9dede8f7200efc7570a",
+            "sha256": "sha256-IVkEFRwV2SaIH4xVnTqm2YtNeQ08G2GEiPF9+Kgj3Cc=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "b2aa36d5fec2ac3cea2cf9dede8f7200efc7570a"
+    },
+    "slite": {
+        "cargoLocks": null,
+        "date": "2025-03-07",
+        "extract": null,
+        "name": "slite",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-ibi3H4Jk9ShV/UKborSmhCBtORL6ycLPN2gDzyx943c=",
+            "type": "url",
+            "url": "https://raw.githubusercontent.com/tdrhq/slite/refs/heads/main/slite.el"
+        },
+        "version": "0369de89f273a6aec1ecf93ccb46fcbea5ff2d55"
+    },
+    "typst-mode": {
+        "cargoLocks": null,
+        "date": "2023-09-25",
+        "extract": null,
+        "name": "typst-mode",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "Ziqi-Yang",
+            "repo": "typst-mode.el",
+            "rev": "5776fd4f3608350ff6a2b61b118d38165d342aa3",
+            "sha256": "sha256-mqkcNDgx7lc6kUSFFwSATRT+UcOglkeu+orKLiU9Ldg=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "5776fd4f3608350ff6a2b61b118d38165d342aa3"
+    },
+    "typst-preview": {
+        "cargoLocks": null,
+        "date": "2025-03-15",
+        "extract": null,
+        "name": "typst-preview",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "havarddj",
+            "repo": "typst-preview.el",
+            "rev": "266cbae88fd2c88e4089aad1a2fdf566ef71a01b",
+            "sha256": "sha256-YYFVmm+7vJONTDW1q8Eyf5UFPGjXLKhQ7WkUqG7e9C0=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "266cbae88fd2c88e4089aad1a2fdf566ef71a01b"
+    },
+    "typst-ts-mode": {
+        "cargoLocks": null,
+        "date": "2024-12-07",
+        "extract": null,
+        "name": "typst-ts-mode",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "rev": "1367003e2ad55a2f6f9e43178584683028ab56e9",
+            "sha256": "sha256-0RAJ/Td3G7FDvzf7t8csNs/uc07WUPGvMo8ako5iyl0=",
+            "sparseCheckout": [],
+            "type": "git",
+            "url": "https://git.sr.ht/~meow_king/typst-ts-mode"
+        },
+        "version": "1367003e2ad55a2f6f9e43178584683028ab56e9"
+    }
+}
