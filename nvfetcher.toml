@@ -1,0 +1,59 @@
+[ob-ledger]
+src.git = "https://github.com/tkf/org-mode"
+fetch.url = "https://raw.githubusercontent.com/tkf/org-mode/refs/heads/master/lisp/ob-ledger.el"
+
+[kdl-ts-mode]
+src.git = "https://github.com/dataphract/kdl-ts-mode"
+fetch.url = "https://raw.githubusercontent.com/dataphract/kdl-ts-mode/refs/heads/main/kdl-ts-mode.el"
+
+[slite]
+src.git = "https://github.com/tdrhq/slite"
+fetch.url = "https://raw.githubusercontent.com/tdrhq/slite/refs/heads/main/slite.el"
+
+[hydra-posframe]
+src.git = "https://github.com/Ladicle/hydra-posframe"
+fetch.github = "Ladicle/hydra-posframe"
+
+[typst-ts-mode]
+src.git = "https://git.sr.ht/~meow_king/typst-ts-mode"
+fetch.git = "https://git.sr.ht/~meow_king/typst-ts-mode"
+
+[typst-mode]
+src.git = "https://github.com/Ziqi-Yang/typst-mode.el"
+fetch.github = "Ziqi-Yang/typst-mode.el"
+
+[typst-preview]
+src.git = "https://github.com/havarddj/typst-preview.el"
+fetch.github = "havarddj/typst-preview.el"
+
+[org-modern-indent]
+src.git = "https://github.com/jdtsmith/org-modern-indent"
+fetch.github = "jdtsmith/org-modern-indent"
+
+[skk-capf]
+src.git = "https://github.com/myuhe/skk-capf"
+fetch.github = "myuhe/skk-capf"
+
+[python-mode]
+src.git = "https://github.com/emacsmirror/python-mode"
+fetch.github = "emacsmirror/python-mode"
+
+[gleam-mode]
+src.git = "https://github.com/gleam-lang/gleam-mode"
+fetch.github = "gleam-lang/gleam-mode"
+
+[org-bullets]
+src.git = "https://github.com/sabof/org-bullets"
+fetch.github = "sabof/org-bullets"
+
+[eglot-booster]
+src.git = "https://github.com/jdtsmith/eglot-booster"
+fetch.url = "https://raw.githubusercontent.com/jdtsmith/eglot-booster/refs/heads/main/eglot-booster.el"
+
+[copilot]
+src.git = "https://github.com/copilot-emacs/copilot.el"
+fetch.github = "copilot-emacs/copilot.el"
+
+[folding-mode]
+src.git = "https://github.com/jaalto/project-emacs--folding-mode"
+fetch.github = "jaalto/project-emacs--folding-mode"
