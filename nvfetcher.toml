@@ -55,5 +55,9 @@ src.git = "https://github.com/copilot-emacs/copilot.el"
 fetch.github = "copilot-emacs/copilot.el"
 
 [folding-mode]
-src.git = "https://github.com/jaalto/project-emacs--folding-mode"
-fetch.github = "jaalto/project-emacs--folding-mode"
+src.git = "https://github.com/magnars/fold-this.el"
+fetch.github = "magnars/fold-this.el"
+
+[scroll-page-without-moving-point]
+src.git = "https://github.com/tanrax/scroll-page-without-moving-point.el"
+fetch.github = "tanrax/scroll-page-without-moving-point.el"
