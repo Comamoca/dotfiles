@@ -152,6 +152,7 @@ rec {
     nurpkgs.bsky
 
     # ========== OTHER TOOLS ==========
+    algia
     polybarFull
     devenv
 
