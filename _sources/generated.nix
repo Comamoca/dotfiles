@@ -24,15 +24,15 @@
   };
   folding-mode = {
     pname = "folding-mode";
-    version = "b82696bcf894d31c396d3718bfee4aa831013464";
+    version = "c3912c738cf0515f65162479c55999e2992afce5";
     src = fetchFromGitHub {
-      owner = "jaalto";
-      repo = "project-emacs--folding-mode";
-      rev = "b82696bcf894d31c396d3718bfee4aa831013464";
+      owner = "magnars";
+      repo = "fold-this.el";
+      rev = "c3912c738cf0515f65162479c55999e2992afce5";
       fetchSubmodules = false;
-      sha256 = "sha256-lg3MWb7ddv+YJBUxG3BpECjXgMYXxgpqmJT59JgZxoA=";
+      sha256 = "sha256-j0UtxYMfctJMkdXFlgE+L97jACgQINXXdGB6ucSfzjI=";
     };
-    date = "2025-01-20";
+    date = "2019-11-07";
   };
   gleam-mode = {
     pname = "gleam-mode";
@@ -112,6 +112,18 @@
     };
     date = "2025-02-23";
   };
+  scroll-page-without-moving-point = {
+    pname = "scroll-page-without-moving-point";
+    version = "835d8df947841bf9acf3da70a015ea1b4e143acd";
+    src = fetchFromGitHub {
+      owner = "tanrax";
+      repo = "scroll-page-without-moving-point.el";
+      rev = "835d8df947841bf9acf3da70a015ea1b4e143acd";
+      fetchSubmodules = false;
+      sha256 = "sha256-d4S7eLAh8YhmiONdd+wKj24lxmvMG+fSGA64lVdrj+c=";
+    };
+    date = "2024-01-14";
+  };
   skk-capf = {
     pname = "skk-capf";
     version = "b2aa36d5fec2ac3cea2cf9dede8f7200efc7570a";
@@ -147,15 +159,15 @@
   };
   typst-preview = {
     pname = "typst-preview";
-    version = "266cbae88fd2c88e4089aad1a2fdf566ef71a01b";
+    version = "5719d0fcc624e7910a105bd8eefd2b10bf92a0bf";
     src = fetchFromGitHub {
       owner = "havarddj";
       repo = "typst-preview.el";
-      rev = "266cbae88fd2c88e4089aad1a2fdf566ef71a01b";
+      rev = "5719d0fcc624e7910a105bd8eefd2b10bf92a0bf";
       fetchSubmodules = false;
-      sha256 = "sha256-YYFVmm+7vJONTDW1q8Eyf5UFPGjXLKhQ7WkUqG7e9C0=";
+      sha256 = "sha256-r8o90SYFShPLNetLLALrP47jd8PQccvnXCJbKrF9fpk=";
     };
-    date = "2025-03-15";
+    date = "2025-03-17";
   };
   typst-ts-mode = {
     pname = "typst-ts-mode";
