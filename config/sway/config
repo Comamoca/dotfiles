@@ -141,8 +141,8 @@ bindsym $mod+ctrl+v split v
 # enter fullscreen mode for the focused container
 # bindsym $mod+f fullscreen toggle
 # bindsym $mod+f floating enable, move scratchpad, scratchpad show
-# bindsym $mod+f floating toggle, move scratchpad, scratchpad show
-bindsym $mod+f scratchpad show
+bindsym $mod+f floating toggle, move scratchpad, scratchpad show
+# bindsym $mod+f scratchpad show
 
 # change container layout (stacked, tabbed, toggle split)
 # bindsym $mod+s layout stacking
@@ -279,7 +279,7 @@ bindsym $alt+e exec ime.sh float
 exec_always --no-startup-id picom
 exec --no-startup-id fcitx5
 exec --no-startup-id sandsmark-notificationd
-exec --no-startup-id mako &
+exec --no-startup-id swaync &
 exec --no-start-id "wlsunset -t 5500" &
 
 input type:touchpad {
