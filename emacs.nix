@@ -306,5 +306,15 @@ in
       iscroll
 
       folding-mode
+      minimap
+      dashboard
+      god-mode
+      dimmer
+      focus
+
+      # Library
+      alert
+      dash
+      s
     ];
 }
