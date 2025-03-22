@@ -17,7 +17,7 @@ keymap("i", "jj", "<ESC>", opts)
 
 keymap("i", "<C-g>", "<C-[><C-[>")
 
-keymap("n", "q", "<C-[><C-[>")
+-- keymap("n", "q", "<C-[><C-[>")
 
 -- keymap("n", "<S-k>", "{", opts)
 -- keymap("n", "<S-j>", "}", opts)
@@ -90,10 +90,10 @@ vim.fn.filter(vim.fn.getwininfo(), function(key, val)
 end)
 vim.print()
 
-keymap("n", "q", function()
-  if vim.fn.empty(vim.fn.filter(vim.fn.getwininfo(), "v:val.quickfix")) then
-    vim.cmd("copen")
-  else
-    vim.cmd("cclose")
-  end
-end)
+-- keymap("n", "q", function()
+--   if vim.fn.empty(vim.fn.filter(vim.fn.getwininfo(), "v:val.quickfix")) then
+--     vim.cmd("copen")
+--   else
+--     vim.cmd("cclose")
+--   end
+-- end)

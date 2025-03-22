@@ -26,6 +26,12 @@
 	margin-right: 2px;
 }
 
+#workspaces button.focused {
+	border-radius: 10px;
+	color: @mantle;
+	background: @lavender;
+}
+
 #workspaces button.active {
 	border-radius: 10px;
 	color: @mantle;

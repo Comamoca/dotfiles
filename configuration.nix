@@ -284,8 +284,11 @@ in
   };
 
   # services.flatpak.enable = true;
-  # xdg.portal.enable = pkgs.lib.mkDefault true;
-  xdg.portal.wlr.enable = true;
+  xdg.portal = {
+    xdgOpenUsePortal = true;
+    enable = pkgs.lib.mkDefault true;
+    wlr.enable = true;
+  };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
