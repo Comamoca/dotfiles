@@ -6,10 +6,15 @@
 let
   generated = import ./_sources/generated.nix;
   sources = generated {
-    inherit (pkgs) fetchurl fetchgit fetchFromGitHub dockerTools;
+    inherit (pkgs)
+      fetchurl
+      fetchgit
+      fetchFromGitHub
+      dockerTools
+      ;
   };
- 
-   folding-mode = pkgs.emacsPackages.trivialBuild {
+
+  folding-mode = pkgs.emacsPackages.trivialBuild {
     pname = "folding-mode";
     version = "main";
     src = sources.folding-mode.src;
@@ -131,190 +136,192 @@ let
   };
 in
 {
-  epkgs =
-    with epkgs;
-    [
-      vterm
-      catppuccin-theme
-      vertico
-      orderless
-      hotfuzz
+  epkgs = with epkgs; [
+    vterm
+    multi-vterm
+    vterm-toggle
 
-      consult
-      affe
+    catppuccin-theme
+    vertico
+    orderless
+    hotfuzz
 
-      embark-consult
-      consult-ghq
-      evil
-      puni
-      highlight-indent-guides
-      treesit-auto
+    consult
+    affe
 
-      org
-      org-journal
-      org-roam
-      org-roam-ui
-      deft
+    embark-consult
+    consult-ghq
+    evil
+    puni
+    highlight-indent-guides
+    treesit-auto
 
-      org-modern
-      org-modern-indent
-      org-nix-shell
+    org
+    org-journal
+    org-roam
+    org-roam-ui
+    deft
 
-      magit
-      ddskk
+    org-modern
+    org-modern-indent
+    org-nix-shell
 
-      slime
-      sly
-      sly-asdf
-      # nurpkgs.emacs-slite.slite
+    magit
+    ddskk
 
-      cider
-      cider-hydra
-      cider-eval-sexp-fu
-      kaocha-runner
+    slime
+    sly
+    sly-asdf
+    # nurpkgs.emacs-slite.slite
 
-      eglot
-      eglot-booster
+    cider
+    cider-hydra
+    cider-eval-sexp-fu
+    kaocha-runner
 
-      lsp-mode
-      lsp-ui
+    eglot
+    eglot-booster
 
-      corfu
-      cape
+    lsp-mode
+    lsp-ui
 
-      kind-icon
-      all-the-icons
+    corfu
+    cape
 
-      hydra
-      hydra-posframe
-      major-mode-hydra
+    kind-icon
+    all-the-icons
 
-      kind-icon
-      all-the-icons
-      transient-dwim
-      neotree
-      google-translate
-      wakatime-mode
+    hydra
+    hydra-posframe
+    major-mode-hydra
 
-      typst-preview
-      typst-ts-mode
-      typst-mode
+    kind-icon
+    all-the-icons
+    transient-dwim
+    neotree
+    google-translate
+    wakatime-mode
 
-      lua-mode
-      nix-mode
-      nix-ts-mode
-      gleam-mode
-      gleam-ts-mode
-      markdown-mode
-      astro-ts-mode
+    typst-preview
+    typst-ts-mode
+    typst-mode
 
-      projectile
-      migemo
-      nyan-mode
+    lua-mode
+    nix-mode
+    nix-ts-mode
+    gleam-mode
+    gleam-ts-mode
+    markdown-mode
+    astro-ts-mode
 
-      yasnippet
-      yatemplate
-      yasnippet-snippets
-      yasnippet-capf
+    projectile
+    migemo
+    nyan-mode
 
-      request
-      macrostep
+    yasnippet
+    yatemplate
+    yasnippet-snippets
+    yasnippet-capf
 
-      leaf
-      leaf-keywords
-      leaf-tree
-      leaf-convert
+    request
+    macrostep
 
-      ddskk
-      ddskk-posframe
+    leaf
+    leaf-keywords
+    leaf-tree
+    leaf-convert
 
-      direnv
-      skk-capf
+    ddskk
+    ddskk-posframe
 
-      avy
+    direnv
+    skk-capf
 
-      python-mode
+    avy
 
-      enh-ruby-mode
-      ruby-electric
+    python-mode
 
-      # for org-babel
-      ob-hy
-      envrc
+    enh-ruby-mode
+    ruby-electric
 
-      flycheck
-      flycheck-pos-tip
-      flycheck-inline
+    # for org-babel
+    ob-hy
+    envrc
 
-      nano-theme
-      nurpkgs.nano-tools.box
-      nurpkgs.nano-tools.read
-      nurpkgs.nano-tools.modeline
-      nurpkgs.nano-tools.journal
-      nurpkgs.nano-tools.popup
+    flycheck
+    flycheck-pos-tip
+    flycheck-inline
 
-      inf-ruby
+    nano-theme
+    nurpkgs.nano-tools.box
+    nurpkgs.nano-tools.read
+    nurpkgs.nano-tools.modeline
+    nurpkgs.nano-tools.journal
+    nurpkgs.nano-tools.popup
 
-      slite
+    inf-ruby
 
-      scala-ts-mode
-      scala-mode
+    slite
 
-      gptel
+    scala-ts-mode
+    scala-mode
 
-      elixir-mode
-      inf-elixir
-      mix
+    gptel
 
-      smartparens
-      evil-smartparens
-      plz
+    elixir-mode
+    inf-elixir
+    mix
 
-      dash
+    smartparens
+    evil-smartparens
+    plz
 
-      ox-zenn
-      rg
+    dash
 
-      # lsp-bridge
+    ox-zenn
+    rg
 
-      org-bullets
-      editorconfig
-      open-junk-file
-      reformatter
+    # lsp-bridge
 
-      copilot
-      kdl-ts-mode
-      dotnet
-      web-mode
-      sharper
+    org-bullets
+    editorconfig
+    open-junk-file
+    reformatter
 
-      ledger-mode
-      flycheck-ledger
-      evil-ledger
-      ob-ledger
+    copilot
+    kdl-ts-mode
+    dotnet
+    web-mode
+    sharper
 
-      forge
-      consult-gh-forge
+    ledger-mode
+    flycheck-ledger
+    evil-ledger
+    ob-ledger
 
-      tempel
-      tempel-collection
-      aas
+    forge
+    consult-gh-forge
 
-      grugru
-      good-scroll
-      sublimity
-      iscroll
+    tempel
+    tempel-collection
+    aas
 
-      folding-mode
-      minimap
-      dashboard
-      god-mode
-      dimmer
-      focus
+    grugru
+    good-scroll
+    sublimity
+    iscroll
 
-      # Library
-      alert
-      dash
-      s
-    ];
+    folding-mode
+    minimap
+    dashboard
+    god-mode
+    dimmer
+    focus
+    ox-typst
+
+    # Library
+    alert
+    dash
+    s
+  ];
 }

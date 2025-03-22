@@ -6,7 +6,7 @@
     "cpu",
     "memory",
     "tray",
-    "hyprland/workspaces"
+    "sway/workspaces"
   ],
   "modules-center": ["custom/media"],
   "modules-right": [
@@ -27,6 +27,11 @@
     "format-icons": {
       "default": ["", "", ""]
     }
+  },
+  "sway/workspaces": {
+    "format": "{icon}",
+    "on-scroll-up": "hyprctl dispatch workspace e+1",
+    "on-scroll-down": "hyprctl dispatch workspace e-1"
   },
   "hyprland/workspaces": {
     "format": "{icon}",

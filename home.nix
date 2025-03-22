@@ -9,7 +9,66 @@ let
   system = "x86_64-linux";
   nurpkgs = inputs.nur-packages.legacyPackages.${system};
 
+  generated = import ./_sources/generated.nix;
+  sources = generated {
+    inherit (pkgs)
+      fetchurl
+      fetchgit
+      fetchFromGitHub
+      dockerTools
+      ;
+  };
+
   xremap-config = import ./xremap.nix { inherit pkgs; };
+
+  batch =
+    pkgs.writers.writePython3Bin "convert_and_resize"
+      {
+        libraries = with pkgs; [
+          python312Full
+          python312Packages.cairosvg
+          python312Packages.pillow
+        ];
+      }
+      ''
+        import pathlib
+        from PIL import Image
+        import cairosvg
+
+
+        def convert_and_resize(
+            svg_path: pathlib.Path, png_path: pathlib.Path, scale: float = 0.5
+        ):
+            png_data = cairosvg.svg2png(url=str(svg_path))
+
+            png_path.write_bytes(png_data)
+
+            with Image.open(png_path) as img:
+                new_size = (int(img.width * scale), int(img.height * scale))
+                resized_img = img.resize(new_size, Image.LANCZOS)
+                resized_img.save(png_path)
+
+
+        current_dir = pathlib.Path()
+        for svg_file in current_dir.glob("*.svg"):
+            png_file = svg_file.with_stem(
+                svg_file.stem + "_resize").with_suffix(".png")
+            convert_and_resize(svg_file, png_file)
+      '';
+
+  emacs_fancy_logo = pkgs.stdenv.mkDerivation rec {
+    name = "emacs_fancy_logos";
+    src = sources.emacs_fancy_logos.src;
+    # nativeBuildInputs = [ batch ];
+    buildPhase = ''
+      ${batch}/bin/convert_and_resize
+    '';
+
+    installPhase = ''
+      mkdir -p $out/share/
+      cp -r * $out/share/
+    '';
+  };
 
   wallpapers = builtins.fetchTarball {
     url = "https://github.com/zhichaoh/catppuccin-wallpapers/archive/refs/heads/main.zip";
@@ -152,6 +211,8 @@ rec {
     nurpkgs.bsky
 
     # ========== OTHER TOOLS ==========
+    jless
+    gitify
     algia
     polybarFull
     devenv
@@ -868,6 +929,7 @@ rec {
       ".data/gitmoji.json".source = (symlink gitmoji);
       ".skk".source = (symlink /${dotfiles}/ddskk-config.el);
       "Pictures/wallpapers".source = (symlink wallpapers);
+      "Pictures/.emacs-logos".source = (symlink "${emacs_fancy_logo}/share");
     };
 
   # Home Manager can also manage your environment variables through

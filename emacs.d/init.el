@@ -70,13 +70,16 @@
 
 ;; Emacs evil-mode
 (leaf evil
-  :defer-config
+  :config
   ;; (define-key evil-insert-state-map "jk" #'evil-normal-state)
   ;; (define-key evil-normal-state-map (kbd "S-j") nil)
   ;; (define-key evil-normal-state-map (kbd "S-j") #'evil-scroll-down)
+  (define-key global-map (kbd "C-<return>") #'vterm-toggle-show)
+  (define-key vterm-mode-map (kbd "C-<return>") #'vterm-toggle-hide)
 
   (define-key evil-normal-state-map (kbd "C-k") #'evil-scroll-up)
   (define-key evil-normal-state-map (kbd "C-j") #'evil-scroll-down)
+  (define-key evil-insert-state-map (kbd "C-j") #'newline-and-indent)
 
   (define-key evil-normal-state-map (kbd "M-g") #'projectile-switch-project)
   (define-key evil-normal-state-map (kbd "C-o") #'projectile-find-file)
@@ -117,6 +120,8 @@
   (global-treesit-auto-mode))
 
 (leaf treesit
+  :config
+  (setq treesit-extra-load-path `(,(expand-file-name "~/.cache/dpp/_generated/nvim-treesitter/parser")))
   :init
   (add-to-list 'auto-mode-alist '("\\.cshtml\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-ts-mode))
@@ -248,8 +253,7 @@
 ;; org-modern
 (leaf org-modern
   :init
-  ;; (with-eval-after-load 'org (global-org-modern-mode))
-  )
+  (with-eval-after-load 'org (global-org-modern-mode)))
 
 (leaf org-modern-indent)
 
@@ -331,20 +335,32 @@
 
 
 ;; LSP
-;; (leaf lsp-bridge :require t
-;;   :config
-;;   (setq acm-enable-capf t)
-;;   :init
-;;   (global-lsp-bridge-mode))
-
-
-(leaf lsp-mode :require t
+(leaf lsp-bridge :require t
   :config
+  (setq acm-enable-capf t)
+  :init
+  (global-lsp-bridge-mode))
+
+
+(leaf lsp-mode
+  :require t
+  :config
+  (setenv "LSP_USE_PLISTS" "true")
+  (setq lsp-completion-provider :none)
+
   (define-key evil-normal-state-map (kbd "K") 'lsp-ui-doc-glance)
-  :hook
-  (add-hook 'prog-mode-hook #'lsp-deferred)
-  ;; (add-hook 'prog-mode-hook #'lsp-deferred)
-  )
+
+  (add-to-list 'lsp-language-id-configuration
+	       '(nix-mode . "nil")
+	       '(python-mode . "python"))
+
+  (defun corfu-lsp-setup ()
+    (setq completion-at-point-functions '(lsp-completion-at-point))
+    (setq-local completion-styles '(orderless)
+		completion-category-defaults nil))
+
+  (add-hook 'lsp-mode-hook #'corfu-lsp-setup)
+  (add-hook 'prog-mode-hook #'lsp-deferred))
 
 ;; Eglot
 ;; (defun node-project-p ()
@@ -416,12 +432,25 @@
 
 (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 
+;; Auto Formatting
+(leaf reformatter
+  :config
+  (reformatter-define dprint
+    :program "dprint" :args `("fmt" "--stdin" ,buffer-file-name))
+  (reformatter-define deno
+    :program "deno" :args `("fmt" ,buffer-file-name))
+  (reformatter-define black
+    :program "black" :args '("-"))
+  (reformatter-define nixfmt
+    :program "nixfmt-rfcstyle" :args '("-")))
+
 ;; Lua support
 (leaf lua-mode)
 
 ;; Completion
 (leaf corfu
   :config
+  (setq corfu-cycle t)
   (setq corfu-auto t)
   (setq corfu-auto-prefix 1)
   :init
@@ -747,18 +776,9 @@
                  :stream t
                  :models '(starcoder2))))
 
-(leaf dash)
-
 (leaf editorconfig
   :config
   (editorconfig-mode 1))
-
-(leaf reformatter
-  :config
-  (reformatter-define dprint
-    :program "dprint" :args `("fmt" "--stdin" ,buffer-file-name))
-  (reformatter-define deno
-    :program "deno" :args `("fmt" ,buffer-file-name)))
 
 (leaf ledger
   :config)
@@ -789,6 +809,42 @@
 (leaf sublimity)
 
 (leaf iscroll)
+
+(leaf folding-mode
+  :require t)
+
+(leaf rg
+  :require t)
+
+(leaf open-junk-file :require t)
+
+(leaf fold-this)
+
+(leaf alert
+  :config
+  (setq alert-default-style 'libnotify))
+
+(leaf dashboard
+  :config
+  (setq dashboard-startup-banner (expand-file-name "~/Pictures/.emacs-logos/gnu_color_resize.png"))
+  (setq dashboard-startup-banner 'logo))
+
+(leaf aas
+  :config
+  (aas-set-snippets 'text-mode
+    "「" "「」"
+    "『" "『』"
+    "`" "``")
+  (aas-set-snippets 'prog-mode
+    "`" "``"))
+
+(leaf vterm)
+
+(leaf vterm-toggle)
+
+(leaf multi-vterm
+  :config
+  (setq multi-vterm-dedicated-window-height 50))
 
 
 ;; ================ My extentions ================ 
@@ -1014,16 +1070,6 @@
 
     (find-file (org-roam-node-file select-node))))
 
-;; Search
-(leaf rg
-  :require t)
-
-(leaf open-junk-file
-  :bind (("C-x j" . open-junk-file))
-  :config
-  (setq open-junk-file-format "/tmp/junk/%Y_%m_%d_%H%M%S."))
-
-
 ;; nano-tools
 ;; (leaf nano-theme)
 ;; (leaf nano-popup)
@@ -1069,6 +1115,11 @@
 ;; ================ My configuratons ================
 
 (setq create-lockfiles nil)
+
+;; For lsp-mode
+(setq gc-cons-threshold 100000000)
+(setq read-process-output-max (* 1024 1024))
+
 
 ;; Key mapping
 (define-key global-map (kbd "C-x s") 'blackening-region)
