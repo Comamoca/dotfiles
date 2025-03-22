@@ -22,6 +22,18 @@
     };
     date = "2024-10-29";
   };
+  emacs_fancy_logos = {
+    pname = "emacs_fancy_logos";
+    version = "d37f57854fb1fab379cf5c39a7c554f4e23f1801";
+    src = fetchFromGitHub {
+      owner = "egstatsml";
+      repo = "emacs_fancy_logos";
+      rev = "d37f57854fb1fab379cf5c39a7c554f4e23f1801";
+      fetchSubmodules = false;
+      sha256 = "sha256-BirkM+QDsmCFZWQAiA7vN4dJ/NNyYDDMwO8VZ5hBD54=";
+    };
+    date = "2023-04-23";
+  };
   folding-mode = {
     pname = "folding-mode";
     version = "c3912c738cf0515f65162479c55999e2992afce5";

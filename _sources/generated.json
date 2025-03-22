@@ -35,6 +35,27 @@
         },
         "version": "e6daa6bcaf4aceee29c8a5a949b43eb1b89900ed"
     },
+    "emacs_fancy_logos": {
+        "cargoLocks": null,
+        "date": "2023-04-23",
+        "extract": null,
+        "name": "emacs_fancy_logos",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "egstatsml",
+            "repo": "emacs_fancy_logos",
+            "rev": "d37f57854fb1fab379cf5c39a7c554f4e23f1801",
+            "sha256": "sha256-BirkM+QDsmCFZWQAiA7vN4dJ/NNyYDDMwO8VZ5hBD54=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "d37f57854fb1fab379cf5c39a7c554f4e23f1801"
+    },
     "folding-mode": {
         "cargoLocks": null,
         "date": "2019-11-07",
