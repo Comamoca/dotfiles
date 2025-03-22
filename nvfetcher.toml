@@ -61,3 +61,8 @@ fetch.github = "magnars/fold-this.el"
 [scroll-page-without-moving-point]
 src.git = "https://github.com/tanrax/scroll-page-without-moving-point.el"
 fetch.github = "tanrax/scroll-page-without-moving-point.el"
+
+
+[emacs_fancy_logos]
+src.git = "https://github.com/egstatsml/emacs_fancy_logos"
+fetch.github = "egstatsml/emacs_fancy_logos"
