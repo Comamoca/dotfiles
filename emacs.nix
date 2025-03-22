@@ -14,6 +14,17 @@ let
       ;
   };
 
+  aider = pkgs.emacsPackages.trivialBuild {
+    pname = "aider";
+    version = "main";
+    src = sources.aider.src;
+    buildInputs = with pkgs.emacsPackages; [
+      transient
+      magit
+      markdown-mode
+    ];
+  };
+
   folding-mode = pkgs.emacsPackages.trivialBuild {
     pname = "folding-mode";
     version = "main";
@@ -318,6 +329,10 @@ in
     dimmer
     focus
     ox-typst
+
+    # Aider
+    aidermacs 
+    aider
 
     # Library
     alert
