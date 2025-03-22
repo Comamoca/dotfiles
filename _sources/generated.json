@@ -1,4 +1,25 @@
 {
+    "aider": {
+        "cargoLocks": null,
+        "date": "2025-03-22",
+        "extract": null,
+        "name": "aider",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "tninja",
+            "repo": "aider.el",
+            "rev": "59dfd29f21105988d92f8a47b45f18c1249aa169",
+            "sha256": "sha256-OKzr6pZP/bRljkh6mGXctIrrGg0kO57LVlOIx1idMDE=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "59dfd29f21105988d92f8a47b45f18c1249aa169"
+    },
     "copilot": {
         "cargoLocks": null,
         "date": "2025-02-23",
