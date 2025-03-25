@@ -3,15 +3,15 @@
 {
   aider = {
     pname = "aider";
-    version = "59dfd29f21105988d92f8a47b45f18c1249aa169";
+    version = "1d3d396aa81445543855364da62787a2c3f40d70";
     src = fetchFromGitHub {
       owner = "tninja";
       repo = "aider.el";
-      rev = "59dfd29f21105988d92f8a47b45f18c1249aa169";
+      rev = "1d3d396aa81445543855364da62787a2c3f40d70";
       fetchSubmodules = false;
-      sha256 = "sha256-OKzr6pZP/bRljkh6mGXctIrrGg0kO57LVlOIx1idMDE=";
+      sha256 = "sha256-pzoNIMV9zDdHipToegUKvDTWo19/AV/oWYyM/ZOB0i4=";
     };
-    date = "2025-03-22";
+    date = "2025-03-24";
   };
   copilot = {
     pname = "copilot";
@@ -24,6 +24,18 @@
       sha256 = "sha256-ATIyNAnd1pU82xdGH7+z9zkOcDVJhYhh65QDQ73NiL0=";
     };
     date = "2025-02-23";
+  };
+  digs = {
+    pname = "digs";
+    version = "7b6a0776ced84e868556a2c9711e5637e9fb9b88";
+    src = fetchFromGitHub {
+      owner = "zonuexe";
+      repo = "digs.el";
+      rev = "7b6a0776ced84e868556a2c9711e5637e9fb9b88";
+      fetchSubmodules = false;
+      sha256 = "sha256-2mj6wngnU8wohC0fyFdbOswdTDqvYSBVTtwu4r2ooHQ=";
+    };
+    date = "2025-02-17";
   };
   eglot-booster = {
     pname = "eglot-booster";
@@ -114,15 +126,15 @@
   };
   org-modern-indent = {
     pname = "org-modern-indent";
-    version = "2b3ee1f8cb8be859970ffaee62f12e635f161cd3";
+    version = "fcd4368476a9c4eadfac4d6f51159d90a15de15a";
     src = fetchFromGitHub {
       owner = "jdtsmith";
       repo = "org-modern-indent";
-      rev = "2b3ee1f8cb8be859970ffaee62f12e635f161cd3";
+      rev = "fcd4368476a9c4eadfac4d6f51159d90a15de15a";
       fetchSubmodules = false;
-      sha256 = "sha256-Fd6PhvgqUaxc6VIOVPd/eXryNdj5g3xGbLLuZomJsxg=";
+      sha256 = "sha256-obx83T90LoVor5O5bniXCtWhNV7GmF3fYpNhCNgSm1M=";
     };
-    date = "2025-02-25";
+    date = "2025-03-23";
   };
   python-mode = {
     pname = "python-mode";
