@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t -*-
+
 ;; <leaf-install-code>
 (eval-and-compile
   (customize-set-variable
@@ -25,104 +27,84 @@
   :config
   (load-theme 'catppuccin t))
 
-;; Fuzzy finder
+;; MiniBuffer UI
 (leaf vertico
+  :require orderless
   :config
   (defvar vertico-count 10)
+  ;; Completion style config
+  (setq completion-styles '(orderless basic)
+	completion-category-overrides '((file (styles basic partial-completion))))
   :init 
   (vertico-mode))
 
-;; (leaf vertico-directory :ensure t)
-
-;; Fuzzy match for vertico
+;; Completion Styles
 (leaf orderless)
 
-;; Yet another completion style
 (leaf hotfuzz)
 
-;; Completion style config
-(setq completion-styles '(orderless hotfuzz basic)
-      completion-category-overrides '((file (styles basic partial-completion))))
+;; Completing read functions
+(leaf consult
+  :require t
+  :bind ((:evil-normal-state-map
+	  ("C-l" . consult-line)
+	  ("C-i" . consult-buffer))
+	 (:evil-insert-state-map
+	  ("C-." . embark-act))))
 
-;; embark
-(leaf embark
-  :config
-  (evil-define-key 'normal 'insert (kbd "C-.") 'embark-act)
-  (define-key evil-normal-state-map (kbd "C--") #'embark-export))
-
-;; Sources for vertico
-(leaf consult :require t)
 (leaf consult-dir)
-(leaf embark-consult
-  :bind
-  ((minibuffer-mode-map
-    :package emacs
-    ("M-." . embark-dwin)
-    ("C-." . embark-act))))
 
-(leaf consult-ghq 
-  :url "https://github.com/tomoya/consult-ghq"
-  :config
-  (defvar consult-ghq-find-function #'consult-find))
+;; Embark
+(leaf embark
+  :after evil
+  :bind ((:evil-normal-state-map
+	  ("C-." . embark-act)
+	  ("C--" . embark-export))
+	 (:evil-insert-state-map
+	  ("C-." . embark-act))))
 
 ;; affe
 (leaf affe)
 
-;; Emacs evil-mode
+;; For consult
+(leaf embark-consult
+  :bind ((:minibuffer-mode-map
+	  ("M-." . embark-dwin)
+	  ("C-." . embark-act))))
+
+;; Vim Keybind
 (leaf evil
+  :require t
+  :bind ((:evil-normal-state-map
+	  ("C-k" . evil-scroll-up)
+	  ("C-j" . evil-scroll-down))
+	 (:evil-insert-state-map
+	  ("C-j" . newline-and-indent)
+	  ("C-h" . delete-char)))
   :config
-  ;; (define-key evil-insert-state-map "jk" #'evil-normal-state)
-  ;; (define-key evil-normal-state-map (kbd "S-j") nil)
-  ;; (define-key evil-normal-state-map (kbd "S-j") #'evil-scroll-down)
-  (define-key global-map (kbd "C-<return>") #'vterm-toggle-show)
-  (define-key vterm-mode-map (kbd "C-<return>") #'vterm-toggle-hide)
-
-  (define-key evil-normal-state-map (kbd "C-k") #'evil-scroll-up)
-  (define-key evil-normal-state-map (kbd "C-j") #'evil-scroll-down)
-  (define-key evil-insert-state-map (kbd "C-j") #'newline-and-indent)
-
-  (define-key evil-normal-state-map (kbd "M-g") #'projectile-switch-project)
-  (define-key evil-normal-state-map (kbd "C-o") #'projectile-find-file)
-
-  (define-key evil-normal-state-map (kbd "C-l") #'consult-line)
-  (define-key evil-normal-state-map (kbd "C-i") #'consult-buffer) 
-
-  (define-key evil-normal-state-map (kbd "SPC k") #'avy-goto-line)
-  (define-key evil-insert-state-map (kbd "C-h") #'delete-backward-char)
-
-  ;; (define-key evil-normal-state-map (kbd "C-j") #'evil-scroll-down)
-  :init
   (evil-mode 1))
 
-
-;; For edit
+;; Structured editing 
 (leaf puni
   :config
   (global-set-key (kbd "C--") 'puni-expand-region)
-  (define-key evil-normal-state-map (kbd "s") nil) 
-  (define-key evil-normal-state-map (kbd "sd") #'puni-splice)
-  (define-key evil-insert-state-map (kbd "C-i") #'puni-mark-sexp-at-point)
-  (define-key evil-normal-state-map (kbd "C-p") #'puni-slurp-forward)
-  (define-key evil-normal-state-map (kbd "C-n") #'puni-barf-forward)
-
+  :bind ((:evil-insert-state-map
+	  ("s" . nil)
+	  ;; ("sd" . puni-splice)
+	  ("C-i" . puni-mark-sexp-at-point)
+	  ("C-p" . puni-slurp-forward)
+	  ("C-n" . puni-barf-forward)))
   :init
   (puni-global-mode))
 
+;; Indent guides
 (leaf highlight-indent-guides)
 
 ;; Treesitter
-(leaf treesit-auto
-  :custom
-  (treesit-auto-install 'prompt)
-  :init
-  (setq treesit-auto-install t)
-  (treesit-auto-add-to-auto-mode-alist 'all)
-  (global-treesit-auto-mode))
-
 (leaf treesit
+  :custom
+  ((treesit-font-lock-level . 4))
   :config
-  (setq treesit-extra-load-path `(,(expand-file-name "~/.cache/dpp/_generated/nvim-treesitter/parser")))
-  :init
   (add-to-list 'auto-mode-alist '("\\.cshtml\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.ex\\'" . elixir-ts-mode))
@@ -135,67 +117,76 @@
   (add-to-list 'auto-mode-alist '("\\.yaml" . yaml-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.yml" . yaml-ts-mode))
   (add-to-list 'auto-mode-alist '("templates" . lisp-data-mode))
-  (add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-ts-mode))
+  (add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-ts-mode)))
 
-  (setq treesit-font-lock-level 4))
+(leaf treesit-auto
+  :require t
+  :custom
+  ((treesit-auto-install . t)
+   (treesit-extra-load-path . `(,(expand-file-name "~/.cache/dpp/_generated/nvim-treesitter/parser"))))
+  :config  
+  (global-treesit-auto-mode)
+  ;; (treesit-auto-install 'prompt)
+  ;; (treesit-auto-add-to-auto-mode-alist 'all)
+  )
 
 ;; for envrc
 (leaf envrc)
 
-;; org-mode
-(setq org-directory (expand-file-name "~/.ghq/github.com/Comamoca/org"))
-(setq org-todo-keywords
-  '((sequence "TODO(t)" "PENDING(p)" "|" "DONE(d)" "CANCELED(c)")))
+;; Calendar 
+(leaf calendar)
 
+;; org-mode
 (leaf org
+  :after calendar-mode
+  :custom
+  ((org-todo-keywords .
+		      '((sequence "TODO(t)" "PENDING(p)" "|" "DONE(d)" "CANCELED(c)")))
+   (org-default-notes-file . "notes.org")
+   `(org-directory . ,(expand-file-name "~/.ghq/github.com/Comamoca/org"))
+   `(diary-file-path . ,(format-time-string "diary/%Y/%m-%d.org"))
+   `(memo-file-path . ,(format-time-string "memo/%Y/%m/%d.org"))
+   `(diary-path . ,(concat org-directory "/diary"))
+   (org-publish-use-timestamps-flag . nil)
+
+   ;; org-capture
+   (org-capture-templates .
+			  '(("d" "Diary" plain (file diary-file-path)
+			     "** 今日やったこと\n\n** 明日以降やりたいこと")
+			    ("m" "Memo" plain (file memo-file-path) "")))
+
+   (org-publish-project-alist .
+			      '(("Diary"
+				 :base-directory "~/.ghq/github.com/Comamoca/org/diary"
+				 :base-extension "org"  
+				 :recursive t
+				 :publishing-directory  "~/.ghq/github.com/Comamoca/org/dist"
+				 :publishing-function org-html-publish-to-html
+				 :include ("index.org")
+				 :exclude ())
+     
+				("Note"
+				 :base-directory "~/.ghq/github.com/Comamoca/org/note"
+				 :base-extension "org"  
+				 :recursive t
+				 :publishing-directory  "~/.ghq/github.com/Comamoca/org/note/dist"
+				 :publishing-function org-html-publish-to-html
+				 :auto-sitemap t
+				 :include ("index.org")
+				 :exclude ()
+				 :html-head "<link rel=\"stylesheet\" href=\"https://unpkg.com/mvp.css\">"))))   
+   
+  ;;  ;; org-babel
+  ;;  (org-confirm-babel-evaluate . nil)
+  ;;  (python-shell-interpreter . "python3"))
   :hook
   (org-capture-before-finalize-hook)
   (org-mode . org-nix-shell-mode) 
   :config
   (set-language-environment "Japanese")
   (prefer-coding-system 'utf-8)
-  (set-default 'buffer-file-coding-system 'utf-8) 
-  (setq org-default-notes-file "notes.org")
-  (setq diary-file-path (format-time-string "diary/%Y/%m-%d.org"))
-  (setq memo-file-path (format-time-string "memo/%Y/%m/%d.org"))
+  (set-default 'buffer-file-coding-system 'utf-8)
 
-  ;; org-calendar
-  (define-key calendar-mode-map (kbd "C-c c") 'org-capture-from-calendar)
-
-  ;; org-capture
-  (setq org-capture-templates
-	'(("d" "Diary" plain (file diary-file-path)
-	   "** 今日やったこと\n\n** 明日以降やりたいこと")
-	  ("m" "Memo" plain (file memo-file-path) "")
-	  ))
-
-  (setq diary-path (concat org-directory "/diary"))
-
-  (setq org-publish-use-timestamps-flag nil)
-  (setq org-publish-project-alist
-	'(("Diary"
-	   :base-directory "~/.ghq/github.com/Comamoca/org/diary"
-	   :base-extension "org"  
-	   :recursive t
-	   :publishing-directory  "~/.ghq/github.com/Comamoca/org/dist"
-	   :publishing-function org-html-publish-to-html
-	   :include ("index.org")
-	   :exclude ())
-     
-	  ("Note"
-	   :base-directory "~/.ghq/github.com/Comamoca/org/note"
-	   :base-extension "org"  
-	   :recursive t
-	   :publishing-directory  "~/.ghq/github.com/Comamoca/org/note/dist"
-	   :publishing-function org-html-publish-to-html
-	   :auto-sitemap t
-	   :include ("index.org")
-	   :exclude ()
-	   :html-head "<link rel=\"stylesheet\" href=\"https://unpkg.com/mvp.css\">")))
-
-  ;; org-babel
-  (setq org-confirm-babel-evaluate nil)
-  (setq python-shell-interpreter "python3")
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((C . t)
@@ -204,51 +195,53 @@
      (clojure . t)
      (hy . t)
      (ruby . t)
-     (ledger . t))))
+     (ledger . t)))
+  :bind ((:calendar-mode-map
+	  ("C-c c" . org-capture-from-calendar)))
+  :init
+  ;; org-calendar
+  ;; (with-eval-after-load 'calendar
+  ;;     (define-key calendar-mode-map (kbd "C-c c") 'org-capture-from-calendar))
+  )
 
-;; (add-hook 'org-mode-hook (lambda ()
-;; 			   (define-key 'evil-normal-state-map (kbd "M-v") #'org-paste-image)))
-
-(leaf ob-hy)
-
+;; org-journal
 (leaf org-journal
+  :after org
+  :custom
+  ((org-journal-time-format . "")
+   (org-journal-time-prefix . "")
+   `(org-journal-dir . ,(concat org-directory (format-time-string "/diary/%Y")))
+   `(org-journal-file-format . ,(format-time-string "%m-%d.org"))) 
   :hook
   org-journal-after-header-create-hook
   :config
-  (setq org-journal-time-format "")
-  (setq org-journal-time-prefix "")
-  (setq org-journal-dir (concat org-directory (format-time-string "/diary/%Y")))
-  (setq org-journal-file-format (format-time-string "%m-%d.org")) 
-
-  (add-hook 'org-journal-after-header-create-hook 'org-journal-date-format-func)
-
-  (defun org-journal-date-format-func ()
-    (insert-file-contents (concat org-directory "/templates/diary.org"))))
+  (add-hook 'org-journal-after-header-create-hook (lambda ()
+						    (insert-file-contents (concat org-directory "/templates/diary.org")))))
 
 
 ;; org-roam
 (leaf org-roam
-  :config
-  (setq org-roam-directory (expand-file-name "roam" org-directory))
-  (setq org-roam-db-location (expand-file-name "~/.emacs.d/org-roam/database.db"))
-  (setq org-roam-index-file (expand-file-name "index.org" org-roam-directory))
-  (setq org-roam-directory (expand-file-name "roam" org-directory))
-  ;; :init
+  :after org
+  :custom
+  (`(org-roam-directory . ,(expand-file-name "roam" org-directory))
+   `(org-roam-db-location . ,(expand-file-name "~/.emacs.d/org-roam/database.db"))
+   `(org-roam-index-file . ,(expand-file-name "index.org" org-roam-directory)))
   (org-roam-db-autosync-mode))
 
 ;; Deft
 ;; For search roam files.
 (leaf deft
-  :after (org-roam-mode)
-  :config
-  (setq deft-directory (expand-file-name "roam" org-directory))
-  (setq deft-extensions '("txt" "tex" "org")))
+  :after org-roam-mode
+  :custom
+  ((deft-extensions . '("txt" "tex" "org"))
+   `(deft-directory . ,(expand-file-name "roam" org-directory))))
 
 (leaf org-roam-ui)
 
 ;; org-bullets
 (leaf org-bullets
-  :hook org-mode-hook (org-bullets-mode 1))
+  :init
+  (org-bullets-mode 1))
 
 ;; org-modern
 (leaf org-modern
@@ -257,16 +250,19 @@
 
 (leaf org-modern-indent)
 
-;; For nix develop
+;; org-babel
+(leaf ob-hy)
+
 (leaf org-nix-shell)
 
 ;; Magit
 (leaf magit
-  :config
-  (global-set-key (kbd "C-x g") 'magit-status)
-  (define-key magit-mode-map (kbd "/") 'isearch-forward)
-  (define-key magit-mode-map (kbd "C-"))
-  (setq transient-default-level 5))
+  :custom
+  ((transient-default-level . 5))
+  :bind ((:global-map
+	  ("C-x g" . magit-status))
+	 (:magit-mode-map
+	  ("/" . isearch-forward))))
 
 ;; SKK
 (leaf ddskk
@@ -275,8 +271,10 @@
   (skk-latin-mode 1)
   (global-set-key (kbd "C-x C-j") 'skk-mode)
   (global-set-key (kbd "<henkan>") 'skk-kakutei)
-  (global-set-key (kbd "<muhenkan>") 'skk-latin-mode)
-  (leaf ddskk-posframe :global-minor-mode t))
+  (global-set-key (kbd "<muhenkan>") 'skk-latin-mode))
+
+(leaf ddskk-posframe
+  :global-minor-mode t)
 
 ;; Common Lisp
 (leaf slime
@@ -293,8 +291,7 @@
 (leaf cider)
 
 (leaf kaocha-runner
-  :after (cider-mode))
-  
+  :after cider-mode)
 
 ;; flycheck
 (leaf flycheck
@@ -326,27 +323,28 @@
 
 ;; Copilot
 (leaf copilot
+  :bind ((:copilot-completion-map
+	  ("TAB" . copilot-accept-completion)))
   :config
   (add-to-list 'copilot-major-mode-alist '("enh-ruby" . "ruby"))
-  (add-to-list 'copilot-major-mode-alist '("typescript-ts-mode" . "typescript"))
-
-  ;; keymap
-  (define-key copilot-completion-map (kbd "TAB") #'copilot-accept-completion))
-
+  (add-to-list 'copilot-major-mode-alist '("typescript-ts-mode" . "typescript")))
 
 ;; LSP
-(leaf lsp-bridge :require t
+(leaf lsp-bridge
+  :require t
+  :custom
+  ((acm-enable-capf . t))
   :config
-  (setq acm-enable-capf t)
   :init
   (global-lsp-bridge-mode))
 
 
 (leaf lsp-mode
   :require t
+  :custom
+  ((lsp-completion-provider . :none))
   :config
   (setenv "LSP_USE_PLISTS" "true")
-  (setq lsp-completion-provider :none)
 
   (define-key evil-normal-state-map (kbd "K") 'lsp-ui-doc-glance)
 
@@ -361,42 +359,6 @@
 
   (add-hook 'lsp-mode-hook #'corfu-lsp-setup)
   (add-hook 'prog-mode-hook #'lsp-deferred))
-
-;; Eglot
-;; (defun node-project-p ()
-;;   (let ((p-root (car (last (project-current)))))
-;;     (file-exists-p (concat p-root "package.json"))))
-
-;; (defun es-server-program (_)
-;;   (message (node-project-p))
-;;   (cond ((node-project-p) '("typescript-language-server" "--stdio"))
-;; 	(t '("deno" "lsp" :initializationOptions (:enable t :lint t)))))
-
-;; (defun my/eglot-capf ()
-;;     (setq-local completion-at-point-functions
-;; 		(list (cape-capf-super
-;; 		       #'eglot-completion-at-point
-;; 		       #'cape-file))))
-
-;; (leaf eglot
-;;   ;; eglot-completion-at-point 
-;;   :config
-;;   (add-to-list 'eglot-server-programs '((js-mode typescript-mode) . es-server-program))
-
-;;   :hook
-;;   (elixir-ts-mode . eglot-ensure)
-;;   (c++-mode . eglot-ensure)
-;;   (lua-ts-mode . eglot-ensure)
-;;   (gleam-ts-mode . eglot-ensure)
-;;   (nix-ts-mode . eglot-ensure)
-;;   (python-ts-mode . eglot-ensure)
-;;   (typescript-ts-mode . eglot-ensure)
-;;   (typst-ts-mode . eglot-ensure)
-;;   (scala-ts-mode . eglot-ensure)
-;;   ;; (eglot-managed-mode-hook . #'my/eglot-capf)
-;;   )
-
-;; (add-hook 'eglot-managed-mode-hook #'my/eglot-capf)
 
 ;; LSP Booster
 (defun lsp-booster--advice-json-parse (old-fn &rest args)
@@ -443,25 +405,28 @@
     :program "black" :args '("-"))
   (reformatter-define nixfmt
     :program "nixfmt-rfcstyle" :args '("-")))
-
+ 
 ;; Lua support
 (leaf lua-mode)
 
 ;; Completion
 (leaf corfu
-  :config
-  (setq corfu-cycle t)
-  (setq corfu-auto t)
-  (setq corfu-auto-prefix 1)
+  :custom
+  ((corfu-cycle . t)
+  (corfu-auto . t)
+  (corfu-auto-prefix . 1))
   :init
   (global-corfu-mode))
 
 
 ;; Cursor moation
-(leaf avy)
+(leaf avy
+  :config
+  (define-key evil-normal-state-map (kbd "SPC k") #'avy-goto-line))
 
 ;; Completion soruce
-(leaf cape :after corfu)
+(leaf cape
+  :after corfu)
 
 
   ;; (add-to-list 'completion-at-point-functions #'cape-line)
@@ -660,6 +625,9 @@
           (split-string (shell-command-to-string "ghq list --full-path")))))
 
 (leaf projectile 
+  :config
+  (define-key evil-normal-state-map (kbd "M-g") #'projectile-switch-project)
+  (define-key evil-normal-state-map (kbd "C-o") #'projectile-find-file)
   :init
   (when (executable-find "ghq")
    (update-projectlist)))
@@ -765,16 +733,16 @@
 (leaf gptel
   :config
   (setq
-     ;; gptel-model 'gemini-1.5-flash-8b
-     ;; gptel-backend (gptel-make-gemini "Gemini"
-     ;; 		     :key "AIzaSyAc48YOf5odBCNfHwTBNbO0_Z2efhoT5pQ"
-     ;; 		     :stream t))
+   ;; gptel-model 'starcoder2
+   ;; gptel-backend (gptel-make-ollama "Ollama"
+   ;;                :host "localhost:11434"
+   ;;                :stream t
+   ;;                :models '(starcoder2)))
 
-  gptel-model 'starcoder2
-  gptel-backend (gptel-make-ollama "Ollama"
-                 :host "localhost:11434"
-                 :stream t
-                 :models '(starcoder2))))
+   gptel-model 'gemini-1.5-flash-8b
+   gptel-backend (gptel-make-gemini "Gemini"
+		   :key "AIzaSyAc48YOf5odBCNfHwTBNbO0_Z2efhoT5pQ"
+		   :stream t)))
 
 (leaf editorconfig
   :config
@@ -840,27 +808,38 @@
 
 (leaf vterm)
 
-(leaf vterm-toggle)
+;; (leaf vterm-toggle
+;;   :config
+;;   (define-key evil-normal-state-map (kbd "C-<return>") 'vterm-toggle-insert-cd))
+;; (add-hook 'vterm-mode-hook
+;;       (lambda ()
+;;         (evil-local-set-key 'normal (kbd "C-<return>") 'vterm-toggle-hide))))
+;; (define-key vterm-mode-map (kbd "C-<return>") #'vterm-toggle-hide) 
+
 
 (leaf multi-vterm
   :config
   (setq multi-vterm-dedicated-window-height 50))
 
+;; (leaf aider
+;;   :config)
+
+;; (leaf aidermacs
+;;   :config)
 
 ;; ================ My extentions ================ 
-
 
 (defun nyan-region ()
   "選択範囲をにゃーんで置換する"
   (interactive)
   (when (use-region-p)
     (let* ((beg (region-beginning))
-           (end (region-end))
-	   (len (- end beg)))
+           (end (region-end)))
+     (len (- end beg)
       (delete-region beg end)
-      (cond ((= len 1) (insert "にゃ"))
-	    ((= len 2) (insert "にゃん"))
-	    (t (insert (format "にゃ%sん" (make-string (- len 3) ?ー))))))))
+      (cond ((= len 1) (insert "にゃ")))
+      ((= len 2) (insert "にゃん"))
+      (t (insert (format "にゃ%sん" (make-string (- len 3) ?ー))))))))
 
 (defun blackening-region ()
   "選択範囲を█で置換する"
@@ -881,22 +860,21 @@
   (interactive)
   (require 'url-util)
 
-  (let* ((query (read-from-minibuffer "query? > "))
-	 (url (concat "https://www.google.com/search?client=firefox-b-d&q=" (url-hexify-string query))))
+  (let* ((query (read-from-minibuffer "query? > ")))
+   (url (concat "https://www.google.com/search?client=firefox-b-d&q=" (url-hexify-string query))
   
-    (shell-command (concat "open " "'" url "'"))))
+    (shell-command (concat "open " "'" url "'")))))
 
 (defun home-manager ()
   (interactive)
-  (let ((default-directory (expand-file-name "~/.ghq/github.com/Comamoca/dotfiles"))
-	(proc (start-process "home-manager-process"
-			     "*home-manager*"
-			     "home-manager"
-			     "switch"
-			     "--flake"
-			     ".#Home"
-			     "-b"
-			     "backup")))))
+  (start-process "home-manager-process"
+		 "*home-manager*"
+		 "home-manager"
+		 "switch"
+		 "--flake"
+		 ".#Home"
+		 "-b"
+		 "backup"))
 
     ;; (set-process-sentinel proc
     ;;                           (lambda (process event)
@@ -905,9 +883,9 @@
 
 (defun notify-send (title msg)
   ;; " -i " notify-icon
-  (let ((cmd (mapconcat #'shell-quote-argument (list "notify-send"
-						     title
-						     msg) " ")))
+  (let ((cmd (mapconcat #'shell-quote-argument (list "notify-send")
+                 title
+                 msg) " "))
     (shell-command-to-string cmd)))
 
 (defun all (pred lst)
@@ -918,31 +896,44 @@
         (throw 'done nil)))))
 
 ;; 起動時にJSONファイルをパースした結果を予め用意しておく
-(setq gitmoji--json-data (let* ((gitmoji-file-path "~/.data/gitmoji.json")
-				(gitmoji-file (with-temp-buffer
-						(insert-file-contents gitmoji-file-path)
-						(buffer-substring-no-properties (point-min) (point-max))))
-				(gitmoji-json (json-parse-string gitmoji-file)))
+(setq gitmoji--json-data 
+      (let* ((gitmoji-file-path)
+             (gitmoji-file (with-temp-buffer)
+              (insert-file-contents gitmoji-file-path
+			  (buffer-substring-no-properties (point-min) (point-max))
+                      (gitmoji-json (json-parse-string gitmoji-file)
 
-			   gitmoji-json))
+                       gitmoji-json))))))
+
+(defun setup-gitmoji-data ()
+  (require 'digs)
+  (let* ((gitmoji-file-path (expand-file-name "~/.data/gitmoji.json"))
+	 (json-data (with-temp-buffer
+		      (insert-file-contents gitmoji-file-path)
+		      (json-parse-string (buffer-string) :object-type 'hash-table)))
+	 (gitmoji-codes (make-hash-table)))
+    (mapcar (lambda (item)
+	      (digs-hash item "code"))
+	    (digs-hash json-data "gitmojis"))))
 
 (defun setup-gitmoji ()
   (interactive)
   (unless (boundp 'gitmoji--codes) 
 
-    (setq gitmoji--codes
-	  (let* ((gitmojis (gethash "gitmojis" gitmoji--json-data))
-		 (gitmoji-codes (mapcar (lambda (item)
-					  ;; Remove leading “:”
-					  (substring item 1))
-					(mapcar (lambda (item)
-						  (gethash "code" item)) gitmojis))))
-	    gitmoji-codes)))
+    (setq gitmoji--codes)
+    (let* ((gitmojis (gethash "gitmojis" gitmoji--json-data)))
+     (gitmoji-codes (mapcar (lambda (item)))
+      ;; Remove leading “:”
+      (substring item 1
+             (mapcar (lambda (item))
+              (gethash "code" item)) gitmoji
+         gitmoji-codes))))
   gitmoji--codes)
 
 (defun gitmoji-completion ()
-  (when-let ((bounds (bounds-of-thing-at-point 'symbol)))
-    (list (car bounds) (cdr bounds) (setup-gitmoji))))
+  ;; (when-let ((bounds (bounds-of-thing-at-point 'symbol)))
+  ;;   (list (car bounds) (cdr bounds) (setup-gitmoji)))
+  (setup-gitmoji-data))
 
 ;; Collect gitmoji when startup
 ;; (add-hook 'emacs-startup-hook 'setup-gitmoji)
@@ -977,12 +968,12 @@
   (interactive)
   (let* ((date (format-time-string "%Y-%m-%d"))
          (file-name (format "%s-diary.md" date))
-         (path (concat (expand-file-name "src/blog/" blog-repo) file-name))
-	 (buf (find-file path)))
+         (path (concat (expand-file-name "src/blog/" blog-repo) file-name)))
+   (buf (find-file path)
     ;; (projectile-switch-project-by-name "blog")
     
-    (if (= (buffer-size) 0)
-	(tempel-insert 'diary))))
+    (if (= (buffer-size) 0))))
+  (tempel-insert 'diary))
 
 (defun new-blog-article ()
   "Open latest diary. This function call in `src/blog/` directory at blog repository."
@@ -1062,55 +1053,23 @@
 ;; consult for org-roam
 (defun consult-roam ()
   (interactive)
-  (let* ((node-items (mapcar (lambda (node)
-			       (cons (org-roam-node-title node) node)) (org-roam-node-list)))
-	 (select-node-title (consult--read
-			     (mapcar #'car node-items)))
-	 (select-node (cdr (assoc select-node-title node-items))))
+  (let* ((node-items (mapcar (lambda (node)))
+             (cons (org-roam-node-title node) node)) (org-roam-node-list))
+   (select-node-title (consult--read)
+        (mapcar #'car node-items))
+   (select-node (cdr (assoc select-node-title node-items))
 
-    (find-file (org-roam-node-file select-node))))
+    (find-file (org-roam-node-file select-node)))))
 
-;; nano-tools
-;; (leaf nano-theme)
-;; (leaf nano-popup)
+;; Pinentry Emacs
+(defun pinentry-emacs (desc prompt ok error)
+  (let ((str (read-passwd (concat (replace-regexp-in-string "%22" "\"" (replace-regexp-in-string "%0A" "\n" desc)) prompt ": "))))
+    str))
 
-;; (leaf nano-box
-;;   :init
-;;   (nano-box))
-
-;; (leaf nano-theme
-;;   :preface
-;;   :config
-;;   (load-theme 'nano-dark))
-
-;; (leaf nano-modeline
-;;   :config
-;;   (add-hook 'prog-mode-hook            #'nano-modeline-prog-mode)
-;;   (add-hook 'text-mode-hook            #'nano-modeline-text-mode)
-;;   (add-hook 'org-mode-hook             #'nano-modeline-org-mode)
-;;   (add-hook 'pdf-view-mode-hook        #'nano-modeline-pdf-mode)
-;;   (add-hook 'mu4e-headers-mode-hook    #'nano-modeline-mu4e-headers-mode)
-;;   (add-hook 'mu4e-view-mode-hook       #'nano-modeline-mu4e-message-mode)
-;;   (add-hook 'elfeed-show-mode-hook     #'nano-modeline-elfeed-entry-mode)
-;;   (add-hook 'elfeed-search-mode-hook   #'nano-modeline-elfeed-search-mode)
-;;   (add-hook 'term-mode-hook            #'nano-modeline-term-mode)
-;;   (add-hook 'xwidget-webkit-mode-hook  #'nano-modeline-xwidget-mode)
-;;   (add-hook 'messages-buffer-mode-hook #'nano-modeline-message-mode)
-;;   (add-hook 'org-capture-mode-hook     #'nano-modeline-org-capture-mode)
-;;   (add-hook 'org-agenda-mode-hook      #'nano-modeline-org-agenda-mode)
-;; )
-
-;; (setq-default fringes-outside-margins t)
-;; (setq window-margins nil)
-
-;; (defun my/display-buffer-box (window)
-;;   (with-current-buffer (window-buffer window)
-;;     (nano-box-on)))
-
-;; (setq display-buffer-alist '(((derived-mode . (prog-mode))
-;; 			      display-buffer-reuse-window
-;; 			      display-buffer-same-window
-;; 			      (body-function . my/display-buffer-box))))
+;; initel function that behaves like `:e $MYVIMRC`
+(defun initel ()
+  (interactive)
+  (find-file user-init-file))
 
 ;; ================ My configuratons ================
 
@@ -1126,27 +1085,15 @@
 (define-key global-map (kbd "C-;") 'comment-dwim)
 
 ;; Enable debug
-;; (setq debug-on-error t)
+(setq debug-on-error t)
 
 ;; Custom modeline
 (mode-line-format-update)
-
-;; Keymap
 
 ;; When org-mode
 (add-hook 'org-mode
     (lambda ()
       (local-set-key evil-insert-state-map (kbd "C-h") #'org-insert-heading)))
-
-;; Byte compile
-(leaf *byte-compile
-  :config
-  (add-hook 'after-save-hook 'my/recompile-directory)
-  (defun my/recompile-directory ()
-    (interactive)
-    (when (string-equal (file-truename (buffer-file-name))
-           (file-truename user-init-file))
-      (byte-recompile-file (expand-file-name "~/.emacs.d/init.el") 0))))
 
 (electric-pair-mode 1)
 
@@ -1163,21 +1110,6 @@
 
 ;; Disable to auto save
 (setq auto-save-default nil)
-
-;; Font
-(add-to-list 'default-frame-alist
-             '(font . "UDEV Gothic NFLG-13.5"))
-
-;; Pinentry Emacs
-(defun pinentry-emacs (desc prompt ok error)
-  (let ((str (read-passwd (concat (replace-regexp-in-string "%22" "\"" (replace-regexp-in-string "%0A" "\n" desc)) prompt ": "))))
-    str))
-
-;; initel function that behaves like `:e $MYVIMRC`
-(defun initel ()
-  "open init.el"
-  (interactive)
-  (find-file user-init-file))
 
 ;; Copy & Paste with wl-clipboard
 ;; ref: https://gist.github.com/yorickvP/6132f237fbc289a45c808d8d75e0e1fb
@@ -1215,38 +1147,3 @@
 
 (leaf macrostep
   :bind (("C-c e" . macrostep-expand)))
-
-
-;; (provide 'init)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("94bed81ca0be98f58d2cfa2676221c492c8fd5f76b40abd9d73ac00c0d0c9711"
-     "de8f2d8b64627535871495d6fe65b7d0070c4a1eb51550ce258cd240ff9394b0"
-     "1781e8bccbd8869472c09b744899ff4174d23e4f7517b8a6c721100288311fa5"
-     default))
- '(default-input-method "japanese" nil nil "Customized with leaf in `skk' block at `/home/coma/.emacs.d/init.el'")
- '(package-selected-packages '(typst-mode typst-ts-mode))
- '(package-vc-selected-packages
-   '((typst-mode :url "https://git.sr.ht/~meow_king/typst-mode")
-     (typst-ts-mode :url "https://git.sr.ht/~meow_king/typst-ts-mode")
-     (showkey :url "https://github.com/emacsmirror/showkey")
-     (hydra-posframe :url "https://github.com/Ladicle/hydra-posframe")
-     (typst-preview :url
-        "https://github.com/havarddj/typst-preview.el")))
- '(skk-jisyo-edit-user-accepts-editing t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:family "UDEV Gothic NFLG" :foundry "TWR" :slant normal :weight regular :height 128 :width normal)))))
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right. 
-(put 'downcase-region 'disabled nil)
-(put 'erase-buffer 'disabled nil)
