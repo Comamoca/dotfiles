@@ -1,7 +1,7 @@
 {
     "aider": {
         "cargoLocks": null,
-        "date": "2025-03-22",
+        "date": "2025-03-24",
         "extract": null,
         "name": "aider",
         "passthru": null,
@@ -13,12 +13,12 @@
             "name": null,
             "owner": "tninja",
             "repo": "aider.el",
-            "rev": "59dfd29f21105988d92f8a47b45f18c1249aa169",
-            "sha256": "sha256-OKzr6pZP/bRljkh6mGXctIrrGg0kO57LVlOIx1idMDE=",
+            "rev": "1d3d396aa81445543855364da62787a2c3f40d70",
+            "sha256": "sha256-pzoNIMV9zDdHipToegUKvDTWo19/AV/oWYyM/ZOB0i4=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "59dfd29f21105988d92f8a47b45f18c1249aa169"
+        "version": "1d3d396aa81445543855364da62787a2c3f40d70"
     },
     "copilot": {
         "cargoLocks": null,
@@ -40,6 +40,27 @@
             "type": "github"
         },
         "version": "7d105d708a23d16cdfd5240500be8bb02f95a46e"
+    },
+    "digs": {
+        "cargoLocks": null,
+        "date": "2025-02-17",
+        "extract": null,
+        "name": "digs",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "zonuexe",
+            "repo": "digs.el",
+            "rev": "7b6a0776ced84e868556a2c9711e5637e9fb9b88",
+            "sha256": "sha256-2mj6wngnU8wohC0fyFdbOswdTDqvYSBVTtwu4r2ooHQ=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "7b6a0776ced84e868556a2c9711e5637e9fb9b88"
     },
     "eglot-booster": {
         "cargoLocks": null,
@@ -193,7 +214,7 @@
     },
     "org-modern-indent": {
         "cargoLocks": null,
-        "date": "2025-02-25",
+        "date": "2025-03-23",
         "extract": null,
         "name": "org-modern-indent",
         "passthru": null,
@@ -205,12 +226,12 @@
             "name": null,
             "owner": "jdtsmith",
             "repo": "org-modern-indent",
-            "rev": "2b3ee1f8cb8be859970ffaee62f12e635f161cd3",
-            "sha256": "sha256-Fd6PhvgqUaxc6VIOVPd/eXryNdj5g3xGbLLuZomJsxg=",
+            "rev": "fcd4368476a9c4eadfac4d6f51159d90a15de15a",
+            "sha256": "sha256-obx83T90LoVor5O5bniXCtWhNV7GmF3fYpNhCNgSm1M=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "2b3ee1f8cb8be859970ffaee62f12e635f161cd3"
+        "version": "fcd4368476a9c4eadfac4d6f51159d90a15de15a"
     },
     "python-mode": {
         "cargoLocks": null,

@@ -70,3 +70,7 @@ fetch.github = "egstatsml/emacs_fancy_logos"
 [aider]
 src.git = "https://github.com/tninja/aider.el"
 fetch.github = "tninja/aider.el"
+
+[digs]
+src.git = "https://github.com/zonuexe/digs.el"
+fetch.github = "zonuexe/digs.el"

@@ -13,6 +13,12 @@ let
       dockerTools
       ;
   };
+  digs = pkgs.emacsPackages.trivialBuild {
+    pname = "digs";
+    version = "main";
+    src = sources.digs.src;
+    buildInputs = with pkgs.emacsPackages; [ ];
+  };
 
   aider = pkgs.emacsPackages.trivialBuild {
     pname = "aider";
@@ -177,6 +183,12 @@ in
     org-modern-indent
     org-nix-shell
 
+    calfw
+    calfw-org
+    calfw-ical
+    calfw-gcal
+    calfw-cal
+
     magit
     ddskk
 
@@ -329,6 +341,8 @@ in
     dimmer
     focus
     ox-typst
+    ace-window
+    digs
 
     # Aider
     aidermacs 
