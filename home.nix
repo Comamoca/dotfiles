@@ -211,6 +211,8 @@ rec {
     nurpkgs.bsky
 
     # ========== OTHER TOOLS ==========
+    aider-chat
+
     jless
     gitify
     algia
@@ -289,6 +291,8 @@ rec {
     google-chrome
 
     # ========== SECURITY TOOLS ==========
+    libsodium
+    libsecret
     keybase
     lssecret
 
