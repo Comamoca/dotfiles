@@ -659,30 +659,33 @@
    (nyan-start-animation)))
 
 ;; Snippets
-
 (leaf tempel
-  :config
-  (defun tempel-setup-capf ()
-    (setq-local completion-at-point-functions
-                (cons #'tempel-complete
-                      completion-at-point-functions)))
+  :require t
+  :bind (
+	 (:evil-insert-state-map
+	  ("M-a" . tempel-done))
+	 :config
+	 (defun tempel-setup-capf ()
+	   (setq-local completion-at-point-functions
+                       (cons #'tempel-complete
+			     completion-at-point-functions)))
 
-  (add-hook 'conf-mode-hook 'tempel-setup-capf)
-  (add-hook 'prog-mode-hook 'tempel-setup-capf)
-  (add-hook 'text-mode-hook 'tempel-setup-capf)
+	 (add-hook 'conf-mode-hook 'tempel-setup-capf)
+	 (add-hook 'prog-mode-hook 'tempel-setup-capf)
+	 (add-hook 'text-mode-hook 'tempel-setup-capf)
 
-  (add-hook 'markdown-mode-hook (lambda ()
-				  (setq-local
-				   completion-at-point-functions
-				   #'tempel-complete
-				   )))
+	 (add-hook 'markdown-mode-hook (lambda ()
+					 (setq-local
+					  completion-at-point-functions
+					  #'tempel-complete
+					  )))
 
-  (add-hook 'git-commit-mode-hook (lambda ()
-				    (setup-gitmoji)
-				    (setq-local completion-at-point-functions
-						(list (cape-capf-super
-						       #'tempel-complete
-						       #'gitmoji-completion))))))
+	 (add-hook 'git-commit-mode-hook (lambda ()
+					   (setup-gitmoji)
+					   (setq-local completion-at-point-functions
+						       (list (cape-capf-super
+							      #'tempel-complete
+							      #'gitmoji-completion))))))
 
 (leaf tempel-collection)
 
