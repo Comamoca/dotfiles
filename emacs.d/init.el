@@ -794,14 +794,11 @@
   (setq dashboard-startup-banner 'logo))
 
 (leaf aas
-  :require t
+  ;; :hook (text-mode . aas-activate-for-major-mode)
   :config
-  (aas-set-snippets 'text-mode
-    "「" "「」"
-    "『" "『』"
-    "`" "``")
-  (aas-set-snippets 'prog-mode
-    "`" "``"))
+  (aas-set-snippets 'global)
+  (aas-set-snippets 'markdown-mode)
+  (aas-set-snippets 'prog-mode))
 
 (leaf vterm)
 
