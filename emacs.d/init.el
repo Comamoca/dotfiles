@@ -46,11 +46,11 @@
 ;; Completing read functions
 (leaf consult
   :require t
+  :after evil
   :bind ((:evil-normal-state-map
 	  ("C-l" . consult-line)
-	  ("C-i" . consult-buffer))
-	 (:evil-insert-state-map
-	  ("C-." . embark-act))))
+	  ("C-i" . consult-buffer)))
+  :bind* (("C-." . embark-act)))
 
 (leaf consult-dir)
 
@@ -79,7 +79,7 @@
 	  ("C-k" . evil-scroll-up)
 	  ("C-j" . evil-scroll-down))
 	 (:evil-insert-state-map
-	  ("C-j" . newline-and-indent)
+	  ;; ("C-j" . newline-and-indent)
 	  ("C-h" . delete-char)))
   :config
   (evil-mode 1))
@@ -730,20 +730,6 @@
   (evil-define-key 'normal eww-mode-map
     (kbd "r") 'eww-reload))
 
-(leaf gptel
-  :config
-  (setq
-   ;; gptel-model 'starcoder2
-   ;; gptel-backend (gptel-make-ollama "Ollama"
-   ;;                :host "localhost:11434"
-   ;;                :stream t
-   ;;                :models '(starcoder2)))
-
-   gptel-model 'gemini-1.5-flash-8b
-   gptel-backend (gptel-make-gemini "Gemini"
-		   :key "AIzaSyAc48YOf5odBCNfHwTBNbO0_Z2efhoT5pQ"
-		   :stream t)))
-
 (leaf editorconfig
   :config
   (editorconfig-mode 1))
@@ -784,7 +770,11 @@
 (leaf rg
   :require t)
 
-(leaf open-junk-file :require t)
+(leaf open-junk-file
+  :require t
+  :custom
+  (open-junk-file-format . "/tmp/junk/%Y_%m_%d_%H%M%S.")
+  :bind (("C-x j" . open-junk-file)))
 
 (leaf fold-this)
 
@@ -798,6 +788,7 @@
   (setq dashboard-startup-banner 'logo))
 
 (leaf aas
+  :require t
   :config
   (aas-set-snippets 'text-mode
     "「" "「」"
@@ -809,25 +800,55 @@
 (leaf vterm)
 
 ;; (leaf vterm-toggle
-;;   :config
-;;   (define-key evil-normal-state-map (kbd "C-<return>") 'vterm-toggle-insert-cd))
-;; (add-hook 'vterm-mode-hook
-;;       (lambda ()
-;;         (evil-local-set-key 'normal (kbd "C-<return>") 'vterm-toggle-hide))))
-;; (define-key vterm-mode-map (kbd "C-<return>") #'vterm-toggle-hide) 
-
+;;   :after evil
+;;   :bind (("C-<return>" . (lambda ()
+;; 			   (interactive)
+;; 			   (vterm-toggle-insert-cd)
+;; 			   (vterm-toggle-insert-cd)))))
 
 (leaf multi-vterm
   :config
   (setq multi-vterm-dedicated-window-height 50))
 
-;; (leaf aider
-;;   :config)
+;; AI
+(setq gemini-apikey (get-secret "gemini.google.com"))
+(leaf gptel
+  :config
+  (setq
+   ;; gptel-model 'starcoder2
+   ;; gptel-backend (gptel-make-ollama "Ollama"
+   ;;                :host "localhost:11434"
+   ;;                :stream t
+   ;;                :models '(starcoder2)))
 
-;; (leaf aidermacs
-;;   :config)
+   gptel-model 'gemini-1.5-flash-8b
+   gptel-backend (gptel-make-gemini "Gemini"
+		   :key gemini-apikey
+		   :stream t)))
+
+(leaf aider
+  :require t
+  :custom
+  ((aider-args . '("--model" "gemini/gemini-1.5-flash-8b")))
+  :init
+  (setenv "GEMINI_API_KEY" (get-secret "gemini.google.com")))
+
+(leaf aidermacs
+  :require t
+  :config)
 
 ;; ================ My extentions ================ 
+
+(defun get-secret (host)
+  "Wrapper functino for auth-info"
+  (let* ((found (cl-first (auth-source-search :host host
+					      :user "coma")))
+	 (credentials (eval `(ht ,@(--map `(,it ,(plist-get found it))
+					  '(:user :secret :save-function)))))
+	 (secret (funcall (ht-get credentials :secret))))
+    (if (functionp secret)
+	(funcall secret)
+      secret)))
 
 (defun nyan-region ()
   "選択範囲をにゃーんで置換する"
@@ -895,16 +916,6 @@
       (unless (funcall pred item)
         (throw 'done nil)))))
 
-;; 起動時にJSONファイルをパースした結果を予め用意しておく
-(setq gitmoji--json-data 
-      (let* ((gitmoji-file-path)
-             (gitmoji-file (with-temp-buffer)
-              (insert-file-contents gitmoji-file-path
-			  (buffer-substring-no-properties (point-min) (point-max))
-                      (gitmoji-json (json-parse-string gitmoji-file)
-
-                       gitmoji-json))))))
-
 (defun setup-gitmoji-data ()
   (require 'digs)
   (let* ((gitmoji-file-path (expand-file-name "~/.data/gitmoji.json"))
@@ -913,27 +924,22 @@
 		      (json-parse-string (buffer-string) :object-type 'hash-table)))
 	 (gitmoji-codes (make-hash-table)))
     (mapcar (lambda (item)
-	      (digs-hash item "code"))
+	      
+	      (substring (digs-hash item "code") 1)) 
 	    (digs-hash json-data "gitmojis"))))
 
 (defun setup-gitmoji ()
   (interactive)
   (unless (boundp 'gitmoji--codes) 
-
-    (setq gitmoji--codes)
-    (let* ((gitmojis (gethash "gitmojis" gitmoji--json-data)))
-     (gitmoji-codes (mapcar (lambda (item)))
-      ;; Remove leading “:”
-      (substring item 1
-             (mapcar (lambda (item))
-              (gethash "code" item)) gitmoji
-         gitmoji-codes))))
+    (setq gitmoji--codes (setup-gitmoji-data)))
   gitmoji--codes)
 
+(setup-gitmoji)
 (defun gitmoji-completion ()
-  ;; (when-let ((bounds (bounds-of-thing-at-point 'symbol)))
-  ;;   (list (car bounds) (cdr bounds) (setup-gitmoji)))
-  (setup-gitmoji-data))
+  (let ((beg (save-excursion (skip-chars-backward "a-zA-Z") (point)))
+        (end (point))
+        (candidates gitmoji--codes))
+    (list beg end candidates :exclusive 'no)))
 
 ;; Collect gitmoji when startup
 ;; (add-hook 'emacs-startup-hook 'setup-gitmoji)
@@ -958,7 +964,7 @@
    (append mode-line-format
      '((:eval (update-buffer-char-count))
        (:eval (mode-line-time))))))
-       
+
 
 ;; For diary
 (setq blog-repo "/home/coma/.ghq/github.com/Comamoca/blog/")
@@ -969,11 +975,10 @@
   (let* ((date (format-time-string "%Y-%m-%d"))
          (file-name (format "%s-diary.md" date))
          (path (concat (expand-file-name "src/blog/" blog-repo) file-name)))
-   (buf (find-file path)
-    ;; (projectile-switch-project-by-name "blog")
-    
-    (if (= (buffer-size) 0))))
-  (tempel-insert 'diary))
+
+    (let ((buf (find-file path)))
+      (if (= (buffer-size buf) 0)
+	  (tempel-insert 'diary)))))
 
 (defun new-blog-article ()
   "Open latest diary. This function call in `src/blog/` directory at blog repository."
@@ -998,10 +1003,10 @@
   (interactive)
   (let* ((diary-dir (expand-file-name "src/blog" blog-repo))
          (diaries (sort-by-date (cl-remove-if-not (lambda (str)
-                                                   (or (string-match "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}-" str)
-                                                    (string-match-p "-diary.md" str
-                                                                              (directory-files diary-dir)
-                                                      (diary (consult--read diaries :sort nil)))))))))
+                                                    (or (string-match "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}-" str)
+							(string-match-p "-diary.md" str
+                                                                        (directory-files diary-dir)
+									(diary (consult--read diaries :sort nil)))))))))
 
     (find-file (expand-file-name diary diary-dir))))
 
@@ -1073,6 +1078,8 @@
 
 ;; ================ My configuratons ================
 
+;; For auth-info
+(setq auth-sources '("~/.emacs.d/.authinfo.gpg"))
 (setq create-lockfiles nil)
 
 ;; For lsp-mode
@@ -1085,7 +1092,7 @@
 (define-key global-map (kbd "C-;") 'comment-dwim)
 
 ;; Enable debug
-(setq debug-on-error t)
+(setq debug-on-error nil)
 
 ;; Custom modeline
 (mode-line-format-update)
@@ -1147,3 +1154,5 @@
 
 (leaf macrostep
   :bind (("C-c e" . macrostep-expand)))
+
+;; (provide 'init)
