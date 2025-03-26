@@ -266,7 +266,10 @@
 
 ;; SKK
 (leaf ddskk
-  :custom ((default-input-method . "japanease-skk"))
+  :custom ((default-input-method . "japanease-skk")
+	   (skk-auto-insert-paren . t)
+	   (skk-comp-mode . t)
+	   (skk-delete-implies-kakutei . nil))
   :config
   (skk-latin-mode 1)
   (global-set-key (kbd "C-x C-j") 'skk-mode)
