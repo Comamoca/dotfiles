@@ -240,11 +240,14 @@
 
 ;; org-bullets
 (leaf org-bullets
-  :init
-  (org-bullets-mode 1))
+  :after org
+  ;; :init
+  ;; (org-bullets-mode 1)
+  )
 
 ;; org-modern
 (leaf org-modern
+  :after
   :init
   (with-eval-after-load 'org (global-org-modern-mode)))
 
@@ -342,66 +345,107 @@
   (global-lsp-bridge-mode))
 
 
-(leaf lsp-mode
-  :require t
-  :custom
-  ((lsp-completion-provider . :none))
-  :config
-  (setenv "LSP_USE_PLISTS" "true")
+;; (leaf lsp-mode
+;;   :require t
+;;   :custom
+;;   ((lsp-completion-provider . :none))
+;;   :config
+;;   (setenv "LSP_USE_PLISTS" "true")
 
-  (define-key evil-normal-state-map (kbd "K") 'lsp-ui-doc-glance)
+;;   (define-key evil-normal-state-map (kbd "K") 'lsp-ui-doc-glance)
 
-  (add-to-list 'lsp-language-id-configuration
-	       '(nix-mode . "nil")
-	       '(python-mode . "python"))
+;;   (add-to-list 'lsp-language-id-configuration
+;; 	       '(nix-mode . "nil")
+;; 	       '(python-mode . "python"))
 
-  (defun corfu-lsp-setup ()
-    (setq completion-at-point-functions '(lsp-completion-at-point))
-    (setq-local completion-styles '(orderless)
-		completion-category-defaults nil))
+;;   (defun corfu-lsp-setup ()
+;;     (setq completion-at-point-functions '(lsp-completion-at-point))
+;;     (setq-local completion-styles '(orderless)
+;; 		completion-category-defaults nil))
 
-  (add-hook 'lsp-mode-hook #'corfu-lsp-setup)
-  (add-hook 'prog-mode-hook #'lsp-deferred))
+;;   (add-hook 'lsp-mode-hook #'corfu-lsp-setup)
+;;   (add-hook 'prog-mode-hook #'lsp-deferred))
 
 ;; LSP Booster
-(defun lsp-booster--advice-json-parse (old-fn &rest args)
-  "Try to parse bytecode instead of json."
-  (or
-   (when (equal (following-char) ?#)
-     (let ((bytecode (read (current-buffer))))
-       (when (byte-code-function-p bytecode)
-         (funcall bytecode))))
-   (apply old-fn args)))
+;; (defun lsp-booster--advice-json-parse (old-fn &rest args)
+;;   "Try to parse bytecode instead of json."
+;;   (or
+;;    (when (equal (following-char) ?#)
+;;      (let ((bytecode (read (current-buffer))))
+;;        (when (byte-code-function-p bytecode)
+;;          (funcall bytecode))))
+;;    (apply old-fn args)))
 
-(advice-add (if (progn (require 'json)
-                       (fboundp 'json-parse-buffer))
-                'json-parse-buffer
-              'json-read)
-            :around
-            #'lsp-booster--advice-json-parse)
+;; (advice-add (if (progn (require 'json)
+;;                        (fboundp 'json-parse-buffer))
+;;                 'json-parse-buffer
+;;               'json-read)
+;;             :around
+;;             #'lsp-booster--advice-json-parse)
 
-(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
-  "Prepend emacs-lsp-booster command to lsp CMD."
-  (let ((orig-result (funcall old-fn cmd test?)))
-    (if (and (not test?)                             ;; for check lsp-server-present?
-             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
-             lsp-use-plists
-             (not (functionp 'json-rpc-connection))  ;; native json-rpc
-             (executable-find "emacs-lsp-booster"))
-        (progn
-          (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
-            (setcar orig-result command-from-exec-path))
-          (message "Using emacs-lsp-booster for %s!" orig-result)
-          (cons "emacs-lsp-booster" orig-result))
-      orig-result)))
+;; (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+;;   "Prepend emacs-lsp-booster command to lsp CMD."
+;;   (let ((orig-result (funcall old-fn cmd test?)))
+;;     (if (and (not test?)                             ;; for check lsp-server-present?
+;;              (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+;;              lsp-use-plists
+;;              (not (functionp 'json-rpc-connection))  ;; native json-rpc
+;;              (executable-find "emacs-lsp-booster"))
+;;         (progn
+;;           (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+;;             (setcar orig-result command-from-exec-path))
+;;           (message "Using emacs-lsp-booster for %s!" orig-result)
+;;           (cons "emacs-lsp-booster" orig-result))
+;;       orig-result)))
 
-(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+;; (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+
+;; Eglot
+(defun deno-project-p ()
+  "Predicate for determining if the open project is a Deno one."
+  (let ((p-root (nth 2 (project-current))))
+    (or (file-exists-p (expand-file-name "deno.json" default-directory))
+	(file-exists-p (expand-file-name "deno.jsonc" default-directory)))))
+
+(defun node-project-p ()
+  "Predicate for determining if the open project is a Deno one."
+  (let ((p-root (nth 2 (project-current))))
+    (file-exists-p (expand-file-name "package.json" default-directory))))
+
+(defun es-server-program (_)
+  "Decide which server to use for ECMA Script based on project characteristics."
+  (cond ((deno-project-p) '("deno" "lsp" :initializationOptions (:enable t :lint t)))
+        ((node-project-p) '("typescript-language-server" "--stdio"))
+        (t nil)))
+
+(leaf eglot
+  :hook
+  (c++-mode . eglot-ensure)
+  (sh-mode . eglot-ensure)
+  (python-mode . eglot-ensure)
+  (html-mode . eglot-ensure)
+  (cmake-mode . eglot-ensure)
+  (bitbake-mode . eglot-ensure)
+  (typescript-ts-mode . eglot-ensure)
+  :config
+  ;; (add-to-list 'eglot-server-programs '((bitbake-mode) "bitbake-language-server"))
+  (add-to-list 'eglot-server-programs '((js-mode typescript-mode) . es-server-program))
+  (add-to-list 'eglot-server-programs '(gleam-ts-mode . ("gleam" "lsp")))
+  :bind (("M-t" . xref-find-definitions)
+	 ("M-r" . xref-find-references)
+	 ("C-t" . xref-go-back)))
+
+;; (leaf eglot-booster
+;;   :after eglot
+;;   :config (eglot-booster-mode))
 
 ;; Auto Formatting
 (leaf reformatter
-  :config
+  :config 
   (reformatter-define dprint
     :program "dprint" :args `("fmt" "--stdin" ,buffer-file-name))
+  (reformatter-define gleam
+    :program "gleam" :args `("format" "--stdin"))
   (reformatter-define deno
     :program "deno" :args `("fmt" ,buffer-file-name))
   (reformatter-define black
@@ -612,7 +656,9 @@
 (leaf kdl-ts-mode)
 
 ;; Gleam support
-(leaf gleam-ts-mode :require t)
+(leaf gleam-ts-mode
+  :require t
+  :hook gleam-on-save-mode)
 
 ;; Markdown suppot
 (leaf markdown-mode
@@ -661,31 +707,27 @@
 ;; Snippets
 (leaf tempel
   :require t
-  :bind (
-	 (:evil-insert-state-map
-	  ("M-a" . tempel-done))
-	 :config
-	 (defun tempel-setup-capf ()
-	   (setq-local completion-at-point-functions
-                       (cons #'tempel-complete
-			     completion-at-point-functions)))
+  :bind ((:evil-insert-state-map
+	  ("M-a" . tempel-done)))
+  :config 
+  (defun tempel-setup-capf ()
+    (setq-local completion-at-point-functions
+		(cons #'tempel-complete
+		      completion-at-point-functions)))
 
-	 (add-hook 'conf-mode-hook 'tempel-setup-capf)
-	 (add-hook 'prog-mode-hook 'tempel-setup-capf)
-	 (add-hook 'text-mode-hook 'tempel-setup-capf)
+  (add-hook 'conf-mode-hook 'tempel-setup-capf)
+  (add-hook 'prog-mode-hook 'tempel-setup-capf)
+  (add-hook 'text-mode-hook 'tempel-setup-capf)
 
-	 (add-hook 'markdown-mode-hook (lambda ()
-					 (setq-local
-					  completion-at-point-functions
-					  #'tempel-complete
-					  )))
+  (add-hook 'markdown-mode-hook (lambda ()
+				  (setq-local completion-at-point-functions #'tempel-complete)))
 
-	 (add-hook 'git-commit-mode-hook (lambda ()
-					   (setup-gitmoji)
-					   (setq-local completion-at-point-functions
-						       (list (cape-capf-super
-							      #'tempel-complete
-							      #'gitmoji-completion))))))
+  (add-hook 'git-commit-mode-hook (lambda ()
+				    (setup-gitmoji)
+				    (setq-local completion-at-point-functions
+						(list (cape-capf-super
+						       #'tempel-complete
+						       #'gitmoji-completion))))))
 
 (leaf tempel-collection)
 
@@ -744,6 +786,12 @@
   :config)
 
 (leaf grugru
+  :require t
+  :after evil
+  :bind ((:evil-normal-state-map
+	  ("C-a" . grugru))
+	 (:evil-normal-state-map
+	  ("C-x" . grugru-backward)))
   :config
   ;; ref: https://github.com/ROCKTAKEY/grugru/issues/44
   (defun +grugru--getter-number ()
@@ -756,11 +804,7 @@
    'number
    (lambda (arg &optional rev)
      (let ((num (string-to-number arg)))
-       (number-to-string (if rev (- num 1) (+ num 1))))))
-
-  (define-key evil-normal-state-map (kbd "C-a") 'grugru)
-  (define-key evil-normal-state-map (kbd "C-x") 'grugru-backward)
-  )
+       (number-to-string (if rev (- num 1) (+ num 1)))))))
 
 (leaf good-scroll
   :init
@@ -800,58 +844,85 @@
   (aas-set-snippets 'markdown-mode)
   (aas-set-snippets 'prog-mode))
 
+(leaf smartparens
+  :config
+  (smartparens-global-mode t))
+
 (leaf vterm)
 
-;; (leaf vterm-toggle
-;;   :after evil
-;;   :bind (("C-<return>" . (lambda ()
-;; 			   (interactive)
-;; 			   (vterm-toggle-insert-cd)
-;; 			   (vterm-toggle-insert-cd)))))
+(leaf vterm-toggle
+  :after evil
+  :bind (("C-<return>" . (lambda ()
+			   (interactive)
+			   (vterm-toggle-insert-cd)
+			   (vterm-toggle-insert-cd)))))
 
 (leaf multi-vterm
   :config
   (setq multi-vterm-dedicated-window-height 50))
 
 ;; AI
-(setq gemini-apikey (get-secret "gemini.google.com"))
-(leaf gptel
-  :config
-  (setq
-   ;; gptel-model 'starcoder2
-   ;; gptel-backend (gptel-make-ollama "Ollama"
-   ;;                :host "localhost:11434"
-   ;;                :stream t
-   ;;                :models '(starcoder2)))
+;; (setq gemini-apikey (get-secret "gemini.google.com"))
+;; (leaf gptel
+;;   :config
+;;   (setq
+;;    ;; gptel-model 'starcoder2
+;;    ;; gptel-backend (gptel-make-ollama "Ollama"
+;;    ;;                :host "localhost:11434"
+;;    ;;                :stream t
+;;    ;;                :models '(starcoder2)))
+;;
+;;    gptel-model 'gemini-1.5-flash-8b
+;;    gptel-backend (gptel-make-gemini "Gemini"
+;; 		   :key gemini-apikey
+;; 		   :stream t)))
 
-   gptel-model 'gemini-1.5-flash-8b
-   gptel-backend (gptel-make-gemini "Gemini"
-		   :key gemini-apikey
-		   :stream t)))
-
-(leaf aider
-  :require t
-  :custom
-  ((aider-args . '("--model" "gemini/gemini-1.5-flash-8b")))
-  :init
-  (setenv "GEMINI_API_KEY" (get-secret "gemini.google.com")))
+;; (leaf aider
+;;   :require t
+;;   :custom
+;;   ((aider-args . '("--model" "gemini/gemini-1.5-flash-8b")))
+;;   :init
+;;   (setenv "GEMINI_API_KEY" (get-secret "gemini.google.com")))
 
 (leaf aidermacs
   :require t
   :config)
 
-;; ================ My extentions ================ 
+(leaf minimap
+  :require t
+  :custom ((minimap-window-location . 'right)
+	   (minimap-minimum-width . 20)
+	   (minimap-major-modes . '(prog-mode
+				    markdown-mode
+				    html-mode
+				    fundamental-mode)))
+  :bind ("C-x m" . minimap-mode)
+  :config
+  (minimap-mode 1))
+
+(leaf rainbow-delimiters
+  :hook
+  (prog-mode-hook . rainbow-delimiters-mode))
+
+;; ================ My extentions ================
 
 (defun get-secret (host)
   "Wrapper functino for auth-info"
+  (require 'ht) 
   (let* ((found (cl-first (auth-source-search :host host
 					      :user "coma")))
-	 (credentials (eval `(ht ,@(--map `(,it ,(plist-get found it))
-					  '(:user :secret :save-function)))))
-	 (secret (funcall (ht-get credentials :secret))))
-    (if (functionp secret)
-	(funcall secret)
-      secret)))
+	 (credentials (when found
+			(eval `(ht ,@(--map `(,it ,(plist-get found it))
+                                            '(:user :secret :save-function))))))
+	 (secret (when credentials
+                   (ht-get credentials :secret))))
+
+    (if (not secret)
+	(progn (message (format "Does not found %s credential." host))
+	       "")
+      (if (functionp secret)
+          (funcall secret)
+	secret))))
 
 (defun nyan-region ()
   "選択範囲をにゃーんで置換する"
@@ -892,25 +963,17 @@
 (defun home-manager ()
   (interactive)
   (start-process "home-manager-process"
-		 "*home-manager*"
-		 "home-manager"
-		 "switch"
-		 "--flake"
-		 ".#Home"
-		 "-b"
-		 "backup"))
+     "*home-manager*"
+     "home-manager"
+     "switch"
+     "--flake"
+     ".#Home"
+     "-b"
+     "backup"))
 
     ;; (set-process-sentinel proc
     ;;                           (lambda (process event)
     ;;                             (when (string= event "finished\n"))))
-
-
-(defun notify-send (title msg)
-  ;; " -i " notify-icon
-  (let ((cmd (mapconcat #'shell-quote-argument (list "notify-send")
-                 title
-                 msg) " "))
-    (shell-command-to-string cmd)))
 
 (defun all (pred lst)
   "Returns t if all elements of the list satisfy the predicate."
@@ -926,9 +989,8 @@
 		      (insert-file-contents gitmoji-file-path)
 		      (json-parse-string (buffer-string) :object-type 'hash-table)))
 	 (gitmoji-codes (make-hash-table)))
-    (mapcar (lambda (item)
-	      
-	      (substring (digs-hash item "code") 1)) 
+    (mapcar (lambda (item) 
+	      (substring (digs-hash item "code") 1))
 	    (digs-hash json-data "gitmojis"))))
 
 (defun setup-gitmoji ()
@@ -968,7 +1030,6 @@
      '((:eval (update-buffer-char-count))
        (:eval (mode-line-time))))))
 
-
 ;; For diary
 (setq blog-repo "/home/coma/.ghq/github.com/Comamoca/blog/")
 
@@ -978,17 +1039,16 @@
   (let* ((date (format-time-string "%Y-%m-%d"))
          (file-name (format "%s-diary.md" date))
          (path (concat (expand-file-name "src/blog/" blog-repo) file-name)))
-
-    (let ((buf (find-file path)))
-      (if (= (buffer-size buf) 0)
-	  (tempel-insert 'diary)))))
+    (find-file path)
+    (if (= (buffer-size) 0)
+	(tempel-insert 'diary))))
 
 (defun new-blog-article ()
   "Open latest diary. This function call in `src/blog/` directory at blog repository."
   (interactive)
   (let* ((date (format-time-string "%Y-%m-%d"))
-         (title (read-string "title > "))
-         (file-name (format "%s-%s.md" date title))
+         (slug (read-string "slug > "))
+         (file-name (format "%s-%s.md" date slug))
          (path (concat (expand-file-name "src/blog/" blog-repo) file-name)))
     ;; (projectile-switch-project-by-name "blog")
     (find-file path)))
@@ -996,36 +1056,23 @@
 (defun consult-diary ()
   (interactive)
   (let* ((src-dir (expand-file-name "src/blog" blog-repo))
-	 (files (directory-files src-dir)) 
-	 (articles (cl-remove-if (lambda (file)
-				       (string-match "-diary.md$" file))
-				     files))
-	 (selected (completing-read "blog " articles)))  
+	 (files (directory-files src-dir))
+	 (articles (cl-remove-if-not (lambda (file)
+				   (string-match "-diary.md$" file))
+				 files))
+	 (selected (completing-read "blog " articles)))
     (find-file (expand-file-name selected src-dir))))
-
 
 (defun consult-article ()
   (interactive)
   (let* ((src-dir (expand-file-name "src/blog" blog-repo))
 	 (files (directory-files src-dir))
-	 (mdfiles (cl-remove-if-not (lambda (file)
-				      (string-match ".md$" file))
-				    files))
-	 (articles (cl-remove-if (lambda (file)
-				       (string-match "-diary.md$" file))
-				     mdfiles))
-	 (selected (completing-read "blog " articles)))  
-    (find-file (expand-file-name selected src-dir))))
-
-(defun extract-date (path)
-  (if (string-match "\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\)" path)
-      (match-string 1 path)))
-
-(defun sort-by-date (diaries)
-  (sort diaries (lambda (a b)
-                 (let ((date-a (extract-date a))
-                       (date-b (extract-date b)))
-                  (string> date-a date-b)))))
+	 (mdfiles (cl-remove-if-not (lambda (file))))
+	 (articles (cl-remove-if (lambda (file)))
+		   (string-match "-diary.md$" file
+				 files))
+	 (selected (completing-read "blog " articles)))
+    (find-file (expand-file-name selected src-dir)))) 
 
 (defun org-paste-image ()
   (interactive)
@@ -1163,3 +1210,4 @@
   :bind (("C-c e" . macrostep-expand)))
 
 ;; (provide 'init)
+(put 'narrow-to-region 'disabled nil)
