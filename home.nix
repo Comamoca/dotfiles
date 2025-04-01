@@ -175,6 +175,9 @@ rec {
     # ghostty
 
     # ========== EDITOR & TOOLS ==========
+    # For emacs lsp
+    emacs-lsp-booster
+
     # Game
     godot
 
