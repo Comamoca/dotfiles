@@ -48,7 +48,7 @@ fetch.github = "sabof/org-bullets"
 
 [eglot-booster]
 src.git = "https://github.com/jdtsmith/eglot-booster"
-fetch.url = "https://raw.githubusercontent.com/jdtsmith/eglot-booster/refs/heads/main/eglot-booster.el"
+fetch.github = "jdtsmith/eglot-booster"
 
 [copilot]
 src.git = "https://github.com/copilot-emacs/copilot.el"
@@ -74,3 +74,15 @@ fetch.github = "tninja/aider.el"
 [digs]
 src.git = "https://github.com/zonuexe/digs.el"
 fetch.github = "zonuexe/digs.el"
+
+[mcp]
+src.git = "https://github.com/lizqwerscott/mcp.el"
+fetch.github = "lizqwerscott/mcp.el"
+
+[project]
+src.git = "https://github.com/emacs-mirror/emacs"
+fetch.url = "https://raw.githubusercontent.com/emacs-mirror/emacs/refs/heads/master/lisp/progmodes/project.el"
+
+[rainbow-delimiters]
+src.git = "https://github.com/Fanael/rainbow-delimiters"
+fetch.github = "Fanael/rainbow-delimiters"
