@@ -13,6 +13,37 @@ let
       dockerTools
       ;
   };
+
+  rainbow-delimiters = pkgs.emacsPackages.trivialBuild {
+    pname = "";
+    version = "main";
+    src = sources.rainbow-delimiters.src;
+    buildInputs = with pkgs; [ ];
+  };
+
+  project = pkgs.emacsPackages.trivialBuild {
+    pname = "project";
+    version = "main";
+    src = sources.project.src;
+    buildInputs = with pkgs; [ ];
+  };
+
+  lsp-booster = pkgs.emacsPackages.trivialBuild {
+    pname = "lsp-booster";
+    version = "main";
+    src = sources.lsp-booster.src;
+    nativeBuildInputs = with pkgs; [
+      emacs-lsp-booster     
+    ];
+  };
+
+  mcp = pkgs.emacsPackages.trivialBuild {
+    pname = "mcp";
+    version = "main";
+    src = sources.mcp.src;
+    buildInputs = with pkgs.emacsPackages; [ ];
+  };
+
   digs = pkgs.emacsPackages.trivialBuild {
     pname = "digs";
     version = "main";
@@ -135,7 +166,7 @@ let
     pname = "eglot-booster";
     version = "main";
     src = sources.eglot-booster.src;
-    buildInputs = with pkgs.emacsPackages; [ ];
+    buildInputs = with pkgs.emacsPackages; [ eglot jsonrpc ];
   };
 
   copilot = pkgs.emacsPackages.trivialBuild {
@@ -202,8 +233,9 @@ in
     cider-eval-sexp-fu
     kaocha-runner
 
-    eglot
+    eglot 
     eglot-booster
+    eldoc-box
 
     lsp-mode
     lsp-ui
@@ -237,6 +269,7 @@ in
     markdown-mode
     astro-ts-mode
 
+    project
     projectile
     migemo
     nyan-mode
@@ -343,6 +376,13 @@ in
     ox-typst
     ace-window
     digs
+    undo-tree
+    mcp
+
+    gnuplot
+    gnuplot-mode
+
+    rainbow-delimiters
 
     # Aider
     aidermacs 
