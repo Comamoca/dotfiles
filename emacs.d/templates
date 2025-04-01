@@ -14,6 +14,15 @@ markdown-mode
        "## 今日やったこと" n n n
        "## 明日以降やりたいこと" n)
 
+(article "---" n
+       "title: ''" n
+       "description: ''" n
+       "pubDate: '" (format-time-string "%b %d %Y") " '" n
+       "emoji: 🦊" n
+       "tags: []" n
+       "draft: true" n
+       "---" n n)
+
 emacs-lisp-mode
 
 
