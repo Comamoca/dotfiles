@@ -1,7 +1,7 @@
 {
     "aider": {
         "cargoLocks": null,
-        "date": "2025-03-24",
+        "date": "2025-03-30",
         "extract": null,
         "name": "aider",
         "passthru": null,
@@ -13,16 +13,16 @@
             "name": null,
             "owner": "tninja",
             "repo": "aider.el",
-            "rev": "1d3d396aa81445543855364da62787a2c3f40d70",
-            "sha256": "sha256-pzoNIMV9zDdHipToegUKvDTWo19/AV/oWYyM/ZOB0i4=",
+            "rev": "d2d4ad37ab385a40373cf7e9a6776be9308eecc6",
+            "sha256": "sha256-mIWvGeUmFUrbUL2+upr09NpFLY17y62V2prkUSoBqfM=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "1d3d396aa81445543855364da62787a2c3f40d70"
+        "version": "d2d4ad37ab385a40373cf7e9a6776be9308eecc6"
     },
     "copilot": {
         "cargoLocks": null,
-        "date": "2025-02-23",
+        "date": "2025-03-31",
         "extract": null,
         "name": "copilot",
         "passthru": null,
@@ -34,12 +34,12 @@
             "name": null,
             "owner": "copilot-emacs",
             "repo": "copilot.el",
-            "rev": "7d105d708a23d16cdfd5240500be8bb02f95a46e",
-            "sha256": "sha256-ATIyNAnd1pU82xdGH7+z9zkOcDVJhYhh65QDQ73NiL0=",
+            "rev": "ec2d61ecc679dea951590fbfe297cceee19ce341",
+            "sha256": "sha256-QS8Y7opTOXvzMt1R8niOf6WdpxwVE8vA7HbhAfuKTWE=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "7d105d708a23d16cdfd5240500be8bb02f95a46e"
+        "version": "ec2d61ecc679dea951590fbfe297cceee19ce341"
     },
     "digs": {
         "cargoLocks": null,
@@ -70,10 +70,16 @@
         "passthru": null,
         "pinned": false,
         "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
             "name": null,
-            "sha256": "sha256-MGMKFtivqM979xf2H0XinLvlVhp23Ynd1+UqTxD3eZY=",
-            "type": "url",
-            "url": "https://raw.githubusercontent.com/jdtsmith/eglot-booster/refs/heads/main/eglot-booster.el"
+            "owner": "jdtsmith",
+            "repo": "eglot-booster",
+            "rev": "e6daa6bcaf4aceee29c8a5a949b43eb1b89900ed",
+            "sha256": "sha256-PLfaXELkdX5NZcSmR1s/kgmU16ODF8bn56nfTh9g6bs=",
+            "sparseCheckout": [],
+            "type": "github"
         },
         "version": "e6daa6bcaf4aceee29c8a5a949b43eb1b89900ed"
     },
@@ -176,6 +182,27 @@
         },
         "version": "3dbf116cd19261d8d70f456ae3385e1d20208452"
     },
+    "mcp": {
+        "cargoLocks": null,
+        "date": "2025-03-26",
+        "extract": null,
+        "name": "mcp",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "lizqwerscott",
+            "repo": "mcp.el",
+            "rev": "223b9fb69554406b7eb49abcba5fb30acdc595c5",
+            "sha256": "sha256-2R0yTSyyPfxBzmlk3Xo98WWroENGY5ZK41UFUFeQQeI=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "223b9fb69554406b7eb49abcba5fb30acdc595c5"
+    },
     "ob-ledger": {
         "cargoLocks": null,
         "date": "2012-11-06",
@@ -233,6 +260,21 @@
         },
         "version": "fcd4368476a9c4eadfac4d6f51159d90a15de15a"
     },
+    "project": {
+        "cargoLocks": null,
+        "date": "2025-03-31",
+        "extract": null,
+        "name": "project",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-c+D4fb70PrFensbiEFWg5fNYEQqY1W+Pgch7CYc0Ylc=",
+            "type": "url",
+            "url": "https://raw.githubusercontent.com/emacs-mirror/emacs/refs/heads/master/lisp/progmodes/project.el"
+        },
+        "version": "1ed1cc83491311517ba46dff73fdc4383ffd4102"
+    },
     "python-mode": {
         "cargoLocks": null,
         "date": "2025-02-23",
@@ -253,6 +295,27 @@
             "type": "github"
         },
         "version": "1652ed5e650accdf87611814f35907c9da4a47f6"
+    },
+    "rainbow-delimiters": {
+        "cargoLocks": null,
+        "date": "2023-08-30",
+        "extract": null,
+        "name": "rainbow-delimiters",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "Fanael",
+            "repo": "rainbow-delimiters",
+            "rev": "f40ece58df8b2f0fb6c8576b527755a552a5e763",
+            "sha256": "sha256-JcNRW0+L65NtOBronwyT7SHP9QsNa3ysj4cHv88yfoI=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "f40ece58df8b2f0fb6c8576b527755a552a5e763"
     },
     "scroll-page-without-moving-point": {
         "cargoLocks": null,
@@ -334,7 +397,7 @@
     },
     "typst-preview": {
         "cargoLocks": null,
-        "date": "2025-03-17",
+        "date": "2025-03-26",
         "extract": null,
         "name": "typst-preview",
         "passthru": null,
@@ -346,12 +409,12 @@
             "name": null,
             "owner": "havarddj",
             "repo": "typst-preview.el",
-            "rev": "5719d0fcc624e7910a105bd8eefd2b10bf92a0bf",
-            "sha256": "sha256-r8o90SYFShPLNetLLALrP47jd8PQccvnXCJbKrF9fpk=",
+            "rev": "8d5d1f5bd70d9e6b2fa89295ac3a5802419305a2",
+            "sha256": "sha256-pPYs74qIGvm4RAP9U5PnYkoeagAfVNsl6mW05BnFXlY=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "5719d0fcc624e7910a105bd8eefd2b10bf92a0bf"
+        "version": "8d5d1f5bd70d9e6b2fa89295ac3a5802419305a2"
     },
     "typst-ts-mode": {
         "cargoLocks": null,

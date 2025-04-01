@@ -3,27 +3,27 @@
 {
   aider = {
     pname = "aider";
-    version = "1d3d396aa81445543855364da62787a2c3f40d70";
+    version = "d2d4ad37ab385a40373cf7e9a6776be9308eecc6";
     src = fetchFromGitHub {
       owner = "tninja";
       repo = "aider.el";
-      rev = "1d3d396aa81445543855364da62787a2c3f40d70";
+      rev = "d2d4ad37ab385a40373cf7e9a6776be9308eecc6";
       fetchSubmodules = false;
-      sha256 = "sha256-pzoNIMV9zDdHipToegUKvDTWo19/AV/oWYyM/ZOB0i4=";
+      sha256 = "sha256-mIWvGeUmFUrbUL2+upr09NpFLY17y62V2prkUSoBqfM=";
     };
-    date = "2025-03-24";
+    date = "2025-03-30";
   };
   copilot = {
     pname = "copilot";
-    version = "7d105d708a23d16cdfd5240500be8bb02f95a46e";
+    version = "ec2d61ecc679dea951590fbfe297cceee19ce341";
     src = fetchFromGitHub {
       owner = "copilot-emacs";
       repo = "copilot.el";
-      rev = "7d105d708a23d16cdfd5240500be8bb02f95a46e";
+      rev = "ec2d61ecc679dea951590fbfe297cceee19ce341";
       fetchSubmodules = false;
-      sha256 = "sha256-ATIyNAnd1pU82xdGH7+z9zkOcDVJhYhh65QDQ73NiL0=";
+      sha256 = "sha256-QS8Y7opTOXvzMt1R8niOf6WdpxwVE8vA7HbhAfuKTWE=";
     };
-    date = "2025-02-23";
+    date = "2025-03-31";
   };
   digs = {
     pname = "digs";
@@ -40,9 +40,12 @@
   eglot-booster = {
     pname = "eglot-booster";
     version = "e6daa6bcaf4aceee29c8a5a949b43eb1b89900ed";
-    src = fetchurl {
-      url = "https://raw.githubusercontent.com/jdtsmith/eglot-booster/refs/heads/main/eglot-booster.el";
-      sha256 = "sha256-MGMKFtivqM979xf2H0XinLvlVhp23Ynd1+UqTxD3eZY=";
+    src = fetchFromGitHub {
+      owner = "jdtsmith";
+      repo = "eglot-booster";
+      rev = "e6daa6bcaf4aceee29c8a5a949b43eb1b89900ed";
+      fetchSubmodules = false;
+      sha256 = "sha256-PLfaXELkdX5NZcSmR1s/kgmU16ODF8bn56nfTh9g6bs=";
     };
     date = "2024-10-29";
   };
@@ -103,6 +106,18 @@
     };
     date = "2024-01-05";
   };
+  mcp = {
+    pname = "mcp";
+    version = "223b9fb69554406b7eb49abcba5fb30acdc595c5";
+    src = fetchFromGitHub {
+      owner = "lizqwerscott";
+      repo = "mcp.el";
+      rev = "223b9fb69554406b7eb49abcba5fb30acdc595c5";
+      fetchSubmodules = false;
+      sha256 = "sha256-2R0yTSyyPfxBzmlk3Xo98WWroENGY5ZK41UFUFeQQeI=";
+    };
+    date = "2025-03-26";
+  };
   ob-ledger = {
     pname = "ob-ledger";
     version = "c2ebeea6f68f2ef804d387c238e4acccf655dc64";
@@ -136,6 +151,15 @@
     };
     date = "2025-03-23";
   };
+  project = {
+    pname = "project";
+    version = "1ed1cc83491311517ba46dff73fdc4383ffd4102";
+    src = fetchurl {
+      url = "https://raw.githubusercontent.com/emacs-mirror/emacs/refs/heads/master/lisp/progmodes/project.el";
+      sha256 = "sha256-c+D4fb70PrFensbiEFWg5fNYEQqY1W+Pgch7CYc0Ylc=";
+    };
+    date = "2025-03-31";
+  };
   python-mode = {
     pname = "python-mode";
     version = "1652ed5e650accdf87611814f35907c9da4a47f6";
@@ -147,6 +171,18 @@
       sha256 = "sha256-XCX0HMZrNt3GPJCQ11vVMV2ieqza2EvoMDLbGpT7JVQ=";
     };
     date = "2025-02-23";
+  };
+  rainbow-delimiters = {
+    pname = "rainbow-delimiters";
+    version = "f40ece58df8b2f0fb6c8576b527755a552a5e763";
+    src = fetchFromGitHub {
+      owner = "Fanael";
+      repo = "rainbow-delimiters";
+      rev = "f40ece58df8b2f0fb6c8576b527755a552a5e763";
+      fetchSubmodules = false;
+      sha256 = "sha256-JcNRW0+L65NtOBronwyT7SHP9QsNa3ysj4cHv88yfoI=";
+    };
+    date = "2023-08-30";
   };
   scroll-page-without-moving-point = {
     pname = "scroll-page-without-moving-point";
@@ -195,15 +231,15 @@
   };
   typst-preview = {
     pname = "typst-preview";
-    version = "5719d0fcc624e7910a105bd8eefd2b10bf92a0bf";
+    version = "8d5d1f5bd70d9e6b2fa89295ac3a5802419305a2";
     src = fetchFromGitHub {
       owner = "havarddj";
       repo = "typst-preview.el";
-      rev = "5719d0fcc624e7910a105bd8eefd2b10bf92a0bf";
+      rev = "8d5d1f5bd70d9e6b2fa89295ac3a5802419305a2";
       fetchSubmodules = false;
-      sha256 = "sha256-r8o90SYFShPLNetLLALrP47jd8PQccvnXCJbKrF9fpk=";
+      sha256 = "sha256-pPYs74qIGvm4RAP9U5PnYkoeagAfVNsl6mW05BnFXlY=";
     };
-    date = "2025-03-17";
+    date = "2025-03-26";
   };
   typst-ts-mode = {
     pname = "typst-ts-mode";
