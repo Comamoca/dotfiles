@@ -80,7 +80,8 @@
 	  ("C-j" . evil-scroll-down))
 	 (:evil-insert-state-map
 	  ;; ("C-j" . newline-and-indent)
-	  ("C-h" . delete-char)))
+	  ("C-h" . delete-backward-char)))
+ 
   :config
   (evil-mode 1))
 
@@ -117,6 +118,7 @@
   (add-to-list 'auto-mode-alist '("\\.yaml" . yaml-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.yml" . yaml-ts-mode))
   (add-to-list 'auto-mode-alist '("templates" . lisp-data-mode))
+  (add-to-list 'auto-mode-alist '(".aiderrules" . markdown-mode))
   (add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-ts-mode)))
 
 (leaf treesit-auto
@@ -267,6 +269,10 @@
 	 (:magit-mode-map
 	  ("/" . isearch-forward))))
 
+;; Forge
+(leaf forge
+  :after magit)
+
 ;; SKK
 (leaf ddskk
   :custom ((default-input-method . "japanease-skk")
@@ -336,15 +342,15 @@
   (add-to-list 'copilot-major-mode-alist '("typescript-ts-mode" . "typescript")))
 
 ;; LSP
-(leaf lsp-bridge
-  :require t
-  :custom
-  ((acm-enable-capf . t))
-  :config
-  :init
-  (global-lsp-bridge-mode))
+;; (leaf lsp-bridge
+;;   :require t
+;;   :custom
+;;   ((acm-enable-capf . t))
+;;   :config
+;;   :init
+;;   (global-lsp-bridge-mode))
 
-
+;; lso-mode
 ;; (leaf lsp-mode
 ;;   :require t
 ;;   :custom
@@ -366,7 +372,7 @@
 ;;   (add-hook 'lsp-mode-hook #'corfu-lsp-setup)
 ;;   (add-hook 'prog-mode-hook #'lsp-deferred))
 
-;; LSP Booster
+;; ;; LSP Booster
 ;; (defun lsp-booster--advice-json-parse (old-fn &rest args)
 ;;   "Try to parse bytecode instead of json."
 ;;   (or
@@ -625,12 +631,9 @@
   (nix-ts-mode))
 
 ;; Scala suppport
-;; (leaf scala-ts-mode
-;;   :config
-;;   (add-to-list 'auto-mode-alist '("\\.scala\\'" . scala-mode)))
-
 (leaf scala-mode
   :interpreter ("scala" . scala-mode))
+
 
 (leaf sbt-mode
   :commands sbt-start sbt-command
@@ -839,7 +842,7 @@
 
 (leaf aas
   ;; :hook (text-mode . aas-activate-for-major-mode)
-  :config
+  :init
   (aas-set-snippets 'global)
   (aas-set-snippets 'markdown-mode)
   (aas-set-snippets 'prog-mode))
@@ -862,31 +865,42 @@
   (setq multi-vterm-dedicated-window-height 50))
 
 ;; AI
-;; (setq gemini-apikey (get-secret "gemini.google.com"))
-;; (leaf gptel
-;;   :config
-;;   (setq
-;;    ;; gptel-model 'starcoder2
-;;    ;; gptel-backend (gptel-make-ollama "Ollama"
-;;    ;;                :host "localhost:11434"
-;;    ;;                :stream t
-;;    ;;                :models '(starcoder2)))
-;;
-;;    gptel-model 'gemini-1.5-flash-8b
-;;    gptel-backend (gptel-make-gemini "Gemini"
-;; 		   :key gemini-apikey
-;; 		   :stream t)))
+(add-hook 'server-after-make-frame-hook
+          (lambda ()
+            (setenv "GEMINI_API_KEY" (get-secret "gemini.google.com"))
+	    (setq gemini-apikey (get-secret "gemini.google.com"))))
 
-;; (leaf aider
-;;   :require t
-;;   :custom
-;;   ((aider-args . '("--model" "gemini/gemini-1.5-flash-8b")))
-;;   :init
-;;   (setenv "GEMINI_API_KEY" (get-secret "gemini.google.com")))
+(leaf gptel
+  :config
+  (setq
+   ;; gptel-model 'starcoder2
+   ;; gptel-backend (gptel-make-ollama "Ollama"
+   ;;                :host "localhost:11434"
+   ;;                :stream t
+   ;;                :models '(starcoder2)))
+
+   gptel-model 'gemini-2.5-flash
+   gptel-backend (gptel-make-gemini "Gemini"
+		   :key gemini-apikey
+		   :stream t)))
+
+;; AI codeing
+(leaf aider
+  :require t
+  :custom
+  ((aider-args . '("--model" "gemini/gemini-2.5-flash-preview-04-17"))))
 
 (leaf aidermacs
   :require t
-  :config)
+  :config
+  (setq aidermacs-watch-files t)
+  :custom
+  ((aidermacs-default-model . "gemini/gemini-2.0-flash")
+   (aidermacs-watch-files . t)))
+;; (aidermacs-default-model . "gemini/gemini-2.5-flash-preview-04-17")
+
+
+(leaf mcp)
 
 (leaf minimap
   :require t
@@ -903,6 +917,14 @@
 (leaf rainbow-delimiters
   :hook
   (prog-mode-hook . rainbow-delimiters-mode))
+
+(leaf ox-zenn
+  :after org
+  :require t)
+
+(leaf verb)
+
+(leaf quickrun)
 
 ;; ================ My extentions ================
 
@@ -1132,6 +1154,10 @@
 
 ;; ================ My configuratons ================
 
+;; Font
+(add-to-list 'default-frame-alist
+                       '(font . "UDEV Gothic NF-14"))
+
 ;; For auth-info
 (setq auth-sources '("~/.emacs.d/.authinfo.gpg"))
 (setq create-lockfiles nil)
@@ -1144,6 +1170,13 @@
 ;; Key mapping
 (define-key global-map (kbd "C-x s") 'blackening-region)
 (define-key global-map (kbd "C-;") 'comment-dwim)
+
+;; minibuffer
+(define-key minibuffer-local-map (kbd "C-h") 'delete-backward-char)
+(define-key minibuffer-local-ns-map (kbd "C-h") 'delete-backward-char)
+(define-key minibuffer-local-completion-map (kbd "C-h") 'delete-backward-char)
+(define-key minibuffer-local-must-match-map (kbd "C-h") 'delete-backward-char)
+(define-key minibuffer-local-filename-completion-map (kbd "C-h") 'delete-backward-char)
 
 ;; Enable debug
 (setq debug-on-error nil)
@@ -1211,3 +1244,15 @@
 
 ;; (provide 'init)
 (put 'narrow-to-region 'disabled nil)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(skk-jisyo-edit-user-accepts-editing t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
