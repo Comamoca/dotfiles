@@ -159,7 +159,7 @@ rec {
     # catppuccin
 
     # Nix
-    nixVersions.nix_2_25
+    nixVersions.nix_2_28
 
     # ========== NIXGL ==========
     # nixgl.nixGLIntel
@@ -214,6 +214,7 @@ rec {
     nurpkgs.bsky
 
     # ========== OTHER TOOLS ==========
+    tldr
     aider-chat
 
     jless
@@ -937,8 +938,15 @@ rec {
       ".skk".source = (symlink /${dotfiles}/ddskk-config.el);
       "Pictures/wallpapers".source = (symlink wallpapers);
       "Pictures/.emacs-logos".source = (symlink "${emacs_fancy_logo}/share");
+      ".aider.conf.yml".source = (pkgs.formats.yaml { }).generate ".aider.conf.yml" {
+	read = [
+	  "CONVENTIONS.md"
+	  "CONTRIBUTION.md" 
+	  "README.md"
+	  ".aiderrules"
+	];
+      };
     };
-
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a
   # shell provided by Home Manager. If you don't want to manage your shell
