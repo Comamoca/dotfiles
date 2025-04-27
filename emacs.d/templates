@@ -6,7 +6,7 @@ markdown-mode
 (diary "---" n
        "title: '" (format-time-string "%Y-%m-%d") "の日報'" n
        "description: '" (format-time-string "%-m/%-d") "の日報をお届けいたします。'" n
-       "pubDate: '" (format-time-string "%b %d %Y") " '" n
+       "pubDate: '" (format-time-string "%b %-d %Y") " '" n
        "emoji: 🦊" n
        "tags: []" n
        "draft: false" n
@@ -17,7 +17,7 @@ markdown-mode
 (article "---" n
        "title: ''" n
        "description: ''" n
-       "pubDate: '" (format-time-string "%b %d %Y") " '" n
+       "pubDate: '" (format-time-string "%b %-d %Y") " '" n
        "emoji: 🦊" n
        "tags: []" n
        "draft: true" n
