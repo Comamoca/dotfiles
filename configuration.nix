@@ -348,7 +348,7 @@ in
   programs.nix-ld.enable = true;
 
   # Android Debug Bridge
-  # programs.adb.enable = true;
+  programs.adb.enable = true;
 
   programs.waybar.enable = true;
 
