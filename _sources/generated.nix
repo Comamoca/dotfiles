@@ -3,27 +3,27 @@
 {
   aider = {
     pname = "aider";
-    version = "d2d4ad37ab385a40373cf7e9a6776be9308eecc6";
+    version = "35cc68d38e4a1b0cbe5047b7b803116ec96a82f4";
     src = fetchFromGitHub {
       owner = "tninja";
       repo = "aider.el";
-      rev = "d2d4ad37ab385a40373cf7e9a6776be9308eecc6";
+      rev = "35cc68d38e4a1b0cbe5047b7b803116ec96a82f4";
       fetchSubmodules = false;
-      sha256 = "sha256-mIWvGeUmFUrbUL2+upr09NpFLY17y62V2prkUSoBqfM=";
+      sha256 = "sha256-NV6PyNy50UXlGzFYar8O6My6V30+wXzkimofxi31po4=";
     };
-    date = "2025-03-30";
+    date = "2025-04-18";
   };
   copilot = {
     pname = "copilot";
-    version = "ec2d61ecc679dea951590fbfe297cceee19ce341";
+    version = "229d8544834a8d446ec9747102ad160280a65620";
     src = fetchFromGitHub {
       owner = "copilot-emacs";
       repo = "copilot.el";
-      rev = "ec2d61ecc679dea951590fbfe297cceee19ce341";
+      rev = "229d8544834a8d446ec9747102ad160280a65620";
       fetchSubmodules = false;
-      sha256 = "sha256-QS8Y7opTOXvzMt1R8niOf6WdpxwVE8vA7HbhAfuKTWE=";
+      sha256 = "sha256-1OJwP0xoxAgleaxUGcCrlfHvo0Bqzf+tEH6jOwRBZ6c=";
     };
-    date = "2025-03-31";
+    date = "2025-04-17";
   };
   digs = {
     pname = "digs";
@@ -75,15 +75,15 @@
   };
   gleam-mode = {
     pname = "gleam-mode";
-    version = "75b5b1a2eede31969a94322f117b0c82036ff40b";
+    version = "8e981614536f0e36fb14721a9fae8bf72c287a40";
     src = fetchFromGitHub {
       owner = "gleam-lang";
       repo = "gleam-mode";
-      rev = "75b5b1a2eede31969a94322f117b0c82036ff40b";
+      rev = "8e981614536f0e36fb14721a9fae8bf72c287a40";
       fetchSubmodules = false;
-      sha256 = "sha256-pFG4NjFlYdGsulUwbujA01w1gHt+U67fYvFLNdN5RYg=";
+      sha256 = "sha256-JyfQjOS5yBALlf7cxRIQbDX9+7MC3YsZvkHweOHoV3c=";
     };
-    date = "2025-02-23";
+    date = "2025-04-12";
   };
   hydra-posframe = {
     pname = "hydra-posframe";
@@ -108,15 +108,15 @@
   };
   mcp = {
     pname = "mcp";
-    version = "223b9fb69554406b7eb49abcba5fb30acdc595c5";
+    version = "5e53852e3963598ce8518ac8062f19d99ab944c3";
     src = fetchFromGitHub {
       owner = "lizqwerscott";
       repo = "mcp.el";
-      rev = "223b9fb69554406b7eb49abcba5fb30acdc595c5";
+      rev = "5e53852e3963598ce8518ac8062f19d99ab944c3";
       fetchSubmodules = false;
-      sha256 = "sha256-2R0yTSyyPfxBzmlk3Xo98WWroENGY5ZK41UFUFeQQeI=";
+      sha256 = "sha256-MeNnhk/ZlYT/x4nXjllSoBWiBI3E+OTbjWJF5wJY1Ek=";
     };
-    date = "2025-03-26";
+    date = "2025-04-19";
   };
   ob-ledger = {
     pname = "ob-ledger";
@@ -141,36 +141,39 @@
   };
   org-modern-indent = {
     pname = "org-modern-indent";
-    version = "fcd4368476a9c4eadfac4d6f51159d90a15de15a";
+    version = "9973bd3b91e4733a3edd1fca232208c837c05473";
     src = fetchFromGitHub {
       owner = "jdtsmith";
       repo = "org-modern-indent";
-      rev = "fcd4368476a9c4eadfac4d6f51159d90a15de15a";
+      rev = "9973bd3b91e4733a3edd1fca232208c837c05473";
       fetchSubmodules = false;
-      sha256 = "sha256-obx83T90LoVor5O5bniXCtWhNV7GmF3fYpNhCNgSm1M=";
+      sha256 = "sha256-st3338Jk9kZ5BLEPRJZhjqdncMpLoWNwp60ZwKEObyU=";
     };
-    date = "2025-03-23";
-  };
-  project = {
-    pname = "project";
-    version = "1ed1cc83491311517ba46dff73fdc4383ffd4102";
-    src = fetchurl {
-      url = "https://raw.githubusercontent.com/emacs-mirror/emacs/refs/heads/master/lisp/progmodes/project.el";
-      sha256 = "sha256-c+D4fb70PrFensbiEFWg5fNYEQqY1W+Pgch7CYc0Ylc=";
-    };
-    date = "2025-03-31";
+    date = "2025-04-12";
   };
   python-mode = {
     pname = "python-mode";
-    version = "1652ed5e650accdf87611814f35907c9da4a47f6";
+    version = "771a74016aa0977cd19882a954d6d9c0336019e5";
     src = fetchFromGitHub {
       owner = "emacsmirror";
       repo = "python-mode";
-      rev = "1652ed5e650accdf87611814f35907c9da4a47f6";
+      rev = "771a74016aa0977cd19882a954d6d9c0336019e5";
       fetchSubmodules = false;
-      sha256 = "sha256-XCX0HMZrNt3GPJCQ11vVMV2ieqza2EvoMDLbGpT7JVQ=";
+      sha256 = "sha256-EBuXMZFdTmM0Z4KH+j8JNQ2fnlBcbApGIRS4sb/G+z4=";
     };
-    date = "2025-02-23";
+    date = "2025-04-06";
+  };
+  quickrun = {
+    pname = "quickrun";
+    version = "4b6df453f80ae7eab250a312056eaef95890e4c6";
+    src = fetchFromGitHub {
+      owner = "emacsorphanage";
+      repo = "quickrun";
+      rev = "4b6df453f80ae7eab250a312056eaef95890e4c6";
+      fetchSubmodules = false;
+      sha256 = "sha256-aAE6Ik06BHl3DPikkteUlPHl/h+/fKntYlKVLayGMkk=";
+    };
+    date = "2025-02-24";
   };
   rainbow-delimiters = {
     pname = "rainbow-delimiters";
@@ -231,15 +234,15 @@
   };
   typst-preview = {
     pname = "typst-preview";
-    version = "8d5d1f5bd70d9e6b2fa89295ac3a5802419305a2";
+    version = "69918d5f5b77032d8a5f796793b8030b4f19f5d6";
     src = fetchFromGitHub {
       owner = "havarddj";
       repo = "typst-preview.el";
-      rev = "8d5d1f5bd70d9e6b2fa89295ac3a5802419305a2";
+      rev = "69918d5f5b77032d8a5f796793b8030b4f19f5d6";
       fetchSubmodules = false;
-      sha256 = "sha256-pPYs74qIGvm4RAP9U5PnYkoeagAfVNsl6mW05BnFXlY=";
+      sha256 = "sha256-0l8wo6RoTuSlMbPNud34CslorVGG9/KajX6fH5XDKaI=";
     };
-    date = "2025-03-26";
+    date = "2025-04-06";
   };
   typst-ts-mode = {
     pname = "typst-ts-mode";
@@ -254,5 +257,17 @@
       sha256 = "sha256-0RAJ/Td3G7FDvzf7t8csNs/uc07WUPGvMo8ako5iyl0=";
     };
     date = "2024-12-07";
+  };
+  verb = {
+    pname = "verb";
+    version = "332a3ae223515c701d4641905808396a667665de";
+    src = fetchFromGitHub {
+      owner = "federicotdn";
+      repo = "verb";
+      rev = "332a3ae223515c701d4641905808396a667665de";
+      fetchSubmodules = false;
+      sha256 = "sha256-cmx4suIYo/Edc0AjfK74VKDNahBDK//c1uARkGiA6JM=";
+    };
+    date = "2025-03-18";
   };
 }
