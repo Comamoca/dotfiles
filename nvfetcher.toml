@@ -79,10 +79,14 @@ fetch.github = "zonuexe/digs.el"
 src.git = "https://github.com/lizqwerscott/mcp.el"
 fetch.github = "lizqwerscott/mcp.el"
 
-[project]
-src.git = "https://github.com/emacs-mirror/emacs"
-fetch.url = "https://raw.githubusercontent.com/emacs-mirror/emacs/refs/heads/master/lisp/progmodes/project.el"
-
 [rainbow-delimiters]
 src.git = "https://github.com/Fanael/rainbow-delimiters"
 fetch.github = "Fanael/rainbow-delimiters"
+
+[verb]
+src.git = "https://github.com/federicotdn/verb"
+fetch.github = "federicotdn/verb"
+
+# [quickrun]
+# src.git = "https://github.com/emacsorphanage/quickrun"
+# fetch.github = "emacsorphanage/quickrun"
