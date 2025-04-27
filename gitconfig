@@ -21,3 +21,5 @@
 [credential "https://gist.github.com"]
 	helper = 
 	helper = !/home/coma/.nix-profile/bin/gh auth git-credential
+[github]
+	user = Comamoca
