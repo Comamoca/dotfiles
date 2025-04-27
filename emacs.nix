@@ -14,27 +14,25 @@ let
       ;
   };
 
+  # quickrun = pkgs.emacsPackages.trivialBuild {
+  #   pname = "quickrun";
+  #   version = "main";
+  #   src = sources.quickrun.src;
+  #   buildInputs = with pkgs; [ ];
+  # };
+
+  verb = pkgs.emacsPackages.trivialBuild {
+    pname = "verb";
+    version = "main";
+    src = sources.verb.src;
+    buildInputs = with pkgs; [ ];
+  };
+
   rainbow-delimiters = pkgs.emacsPackages.trivialBuild {
-    pname = "";
+    pname = "rainbow-delimiters";
     version = "main";
     src = sources.rainbow-delimiters.src;
     buildInputs = with pkgs; [ ];
-  };
-
-  project = pkgs.emacsPackages.trivialBuild {
-    pname = "project";
-    version = "main";
-    src = sources.project.src;
-    buildInputs = with pkgs; [ ];
-  };
-
-  lsp-booster = pkgs.emacsPackages.trivialBuild {
-    pname = "lsp-booster";
-    version = "main";
-    src = sources.lsp-booster.src;
-    nativeBuildInputs = with pkgs; [
-      emacs-lsp-booster     
-    ];
   };
 
   mcp = pkgs.emacsPackages.trivialBuild {
@@ -383,6 +381,11 @@ in
     gnuplot-mode
 
     rainbow-delimiters
+
+    verb
+    quickrun
+    eglot-booster
+    folding-mode
 
     # Aider
     aidermacs 
