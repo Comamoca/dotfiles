@@ -436,7 +436,7 @@
   :config
   ;; (add-to-list 'eglot-server-programs '((bitbake-mode) "bitbake-language-server"))
   (add-to-list 'eglot-server-programs '((js-mode typescript-mode) . es-server-program))
-  (add-to-list 'eglot-server-programs '(gleam-ts-mode . ("gleam" "lsp")))
+  (add-to-list 'eglot-server-programs '(gleam-ts-mode . ("lspx" "--lsp" "gleam lsp")))
   :bind (("M-t" . xref-find-definitions)
 	 ("M-r" . xref-find-references)
 	 ("C-t" . xref-go-back)))
@@ -888,14 +888,15 @@
 (leaf aider
   :require t
   :custom
-  ((aider-args . '("--model" "gemini/gemini-2.5-flash-preview-04-17"))))
+  ((aider-args . '("--model" "gemini/gemini-2.0-flash"))))
 
 (leaf aidermacs
   :require t
   :config
   (setq aidermacs-watch-files t)
   :custom
-  ((aidermacs-default-model . "gemini/gemini-2.0-flash")
+  (;; (aidermacs-default-model . "gemini/gemini-2.0-flash")
+   (aidermacs-default-model . "gemini/gemini-2.5-pro-preview-03-25")
    (aidermacs-watch-files . t)))
 ;; (aidermacs-default-model . "gemini/gemini-2.5-flash-preview-04-17")
 
@@ -1154,6 +1155,9 @@
 
 ;; ================ My configuratons ================
 
+;; Ediff
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
 ;; Font
 (add-to-list 'default-frame-alist
                        '(font . "UDEV Gothic NF-14"))
@@ -1165,7 +1169,6 @@
 ;; For lsp-mode
 (setq gc-cons-threshold 100000000)
 (setq read-process-output-max (* 1024 1024))
-
 
 ;; Key mapping
 (define-key global-map (kbd "C-x s") 'blackening-region)
