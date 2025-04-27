@@ -44,3 +44,4 @@ emacs.d/snippets/
 emacs.d/templates/
 emacs.d/tramp
 emacs.d/tree-sitter/
+.aider*
