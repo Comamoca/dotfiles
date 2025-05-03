@@ -888,7 +888,7 @@
 (leaf aider
   :require t
   :custom
-  ((aider-args . '("--model" "gemini/gemini-2.0-flash"))))
+  ((aider-args . '("--watch-files" "--model" "gemini/gemini-2.0-flash"))))
 
 (leaf aidermacs
   :require t
@@ -1108,11 +1108,11 @@
 
 (defun blog-paste-image ()
   (interactive)
-  (setq filename (concat
+  (setq fullpath (concat
                   (expand-file-name (format-time-string "%Y-%m-%d-%H%M%S")
-                   "~/.ghq/github.com/Comamoca/blog/src/images") ".png"))
-  (shell-command (concat  "wl-paste -t image/png > " filename))
-  (insert (concat "![](" filename ")"))
+				    "~/.ghq/github.com/Comamoca/blog/src/images") ".png"))
+  (shell-command (concat  "wl-paste -t image/png > " fullpath))
+  (insert (concat "![](/images/" (file-name-nondirectory fullpath) ")"))
   (org-display-inline-images))
 
 
