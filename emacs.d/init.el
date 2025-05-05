@@ -1448,12 +1448,12 @@
  ;; your init file should contain only one such instance.
  ;; if there is more than one, they won't work right.
  '(skk-jisyo-edit-user-accepts-editing t))
-(custom-set-faces)
+(custom-set-faces
  ;; custom-set-faces was added by custom.
  ;; if you edit it by hand, you could mess it up, so be careful.
  ;; your init file should contain only one such instance.
  ;; if there is more than one, they won't work right.
- 
+ )
 
 ;; <leaf-install-code>
 (eval-and-compile
@@ -2329,9 +2329,9 @@
   (setq multi-vterm-dedicated-window-height 50))
 
 ;; ai
- add-hook 'server-after-make-frame-hook
+(add-hook 'server-after-make-frame-hook
           (lambda ()
-            (setenv "gemini_api_key" (get-secret "gemini.google.com")
+            (setenv "gemini_api_key" (get-secret "gemini.google.com"))
             (setenv "openrouter_api_key" (get-secret "openrouter.ai"))
 	    (setq gemini-apikey (get-secret "gemini.google.com"))))
 
@@ -2569,10 +2569,12 @@
   (interactive)
   (let* ((src-dir (expand-file-name "src/blog" blog-repo))
 	 (files (directory-files src-dir))
-	 (mdfiles (cl-remove-if-not (lambda (file))))
-	 (articles (cl-remove-if (lambda (file)))
-		   (string-match "-diary.md$" file
-				 files))
+	 (mdfiles (cl-remove-if-not (lambda (file) 
+                                      (string-match "\\.md$" file))
+                                    files))
+	 (articles (cl-remove-if (lambda (file)
+                                   (string-match "-diary\\.md$" file))
+                                 mdfiles))
 	 (selected (completing-read "blog " articles)))
     (find-file (expand-file-name selected src-dir)))) 
 
@@ -2614,13 +2616,14 @@
 ;; consult for org-roam
 (defun consult-roam ()
   (interactive)
-  (let* ((node-items (mapcar (lambda (node)))
-             (cons (org-roam-node-title node) node)) (org-roam-node-list))
-   (select-node-title (consult--read)
-        (mapcar #'car node-items))
-   (select-node (cdr (assoc select-node-title node-items))
-
-    (find-file (org-roam-node-file select-node)))))
+  (let* ((node-items (mapcar (lambda (node)
+                               (cons (org-roam-node-title node) node))
+                             (org-roam-node-list)))
+         (select-node-title (consult--read
+                             (mapcar #'car node-items)
+                             :prompt "Node: "))
+         (select-node (cdr (assoc select-node-title node-items))))
+    (find-file (org-roam-node-file select-node))))
 
 ;; pinentry emacs
 (defun pinentry-emacs (desc prompt ok error)
