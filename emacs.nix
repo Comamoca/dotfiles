@@ -335,7 +335,7 @@ in
     ox-zenn
     rg
 
-    # lsp-bridge
+    lsp-bridge
 
     org-bullets
     editorconfig
