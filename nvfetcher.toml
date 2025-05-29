@@ -1,3 +1,9 @@
+# lspx
+[lspx]
+src.git = "https://github.com/thefrontside/lspx"
+fetch.github = "thefrontside/lspx"
+
+# Emacs
 [ob-ledger]
 src.git = "https://github.com/tkf/org-mode"
 fetch.url = "https://raw.githubusercontent.com/tkf/org-mode/refs/heads/master/lisp/ob-ledger.el"
@@ -87,6 +93,22 @@ fetch.github = "Fanael/rainbow-delimiters"
 src.git = "https://github.com/federicotdn/verb"
 fetch.github = "federicotdn/verb"
 
-# [quickrun]
-# src.git = "https://github.com/emacsorphanage/quickrun"
-# fetch.github = "emacsorphanage/quickrun"
+[quickrun]
+src.git = "https://github.com/emacsorphanage/quickrun"
+fetch.github = "emacsorphanage/quickrun"
+
+[smudge]
+src.git = "https://github.com/danielfm/smudge"
+fetch.github = "danielfm/smudge"
+
+[smartchr]
+src.git = "https://github.com/imakado/emacs-smartchr"
+fetch.github = "imakado/emacs-smartchr"
+
+[claude-code]
+src.git = "https://github.com/stevemolitor/claude-code.el"
+fetch.github = "stevemolitor/claude-code.el"
+
+[claude-shell]
+src.git = "https://github.com/arminfriedl/claude-shell"
+fetch.github = "arminfriedl/claude-shell"

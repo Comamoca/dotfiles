@@ -1,7 +1,7 @@
 {
     "aider": {
         "cargoLocks": null,
-        "date": "2025-04-18",
+        "date": "2025-05-28",
         "extract": null,
         "name": "aider",
         "passthru": null,
@@ -13,16 +13,58 @@
             "name": null,
             "owner": "tninja",
             "repo": "aider.el",
-            "rev": "35cc68d38e4a1b0cbe5047b7b803116ec96a82f4",
-            "sha256": "sha256-NV6PyNy50UXlGzFYar8O6My6V30+wXzkimofxi31po4=",
+            "rev": "0dc66268f1e49ea21c07d9a748bcd918765fda1d",
+            "sha256": "sha256-gIVjhr6fpt5RmDHHtxNKBV7Hrpsd58td2kx4VJnJrOY=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "35cc68d38e4a1b0cbe5047b7b803116ec96a82f4"
+        "version": "0dc66268f1e49ea21c07d9a748bcd918765fda1d"
+    },
+    "claude-code": {
+        "cargoLocks": null,
+        "date": "2025-05-27",
+        "extract": null,
+        "name": "claude-code",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "stevemolitor",
+            "repo": "claude-code.el",
+            "rev": "01686cc088165206c0ffc260edfed399f6a343fc",
+            "sha256": "sha256-Lh9mAvnQ05j7NLQJ8aAQGLFB2kE/Yd5gk/jGtqUB8/0=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "01686cc088165206c0ffc260edfed399f6a343fc"
+    },
+    "claude-shell": {
+        "cargoLocks": null,
+        "date": "2024-11-30",
+        "extract": null,
+        "name": "claude-shell",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "arminfriedl",
+            "repo": "claude-shell",
+            "rev": "8e9e7e22b6fab50e19b293d1ebcf435ad937a41f",
+            "sha256": "sha256-1j1QJJLneLnVJbym5FbSVIKPt91jeg5kNcA3cju+8QM=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "8e9e7e22b6fab50e19b293d1ebcf435ad937a41f"
     },
     "copilot": {
         "cargoLocks": null,
-        "date": "2025-04-17",
+        "date": "2025-05-06",
         "extract": null,
         "name": "copilot",
         "passthru": null,
@@ -34,12 +76,12 @@
             "name": null,
             "owner": "copilot-emacs",
             "repo": "copilot.el",
-            "rev": "229d8544834a8d446ec9747102ad160280a65620",
-            "sha256": "sha256-1OJwP0xoxAgleaxUGcCrlfHvo0Bqzf+tEH6jOwRBZ6c=",
+            "rev": "fe3f51b636dea1c9ac55a0d5dc5d7df02dcbaa48",
+            "sha256": "sha256-reoIFMjx2Go/EPAxD+OQFxge/amqguZS+jteh0b9xgA=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "229d8544834a8d446ec9747102ad160280a65620"
+        "version": "fe3f51b636dea1c9ac55a0d5dc5d7df02dcbaa48"
     },
     "digs": {
         "cargoLocks": null,
@@ -64,7 +106,7 @@
     },
     "eglot-booster": {
         "cargoLocks": null,
-        "date": "2024-10-29",
+        "date": "2025-04-28",
         "extract": null,
         "name": "eglot-booster",
         "passthru": null,
@@ -76,12 +118,12 @@
             "name": null,
             "owner": "jdtsmith",
             "repo": "eglot-booster",
-            "rev": "e6daa6bcaf4aceee29c8a5a949b43eb1b89900ed",
-            "sha256": "sha256-PLfaXELkdX5NZcSmR1s/kgmU16ODF8bn56nfTh9g6bs=",
+            "rev": "1260d2f7dd18619b42359aa3e1ba6871aa52fd26",
+            "sha256": "sha256-teAKWDDL7IrCBiZUVIVlB3W22G9H6IrWiRV/P62dFy0=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "e6daa6bcaf4aceee29c8a5a949b43eb1b89900ed"
+        "version": "1260d2f7dd18619b42359aa3e1ba6871aa52fd26"
     },
     "emacs_fancy_logos": {
         "cargoLocks": null,
@@ -182,9 +224,30 @@
         },
         "version": "3dbf116cd19261d8d70f456ae3385e1d20208452"
     },
+    "lspx": {
+        "cargoLocks": null,
+        "date": "2025-04-02",
+        "extract": null,
+        "name": "lspx",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "thefrontside",
+            "repo": "lspx",
+            "rev": "bb04e79400b6dcca10613646cf1c4a910c35e128",
+            "sha256": "sha256-NEwcNE5RxN/rl75bRxUQgANtqp26Y88HV/WKMtytt8k=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "bb04e79400b6dcca10613646cf1c4a910c35e128"
+    },
     "mcp": {
         "cargoLocks": null,
-        "date": "2025-04-19",
+        "date": "2025-05-29",
         "extract": null,
         "name": "mcp",
         "passthru": null,
@@ -196,12 +259,12 @@
             "name": null,
             "owner": "lizqwerscott",
             "repo": "mcp.el",
-            "rev": "5e53852e3963598ce8518ac8062f19d99ab944c3",
-            "sha256": "sha256-MeNnhk/ZlYT/x4nXjllSoBWiBI3E+OTbjWJF5wJY1Ek=",
+            "rev": "d023e4858af5cc4c8cb0a6f28262c88485a06b2b",
+            "sha256": "sha256-bL9MHOiN8n1HEwiTdKRYIdTOAQMLp71Ly8BD5+FdjeE=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "5e53852e3963598ce8518ac8062f19d99ab944c3"
+        "version": "d023e4858af5cc4c8cb0a6f28262c88485a06b2b"
     },
     "ob-ledger": {
         "cargoLocks": null,
@@ -283,7 +346,7 @@
     },
     "quickrun": {
         "cargoLocks": null,
-        "date": "2025-02-24",
+        "date": "2025-05-03",
         "extract": null,
         "name": "quickrun",
         "passthru": null,
@@ -295,12 +358,12 @@
             "name": null,
             "owner": "emacsorphanage",
             "repo": "quickrun",
-            "rev": "4b6df453f80ae7eab250a312056eaef95890e4c6",
-            "sha256": "sha256-aAE6Ik06BHl3DPikkteUlPHl/h+/fKntYlKVLayGMkk=",
+            "rev": "bae8efb8c5bc428e4df731b5c214aae478c707da",
+            "sha256": "sha256-G8H7epuw3+9cODZBBBo1ohk3f2DW255nbb4wpDR1IbI=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "4b6df453f80ae7eab250a312056eaef95890e4c6"
+        "version": "bae8efb8c5bc428e4df731b5c214aae478c707da"
     },
     "rainbow-delimiters": {
         "cargoLocks": null,
@@ -380,6 +443,48 @@
         },
         "version": "0369de89f273a6aec1ecf93ccb46fcbea5ff2d55"
     },
+    "smartchr": {
+        "cargoLocks": null,
+        "date": "2022-06-06",
+        "extract": null,
+        "name": "smartchr",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "imakado",
+            "repo": "emacs-smartchr",
+            "rev": "b2410de732484030758f72b07e619cc594e6d287",
+            "sha256": "sha256-3f8oQR4/9WnzD5ds6F7odAaiF8WAzt04WnaZ2c2Qk3c=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "b2410de732484030758f72b07e619cc594e6d287"
+    },
+    "smudge": {
+        "cargoLocks": null,
+        "date": "2025-01-14",
+        "extract": null,
+        "name": "smudge",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "danielfm",
+            "repo": "smudge",
+            "rev": "aa806e84506d332bdbf379c199f66813daf4c855",
+            "sha256": "sha256-7SgTTaFcs6x6I0iIGOx6UVgIpcbUlnL+UAR567X/hOE=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "aa806e84506d332bdbf379c199f66813daf4c855"
+    },
     "typst-mode": {
         "cargoLocks": null,
         "date": "2023-09-25",
@@ -444,7 +549,7 @@
     },
     "verb": {
         "cargoLocks": null,
-        "date": "2025-03-18",
+        "date": "2025-05-11",
         "extract": null,
         "name": "verb",
         "passthru": null,
@@ -456,11 +561,11 @@
             "name": null,
             "owner": "federicotdn",
             "repo": "verb",
-            "rev": "332a3ae223515c701d4641905808396a667665de",
-            "sha256": "sha256-cmx4suIYo/Edc0AjfK74VKDNahBDK//c1uARkGiA6JM=",
+            "rev": "cc1d05d8890a98f576632632f38da2875c5f8a84",
+            "sha256": "sha256-JvnYCtNzVR+gDK+TywZSjS4qYXcZN36P6riCu4KdMTo=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "332a3ae223515c701d4641905808396a667665de"
+        "version": "cc1d05d8890a98f576632632f38da2875c5f8a84"
     }
 }
