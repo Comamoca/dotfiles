@@ -173,23 +173,23 @@ in
   # See https://wiki.hyprland.org/Configuring/Window-Rules/ for more
 
   windowrule = [
-    "float,^(Floaterm)$"
-    "size 25% 30%,^(Floaterm)$"
-    "move 60% 60%,^(Floaterm)$"
+    # "float,^(Floaterm)$"
+    # "size 25% 30%,^(Floaterm)$"
+    # "move 60% 60%,^(Floaterm)$"
   ];
 
   windowrulev2 = [
-    "float,class:(foot),title:(Floaterm)"
-    "move 70% 65%,class:(foot),title:(Floaterm)"
-    "size 25% 30%,class:(foot),title:(Floaterm)"
+    "float,class:(foot),title:^(Floaterm)"
+    "move 70% 65%,class:(foot),title:^(Floaterm)"
+    "size 25% 30%,class:(foot),title:^(Floaterm)"
     "float,class:^(firefox),title:^(ピクチャーインピクチャー)"
     "pin,class:^(firefox),title:^(ピクチャーインピクチャー)"
     "suppressevent maximize, class:.*"
   ];
 
   # See https://wiki.hyprland.org/Configuring/Keywords/ for more
-  # $mainMod = SUPER
-  "$mainMod" = "Alt";
+  "$mainMod" = "SUPER";
+  # "$mainMod" = "ALT";
 
   bind = [
     # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
@@ -290,5 +290,6 @@ in
     "swaybg -i ${wallpaper}"
     "qpwgraph -am ${symlink /${dotfiles}/qpwgraph/audio.qpwgraph}"
     "hyprpaper"
+    "xremap ~/.config/xremap/config.yaml"
   ];
 }
