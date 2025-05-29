@@ -14,12 +14,53 @@ let
       ;
   };
 
-  # quickrun = pkgs.emacsPackages.trivialBuild {
-  #   pname = "quickrun";
-  #   version = "main";
-  #   src = sources.quickrun.src;
-  #   buildInputs = with pkgs; [ ];
-  # };
+  claude-shell = pkgs.emacsPackages.trivialBuild {
+    pname = "claude-shell";
+    version = "main";
+    src = sources.claude-shell.src;
+    buildInputs = with pkgs.emacsPackages; [
+      shell-maker
+    ];
+  };
+
+  claude-code = pkgs.emacsPackages.trivialBuild {
+    pname = "claude-code.el";
+    version = "main";
+    src = sources.claude-code.src;
+    buildInputs = with pkgs.emacsPackages; [
+      eat
+      transient
+    ];
+  };
+
+  smartchr = pkgs.emacsPackages.trivialBuild {
+    pname = "smartchr";
+    version = "main";
+    src = sources.smartchr.src;
+    buildInputs = with pkgs.emacsPackages; [
+      ert-expectations
+    ];
+  };
+
+  smudge = pkgs.emacsPackages.trivialBuild {
+    pname = "smudge";
+    version = "main";
+    src = sources.smudge.src;
+    buildInputs = with pkgs.emacsPackages; [
+      oauth2
+      request
+      simple-httpd
+    ];
+  };
+
+  quickrun = pkgs.emacsPackages.trivialBuild {
+    pname = "quickrun";
+    version = "main";
+    src = sources.quickrun.src;
+    buildInputs = with pkgs.emacsPackages; [
+      ht
+    ];
+  };
 
   verb = pkgs.emacsPackages.trivialBuild {
     pname = "verb";
@@ -57,6 +98,7 @@ let
       transient
       magit
       markdown-mode
+      s
     ];
   };
 
@@ -164,7 +206,10 @@ let
     pname = "eglot-booster";
     version = "main";
     src = sources.eglot-booster.src;
-    buildInputs = with pkgs.emacsPackages; [ eglot jsonrpc ];
+    buildInputs = with pkgs.emacsPackages; [
+      eglot
+      jsonrpc
+    ];
   };
 
   copilot = pkgs.emacsPackages.trivialBuild {
@@ -172,7 +217,7 @@ let
     version = "main";
     src = sources.copilot.src;
     buildInputs = with pkgs.emacsPackages; [
-      pkgs.nodejs_23
+      pkgs.nodejs_24
       jsonrpc
       f
       s
@@ -231,7 +276,7 @@ in
     cider-eval-sexp-fu
     kaocha-runner
 
-    eglot 
+    eglot
     eglot-booster
     eldoc-box
 
@@ -387,8 +432,22 @@ in
     eglot-booster
     folding-mode
 
+    oauth2
+    smudge
+    smartchr
+
+    ox-typst
+    claude-code
+    eat
+
+    claude-shell
+    shell-maker
+
+    # Formating
+    apheleia
+
     # Aider
-    aidermacs 
+    aidermacs
     aider
 
     # Library
