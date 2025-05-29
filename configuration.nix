@@ -273,8 +273,6 @@ in
       enable = true;
     };
     # kitty.enable = true;
-
-    # hyprland.enable = true;
   };
 
   virtualisation = {
@@ -292,6 +290,10 @@ in
     xdgOpenUsePortal = true;
     enable = pkgs.lib.mkDefault true;
     wlr.enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gtk
+      xdg-desktop-portal-gnome
+    ];
   };
 
   # List packages installed in system profile. To search, run:
@@ -359,6 +361,10 @@ in
     wrapperFeatures.gtk = true;
     # package = pkgs.swayfx;
   };
+
+  # programs.hyprland = {
+  #   enable = true;
+  # };
 
   # programs.niri = {
   #   enable = true;
