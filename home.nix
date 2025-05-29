@@ -218,6 +218,7 @@ rec {
     # ========== OTHER TOOLS ==========
     tldr
     aider-chat
+    claude-code
 
     jless
     gitify
@@ -230,7 +231,7 @@ rec {
     zf
     jo
 
-    signal-desktop
+    signal-desktop-bin
 
     # Show key stroke
     showmethekey
@@ -335,8 +336,9 @@ rec {
     # rebar3
 
     deno
-    nodejs_22
+    nodePackages.nodejs
     bun
+    uv
 
     # pnpm
 
