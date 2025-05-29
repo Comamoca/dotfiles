@@ -131,7 +131,7 @@
           modules = [
             # ./home.nix
             ./home-manager/wsl
-            inputs.catppuccin.homeManagerModules.catppuccin
+            inputs.catppuccin.homeModules.catppuccin
             inputs.sops-nix.homeManagerModules.sops
             inputs.nix-index-database.hmModules.nix-index
             {
@@ -154,7 +154,7 @@
           };
           modules = [
             ./home.nix
-            inputs.catppuccin.homeManagerModules.catppuccin
+            inputs.catppuccin.homeModules.catppuccin
             inputs.sops-nix.homeManagerModules.sops
             inputs.nix-index-database.hmModules.nix-index
             {
