@@ -145,6 +145,8 @@ rec {
     # # "Hello, world!" when run.
     # pkgs.hello
 
+    (import ./pkgs/lspx { inherit pkgs; })
+
     immersed
 
     # home-manager
