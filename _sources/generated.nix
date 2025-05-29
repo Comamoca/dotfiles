@@ -3,27 +3,51 @@
 {
   aider = {
     pname = "aider";
-    version = "35cc68d38e4a1b0cbe5047b7b803116ec96a82f4";
+    version = "0dc66268f1e49ea21c07d9a748bcd918765fda1d";
     src = fetchFromGitHub {
       owner = "tninja";
       repo = "aider.el";
-      rev = "35cc68d38e4a1b0cbe5047b7b803116ec96a82f4";
+      rev = "0dc66268f1e49ea21c07d9a748bcd918765fda1d";
       fetchSubmodules = false;
-      sha256 = "sha256-NV6PyNy50UXlGzFYar8O6My6V30+wXzkimofxi31po4=";
+      sha256 = "sha256-gIVjhr6fpt5RmDHHtxNKBV7Hrpsd58td2kx4VJnJrOY=";
     };
-    date = "2025-04-18";
+    date = "2025-05-28";
+  };
+  claude-code = {
+    pname = "claude-code";
+    version = "01686cc088165206c0ffc260edfed399f6a343fc";
+    src = fetchFromGitHub {
+      owner = "stevemolitor";
+      repo = "claude-code.el";
+      rev = "01686cc088165206c0ffc260edfed399f6a343fc";
+      fetchSubmodules = false;
+      sha256 = "sha256-Lh9mAvnQ05j7NLQJ8aAQGLFB2kE/Yd5gk/jGtqUB8/0=";
+    };
+    date = "2025-05-27";
+  };
+  claude-shell = {
+    pname = "claude-shell";
+    version = "8e9e7e22b6fab50e19b293d1ebcf435ad937a41f";
+    src = fetchFromGitHub {
+      owner = "arminfriedl";
+      repo = "claude-shell";
+      rev = "8e9e7e22b6fab50e19b293d1ebcf435ad937a41f";
+      fetchSubmodules = false;
+      sha256 = "sha256-1j1QJJLneLnVJbym5FbSVIKPt91jeg5kNcA3cju+8QM=";
+    };
+    date = "2024-11-30";
   };
   copilot = {
     pname = "copilot";
-    version = "229d8544834a8d446ec9747102ad160280a65620";
+    version = "fe3f51b636dea1c9ac55a0d5dc5d7df02dcbaa48";
     src = fetchFromGitHub {
       owner = "copilot-emacs";
       repo = "copilot.el";
-      rev = "229d8544834a8d446ec9747102ad160280a65620";
+      rev = "fe3f51b636dea1c9ac55a0d5dc5d7df02dcbaa48";
       fetchSubmodules = false;
-      sha256 = "sha256-1OJwP0xoxAgleaxUGcCrlfHvo0Bqzf+tEH6jOwRBZ6c=";
+      sha256 = "sha256-reoIFMjx2Go/EPAxD+OQFxge/amqguZS+jteh0b9xgA=";
     };
-    date = "2025-04-17";
+    date = "2025-05-06";
   };
   digs = {
     pname = "digs";
@@ -39,15 +63,15 @@
   };
   eglot-booster = {
     pname = "eglot-booster";
-    version = "e6daa6bcaf4aceee29c8a5a949b43eb1b89900ed";
+    version = "1260d2f7dd18619b42359aa3e1ba6871aa52fd26";
     src = fetchFromGitHub {
       owner = "jdtsmith";
       repo = "eglot-booster";
-      rev = "e6daa6bcaf4aceee29c8a5a949b43eb1b89900ed";
+      rev = "1260d2f7dd18619b42359aa3e1ba6871aa52fd26";
       fetchSubmodules = false;
-      sha256 = "sha256-PLfaXELkdX5NZcSmR1s/kgmU16ODF8bn56nfTh9g6bs=";
+      sha256 = "sha256-teAKWDDL7IrCBiZUVIVlB3W22G9H6IrWiRV/P62dFy0=";
     };
-    date = "2024-10-29";
+    date = "2025-04-28";
   };
   emacs_fancy_logos = {
     pname = "emacs_fancy_logos";
@@ -106,17 +130,29 @@
     };
     date = "2024-01-05";
   };
+  lspx = {
+    pname = "lspx";
+    version = "bb04e79400b6dcca10613646cf1c4a910c35e128";
+    src = fetchFromGitHub {
+      owner = "thefrontside";
+      repo = "lspx";
+      rev = "bb04e79400b6dcca10613646cf1c4a910c35e128";
+      fetchSubmodules = false;
+      sha256 = "sha256-NEwcNE5RxN/rl75bRxUQgANtqp26Y88HV/WKMtytt8k=";
+    };
+    date = "2025-04-02";
+  };
   mcp = {
     pname = "mcp";
-    version = "5e53852e3963598ce8518ac8062f19d99ab944c3";
+    version = "d023e4858af5cc4c8cb0a6f28262c88485a06b2b";
     src = fetchFromGitHub {
       owner = "lizqwerscott";
       repo = "mcp.el";
-      rev = "5e53852e3963598ce8518ac8062f19d99ab944c3";
+      rev = "d023e4858af5cc4c8cb0a6f28262c88485a06b2b";
       fetchSubmodules = false;
-      sha256 = "sha256-MeNnhk/ZlYT/x4nXjllSoBWiBI3E+OTbjWJF5wJY1Ek=";
+      sha256 = "sha256-bL9MHOiN8n1HEwiTdKRYIdTOAQMLp71Ly8BD5+FdjeE=";
     };
-    date = "2025-04-19";
+    date = "2025-05-29";
   };
   ob-ledger = {
     pname = "ob-ledger";
@@ -165,15 +201,15 @@
   };
   quickrun = {
     pname = "quickrun";
-    version = "4b6df453f80ae7eab250a312056eaef95890e4c6";
+    version = "bae8efb8c5bc428e4df731b5c214aae478c707da";
     src = fetchFromGitHub {
       owner = "emacsorphanage";
       repo = "quickrun";
-      rev = "4b6df453f80ae7eab250a312056eaef95890e4c6";
+      rev = "bae8efb8c5bc428e4df731b5c214aae478c707da";
       fetchSubmodules = false;
-      sha256 = "sha256-aAE6Ik06BHl3DPikkteUlPHl/h+/fKntYlKVLayGMkk=";
+      sha256 = "sha256-G8H7epuw3+9cODZBBBo1ohk3f2DW255nbb4wpDR1IbI=";
     };
-    date = "2025-02-24";
+    date = "2025-05-03";
   };
   rainbow-delimiters = {
     pname = "rainbow-delimiters";
@@ -220,6 +256,30 @@
     };
     date = "2025-03-07";
   };
+  smartchr = {
+    pname = "smartchr";
+    version = "b2410de732484030758f72b07e619cc594e6d287";
+    src = fetchFromGitHub {
+      owner = "imakado";
+      repo = "emacs-smartchr";
+      rev = "b2410de732484030758f72b07e619cc594e6d287";
+      fetchSubmodules = false;
+      sha256 = "sha256-3f8oQR4/9WnzD5ds6F7odAaiF8WAzt04WnaZ2c2Qk3c=";
+    };
+    date = "2022-06-06";
+  };
+  smudge = {
+    pname = "smudge";
+    version = "aa806e84506d332bdbf379c199f66813daf4c855";
+    src = fetchFromGitHub {
+      owner = "danielfm";
+      repo = "smudge";
+      rev = "aa806e84506d332bdbf379c199f66813daf4c855";
+      fetchSubmodules = false;
+      sha256 = "sha256-7SgTTaFcs6x6I0iIGOx6UVgIpcbUlnL+UAR567X/hOE=";
+    };
+    date = "2025-01-14";
+  };
   typst-mode = {
     pname = "typst-mode";
     version = "5776fd4f3608350ff6a2b61b118d38165d342aa3";
@@ -260,14 +320,14 @@
   };
   verb = {
     pname = "verb";
-    version = "332a3ae223515c701d4641905808396a667665de";
+    version = "cc1d05d8890a98f576632632f38da2875c5f8a84";
     src = fetchFromGitHub {
       owner = "federicotdn";
       repo = "verb";
-      rev = "332a3ae223515c701d4641905808396a667665de";
+      rev = "cc1d05d8890a98f576632632f38da2875c5f8a84";
       fetchSubmodules = false;
-      sha256 = "sha256-cmx4suIYo/Edc0AjfK74VKDNahBDK//c1uARkGiA6JM=";
+      sha256 = "sha256-JvnYCtNzVR+gDK+TywZSjS4qYXcZN36P6riCu4KdMTo=";
     };
-    date = "2025-03-18";
+    date = "2025-05-11";
   };
 }
