@@ -54,7 +54,7 @@ home-manager switch --flake .#Home
 
 ## 📖 License
 
-MIT
+Unlicense
 
 ### catppuccin
 
