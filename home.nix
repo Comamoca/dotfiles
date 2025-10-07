@@ -6,8 +6,7 @@
   ...
 }:
 let
-  system = "x86_64-linux";
-  nurpkgs = inputs.nur-packages.legacyPackages.${system};
+  system = "x86_64-linux"; nurpkgs = inputs.nur-packages.legacyPackages.${system};
 
   generated = import ./_sources/generated.nix;
   sources = generated {
@@ -25,9 +24,9 @@ let
     pkgs.writers.writePython3Bin "convert_and_resize"
       {
         libraries = with pkgs; [
-          python312Full
-          python312Packages.cairosvg
-          python312Packages.pillow
+          python313FreeThreading
+          python313Packages.cairosvg
+          python313Packages.pillow
         ];
       }
       ''
@@ -94,7 +93,8 @@ let
   #   # ];
   # });
 
-  emacs' = (pkgs.emacsPackagesFor pkgs.emacs-unstable).emacsWithPackages (
+  # emacs' = (pkgs.emacsPackagesFor pkgs.emacs-unstable).emacsWithPackages (
+  emacs' = (pkgs.emacsPackagesFor pkgs.emacs).emacsWithPackages (
     epkgs: (import ./emacs.nix { inherit pkgs epkgs nurpkgs; }).epkgs
   );
 
@@ -124,8 +124,10 @@ rec {
       "spotify-password" = {
         path = "${home.homeDirectory}/.secrets/spotify-password";
       };
-      "openrouter" = {
-        path = "${home.homeDirectory}/.secrets/openrouter";
+      "claude-code" = {
+	sopsFile = ./secrets/claude-code.env;
+        path = "${home.homeDirectory}/.secrets/claude-code.env";
+	format = "dotenv";
       };
     };
   };
@@ -153,7 +155,20 @@ rec {
     # # "Hello, world!" when run.
     # pkgs.hello
 
-    (import ./pkgs/lspx { inherit pkgs; })
+    zenn-cli
+
+    gleam.bin.latest
+
+    pkgs.deno."2.5.2"
+
+    bottles
+
+    # NOTE: 2025/06/22 hashまわりで壊れたので一旦無効化
+    # (import ./pkgs/lspx { inherit pkgs; })
+
+    gnome-pomodoro
+
+    termshot
 
     immersed
 
@@ -175,7 +190,7 @@ rec {
     # nixgl.nixGLIntel
 
     # ========== Audio ==========
-    sonic-pi
+    # sonic-pi
     qpwgraph
 
     # ========== TERMINAL ==========
@@ -226,7 +241,7 @@ rec {
     # ========== OTHER TOOLS ==========
     tldr
     aider-chat
-    claude-code
+    # claude-code
 
     jless
     gitify
@@ -252,6 +267,7 @@ rec {
 
     nix-search-cli
     zellij
+    tmux
 
     # textimg
     # textql-git
@@ -343,7 +359,7 @@ rec {
     # erlang_27
     # rebar3
 
-    deno
+    
     nodePackages.nodejs
     bun
     uv
@@ -432,8 +448,8 @@ rec {
     # discord_arch_electron
     dmraid
     dnsmasq
-    docker
-    docker-compose
+    # docker
+    # docker-compose
     dosfstools
     # downgrade
     doxygen
@@ -480,8 +496,8 @@ rec {
 
     # greetd
     # greetd-tuigreet
-    greetd.greetd
-    greetd.tuigreet
+    greetd
+    tuigreet
 
     # grub
     # grub-btrfs
@@ -788,6 +804,10 @@ rec {
         source = (symlink /${dotfiles}/bin/scripts/shift);
         recursive = true;
       };
+      ".bin/scripts/life" = {
+        source = (symlink /${dotfiles}/bin/scripts/life);
+        recursive = true;
+      };
 
       # Vim configs.
       # ".vimrc".source = (symlink /${dotfiles}/vimrc);
@@ -803,8 +823,8 @@ rec {
 
       ".migemo/utf-8/migemo-dict".source = "${pkgs.cmigemo}/share/migemo/utf-8";
 
-      ".spell-dict/programming-english-dict".source =
-        "${nurpkgs.programming-english}/share/dict/programming-english-dict";
+      # ".spell-dict/programming-english-dict".source =
+      #   "${nurpkgs.programming-english}/share/dict/programming-english-dict";
       ".spell-dict/dict.txt".source = ./word_dicts/dict.txt;
 
       # TODO: 後で消す
@@ -941,6 +961,10 @@ rec {
       ".Xmodmap".source = (symlink /${dotfiles}/Xmodmap);
       ".tmux.conf".source = (symlink /${dotfiles}/tmux.conf);
 
+      ".secrets/.keep" = {
+	text = "";
+      };
+
       ".emacs.d" = {
         source = (symlink /${dotfiles}/emacs.d);
         recursive = true;
@@ -951,12 +975,12 @@ rec {
       "Pictures/wallpapers".source = (symlink wallpapers);
       "Pictures/.emacs-logos".source = (symlink "${emacs_fancy_logo}/share");
       ".aider.conf.yml".source = (pkgs.formats.yaml { }).generate ".aider.conf.yml" {
-	read = [
-	  "CONVENTIONS.md"
-	  "CONTRIBUTION.md" 
-	  "README.md"
-	  ".aiderrules"
-	];
+        read = [
+          "CONVENTIONS.md"
+          "CONTRIBUTION.md"
+          "README.md"
+          ".aiderrules"
+        ];
       };
     };
   # Home Manager can also manage your environment variables through
@@ -994,15 +1018,36 @@ rec {
   programs.home-manager.enable = true;
 
   # Hyprland
-  # wayland.windowManager.hyprland.enable = true;
-  # wayland.windowManager.hyprland.settings = import ./hyprland.nix {
-  #   inherit
-  #     pkgs
-  #     wallpaper
-  #     home
-  #     config
-  #     ;
+  wayland.windowManager.hyprland.enable = true;
+  wayland.windowManager.hyprland.settings = import ./hyprland.nix {
+    inherit
+      pkgs
+      wallpaper
+      home
+      config
+      ;
+  };
+
+  # systemd.user.services.claude-code-provider-proxy = {
+    # Unit = {
+    #   Description = "Claude Code Provider Proxy";
+    #   After = [ "network.target" ];
+    # };
+
+    # Service = {
+    #   Type = "simple";
+    #   WorkingDirectory = "/home/coma/.ghq/github.com/ujisati/claude-code-provider-proxy";
+    #   ExecStart = "${pkgs.python3Packages.uv}/bin/uv run src/main.py";
+    #   Restart = "on-failure";
+    #   RestartSec = 10;
+      # EnvironmentFile ="${home.homeDirectory}/.secrets/claude-code.env";
+    # };
+
+    # Install = {
+    #   WantedBy = [ "default.target" ];
+    # };
   # };
+
 
   programs = {
     direnv = {
@@ -1029,6 +1074,14 @@ rec {
     enable = true;
     config = {
       theme = "Catppuccin Mocha";
+    };
+  };
+
+  services.spotifyd = {
+    enable = true;
+    settings = {
+      username = "31tkpkdg2lkjahtnnj4es4l2fs6q";
+      password = builtins.readFile "${home.homeDirectory}/.secrets/spotify-password";
     };
   };
 

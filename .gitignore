@@ -26,8 +26,8 @@ emacs.d/tutorial/
 emacs.d/.lsp-session-v1
 emacs.d/.org-id-locations
 emacs.d/bookmarks
-emacs.d/early-init.el
 emacs.d/eshell/
+emacs.d/.authinfo.gpg
 emacs.d/games/
 emacs.d/ielm-history.eld
 emacs.d/junk/

@@ -3,27 +3,27 @@
 {
   aider = {
     pname = "aider";
-    version = "0dc66268f1e49ea21c07d9a748bcd918765fda1d";
+    version = "a9a3336f799d26fb7daacf1f5da560f373cb5f4d";
     src = fetchFromGitHub {
       owner = "tninja";
       repo = "aider.el";
-      rev = "0dc66268f1e49ea21c07d9a748bcd918765fda1d";
+      rev = "a9a3336f799d26fb7daacf1f5da560f373cb5f4d";
       fetchSubmodules = false;
-      sha256 = "sha256-gIVjhr6fpt5RmDHHtxNKBV7Hrpsd58td2kx4VJnJrOY=";
+      sha256 = "sha256-Oh+PWldMt43cFmQQ0Y3gOgsefqxGhrx+KijIi5Q2Qsw=";
     };
-    date = "2025-05-28";
+    date = "2025-08-28";
   };
   claude-code = {
     pname = "claude-code";
-    version = "01686cc088165206c0ffc260edfed399f6a343fc";
+    version = "41423459aa929460770c93e5ab6082439921f1d4";
     src = fetchFromGitHub {
       owner = "stevemolitor";
       repo = "claude-code.el";
-      rev = "01686cc088165206c0ffc260edfed399f6a343fc";
+      rev = "41423459aa929460770c93e5ab6082439921f1d4";
       fetchSubmodules = false;
-      sha256 = "sha256-Lh9mAvnQ05j7NLQJ8aAQGLFB2kE/Yd5gk/jGtqUB8/0=";
+      sha256 = "sha256-neRNHOI+4mRG04DcY1l9SS8kJGf9Zjb+RmaBWtx21/o=";
     };
-    date = "2025-05-27";
+    date = "2025-08-27";
   };
   claude-shell = {
     pname = "claude-shell";
@@ -37,17 +37,29 @@
     };
     date = "2024-11-30";
   };
+  claudemacs = {
+    pname = "claudemacs";
+    version = "bf0c2d6e3e41c965a552e6fc9ee16cffc2f79355";
+    src = fetchFromGitHub {
+      owner = "cpoile";
+      repo = "claudemacs";
+      rev = "bf0c2d6e3e41c965a552e6fc9ee16cffc2f79355";
+      fetchSubmodules = false;
+      sha256 = "sha256-QxYHNDTHSBU6EmXFEsLrpJTSTJKQkwcd71hfLCqd3ak=";
+    };
+    date = "2025-06-26";
+  };
   copilot = {
     pname = "copilot";
-    version = "fe3f51b636dea1c9ac55a0d5dc5d7df02dcbaa48";
+    version = "4f51b3c21c42756d09ee17011201ea7d6e18ff69";
     src = fetchFromGitHub {
       owner = "copilot-emacs";
       repo = "copilot.el";
-      rev = "fe3f51b636dea1c9ac55a0d5dc5d7df02dcbaa48";
+      rev = "4f51b3c21c42756d09ee17011201ea7d6e18ff69";
       fetchSubmodules = false;
-      sha256 = "sha256-reoIFMjx2Go/EPAxD+OQFxge/amqguZS+jteh0b9xgA=";
+      sha256 = "sha256-5nB+skW0yjKvLUkDcwFJGSsCcRPZnJ44KoiTJno2iRM=";
     };
-    date = "2025-05-06";
+    date = "2025-06-30";
   };
   digs = {
     pname = "digs";
@@ -61,17 +73,31 @@
     };
     date = "2025-02-17";
   };
+  eca = {
+    pname = "eca";
+    version = "064a1c0159107407dcee0933a4213529ae1e5d51";
+    src = fetchgit {
+      url = "https://github.com/editor-code-assistant/eca-emacs";
+      rev = "064a1c0159107407dcee0933a4213529ae1e5d51";
+      fetchSubmodules = false;
+      deepClone = false;
+      leaveDotGit = false;
+      sparseCheckout = [ ];
+      sha256 = "sha256-0UboxDe2Ui5Pdvz04Vae3NY9MsEhkWCQKVl1BUSqu78=";
+    };
+    date = "2025-08-27";
+  };
   eglot-booster = {
     pname = "eglot-booster";
-    version = "1260d2f7dd18619b42359aa3e1ba6871aa52fd26";
+    version = "cab7803c4f0adc7fff9da6680f90110674bb7a22";
     src = fetchFromGitHub {
       owner = "jdtsmith";
       repo = "eglot-booster";
-      rev = "1260d2f7dd18619b42359aa3e1ba6871aa52fd26";
+      rev = "cab7803c4f0adc7fff9da6680f90110674bb7a22";
       fetchSubmodules = false;
-      sha256 = "sha256-teAKWDDL7IrCBiZUVIVlB3W22G9H6IrWiRV/P62dFy0=";
+      sha256 = "sha256-xUBQrQpw+JZxcqT1fy/8C2tjKwa7sLFHXamBm45Fa4Y=";
     };
-    date = "2025-04-28";
+    date = "2025-07-16";
   };
   emacs_fancy_logos = {
     pname = "emacs_fancy_logos";
@@ -96,6 +122,15 @@
       sha256 = "sha256-j0UtxYMfctJMkdXFlgE+L97jACgQINXXdGB6ucSfzjI=";
     };
     date = "2019-11-07";
+  };
+  gerbil = {
+    pname = "gerbil";
+    version = "d2cf28913f9fad1cfd2654b81e2a26f8ca50b394";
+    src = fetchurl {
+      url = "https://raw.githubusercontent.com/mighty-gerbils/gerbil/refs/heads/master/etc/gerbil-mode.el";
+      sha256 = "sha256-P1nRW6roc6Kr27Un744FF8KL/ihSCiw8K2WpnzxtZq8=";
+    };
+    date = "2025-08-26";
   };
   gleam-mode = {
     pname = "gleam-mode";
@@ -132,27 +167,27 @@
   };
   lspx = {
     pname = "lspx";
-    version = "bb04e79400b6dcca10613646cf1c4a910c35e128";
+    version = "08e276f3e2667cb07dc615d8c80ad6706800a509";
     src = fetchFromGitHub {
       owner = "thefrontside";
       repo = "lspx";
-      rev = "bb04e79400b6dcca10613646cf1c4a910c35e128";
+      rev = "08e276f3e2667cb07dc615d8c80ad6706800a509";
       fetchSubmodules = false;
-      sha256 = "sha256-NEwcNE5RxN/rl75bRxUQgANtqp26Y88HV/WKMtytt8k=";
+      sha256 = "sha256-sMjflQdegw0zutSjLRDsbkcwL79LnGBOI/PQU9gDjso=";
     };
-    date = "2025-04-02";
+    date = "2025-07-28";
   };
   mcp = {
     pname = "mcp";
-    version = "d023e4858af5cc4c8cb0a6f28262c88485a06b2b";
+    version = "4708c5849ce4ddb632016eca662a7405bfa642d4";
     src = fetchFromGitHub {
       owner = "lizqwerscott";
       repo = "mcp.el";
-      rev = "d023e4858af5cc4c8cb0a6f28262c88485a06b2b";
+      rev = "4708c5849ce4ddb632016eca662a7405bfa642d4";
       fetchSubmodules = false;
-      sha256 = "sha256-bL9MHOiN8n1HEwiTdKRYIdTOAQMLp71Ly8BD5+FdjeE=";
+      sha256 = "sha256-sJgFe4Nry7+X1zvu9SyzbGVa0o4tKiOS9+9FUpmWo4c=";
     };
-    date = "2025-05-29";
+    date = "2025-07-27";
   };
   ob-ledger = {
     pname = "ob-ledger";
@@ -189,27 +224,27 @@
   };
   python-mode = {
     pname = "python-mode";
-    version = "771a74016aa0977cd19882a954d6d9c0336019e5";
+    version = "fcff76c308b4409007c61492e4936e7c0b7d5aee";
     src = fetchFromGitHub {
       owner = "emacsmirror";
       repo = "python-mode";
-      rev = "771a74016aa0977cd19882a954d6d9c0336019e5";
+      rev = "fcff76c308b4409007c61492e4936e7c0b7d5aee";
       fetchSubmodules = false;
-      sha256 = "sha256-EBuXMZFdTmM0Z4KH+j8JNQ2fnlBcbApGIRS4sb/G+z4=";
+      sha256 = "sha256-jdj5k2icuY0VmleLPFT5zRZA7bG6UG/dig1LSoDmsIs=";
     };
-    date = "2025-04-06";
+    date = "2025-08-21";
   };
   quickrun = {
     pname = "quickrun";
-    version = "bae8efb8c5bc428e4df731b5c214aae478c707da";
+    version = "71324649862b14610509bfa61a3fa8551cb7a00e";
     src = fetchFromGitHub {
       owner = "emacsorphanage";
       repo = "quickrun";
-      rev = "bae8efb8c5bc428e4df731b5c214aae478c707da";
+      rev = "71324649862b14610509bfa61a3fa8551cb7a00e";
       fetchSubmodules = false;
-      sha256 = "sha256-G8H7epuw3+9cODZBBBo1ohk3f2DW255nbb4wpDR1IbI=";
+      sha256 = "sha256-41gbzSXLQ9hcmt1bFxswBQY0m9Nt7xs4DEwIoZoeBiw=";
     };
-    date = "2025-05-03";
+    date = "2025-08-12";
   };
   rainbow-delimiters = {
     pname = "rainbow-delimiters";
@@ -270,15 +305,15 @@
   };
   smudge = {
     pname = "smudge";
-    version = "aa806e84506d332bdbf379c199f66813daf4c855";
+    version = "422e2b78e7d56ab77815c38d01d2f22ea2472965";
     src = fetchFromGitHub {
       owner = "danielfm";
       repo = "smudge";
-      rev = "aa806e84506d332bdbf379c199f66813daf4c855";
+      rev = "422e2b78e7d56ab77815c38d01d2f22ea2472965";
       fetchSubmodules = false;
-      sha256 = "sha256-7SgTTaFcs6x6I0iIGOx6UVgIpcbUlnL+UAR567X/hOE=";
+      sha256 = "sha256-rAyS2kUScapBkKKBJ5QdVKRG+n3DBcbbBXPoupjUMJo=";
     };
-    date = "2025-01-14";
+    date = "2025-08-06";
   };
   typst-mode = {
     pname = "typst-mode";
@@ -294,15 +329,15 @@
   };
   typst-preview = {
     pname = "typst-preview";
-    version = "69918d5f5b77032d8a5f796793b8030b4f19f5d6";
+    version = "4f3decb8d9b85b1a06b0dfbd0fccaa0d2d2c24b4";
     src = fetchFromGitHub {
       owner = "havarddj";
       repo = "typst-preview.el";
-      rev = "69918d5f5b77032d8a5f796793b8030b4f19f5d6";
+      rev = "4f3decb8d9b85b1a06b0dfbd0fccaa0d2d2c24b4";
       fetchSubmodules = false;
-      sha256 = "sha256-0l8wo6RoTuSlMbPNud34CslorVGG9/KajX6fH5XDKaI=";
+      sha256 = "sha256-rxXgIoILnxyn543keCkpuv80TLaSATN1T7hCvnM8inU=";
     };
-    date = "2025-04-06";
+    date = "2025-08-12";
   };
   typst-ts-mode = {
     pname = "typst-ts-mode";
@@ -320,14 +355,26 @@
   };
   verb = {
     pname = "verb";
-    version = "cc1d05d8890a98f576632632f38da2875c5f8a84";
+    version = "e818377f2ceddf5670dcd9a32d3de0e8bf82a8f1";
     src = fetchFromGitHub {
       owner = "federicotdn";
       repo = "verb";
-      rev = "cc1d05d8890a98f576632632f38da2875c5f8a84";
+      rev = "e818377f2ceddf5670dcd9a32d3de0e8bf82a8f1";
       fetchSubmodules = false;
-      sha256 = "sha256-JvnYCtNzVR+gDK+TywZSjS4qYXcZN36P6riCu4KdMTo=";
+      sha256 = "sha256-emuUkIKYin0oXvqVlQvjn67XV1OwbTLqPvB9exDO8pI=";
     };
-    date = "2025-05-11";
+    date = "2025-08-01";
+  };
+  zenn-cli = {
+    pname = "zenn-cli";
+    version = "011ca9dc9fcf36d1339fa3487c750ce0e328b09c";
+    src = fetchFromGitHub {
+      owner = "wurly200a";
+      repo = "zenn-cli.el";
+      rev = "011ca9dc9fcf36d1339fa3487c750ce0e328b09c";
+      fetchSubmodules = false;
+      sha256 = "sha256-fiU9vbNzJZ5OxswqMDJPtU7xZQXUnfDVe8UMhALAn/8=";
+    };
+    date = "2024-11-09";
   };
 }

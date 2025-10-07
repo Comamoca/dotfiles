@@ -14,13 +14,37 @@ let
       ;
   };
 
-  claude-shell = pkgs.emacsPackages.trivialBuild {
-    pname = "claude-shell";
+  eca = pkgs.emacsPackages.trivialBuild {
+    pname = "eca";
     version = "main";
-    src = sources.claude-shell.src;
+    src = sources.eca.src;
     buildInputs = with pkgs.emacsPackages; [
-      shell-maker
+      dash
+      f
+      markdown-mode
+      compat
     ];
+  };
+
+  gerbil-mode = pkgs.emacsPackages.trivialBuild {
+    pname = "gerbil-mode";
+    version = "main";
+    src = sources.gerbil.src;
+    buildInputs = with pkgs.emacsPackages; [ ];
+  };
+
+  zenn-cli = pkgs.emacsPackages.trivialBuild {
+    pname = "zenn-cli";
+    version = "main";
+    src = sources.zenn-cli.src;
+    buildInputs = with pkgs.emacsPackages; [ ];
+  };
+
+  claudemacs = pkgs.emacsPackages.trivialBuild {
+    pname = "claudemacs";
+    version = "main";
+    src = sources.claudemacs.src;
+    buildInputs = with pkgs.emacsPackages; [ ];
   };
 
   claude-code = pkgs.emacsPackages.trivialBuild {
@@ -326,6 +350,7 @@ in
     macrostep
 
     leaf
+    leaf-manager
     leaf-keywords
     leaf-tree
     leaf-convert
@@ -429,7 +454,6 @@ in
 
     verb
     quickrun
-    eglot-booster
     folding-mode
 
     oauth2
@@ -437,11 +461,26 @@ in
     smartchr
 
     ox-typst
-    claude-code
     eat
 
     claude-shell
     shell-maker
+
+    haskell-mode
+
+    dirvish
+    claudemacs 
+    sparql-mode
+
+
+    exec-path-from-shell
+    zenn-cli
+
+    emmet-mode
+    tabspaces
+
+    go-mode
+    gerbil-mode
 
     # Formating
     apheleia
@@ -450,9 +489,22 @@ in
     aidermacs
     aider
 
+    # PHP
+    php-mode
+
     # Library
     alert
     dash
     s
+
+    # ECA
+    eca
+
+    # Claude Code
+    claude-code
+
+    #highlight
+    polymode
+   poly-markdown
   ];
 }
