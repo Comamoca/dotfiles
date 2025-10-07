@@ -112,3 +112,19 @@ fetch.github = "stevemolitor/claude-code.el"
 [claude-shell]
 src.git = "https://github.com/arminfriedl/claude-shell"
 fetch.github = "arminfriedl/claude-shell"
+
+[claudemacs]
+src.git = "https://github.com/cpoile/claudemacs"
+fetch.github = "cpoile/claudemacs"
+
+[zenn-cli]
+src.git = "https://github.com/wurly200a/zenn-cli.el"
+fetch.github = "wurly200a/zenn-cli.el"
+
+[gerbil]
+src.git = "https://github.com/mighty-gerbils/gerbil"
+fetch.url = "https://raw.githubusercontent.com/mighty-gerbils/gerbil/refs/heads/master/etc/gerbil-mode.el"
+
+[eca]
+src.git = "https://github.com/editor-code-assistant/eca-emacs"
+fetch.git = "https://github.com/editor-code-assistant/eca-emacs"

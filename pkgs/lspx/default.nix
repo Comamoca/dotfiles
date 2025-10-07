@@ -30,7 +30,10 @@ let
         unpackPhase
         cd source
         HOME="$(mktemp -d)"
-        deno cache --frozen=true --vendor=true main.ts
+
+        # deno cache --frozen=true --vendor=true main.ts
+        deno cache --vendor=true main.ts
+	
         # 一意じゃないと思われるデータの削除
         for path in vendor/jsr.io/*/*/meta.json; do
           echo '{"versions":{}}' > $path
@@ -51,7 +54,7 @@ let
   };
 
   rawScript = pkgs.writeShellScriptBin "lspx" ''
-    deno run --allow-env --allow-run --vendor=true --cached-only --node-modules-dir=manual "${vendored}/main.ts" "$@"
+    deno run --frozen=true --allow-env --allow-run --vendor=true --cached-only --node-modules-dir=manual "${vendored}/main.ts" "$@"
   '';
 
 in

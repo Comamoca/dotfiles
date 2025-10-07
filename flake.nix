@@ -37,6 +37,14 @@
 
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
     niri.url = "github:sodiboo/niri-flake";
+    deno-overlay.url = "github:haruki7049/deno-overlay";
+
+    nix-ld = {
+      url = "github:Mic92/nix-ld";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    gleam-overlay.url = "github:Comamoca/gleam-overlay";
   };
 
   outputs =
@@ -47,6 +55,8 @@
       home-manager,
       treefmt-nix,
       chaotic,
+      nix-ld,
+      gleam-overlay,
       ...
     }@inputs:
     let
@@ -57,9 +67,11 @@
         inputs.neovim-nightly-overlay.overlays.default
         (import inputs.emacs-overlay)
         inputs.nak.overlays.default
+	inputs.deno-overlay.overlays.deno-overlay
         # (import emacs.overlay)
         inputs.mozilla-overlay.overlays.firefox
         inputs.niri.overlays.niri
+        inputs.gleam-overlay.overlays.default
       ];
     in
     # code = _: s: s;
@@ -103,6 +115,7 @@
             chaotic.nixosModules.nyx-cache
             chaotic.nixosModules.nyx-overlay
             chaotic.nixosModules.nyx-registry
+	    nix-ld.nixosModules.nix-ld
             {
               nixpkgs.overlays = overlays ++ [
                 (final: prev: {
@@ -133,7 +146,7 @@
             ./home-manager/wsl
             inputs.catppuccin.homeModules.catppuccin
             inputs.sops-nix.homeManagerModules.sops
-            inputs.nix-index-database.hmModules.nix-index
+            inputs.nix-index-database.homeModules.nix-index
             {
               nixpkgs.overlays = overlays ++ [
                 (final: prev: {
@@ -156,7 +169,7 @@
             ./home.nix
             inputs.catppuccin.homeModules.catppuccin
             inputs.sops-nix.homeManagerModules.sops
-            inputs.nix-index-database.hmModules.nix-index
+            inputs.nix-index-database.homeModules.nix-index
             {
               nixpkgs.overlays = overlays ++ [
                 (final: prev: {

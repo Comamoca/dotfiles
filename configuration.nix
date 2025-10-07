@@ -71,6 +71,12 @@ in
         "root"
         "coma"
       ];
+      substituters = [
+        "https://cache.iog.io"
+      ];   
+      trusted-public-keys = [
+        "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+      ];
     };
     gc = {
       automatic = true;
@@ -102,6 +108,10 @@ in
   # Enable networking
   networking.networkmanager.enable = true;
 
+  services.logind = {
+    powerKey = "ignore";
+  };
+
   services.gnome = {
     gnome-keyring.enable = true;
   };
@@ -111,7 +121,7 @@ in
   };
 
   services.xremap = {
-    enable = true;
+    enable = false;
     serviceMode = "user";
     userName = "coma";
 
@@ -213,6 +223,8 @@ in
 
   services.displayManager.ly.enable = true;
 
+  services.envfs.enable = true;
+
   # services.mako.enable = true;
   # services.mako.catppuccin.enable = true;
 
@@ -246,7 +258,7 @@ in
   };
 
   # Install irefox.
-  programs.firefox = {
+  programs.firefox = { 
     enable = true;
     # profiles = {
     #   myprofile = {
@@ -287,20 +299,27 @@ in
 
   # services.flatpak.enable = true;
   xdg.portal = {
+    enable = true;
     xdgOpenUsePortal = true;
-    enable = pkgs.lib.mkDefault true;
     wlr.enable = true;
     extraPortals = with pkgs; [
       xdg-desktop-portal-gtk
-      xdg-desktop-portal-gnome
+      # xdg-desktop-portal-wlr
+      # xdg-desktop-portal-gnome 
+      xdg-desktop-portal-hyprland 
     ];
+   config = {
+     hyprland.default = [ "hyprland" "gtk" ];
+   };
   };
+
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     # XDG Desktop Portal
     xdg-desktop-portal
+    xdg-desktop-portal-gtk
     xdg-desktop-portal-wlr
 
     # gparted
@@ -347,7 +366,6 @@ in
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
-  programs.nix-ld.enable = true;
 
   # Android Debug Bridge
   programs.adb.enable = true;
@@ -362,9 +380,9 @@ in
     # package = pkgs.swayfx;
   };
 
-  # programs.hyprland = {
-  #   enable = true;
-  # };
+  programs.hyprland = {
+    enable = true;
+  };
 
   # programs.niri = {
   #   enable = true;

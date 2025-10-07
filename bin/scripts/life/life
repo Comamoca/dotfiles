@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+LIFE_REPO="Comamoca/life"
+
+show_help() {
+    cat << 'EOF'
+life - Issue management for comamoca/life repository
+
+USAGE:
+    life <command> [arguments]
+
+COMMANDS:
+    task add    Add a new issue to the life repository
+
+OPTIONS:
+    -h, --help  Show this help message
+
+EXAMPLES:
+    life task add
+    life -h
+    life --help
+EOF
+}
+
+task_add() {
+    local current_dir
+    current_dir=$(pwd)
+    
+    if ! command -v gh >/dev/null 2>&1; then
+        echo "Error: gh command not found. Please install GitHub CLI." >&2
+        exit 1
+    fi
+    
+    local life_repo_dir="$HOME/.ghq/github.com/$LIFE_REPO"
+    
+    if [[ ! -d "$life_repo_dir" ]]; then
+        echo "Error: Repository directory $life_repo_dir not found." >&2
+        echo "Please clone the repository first: gh repo clone $LIFE_REPO" >&2
+        exit 1
+    fi
+    
+    pushd "$life_repo_dir" >/dev/null
+    
+    trap 'popd >/dev/null' EXIT
+    
+    gh issue create
+}
+
+main() {
+    case "${1:-}" in
+        "")
+            show_help
+            ;;
+        "-h"|"--help")
+            show_help
+            ;;
+        "task")
+            case "${2:-}" in
+                "add")
+                    task_add
+                    ;;
+                *)
+                    echo "Error: Unknown task command '${2:-}'" >&2
+                    echo "Run 'life --help' for usage information." >&2
+                    exit 1
+                    ;;
+            esac
+            ;;
+        *)
+            echo "Error: Unknown command '$1'" >&2
+            echo "Run 'life --help' for usage information." >&2
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"

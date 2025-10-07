@@ -2,12 +2,18 @@
 {
   enable = true;
   shellInit = ''
+    fish_add_path $HOME/.local/share/
+
     fish_add_path $HOME/.config/v-analyzer/bin/
 
     fish_add_path /usr/local/bin
     fish_add_path $HOME/.local/bin
 
+    fish_add_path $HOME/go/bin
+
     fish_add_path $HOME/.dotnet/tools
+
+    fish_add_path $HOME/.npm-global/bin
 
     fish_add_path $HOME/ghq/github.com/emscripten-core/emsdk
     fish_add_path $HOME/ghq/github.com/emscripten-core/emsdk/upstream/emscripten
@@ -27,6 +33,7 @@
     fish_add_path $HOME/.bin/scripts/ime
     fish_add_path $HOME/.bin/scripts/nowplaying
     fish_add_path $HOME/.bin/scripts/pywalfish_add_path
+    fish_add_path $HOME/.bin/scripts/life
 
     fish_add_path "$HOME/.moon/bin"
 
@@ -78,6 +85,8 @@
     set LUA_PATH ~/.luarocks/lib/ $LUA_PATH
     set LUA_PATH ~/.luarocks/lib/luarocks/rocks-5.4/ $LUA_PATH
     set -x BLOG_PATH ~/ghq/github.com/coma/blog/src/content/blog/
+
+    set -x ANTHROPIC_BASE_URL ""
 
     fish_add_path ~/.nimble/.bin/git-tasukete
     fish_add_path ~/.bin/
