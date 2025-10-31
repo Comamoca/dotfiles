@@ -275,7 +275,7 @@ bindsym Print exec swaymsg -t get_tree | jq -r '.. | select(.focused?) | .rect |
 bindsym $mod+Shift+s exec slurp | grim -g - - | wl-copy
 # bindsym $mod+Shift+s exec grim -g "$(slurp -d)" - | wl-copy
 bindsym $mod+b exec firefox
-bindsym $alt+e exec ime.sh float
+bindsym $mod+o exec /home/coma/.bin/scripts/ime/ime.sh float
 
 exec_always --no-startup-id picom
 exec --no-startup-id fcitx5

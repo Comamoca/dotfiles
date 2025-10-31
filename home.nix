@@ -149,608 +149,30 @@ rec {
   home.stateVersion = "24.05"; # Please read the comment before changing.
 
   # The home.packages option allows you to install Nix packages into your
-  # environment.
-  home.packages = with pkgs; [
-    # # Adds the 'hello' command to your environment. It prints a friendly
-    # # "Hello, world!" when run.
-    # pkgs.hello
-
-    zenn-cli
-
-    gleam.bin.latest
-
-    pkgs.deno."2.5.2"
-
-    bottles
-
-    # NOTE: 2025/06/22 hashまわりで壊れたので一旦無効化
-    # (import ./pkgs/lspx { inherit pkgs; })
-
-    gnome-pomodoro
-
-    termshot
-
-    immersed
-
-    # home-manager
-
-    comma
-
-    # Knowledge tool for terminal
-    nb
-    w3m
-
-    # theme
-    # catppuccin
-
-    # Nix
-    nixVersions.nix_2_28
-
-    # ========== NIXGL ==========
-    # nixgl.nixGLIntel
-
-    # ========== Audio ==========
-    # sonic-pi
-    qpwgraph
-
-    # ========== TERMINAL ==========
-    wezterm
-    alacritty
-    kitty
-    # ghostty
-
-    # ========== EDITOR & TOOLS ==========
-    # For emacs lsp
-    emacs-lsp-booster
-
-    # Game
-    godot
-
-    # For Emacs
-    emacs-lsp-booster
-
-    cmigemo
-    wakatime-cli
-
-    tree-sitter
-    arduino
-
-    # TODO: change to vim-overlay
-    vim-full
-    emacs'
-    felix
-    micro
-    neovim
-
-    # NOTE: 2024/12/31 アプデしたらビルドできなくなった
-    # jetbrains.idea-community
-
-    # visual-studio-code-bin
-    # inputs.lem.packages.x86_64-linux.lem-ncurses
-    # inputs.lem.packages.x86_64-linux.lem-sdl2
-
-    meson
-
-    tig
-
-    just
-
-    # ========== SOCIAL NET ==========
-    nurpkgs.bsky
-
-    # ========== OTHER TOOLS ==========
-    tldr
-    aider-chat
-    # claude-code
-
-    jless
-    gitify
-    algia
-    polybarFull
-    devenv
-
-    libnotify
-
-    zf
-    jo
-
-    signal-desktop-bin
-
-    # Show key stroke
-    showmethekey
-
-    nodePackages."@antfu/ni"
-    nix-output-monitor
-
-    kickstart
-    xsel
-
-    nix-search-cli
-    zellij
-    tmux
-
-    # textimg
-    # textql-git
-    nak
-
-    vim-startuptime
-
-    cachix
-
-    ghq
-    # cava
-    lsd
-    jnv
-    jq
-    dasel
-
-    lazydocker
-    lazygit
-    git
-    delta
-
-    jwt-cli
-
-    slack
-    teams-for-linux
-    discord
-
-    # Teams for linux is depends to Electron-29 but EOL.
-    # teams-for-linux
-
-    teip
-
-    tokei
-    tree
-    unar
-    k6
-
-    # esp32
-    # easyeffects
-    # espup
-    # espflash
-    # esptool
-    # cargo-espmonitor
-    # mkspiffs-presets.esp-idf
-
-    # ========== SHELL ==========
-    # Because duplicate binary name to ni.
-    # nushell
-
-    # ========== BROWSER ==========
-    # firefox
-    google-chrome
-
-    # ========== SECURITY TOOLS ==========
-    libsodium
-    libsecret
-    keybase
-    lssecret
-
-    # gnupg
-    # pinentry-curses
-    # pinentry-gnome3
-    pinentry-qt
-    # pinentry-rofi
-    # pinentry-gtk2
-    # (pkgs.lib.hiPrio pinentry-emacs)
-    # (pkgs.lib.hiPrio pkgs.pinentry-gnome3)
-
-    # ========== LANGUAGE SERVER ==========
-    # lua-language-server
-    # vim-language-server
-    # typescript-language-server
-    # efm-langserver
-    # marksman
-    # tailwindcss-language-server
-
-    # ========== RUNTIME & COMPILER ==========
-    vlang
-
-    clojure
-    babashka
-    # clasp-common-lisp
-
-    # ref: https://cons.io/
-    # NOTE: 2024/12/30 アプデしたらビルドできなくなった
-    # gerbil
-    # gambit
-
-    # erlang_27
-    # rebar3
-
-    
-    nodePackages.nodejs
-    bun
-    uv
-
-    # pnpm
-
-    # gleam
-
-    # Common Lisp
-    # sbcl'
-    # roswell
-    # sbclPackages.qlot-cli
-
-    ruby
-
-    # roswell
-
-    # swift ==> Flake
-
-    # ========== FONTS ==========
-    noto-fonts
-    noto-fonts-cjk-sans
-    # ttf-udev-gothic
-
-    # ========== Writing ==========
-    # textlint
-    # textlint-rule-preset-ja-technical-writing
-
-    # ========== UTILS ==========
-    nix-prefetch-scripts
-
-    # ========== FROM PKGLIST ==========
-    acpi
-    acpid
-    act
-
-    # apparmor
-    libapparmor
-
-    # arduino-cli
-    # arduino-ide-bin
-    asar
-    at
-    autoconf-archive
-    autotiling
-    avahi
-
-    # b43-fwcutter
-    b43FirmwareCutter
-
-    # base
-    # base-devel
-
-    bison
-    # NOTE 2/13 ビルドできなくなった
-    # bitwarden-cli
-
-    bluez
-    # bluez-utils
-    bluez-tools
-
-    # boost
-    bottom
-    btrfs-progs
-    bzip2
-    # cava
-    ccache
-    cliphist
-    cloc
-    conky
-    coreutils
-    cpio
-
-    # cpupower
-    linuxKernel.packages.linux_zen.cpupower
-
-    # cronie
-
-    cryptsetup
-
-    # device-mapper
-
-    # dhclient
-    # dhcpcd
-    # diffutils
-    # discord_arch_electron
-    dmraid
-    dnsmasq
-    # docker
-    # docker-compose
-    dosfstools
-    # downgrade
-    doxygen
-    e2fsprogs
-    efibootmgr
-
-    # era
-
-    # esp-idf
-    # esptool
-
-    exfatprogs
-    f2fs-tools
-
-    # fcitx5
-    # fcitx5-configtool
-    # fcitx5-gtk
-    # fcitx5-skk
-
-    fd
-
-    ffmpeg
-    ffmpegthumbnailer
-    file-roller
-    flashfocus
-    font-manager
-
-    fzf
-    gammastep
-    # gcc-fortran
-    # gfortran9
-
-    gd
-    github-cli
-    glava
-
-    # glibcLocales
-
-    glow
-    gnome-epub-thumbnailer
-    gnome-keyring
-    # go
-    gomi
-
-    # greetd
-    # greetd-tuigreet
-    greetd
-    tuigreet
-
-    # grub
-    # grub-btrfs
-
-    grim
-    # gtk3-nocsd
-    gvfs
-    # gvfs-mtp
-    helix
-    himalaya
-    htop
-    httpie
-
-    # immersed
-
-    imv
-    inetutils
-    # intel-ucode
-    jfsutils
-    # kitty
-
-    # kvantum
-
-    less
-
-    # lib32-glu
-    # lib32-libva-vdpau-driver
-    # lib32-mesa-vdpau
-    # lib32-vulkan-intel
-    # lib32-vulkan-radeon
-    # libcava
-    # libfishsound
-    # liboggz
-    # libsixel
-    # libva-mesa-driver
-    # libva-vdpau-driver
-
-    # linux61
-
-    # logrotate
-
-    # luarocks
-    lvm2
-    # ly
-    # gnumake
-    man-db
-    man-pages
-
-    # mdadm
-    mediainfo
-
-    # memtest86plus
-    # memtest86-efi
-
-    # mesa-vdpau
-    # mhwd
-    # mhwd-db
-
-    # mkinitcpio-openswap
-
-    # nfs-utils
-
-    # NOTE: 2024/12/30 アプデしたらビルドできなくなった
-    # mplayer
-
-    # multilib-devel
-    # ncurses5-compat-libs
-
-    # network-manager-applet
-    # networkmanager
-
-    # nss-mdns
-
-    # ntfs-3g
-
-    # oh-my-zsh
-
-    # openssh-askpass
-
-    # opusfile
-    # os-prober
-    p7zip
-
-    pass
-    patch
-    pavucontrol
-
-    # perl
-    playerctl
-
-    polkit_gnome
-
-    # postgresql-libs
-
-    poweralertd
-    pulsemixer
-
-    # python-breathe
-    # python-eventlet
-    # python-joblib
-    # python-pyserial
-    # python-recommonmark
-    # python-sphinx-alabaster-theme
-    # pywal-16-colors
-
-    # qemu-base
-    # qemu-desktop
-    # qemu-system-riscv
-    # qt5-wayland
-    # qt5ct
-    # qt6-multimedia
-    # qt6-tools
-    # qt6-wayland
-    # qt6ct
-
-    ranger
-    # rcm
-    re2c
-    # redis
-    reiserfsprogs
-    ripgrep
-
-    # riscv-gnu-toolchain-bin
-
-    rlwrap
-    rofi-power-menu
-
-    rsync
-
-    # samurai
-    sd
-
-    # NOTE: 2024/12/31 アプデしたらビルドできなくなった
-    shotcut
-
-    siege
-
-    slurp
-    # sof-firmware
-    # spectre-meltdown-checker
-
-    spotify
-    # spotify-tui
-
-    squashfsTools
-
-    starship
-    # sudo
-
-    # super_unko-git
-
-    # swaycwd
-    # swaylock-effects
-
-    swaybg
-    swaynotificationcenter
-    swaylock
-
-    # sworkstyle
-
-    # swww
-    # sysfsutils
-    # systemd
-
-    # taglib1
-    # teams-for-linux
-
-    texinfo
-
-    xfce.thunar
-
-    # timeshift-autosnap-manjaro
-
-    usbutils
-    # NOTE: 2024/12/30 アプデしたらビルドできなくなった
-    # uucp
-
-    # v4l2loopback-dkms
-
-    vhs
-    vlc
-
-    # vulkan-intel
-    # vulkan-radeon
-
-    # way-displays
-    # waypaper
-    # wdisplays
-
-    wev
-    wf-recorder
-    wget
-    which
-    wireless-regdb
-    wl-clipboard
-    wlay
-    wlsunset
-    wofi
-    fuzzel
-    wpa_supplicant
-
-    # ========== OTHER TOOLS ==========
-    # For org-roam
-    sqlite
-    graphviz
-
-    # For Emacs markdown-mode
-    multimarkdown
-    wakatime
-
-    # hyprland
-    # hyprlock
-    hyperfine
-
-    # hyprpaper
-    # hyprshade
-
-    # wqy-microhei
-    # wxwidgets-gtk3
-    # xclip
-
-    # xdg-desktop-portal-wlr
-    xdg-user-dirs
-
-    xremap
-
-    # xf86-video-amdgpu
-    # xf86-video-ati
-    # xf86-video-intel
-    # xf86-video-nouveau
-    # xfsprogs
-
-    # xorg-xwayland
-    # xsv
-    yq
-
-    # zeit
-    # zeitgeist
-    # ==================================
-
-    # # It is sometimes useful to fine-tune packages, for example, by applying
-    # # overrides. You can do that directly here, just don't forget the
-    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-    # # fonts?
-    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
-
-    # # You can also create simple shell scripts directly inside your
-    # # configuration. For example, this adds a command 'my-hello' to your
-    # # environment:
-    # (pkgs.writeShellScriptBin "my-hello" ''
-    #   echo "Hello, ${config.home.username}!"
-    # '')
-  ];
+  # environment. Packages are now organized in ./packages/ directory.
+  home.packages =
+    (import ./packages/development.nix { inherit pkgs; })
+    ++ (import ./packages/editors.nix { inherit pkgs emacs' nurpkgs; })
+    ++ (import ./packages/terminal.nix { inherit pkgs; })
+    ++ (import ./packages/utilities.nix { inherit pkgs; })
+    ++ (import ./packages/gui-apps.nix { inherit pkgs nurpkgs; })
+    ++ (import ./packages/system.nix { inherit pkgs; })
+    ++ (import ./packages/git.nix { inherit pkgs; })
+    ++ (import ./packages/security.nix { inherit pkgs; })
+    ++ (import ./packages/wayland.nix { inherit pkgs; })
+    ++ (import ./packages/fonts.nix { inherit pkgs; })
+    ++ (import ./packages/misc.nix { inherit pkgs nurpkgs; })
+    ++ (with pkgs; [
+      # Additional packages
+      nodePackages."@antfu/ni"
+      asar
+      nak
+      vim-startuptime
+      spotify
+
+      # NOTE: 2025/06/22 hashまわりで壊れたので一旦無効化
+      # (import ./pkgs/lspx { inherit pkgs; })
+    ]);
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
@@ -1005,6 +427,29 @@ rec {
     # SECRET = sops.secrets.spotify.spotify_secret;
   };
 
+  # PATH management centralized here to avoid duplications
+  home.sessionPath = [
+    "$HOME/.cabal/bin"
+    "$HOME/.bun/bin"
+    "$HOME/.rbenv/shims"
+    "$HOME/.rbenv/bin"
+    "$HOME/.deno/bin"
+    "$HOME/.bin"
+    "$HOME/.bin/scripts/life"
+    "$HOME/.bin/scripts/ime"
+    "$HOME/.npm-global/bin"
+    "$HOME/go/bin"
+    "$HOME/.local/bin"
+    "$HOME/.local/share"
+    "$HOME/.nimble/bin"
+    "$HOME/.nimble/pkgs"
+    "$HOME/.local/share/pnpm"
+    "$HOME/.luarocks/bin"
+    "$HOME/.cargo/bin"
+    "$HOME/.pub-cache/bin"
+    "$HOME/.ghcup/bin"
+  ];
+
   # programs.neovim.package = pkgs.neovim;
   # programs.neovim.enable = true;
 
@@ -1081,7 +526,7 @@ rec {
     enable = true;
     settings = {
       username = "31tkpkdg2lkjahtnnj4es4l2fs6q";
-      password = builtins.readFile "${home.homeDirectory}/.secrets/spotify-password";
+      password_cmd = "cat ${config.sops.secrets.spotify-password.path}";
     };
   };
 

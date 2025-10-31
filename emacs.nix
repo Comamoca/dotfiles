@@ -48,12 +48,13 @@ let
   };
 
   claude-code = pkgs.emacsPackages.trivialBuild {
-    pname = "claude-code.el";
+    pname = "claude-code";
     version = "main";
     src = sources.claude-code.src;
     buildInputs = with pkgs.emacsPackages; [
       eat
       transient
+      inheritenv
     ];
   };
 
@@ -182,7 +183,10 @@ let
     pname = "typst-preview";
     version = "master";
     src = sources.typst-preview.src;
-    buildInputs = with pkgs.emacsPackages; [ websocket ];
+    buildInputs = with pkgs.emacsPackages; [
+      websocket
+      f
+    ];
   };
 
   org-modern-indent = pkgs.emacsPackages.trivialBuild {
@@ -496,6 +500,8 @@ in
     alert
     dash
     s
+
+    just-mode
 
     # ECA
     eca

@@ -2,103 +2,106 @@
 {
   enable = true;
   shellInit = ''
-    fish_add_path $HOME/.local/share/
-
-    fish_add_path $HOME/.config/v-analyzer/bin/
-
-    fish_add_path /usr/local/bin
-    fish_add_path $HOME/.local/bin
-
-    fish_add_path $HOME/go/bin
-
-    fish_add_path $HOME/.dotnet/tools
-
-    fish_add_path $HOME/.npm-global/bin
-
-    fish_add_path $HOME/ghq/github.com/emscripten-core/emsdk
-    fish_add_path $HOME/ghq/github.com/emscripten-core/emsdk/upstream/emscripten
-    fish_add_path $HOME/.codon/bin
-    fish_add_path $HOME/.rye/shims
-
-    fish_add_path $HOME/.local/share/gem/ruby/3.3.0/bin
-    fish_add_path $HOME/.local/share/gem/ruby/3.0.0/bin
-    fish_add_path $HOME/.local/share/gem/ruby/3.0.0/bin
-
-    fish_add_path $HOME/.roswell/bin
-
-    fish_add_path $HOME/.local/share/coursier/bin
-
-    fish_add_path $HOME/.gleam/bin
+    # fish_add_path $HOME/.local/share/
+    #
+    # fish_add_path $HOME/.config/v-analyzer/bin/
+    #
+    # fish_add_path /usr/local/bin
+    # fish_add_path $HOME/.local/bin
+    #
+    # fish_add_path $HOME/go/bin
+    #
+    # fish_add_path $HOME/.dotnet/tools
+    #
+    # fish_add_path $HOME/.npm-global/bin
+    #
+    # fish_add_path $HOME/ghq/github.com/emscripten-core/emsdk
+    # fish_add_path $HOME/ghq/github.com/emscripten-core/emsdk/upstream/emscripten
+    # fish_add_path $HOME/.codon/bin
+    # fish_add_path $HOME/.rye/shims
+    #
+    # fish_add_path $HOME/.local/share/gem/ruby/3.3.0/bin
+    # fish_add_path $HOME/.local/share/gem/ruby/3.0.0/bin
+    # fish_add_path $HOME/.local/share/gem/ruby/3.0.0/bin
+    #
+    # fish_add_path $HOME/.roswell/bin
+    #
+    # fish_add_path $HOME/.local/share/coursier/bin
+    #
+    # fish_add_path $HOME/.gleam/bin
 
     fish_add_path $HOME/.bin/scripts/ime
-    fish_add_path $HOME/.bin/scripts/nowplaying
-    fish_add_path $HOME/.bin/scripts/pywalfish_add_path
-    fish_add_path $HOME/.bin/scripts/life
+
+    # fish_add_path $HOME/.bin/scripts/ime
+    # fish_add_path $HOME/.bin/scripts/nowplaying
+    # fish_add_path $HOME/.bin/scripts/pywalfish_add_path
+    # fish_add_path $HOME/.bin/scripts/life
 
     fish_add_path "$HOME/.moon/bin"
 
     # fish_add_path $HOME/.bin/scripts/nowplaying
-    fish_add_path $HOME/.roswell/bin/
+    # fish_add_path $HOME/.roswell/bin/
 
     # qlot
-    fish_add_path $HOME/.local/share/qlot/bin
+    # fish_add_path $HOME/.local/share/qlot/bin
 
     # gerbil
-    set -gx GERBIL_INSTALL_PREFIX /usr/local/gerbil
-    fish_add_path $GERBIL_INSTALL_PREFIX/bin
-    fish_add_path $HOME/.gerbil/bin
+    # set -gx GERBIL_INSTALL_PREFIX /usr/local/gerbil
+    # fish_add_path $GERBIL_INSTALL_PREFIX/bin
+    # fish_add_path $HOME/.gerbil/bin
 
     # source $HOME/.kiex/elixirs/.elixir-1.16.0-rc.1.env.fish
     # fish_add_path $HOME/.kiex/bin/
     # fish_add_path $HOME/.kiex/elixirs/elixir-1.14/bin/
 
-    fish_add_path $HOME/.kerl/26.2.1/bin/
-
-    fish_add_path $HOME/.janet/bin
-    fish_add_path $HOME/.bin/opam
-    fish_add_path $HOME/.bin/mason
-
-    fish_add_path $HOME/.wasmer/wasmer.sh
-
-    fish_add_path $HOME/.local/share/aquaproj-aqua/bin/
-    fish_add_path $AQUA_ROOT_DIR/bin
-
-    fish_add_path $HOME/.konryu/versions/v0.1.1/cotowali/bin
-    fish_add_path $HOME/go/bin/
+    # fish_add_path $HOME/.kerl/26.2.1/bin/
+    #
+    # fish_add_path $HOME/.janet/bin
+    # fish_add_path $HOME/.bin/opam
+    # fish_add_path $HOME/.bin/mason
+    #
+    # fish_add_path $HOME/.wasmer/wasmer.sh
+    #
+    # fish_add_path $HOME/.local/share/aquaproj-aqua/bin/
+    # fish_add_path $AQUA_ROOT_DIR/bin
+    #
+    # fish_add_path $HOME/.konryu/versions/v0.1.1/cotowali/bin
+    # fish_add_path $HOME/go/bin/
 
     # fish_add_path $HOME/.local/share/mise/shims
     # $HOME/.local/bin/mise activate fish | source
 
-    fish_add_path ~/.nimble/bin
+    # fish_add_path ~/.nimble/bin
 
-    set -gx GPG_TTY (tty)
-    set -gx RUNEWIDTH_EASTASIAN 0
+    # set -gx GPG_TTY (tty)
+    # set -gx RUNEWIDTH_EASTASIAN 0
 
-    set fish_greeting
+    # set fish_greeting
 
-    set -gx XDG_DATA_HOME $HOME/.local/share
-    set -gx AQUA_ROOT_DIR $XDG_DATA_HOME/aquaproj-aqua
+    # set -gx XDG_DATA_HOME $HOME/.local/share
+    # set -gx AQUA_ROOT_DIR $XDG_DATA_HOME/aquaproj-aqua
 
     # source ~/.wasmer/wasmer.sh
     # source "$HOME/.rye/env"
 
-    set LUA_PATH ~/.luarocks/lib/ $LUA_PATH
-    set LUA_PATH ~/.luarocks/lib/luarocks/rocks-5.4/ $LUA_PATH
-    set -x BLOG_PATH ~/ghq/github.com/coma/blog/src/content/blog/
+    # set LUA_PATH ~/.luarocks/lib/ $LUA_PATH
+    # set LUA_PATH ~/.luarocks/lib/luarocks/rocks-5.4/ $LUA_PATH
+    # set -x BLOG_PATH ~/ghq/github.com/coma/blog/src/content/blog/
 
-    set -x ANTHROPIC_BASE_URL ""
+    # set -x ANTHROPIC_BASE_URL ""
+    #
+    # fish_add_path ~/.nimble/.bin/git-tasukete
+    # fish_add_path ~/.bin/
+    # fish_add_path ~/.bin/bin
+    #
+    # set -gx DENO_INSTALL "/home/coma/.deno"
+    # fish_add_path $DENO_INSTALL/bin
+    # fish_add_path $HOME/.deno/bin
+    #
+    # fish_add_path $HOME/go/bin
+    # fish_add_path $HOME/local/
 
-    fish_add_path ~/.nimble/.bin/git-tasukete
-    fish_add_path ~/.bin/
-    fish_add_path ~/.bin/bin
-
-    set -gx DENO_INSTALL "/home/coma/.deno"
-    fish_add_path $DENO_INSTALL/bin
-    fish_add_path $HOME/.deno/bin
-
-    fish_add_path $HOME/go/bin
-    fish_add_path $HOME/local/
-
+    alias nixos-rebuild="/run/current-system/sw/bin/nixos-rebuild"
     alias magit="emacsclient -nw --eval '(magit)'"
     alias register-asdf="ln -s (pwd) '$HOME/common-lisp/$(basename $(pwd))'"
     alias supa "bunx supabase"
@@ -175,12 +178,9 @@
     set -x ELIXIR_ERL_OPTIONS "+fnu"
     set -gx FYNE_FONT /usr/share/fonts/PlemolJP/PlemolJP-Regular.ttf
 
-    set PATH /home/coma/.cargo/bin $PATH
     set GH_BINPATH /home/coma/.bin/
 
     set BAT_THEME "gruvbox-dark"
-    set PATH /home/coma/$CARGO_HOME/bin/ $PATH
-    set PATH /home/coma/.luarocks/bin/ $PATH
 
     #set PATH /home/coma/go/bin $PATH
 
@@ -189,11 +189,11 @@
 
     # arduino-cli completion fish | source
 
-    set -ga fish_user_paths /home/coma/.nimble/bin
-    set -ga fish_user_paths /home/coma/.nimble/pkgs
+    # set -ga fish_user_paths /home/coma/.nimble/bin
+    # set -ga fish_user_paths /home/coma/.nimble/pkgs
 
-    set -gx PNPM_HOME "/home/coma/.local/share/pnpm"
-    set -gx PATH "$PNPM_HOME" $PATH
+    # set -gx PNPM_HOME "/home/coma/.local/share/pnpm"
+    # set -gx PATH "$PNPM_HOME" $PATH
 
     # set -x PATH "$HOME/.konryu/bin" $PATH
     # set -x PATH "$HOME/.konryu/cotowali/bin/" $PATH
@@ -204,8 +204,8 @@
 
     set SoundDriver PULSEAUDIO:JACK:ALSA:OSS
 
-    set -Ux fish_user_paths $HOME/.rbenv/bin $fish_user_paths
-    set -Ux fish_user_paths $HOME/.rbenv/shims $fish_user_paths
+    # set -Ux fish_user_paths $HOME/.rbenv/bin $fish_user_paths
+    # set -Ux fish_user_paths $HOME/.rbenv/shims $fish_user_paths
     # set rg $FZF_FIND_FILE_COMMAND
 
     # bind \cg run_recker
@@ -220,21 +220,21 @@
     # bind \cf fzf_prev_open
 
     # Bun
-    set -Ux BUN_INSTALL "/home/coma/.bun"
-    set -px --path PATH "/home/coma/.bun/bin"
-    export PATH="$PATH":"$HOME/.pub-cache/bin"
+    # set -Ux BUN_INSTALL "/home/coma/.bun"
+    # set -px --path PATH "/home/coma/.bun/bin"
+    # export PATH="$PATH":"$HOME/.pub-cache/bin"
 
 
-    set -gx PNPM_HOME "/home/coma/.local/share/pnpm"
-    if not string match -q -- $PNPM_HOME $PATH
-      set -gx PATH "$PNPM_HOME" $PATH
-    end
+    # set -gx PNPM_HOME "/home/coma/.local/share/pnpm"
+    # if not string match -q -- $PNPM_HOME $PATH
+    #   set -gx PATH "$PNPM_HOME" $PATH
+    # end
 
-    if test (pwd) = "/mnt/c/Users/Coma"
-    	cd ~
-    end
+    # if test (pwd) = "/mnt/c/Users/Coma"
+    # 	cd ~
+    # end
 
-    set -q GHCUP_INSTALL_BASE_PREFIX[1]; or set GHCUP_INSTALL_BASE_PREFIX $HOME ; set -gx PATH $HOME/.cabal/bin $PATH /home/coma/.ghcup/bin # ghcup-env
+    # set -q GHCUP_INSTALL_BASE_PREFIX[1]; or set GHCUP_INSTALL_BASE_PREFIX $HOME ; set -gx PATH $HOME/.cabal/bin $PATH /home/coma/.ghcup/bin # ghcup-env
 
     export LUA_PATH='/usr/share/lua/5.4/?.lua;/usr/share/lua/5.4/?/init.lua;/usr/lib/lua/5.4/?.lua;/usr/lib/lua/5.4/?/init.lua;./?.lua;./?/init.lua;/home/coma/.luarocks/share/lua/5.4/?.lua;/home/coma/.luarocks/share/lua/5.4/?/init.lua'
     export LUA_CPATH='/usr/lib/lua/5.4/?.so;/usr/lib/lua/5.4/loadall.so;./?.so;/home/coma/.luarocks/lib/lua/5.4/?.so'
@@ -258,7 +258,6 @@
 
     # opam configuration
 
-    # Generated for envman. Do not edit.
-    test -s ~/.config/envman/load.fish; and source ~/.config/envman/load.fish
+    # envman removed - not in use
   '';
 }

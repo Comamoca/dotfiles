@@ -108,9 +108,7 @@ in
   # Enable networking
   networking.networkmanager.enable = true;
 
-  services.logind = {
-    powerKey = "ignore";
-  };
+  services.logind.settings.Login.HandlePowerKey = "ignore";
 
   services.gnome = {
     gnome-keyring.enable = true;
@@ -179,12 +177,28 @@ in
   # Enable the X11 windowing system.
   # You can disable this if you're only using the Wayland session.
 
-  services.xserver.enable = false;
-
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "jp";
     variant = "";
+  };
+
+  services.xserver = {
+    enable = false;
+    desktopManager = {
+      xterm.enable = false;
+    };
+   
+    windowManager.i3 = {
+      enable = true;
+      extraPackages = with pkgs; [
+        waybar
+        dmenu
+        i3status
+        i3lock
+        xauth
+     ];
+    };
   };
 
   # Enable CUPS to print documents.
@@ -305,11 +319,16 @@ in
     extraPortals = with pkgs; [
       xdg-desktop-portal-gtk
       # xdg-desktop-portal-wlr
-      # xdg-desktop-portal-gnome 
-      xdg-desktop-portal-hyprland 
+      # xdg-desktop-portal-gnome
+      xdg-desktop-portal-hyprland
     ];
    config = {
      hyprland.default = [ "hyprland" "gtk" ];
+     sway.default = pkgs.lib.mkForce [
+       "wlr"
+       "gtk"
+     ];
+     common.default = "*";
    };
   };
 
@@ -376,7 +395,7 @@ in
 
   programs.sway = {
     enable = true;
-    wrapperFeatures.gtk = true;
+    wrapperFeatures.gtk = false;
     # package = pkgs.swayfx;
   };
 

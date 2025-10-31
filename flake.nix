@@ -60,7 +60,8 @@
       ...
     }@inputs:
     let
-      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      system = "x86_64-linux";
+      pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
       treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
 
       overlays = [

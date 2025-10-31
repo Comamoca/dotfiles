@@ -110,12 +110,16 @@
   (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.ex\\'" . elixir-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.gleam\\'" . gleam-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . js-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.mjs\\'" . js-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.rust\\'" . rust-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.typ\\'" . typst-ts-mode)) 
   (add-to-list 'auto-mode-alist '("\\.dat$" . ledger-mode))
   (add-to-list 'auto-mode-alist '("\\.yaml" . yaml-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.html" . html-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.rs" . rust-ts-mode))
   (add-to-list 'auto-mode-alist '("\\.yml" . yaml-ts-mode))
   (add-to-list 'auto-mode-alist '("templates" . lisp-data-mode))
   (add-to-list 'auto-mode-alist '(".aiderrules" . markdown-mode))
@@ -1128,7 +1132,8 @@
       :recursive t
       :publishing-function 'org-zenn-publish-to-markdown)))
 
-  (leaf verb)
+  (leaf verb
+    :require t)
 
   (leaf quickrun
     :require t)
@@ -1587,8 +1592,9 @@
 ;; Key mapping
 (evil-define-key 'normal 'global (kbd "C-o") 'projectile-find-file)
 (evil-define-key 'normal 'global (kbd "SPC l") #'toggle-truncate-lines)
-(global-set-key (kbd "C-c C-r") 'window-resizer)
 
+(global-set-key (kbd "C-c C-r") 'window-resizer)
+(global-set-key (kbd "C-c C-r") 'window-resizer)
 
 (define-key global-map (kbd "M-g") 'consult-ghq-find)
 (define-key global-map (kbd "C-x s") 'blackening-region)
