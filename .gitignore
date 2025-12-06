@@ -45,3 +45,6 @@ emacs.d/templates/
 emacs.d/tramp
 emacs.d/tree-sitter/
 .aider*
+
+.mcp.json
+.pre-commit-config.yaml
