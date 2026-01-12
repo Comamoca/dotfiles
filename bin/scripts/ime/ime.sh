@@ -16,7 +16,7 @@ fi
 
 if [ "$1" = 'float' ]; then
 	# $kitty_bin --class Floaterm env NVIM_APPNAME=ime $nvim_bin /tmp/clip -c startinsert
-	foot -T Floaterm -W 60x13 env NVIM_APPNAME=ime $nvim_bin /tmp/clip -c startinsert
+	foot -T Floaterm -W 80x20 env NVIM_APPNAME=ime $nvim_bin /tmp/clip -c startinsert
 	# kitty --class Floaterm env vim /tmp/clip -c startinsert
 
 	if [[ -e /tmp/clip ]]; then
