@@ -16,6 +16,7 @@ input {
             // layout "us,ru"
             // options "grp:win_space_toggle,compose:ralt,ctrl:nocaps"
             layout "jp"
+            options "ctrl:nocaps"
         }
     }
 
@@ -24,7 +25,7 @@ input {
     touchpad {
         // off
         tap
-        // dwt
+        dwt
         // dwtp
         natural-scroll
         // accel-speed 0.2
@@ -211,6 +212,12 @@ layout {
 // See the binds section below for more spawn examples.
 // spawn-at-startup "alacritty" "-e" "fish"
 
+// Startup applications from sway config
+spawn-at-startup "waybar"
+spawn-at-startup "fcitx5"
+spawn-at-startup "swaync"
+spawn-at-startup "wlsunset" "-t" "5500"
+
 // Uncomment this line to ask the clients to omit their client-side decorations if possible.
 // If the client will specifically ask for CSD, the request will be honored.
 // Additionally, clients will be informed that they are tiled, removing some client-side rounded corners.
@@ -251,6 +258,28 @@ window-rule {
     default-column-width {}
 }
 
+// Picture-in-Picture windows from sway config
+window-rule {
+    match app-id="firefox"
+    match title=r#"^ピクチャーインピクチャー$"#
+    open-floating true
+}
+
+window-rule {
+    match title=r#"^ピクチャー イン ピクチャー$"#
+    open-floating true
+}
+
+// Floaterm window (ime.sh float)
+// Note: foot is configured with -W 80x20 (80 columns x 20 rows)
+window-rule {
+    match title=r#"^Floaterm$"#
+    // Open as floating window
+    open-floating true
+    // Block from screen capture for privacy (IME input)
+    block-out-from "screen-capture"
+}
+
 // Example: block out two password managers from screen capture.
 // (This example rule is commented out with a "/-" in front.)
 /-window-rule {
@@ -287,8 +316,11 @@ binds {
     // Suggested binds for running programs: terminal, app launcher, screen locker.
     // Mod+T { spawn "kitty"; }
     Mod+Return { spawn "kitty"; }
-    Mod+Space { spawn "fuzzel"; }
-    Super+Shift+L { spawn "swaylock"; } 
+    Mod+D { spawn "rofi" "-show" "combi"; }
+    Mod+Space { spawn "rofi" "-show" "drun"; }
+    Mod+B { spawn "firefox"; }
+    Mod+O { spawn "/home/coma/.bin/scripts/ime/ime.sh" "float"; }
+    Super+Shift+L { spawn "swaylock"; }
 
     // You can also use a shell. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument in the end.
@@ -300,6 +332,13 @@ binds {
     XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1-"; }
     XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
     XF86AudioMicMute     allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+
+    // Media keys for brightness and playback control
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "light" "-A" "10"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "light" "-U" "10"; }
+    XF86AudioPlay        allow-when-locked=true { spawn "playerctl" "play-pause"; }
+    XF86AudioNext        allow-when-locked=true { spawn "playerctl" "next"; }
+    XF86AudioPrev        allow-when-locked=true { spawn "playerctl" "previous"; }
 
     Mod+Q { close-window; }
 
@@ -488,7 +527,7 @@ binds {
     // Mod+Shift+Space { switch-layout "prev"; }
 
     Print { screenshot; }
-    // Mod+Shift+S { screenshot-screen write-to-disk=false; }
+    Mod+Shift+S { spawn "bash" "-c" "slurp | grim -g - - | wl-copy"; }
     Alt+Print { screenshot-window; }
 
     // The quit action will show a confirmation dialog to avoid accidental exits.
