@@ -95,6 +95,9 @@ in
   # boot.loader.grub.catppuccin.flavor = "mocha";
 
   catppuccin.enable = true;
+  catppuccin.flavor = "mocha";
+  catppuccin.accent = "mauve";
+  catppuccin.sddm.enable = true;
   catppuccin.grub.flavor = true;
   catppuccin.grub.enable = "mocha";
 
@@ -235,7 +238,13 @@ in
   # services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
 
-  services.displayManager.ly.enable = true;
+  # services.displayManager.ly.enable = true;
+
+  # SDDM with Catppuccin theme (configured via catppuccin module)
+  services.displayManager.sddm = {
+    enable = true;
+    wayland.enable = true;
+  };
 
   services.envfs.enable = true;
 
@@ -403,10 +412,9 @@ in
     enable = true;
   };
 
-  # programs.niri = {
-  #   enable = true;
-  #   package = pkgs.niri-unstable;
-  # };
+  programs.niri = {
+    enable = true;
+  };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
