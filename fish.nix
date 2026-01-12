@@ -209,7 +209,8 @@
     # set rg $FZF_FIND_FILE_COMMAND
 
     # bind \cg run_recker
-    bind \cg __recker
+    # bind \cg __recker
+    bind \cg ghq-attach
     bind \cb boost
     bind \cf fzopen
     bind \cs __sandbox
