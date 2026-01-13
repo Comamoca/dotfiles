@@ -13,6 +13,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    dms = {
+      url = "github:AvengeMedia/DankMaterialShell/stable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     mozilla-overlay.url = "github:mozilla/nixpkgs-mozilla";
     catppuccin.url = "github:catppuccin/nix";
     treefmt-nix.url = "github:numtide/treefmt-nix";
@@ -171,6 +176,7 @@
             inputs.catppuccin.homeModules.catppuccin
             inputs.sops-nix.homeManagerModules.sops
             inputs.nix-index-database.homeModules.nix-index
+            inputs.dms.homeModules.dank-material-shell
             {
               nixpkgs.overlays = overlays ++ [
                 (final: prev: {

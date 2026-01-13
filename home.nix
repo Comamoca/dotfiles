@@ -522,6 +522,10 @@ rec {
     };
   };
 
+  programs = {
+    dank-material-shell.enable = true;
+  };
+
   services.spotifyd = {
     enable = true;
     settings = {
