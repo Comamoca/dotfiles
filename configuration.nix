@@ -19,23 +19,22 @@ let
   hyprland-0-35-0 = old-pkgs.hyprland;
 in
 {
-  imports =
-    [
-      # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      # ./disko.nix
-    ]
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    # ./disko.nix
+  ]
 
-    ++ (with inputs.nixos-hardware.nixosModules; [
-      common-pc-ssd
-    ]);
+  ++ (with inputs.nixos-hardware.nixosModules; [
+    common-pc-ssd
+  ]);
 
   fonts = {
     packages = with pkgs; [
       udev-gothic-nf
       noto-fonts-cjk-serif
       noto-fonts-cjk-sans
-      noto-fonts-emoji
+      noto-fonts-color-emoji
       twemoji-color-font
       # nerd-fonts
     ];
@@ -73,7 +72,7 @@ in
       ];
       substituters = [
         "https://cache.iog.io"
-      ];   
+      ];
       trusted-public-keys = [
         "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
       ];
@@ -88,6 +87,7 @@ in
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
   # NOTE: 2/9 ビルドに失敗した
   # boot.kernelPackages = pkgs.linuxPackages_cachyos;
 
@@ -191,7 +191,7 @@ in
     desktopManager = {
       xterm.enable = false;
     };
-   
+
     windowManager.i3 = {
       enable = true;
       extraPackages = with pkgs; [
@@ -200,7 +200,7 @@ in
         i3status
         i3lock
         xauth
-     ];
+      ];
     };
   };
 
@@ -281,7 +281,7 @@ in
   };
 
   # Install irefox.
-  programs.firefox = { 
+  programs.firefox = {
     enable = true;
     # profiles = {
     #   myprofile = {
@@ -331,16 +331,18 @@ in
       # xdg-desktop-portal-gnome
       xdg-desktop-portal-hyprland
     ];
-   config = {
-     hyprland.default = [ "hyprland" "gtk" ];
-     sway.default = pkgs.lib.mkForce [
-       "wlr"
-       "gtk"
-     ];
-     common.default = "*";
-   };
+    config = {
+      hyprland.default = [
+        "hyprland"
+        "gtk"
+      ];
+      sway.default = pkgs.lib.mkForce [
+        "wlr"
+        "gtk"
+      ];
+      common.default = "*";
+    };
   };
-
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -394,9 +396,8 @@ in
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
-
   # Android Debug Bridge
-  programs.adb.enable = true;
+  # programs.adb.enable = true;
 
   programs.waybar.enable = true;
 

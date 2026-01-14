@@ -1,5 +1,6 @@
 { pkgs, nurpkgs }:
-with pkgs; [
+with pkgs;
+[
   # Misc tools
   zenn-cli
   comma
@@ -28,7 +29,6 @@ with pkgs; [
   sqlite
   graphviz
   multimarkdown
-  wakatime
   wakatime-cli
   cachix
   nix-output-monitor

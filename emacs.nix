@@ -473,9 +473,8 @@ in
     haskell-mode
 
     dirvish
-    claudemacs 
+    claudemacs
     sparql-mode
-
 
     exec-path-from-shell
     zenn-cli
@@ -511,6 +510,6 @@ in
 
     #highlight
     polymode
-   poly-markdown
+    poly-markdown
   ];
 }
