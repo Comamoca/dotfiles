@@ -1,5 +1,6 @@
 { pkgs, nurpkgs }:
-with pkgs; [
+with pkgs;
+[
   # Browsers
   google-chrome
 

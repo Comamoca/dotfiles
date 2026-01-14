@@ -1,5 +1,6 @@
 { pkgs }:
-with pkgs; [
+with pkgs;
+[
   # CLI utilities
   tldr
   lsd
@@ -31,4 +32,6 @@ with pkgs; [
   playerctl
   pavucontrol
   pulsemixer
+
+  happy-coder
 ]

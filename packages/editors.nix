@@ -1,5 +1,10 @@
-{ pkgs, emacs', nurpkgs }:
-with pkgs; [
+{
+  pkgs,
+  emacs',
+  nurpkgs,
+}:
+with pkgs;
+[
   # Editors
   vim-full
   emacs'

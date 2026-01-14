@@ -1,5 +1,6 @@
 { pkgs }:
-with pkgs; [
+with pkgs;
+[
   # System packages
   acpi
   acpid
@@ -33,7 +34,8 @@ with pkgs; [
   ffmpeg
   ffmpegthumbnailer
   file-roller
-  flashfocus
+  # NOTE: 2026/1/14 動かなくなった
+  # flashfocus
   font-manager
   gd
   glava
@@ -64,7 +66,6 @@ with pkgs; [
   rlwrap
   rofi-power-menu
   rsync
-  siege
   slurp
   swaybg
   swaynotificationcenter

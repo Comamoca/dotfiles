@@ -507,8 +507,6 @@ rec {
     # NOTE: 2024/12/31 アプデしたらビルドできなくなった
     # shotcut
 
-    siege
-
     slurp
     sof-firmware
     spectre-meltdown-checker
@@ -580,7 +578,7 @@ rec {
 
     # For Emacs markdown-mode
     multimarkdown
-    wakatime
+    wakatime-cli
 
     hyperfine
 

@@ -6,7 +6,8 @@
   ...
 }:
 let
-  system = "x86_64-linux"; nurpkgs = inputs.nur-packages.legacyPackages.${system};
+  system = "x86_64-linux";
+  nurpkgs = inputs.nur-packages.legacyPackages.${system};
 
   generated = import ./_sources/generated.nix;
   sources = generated {
@@ -125,9 +126,9 @@ rec {
         path = "${home.homeDirectory}/.secrets/spotify-password";
       };
       "claude-code" = {
-	sopsFile = ./secrets/claude-code.env;
+        sopsFile = ./secrets/claude-code.env;
         path = "${home.homeDirectory}/.secrets/claude-code.env";
-	format = "dotenv";
+        format = "dotenv";
       };
     };
   };
@@ -206,7 +207,8 @@ rec {
             name = "ts-all";
             paths = [
               ts
-            ] ++ ts.withAllGrammars.dependencies;
+            ]
+            ++ ts.withAllGrammars.dependencies;
           };
         };
       # scripts
@@ -384,7 +386,7 @@ rec {
       ".tmux.conf".source = (symlink /${dotfiles}/tmux.conf);
 
       ".secrets/.keep" = {
-	text = "";
+        text = "";
       };
 
       ".emacs.d" = {
@@ -474,25 +476,24 @@ rec {
   };
 
   # systemd.user.services.claude-code-provider-proxy = {
-    # Unit = {
-    #   Description = "Claude Code Provider Proxy";
-    #   After = [ "network.target" ];
-    # };
-
-    # Service = {
-    #   Type = "simple";
-    #   WorkingDirectory = "/home/coma/.ghq/github.com/ujisati/claude-code-provider-proxy";
-    #   ExecStart = "${pkgs.python3Packages.uv}/bin/uv run src/main.py";
-    #   Restart = "on-failure";
-    #   RestartSec = 10;
-      # EnvironmentFile ="${home.homeDirectory}/.secrets/claude-code.env";
-    # };
-
-    # Install = {
-    #   WantedBy = [ "default.target" ];
-    # };
+  # Unit = {
+  #   Description = "Claude Code Provider Proxy";
+  #   After = [ "network.target" ];
   # };
 
+  # Service = {
+  #   Type = "simple";
+  #   WorkingDirectory = "/home/coma/.ghq/github.com/ujisati/claude-code-provider-proxy";
+  #   ExecStart = "${pkgs.python3Packages.uv}/bin/uv run src/main.py";
+  #   Restart = "on-failure";
+  #   RestartSec = 10;
+  # EnvironmentFile ="${home.homeDirectory}/.secrets/claude-code.env";
+  # };
+
+  # Install = {
+  #   WantedBy = [ "default.target" ];
+  # };
+  # };
 
   programs = {
     direnv = {

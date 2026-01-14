@@ -13,16 +13,15 @@ let
   }) { };
 in
 {
-  imports =
-    [
-      # Include the results of the hardware scan.
-      # ./hardware-configuration.nix
-      # ./disko.nix
-    ]
+  imports = [
+    # Include the results of the hardware scan.
+    # ./hardware-configuration.nix
+    # ./disko.nix
+  ]
 
-    ++ (with inputs.nixos-hardware.nixosModules; [
-      common-pc-ssd
-    ]);
+  ++ (with inputs.nixos-hardware.nixosModules; [
+    common-pc-ssd
+  ]);
 
   fonts = {
     packages = with pkgs; [

@@ -1,5 +1,6 @@
 { pkgs }:
-with pkgs; [
+with pkgs;
+[
   # Development tools
   gleam.bin.latest
   deno."2.5.4"

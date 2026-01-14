@@ -27,22 +27,22 @@ let
       }
 
       ''
-        unpackPhase
-        cd source
-        HOME="$(mktemp -d)"
+                unpackPhase
+                cd source
+                HOME="$(mktemp -d)"
 
-        # deno cache --frozen=true --vendor=true main.ts
-        deno cache --vendor=true main.ts
-	
-        # 一意じゃないと思われるデータの削除
-        for path in vendor/jsr.io/*/*/meta.json; do
-          echo '{"versions":{}}' > $path
-        done
+                # deno cache --frozen=true --vendor=true main.ts
+                deno cache --vendor=true main.ts
+        	
+                # 一意じゃないと思われるデータの削除
+                for path in vendor/jsr.io/*/*/meta.json; do
+                  echo '{"versions":{}}' > $path
+                done
 
-        rm -f node_modules/.deno/.deno.lock.poll
-        mkdir -p $out
-        cp -a node_modules $out/
-        cp -a vendor $out/
+                rm -f node_modules/.deno/.deno.lock.poll
+                mkdir -p $out
+                cp -a node_modules $out/
+                cp -a vendor $out/
       '';
 
   vendored = pkgs.symlinkJoin {
