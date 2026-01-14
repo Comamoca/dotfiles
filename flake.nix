@@ -66,14 +66,17 @@
     }@inputs:
     let
       system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
       treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
 
       overlays = [
         inputs.neovim-nightly-overlay.overlays.default
         (import inputs.emacs-overlay)
         inputs.nak.overlays.default
-	inputs.deno-overlay.overlays.deno-overlay
+        inputs.deno-overlay.overlays.deno-overlay
         # (import emacs.overlay)
         inputs.mozilla-overlay.overlays.firefox
         inputs.niri.overlays.niri
@@ -89,6 +92,13 @@
       };
 
       nixosConfigurations = {
+        raspi = nixpkgs.lib.nixosSystem {
+          inherit system;
+          modules = [
+            ./raspi/configuration.nix
+          ];
+        };
+
         WSL = inputs.nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
           modules = [
@@ -121,7 +131,7 @@
             chaotic.nixosModules.nyx-cache
             chaotic.nixosModules.nyx-overlay
             chaotic.nixosModules.nyx-registry
-	    nix-ld.nixosModules.nix-ld
+            nix-ld.nixosModules.nix-ld
             {
               nixpkgs.overlays = overlays ++ [
                 (final: prev: {
