@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# 依存コマンドの存在確認
+check_dependencies() {
+    local missing=()
+    for cmd in ghq fzf tmux; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            missing+=("$cmd")
+        fi
+    done
+
+    if [ ${#missing[@]} -gt 0 ]; then
+        echo "Error: Required commands not found: ${missing[*]}" >&2
+        exit 1
+    fi
+}
+
+# リポジトリをfzfで選択
+select_repository() {
+    local ghq_root
+    ghq_root=$(ghq root 2>/dev/null)
+
+    if [ -z "$ghq_root" ]; then
+        echo "Error: Failed to get ghq root." >&2
+        exit 1
+    fi
+
+    local selected
+    selected=$(ghq list | fzf \
+        --preview "bat --color=always --style=header,grid --line-range :80 ${ghq_root}/{}/README.* 2>/dev/null || echo 'No README found'" \
+        --preview-window=right:60% \
+        --height=100% \
+        --border \
+        --prompt='Select repository: ')
+
+    echo "$selected"
+}
+
+# セッション名を生成（サニタイズ込み）
+generate_session_name() {
+    local repo_path="$1"
+    local session_name
+    session_name=$(basename "$repo_path" | tr '.:' '__')
+    echo "$session_name"
+}
+
+# セッションの存在確認
+session_exists() {
+    local session_name="$1"
+    tmux has-session -t "$session_name" 2>/dev/null
+}
+
+# セッションを作成
+create_session() {
+    local session_name="$1"
+    local project_path="$2"
+
+    if [ ! -d "$project_path" ]; then
+        echo "Error: Project directory not found: $project_path" >&2
+        exit 1
+    fi
+
+    tmux new-session -d -s "$session_name" -c "$project_path"
+}
+
+# セッションにアタッチまたはスイッチ
+attach_session() {
+    local session_name="$1"
+
+    if [ -n "${TMUX:-}" ]; then
+        # tmux内から実行: セッションを切り替え
+        tmux switch-client -t "$session_name"
+    else
+        # tmux外から実行: セッションにアタッチ
+        tmux attach-session -t "$session_name"
+    fi
+}
+
+main() {
+    # 依存チェック
+    check_dependencies
+
+    # リポジトリ選択
+    local selected_repo
+    selected_repo=$(select_repository)
+
+    # キャンセルされた場合は終了
+    if [ -z "$selected_repo" ]; then
+        exit 0
+    fi
+
+    # プロジェクトパス取得
+    local ghq_root
+    ghq_root=$(ghq root)
+    local project_path="${ghq_root}/${selected_repo}"
+
+    # セッション名生成
+    local session_name
+    session_name=$(generate_session_name "$selected_repo")
+
+    # セッション作成（存在しない場合のみ）
+    if ! session_exists "$session_name"; then
+        create_session "$session_name" "$project_path"
+    fi
+
+    # セッションにアタッチ
+    attach_session "$session_name"
+}
+
+main "$@"
