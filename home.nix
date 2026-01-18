@@ -79,7 +79,7 @@ let
 
   gitmoji = pkgs.fetchurl {
     url = "https://gitmoji.dev/api/gitmojis";
-    hash = "sha256-deIjmV/50HY0PwVtlQzaXBOQhug4wEQAr5RD1JK2G/4=";
+    hash = "sha256-+bzNCqGOnVkpgvTdpWfcRtVfHQO2pX1/nYgluMA7VYo";
   };
 
   # pgtkでビルドするとエラーこそ出ないものの有効にならない
@@ -230,6 +230,10 @@ rec {
       };
       ".bin/scripts/life" = {
         source = (symlink /${dotfiles}/bin/scripts/life);
+        recursive = true;
+      };
+      ".bin/scripts/ghq-attach" = {
+        source = (symlink /${dotfiles}/bin/scripts/ghq-attach);
         recursive = true;
       };
 
@@ -439,6 +443,7 @@ rec {
     "$HOME/.bin"
     "$HOME/.bin/scripts/life"
     "$HOME/.bin/scripts/ime"
+    "$HOME/.bin/scripts/ghq-attach"
     "$HOME/.npm-global/bin"
     "$HOME/go/bin"
     "$HOME/.local/bin"
@@ -556,9 +561,13 @@ rec {
     sway.enable = true;
   };
 
-  # services.gpg-agent = {
-  #   enable = true;
-  # };
+  services.gpg-agent = {
+    enable = true;
+    enableSshSupport = true;
+    pinentryPackage = pkgs.pinentry-qt;
+    defaultCacheTtl = 3600;
+    maxCacheTtl = 7200;
+  };
 
   # programs.lem-editor.enable = true
 }

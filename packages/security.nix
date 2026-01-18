@@ -7,4 +7,5 @@ with pkgs;
   keybase
   lssecret
   pinentry-qt
+  gnupg
 ]

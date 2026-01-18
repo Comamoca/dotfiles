@@ -269,16 +269,11 @@ in
     shell = pkgs.fish;
   };
 
-  # GnuPG
-  programs.gnupg.agent = {
-    enable = true;
-    pinentryPackage = pkgs.pinentry-gnome3;
-    # pinentryPackage = pkgs.pinentry-curses;
-    # pinentryPackage = pkgs.pinentry-gnome3;
-    # settings = {
-    #   pinentry-program = "${(pkgs.lib.mkForce pkgs.pinentry-gnome3)}";
-    # };
-  };
+  # GnuPG - Managed by home-manager (see home.nix services.gpg-agent)
+  # programs.gnupg.agent = {
+  #   enable = true;
+  #   pinentryPackage = pkgs.pinentry-gnome3;
+  # };
 
   # Install irefox.
   programs.firefox = {

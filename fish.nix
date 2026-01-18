@@ -36,6 +36,7 @@
     # fish_add_path $HOME/.bin/scripts/nowplaying
     # fish_add_path $HOME/.bin/scripts/pywalfish_add_path
     # fish_add_path $HOME/.bin/scripts/life
+    fish_add_path $HOME/.bin/scripts/ghq-attach
 
     fish_add_path "$HOME/.moon/bin"
 
@@ -73,7 +74,7 @@
 
     # fish_add_path ~/.nimble/bin
 
-    # set -gx GPG_TTY (tty)
+    set -gx GPG_TTY (tty)
     # set -gx RUNEWIDTH_EASTASIAN 0
 
     # set fish_greeting
