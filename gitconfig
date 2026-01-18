@@ -3,7 +3,7 @@
 [user]
 	email = comamoca.dev@gmail.com
 	name = Comamoca
-	signingKey = 35CFBFA289634E3ECAC96FCE0C8FA6582E5474A5
+	signingKey = C6507465D0ED4DBCDCFD627C9EC61A135482C86E
 [commit]
 	gpgsign = true
 [gpg]
