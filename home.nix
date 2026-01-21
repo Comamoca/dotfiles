@@ -95,7 +95,8 @@ let
   # });
 
   # emacs' = (pkgs.emacsPackagesFor pkgs.emacs-unstable).emacsWithPackages (
-  emacs' = (pkgs.emacsPackagesFor pkgs.emacs).emacsWithPackages (
+  # emacs' = (pkgs.emacsPackagesFor pkgs.emacs).emacsWithPackages (
+  emacs' = (pkgs.emacsPackagesFor pkgs.emacs-pgtk).emacsWithPackages (
     epkgs: (import ./emacs.nix { inherit pkgs epkgs nurpkgs; }).epkgs
   );
 
@@ -431,6 +432,23 @@ rec {
     # EDITOR = "nvim";
     XDG_CONFIG_HOME = "${home.homeDirectory}/.config";
     # SECRET = sops.secrets.spotify.spotify_secret;
+
+    # Enable native Wayland support for Electron/Chromium apps
+    # Affects: Signal, Slack, Discord, Teams, Chrome, etc.
+    NIXOS_OZONE_WL = "1";
+  };
+
+  # Systemd user session variables
+  # Make Wayland environment available to systemd services like Emacs daemon
+  systemd.user.sessionVariables = {
+    # Wayland display - required for GUI applications
+    WAYLAND_DISPLAY = "wayland-1";
+
+    # Enable Wayland support for Electron/Chromium apps in services
+    NIXOS_OZONE_WL = "1";
+
+    # Runtime directory (usually already set, but explicit for clarity)
+    XDG_RUNTIME_DIR = "/run/user/1000";
   };
 
   # PATH management centralized here to avoid duplications
@@ -521,6 +539,15 @@ rec {
     };
   };
 
+  programs.alacritty = {
+    enable = true;
+    settings = {
+      font = {
+        size = 13.5;
+      };
+    };
+  };
+
   programs.bat = {
     enable = true;
     config = {
@@ -559,6 +586,7 @@ rec {
     foot.enable = true;
     bat.enable = true;
     sway.enable = true;
+    alacritty.enable = true;
   };
 
   services.gpg-agent = {
