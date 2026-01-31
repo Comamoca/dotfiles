@@ -34,7 +34,7 @@ if dpp.load_state(dppBase) then
   vim.api.nvim_create_autocmd("User", {
     pattern = "DenopsReady",
     callback = function()
-      vim.notify("dpp load_state() is failed")
+      vim.notify("dpp: Rebuilding plugin state cache...", vim.log.levels.INFO)
       dpp.make_state(dppBase, dpp_config)
     end,
   })
@@ -92,6 +92,18 @@ vim.api.nvim_create_user_command("DppUpdate", "call dpp#async_ext_action('instal
 vim.api.nvim_create_user_command("DppMakestate", function(val)
   dpp.make_state(dppBase, dpp_config)
 end, { nargs = 0 })
+
+-- Install treesitter parsers with new API
+vim.api.nvim_create_user_command("TSInstallParsers", function(args)
+  local parsers = vim.split(args.args, " ", { trimempty = true })
+  if #parsers == 0 then
+    parsers = {"c", "lua", "vim", "vimdoc", "query", "gleam"}
+  end
+  require('nvim-treesitter').install(parsers)
+end, {
+  nargs = "*",
+  desc = "Install treesitter parsers"
+})
 
 vim.api.nvim_create_user_command("Ddu", function(args)
   local subcmd = args.args

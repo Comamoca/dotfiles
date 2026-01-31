@@ -17,22 +17,13 @@ local pum_entered = vim.fn["pum#entered"]
 vim.fn["ddc#custom#load_config"](vim.fn.expand("~/.config/nvim/ddc.ts"))
 vim.fn["ddc#enable"]({context_filetype = "treesitter"})
 
--- vim.api.nvim_create_autocmd("InsertEnter", {
--- 	callback = function(event)
--- 	end
--- })
+-- vim.keymap.set({ "i", "s" }, "<C-k>", function()
+-- 	return vim.fn["vsnip#jumpable"](1) == 1 and "<Plug>(vsnip-jump-next)" or "<Tab>"
+-- end, { expr = true, noremap = false })
 
-vim.keymap.set({ "i", "s" }, "<Tab>", function()
-	return vim.fn["vsnip#available"](1) == 1 and "<Plug>(vsnip-expand-or-jump)" or "<CR>"
-end, { expr = true, noremap = false })
-
-vim.keymap.set({ "i", "s" }, "<C-k>", function()
-	return vim.fn["vsnip#jumpable"](1) == 1 and "<Plug>(vsnip-jump-next)" or "<Tab>"
-end, { expr = true, noremap = false })
-
-vim.keymap.set({ "i", "s" }, "<C-j>", function()
-	return vim.fn["vsnip#jumpable"](-1) == 1 and "<Plug>(vsnip-jump-prev)" or "<S-Tab>"
-end, { expr = true, noremap = false })
+-- vim.keymap.set({ "i", "s" }, "<C-j>", function()
+-- 	return vim.fn["vsnip#jumpable"](-1) == 1 and "<Plug>(vsnip-jump-prev)" or "<S-Tab>"
+-- end, { expr = true, noremap = false })
 
 vim.keymap.set("i", "<C-p>", function()
 	pum_map_select_relative(-1)
@@ -164,6 +155,9 @@ on_source = 'ddc.vim'
 repo = "vim-skk/skkeleton"
 on_source = 'ddc.vim'
 hook_source = '''
+inoremap <C-k> <Plug>(skkeleton-enable)
+inoremap <C-l> <Plug>(skkeleton-disable)
+
 call skkeleton#azik#add_table("jis")
 
 call skkeleton#config(#{
@@ -209,10 +203,6 @@ autocmd InsertEnter * ++once call skkeleton#register_kanatable('azik', {
     \   'z ':         ['　', ''],
     \   'z:':         ['：', ''],
     \ })
-
-
-inoremap <C-i> <Plug>(skkeleton-enable)
-inoremap <C-l> <Plug>(skkeleton-disable)
 '''
 
 [[plugins]]
@@ -233,7 +223,6 @@ on_source = 'ddc.vim'
 hook_source = '''
 call ddc#custom#patch_global('sourceParams', {
       \ 'dictionary': { 'dictPaths': [
-      \  expand("~/.spell-dict/programming-english-dict"),
       \  expand("~/.spell-dict/dict.txt"),
       \  ],
       \ 'smartCase': v:true,
@@ -247,3 +236,4 @@ call ddc#custom#patch_global('sourceOptions', {
       \ 'dictionary': {'mark': 'D'},
       \ })
 '''
+# \  expand("~/.spell-dict/programming-english-dict"),

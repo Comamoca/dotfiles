@@ -85,94 +85,99 @@ repo = 'nvim-treesitter/nvim-treesitter'
 on_event = ['BufRead', 'CursorHold']
 hook_post_update = 'TSUpdate'
 lua_source = '''
- --    require("nvim-treesitter.configs").setup({
- --      -- ensure_installed = { "c", "lua", "vim", "vimdoc", "query" },
- --      sync_install = false,
- --      auto_install = true,
- --
- --      textobjects = {
- --        select = {
- --          enable = true,
- --          lookahead = true,
- --          keymaps = {
- --            ["af"] = "@function.outer",
- --            ["if"] = "@function.inner",
- --            ["ac"] = "@class.outer",
- --            ["ic"] = "@class.inner",
- --          },
- --        },
- --      },
- --
- --      highlight = {
- --        enable = true,
- -- -- disable = { "markdown" },
- --
- --        -- disable highlight in big file
- --        disable = function(lang, buf)
- --          local max_filesize = 100 * 1024 -- 100 KB
- --          local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
- --          if ok and stats and stats.size > max_filesize then
- --            return true
- --          end
- --        end,
- --
- --        additional_vim_regex_highlighting = false,
- --      },
- --      autotag = {
- --        enable = true
- --        },
- --    })
+-- Install parsers explicitly (new API)
+local parsers = {
+  "c",
+  "lua",
+  "vim",
+  "vimdoc",
+  "query",
+  "gleam",
+}
 
- require'nvim-treesitter.configs'.setup {
-   ensure_installed = {
-     "c",
-     "lua",
-     "vim",
-     "vimdoc",
-     "query",
-     "gleam",
-   --  "haxe"
-   },
-   sync_install = false,
-   auto_install = false,
-   ignore_install = {},
+-- Configure nvim-treesitter with textobjects integration
+require'nvim-treesitter'.setup {
+  install_dir = vim.fn.stdpath('data') .. '/site',
 
-   highlight = {
-     enable = true,
-     disable = function(lang, buf)
-         local max_filesize = 100 * 1024 -- 100 KB
-         local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-         if ok and stats and stats.size > max_filesize then
-             return true
-         end
-     end,
-     additional_vim_regex_highlighting = false,
-   },
- }
+  -- Integrate textobjects configuration
+  textobjects = {
+    select = {
+      enable = true,
+      lookahead = true,
+      keymaps = {
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["ac"] = "@class.outer",
+        ["ic"] = "@class.inner",
+      },
+    },
+    move = {
+      enable = true,
+      set_jumps = true,
+      goto_next_start = {
+        ["]f"] = "@function.outer",
+        ["]c"] = "@class.outer",
+      },
+      goto_next_end = {
+        ["]F"] = "@function.outer",
+        ["]C"] = "@class.outer",
+      },
+      goto_previous_start = {
+        ["[f"] = "@function.outer",
+        ["[c"] = "@class.outer",
+      },
+      goto_previous_end = {
+        ["[F"] = "@function.outer",
+        ["[C"] = "@class.outer",
+      },
+    },
+  },
+}
 
- local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
+-- Enable highlighting via autocmd (manual activation required on main branch)
+local group = vim.api.nvim_create_augroup('TreesitterHighlight', { clear = true })
 
--- parser_config.haxe = {
---   install_info = {
---     url = "https://github.com/vantreeseba/tree-sitter-haxe",
---     files = {"src/parser.c"},
---     -- optional entries:
---     branch = "main",
---   },
---   filetype = "haxe",
--- }
+vim.api.nvim_create_autocmd('FileType', {
+  group = group,
+  pattern = '*',
+  callback = function(args)
+    local filetype = vim.bo[args.buf].filetype
+    if filetype and filetype ~= "" then
+      -- Enable treesitter highlighting
+      pcall(vim.treesitter.start, args.buf)
+    end
+  end,
+})
+
+-- Disable highlighting for large files (preserved from old config)
+vim.api.nvim_create_autocmd('BufReadPre', {
+  group = group,
+  callback = function(args)
+    local max_filesize = 100 * 1024 -- 100 KB
+    local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(args.buf))
+    if ok and stats and stats.size > max_filesize then
+      vim.api.nvim_create_autocmd('FileType', {
+        buffer = args.buf,
+        once = true,
+        callback = function()
+          vim.treesitter.stop(args.buf)
+        end,
+      })
+    end
+  end,
+})
 '''
 
 [[plugins]]
 repo = 'nvim-treesitter/nvim-treesitter-textobjects'
+rev = 'main'
 on_source = ["nvim-treesitter"]
+lua_source = '''
+-- Configuration is integrated in nvim-treesitter setup above
+'''
 
 [[plugins]]
 repo = 'vantreeseba/tree-sitter-haxe'
-on_source = ["nvim-treesitter"]
-
-[[plugins]]
-repo = 'nvim-treesitter/playground'
 on_source = ["nvim-treesitter"]
 
 [[plugins]]

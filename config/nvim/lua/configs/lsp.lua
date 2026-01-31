@@ -1,3 +1,6 @@
+-- Suppress lspconfig deprecation warning until vim.lsp.config migration
+vim.g.lspconfig_deprecation_warning = false
+
 local lspconfig = require("lspconfig")
 local server_config = require("lspconfig.configs")
 -- local mason = require("mason")

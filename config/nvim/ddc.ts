@@ -4,6 +4,14 @@ import { ConfigArguments } from "https://deno.land/x/ddc_vim@v4.0.4/base/config.
 
 export class Config extends BaseConfig {
   override async config(args: ConfigArguments): Promise<void> {
+    // Register snippetEngine callback for vsnip
+    const snippetEngine = await args.denops.call(
+      "denops#callback#register",
+      async (body: string) => {
+        await args.denops.call("vsnip#anonymous", body);
+      },
+    ) as string;
+
     args.contextBuilder.patchGlobal({
       ui: "pum",
       sources: [
@@ -60,8 +68,7 @@ export class Config extends BaseConfig {
       },
       sourceParams: {
         lsp: {
-          // TODO: Vsnip
-          // "snippetEngine":
+          snippetEngine: snippetEngine,
           enableResolveItem: true,
           enableAdditionalTextEdit: true,
           sorters: ["sorter_lsp-kind"],
