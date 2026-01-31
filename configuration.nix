@@ -85,9 +85,37 @@ in
   };
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader = {
+    # systemd-bootを無効化してGRUBに移行
+    systemd-boot.enable = false;
+
+    # GRUB設定（UEFI対応）
+    grub = {
+      enable = true;
+      device = "nodev";           # UEFI環境では"nodev"
+      efiSupport = true;
+      efiInstallAsRemovable = false;
+    };
+
+    # EFI変数設定
+    efi = {
+      canTouchEfiVariables = true;
+      efiSysMountPoint = "/boot";
+    };
+  };
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  # niri外部ディスプレイのホットプラグ安定性のためのi915パラメータ
+  # これらはIntel GPUの省電力機能を無効化し、ディスプレイ出力の安定性を優先する。
+  # niriのバージョンアップやカーネル更新後に不要になる可能性あり。
+  # 検証手順は config/niri/WORKAROUNDS.md を参照。
+  boot.kernelParams = [
+    "i915.enable_psr=0"      # Panel Self Refreshを無効化 - 外部ディスプレイ接続/切断時の表示崩れを防止
+    "i915.enable_fbc=0"      # Frame Buffer Compressionを無効化 - マルチディスプレイ時のレンダリング安定性向上
+    "i915.enable_dc=0"       # Display C-statesを無効化 - ディスプレイの電力状態遷移によるブラックアウト防止
+  ];
+  # niriがDRMデバイスに早期アクセスできるよう、initrd段階でi915モジュールをロードする。
+  # これにより、ディスプレイのホットプラグ検出が安定する。
+  boot.initrd.kernelModules = [ "i915" ];
   # NOTE: 2/9 ビルドに失敗した
   # boot.kernelPackages = pkgs.linuxPackages_cachyos;
 
@@ -98,8 +126,10 @@ in
   catppuccin.flavor = "mocha";
   catppuccin.accent = "mauve";
   catppuccin.sddm.enable = true;
-  catppuccin.grub.flavor = true;
-  catppuccin.grub.enable = "mocha";
+
+  # GRUB用Catppuccin Mochaテーマ
+  catppuccin.grub.enable = true;      # boolean型
+  catppuccin.grub.flavor = "mocha";   # "mocha"を指定
 
   networking.hostName = "comabook"; # Define your hostname.
   # networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
@@ -112,6 +142,32 @@ in
   networking.networkmanager.enable = true;
 
   services.logind.settings.Login.HandlePowerKey = "ignore";
+
+  # systemd sleep configuration for suspend/hibernate
+  systemd.sleep.extraConfig = ''
+    SuspendState=mem
+    HibernateMode=platform
+  '';
+
+  # Power management: Force DRM connector detection after resume
+  powerManagement = {
+    enable = true;
+
+    resumeCommands = ''
+      # Wait for system to stabilize
+      ${pkgs.coreutils}/bin/sleep 2
+
+      # Force DRM connector detection for all displays
+      for connector in /sys/class/drm/card*/status; do
+        if [ -w "$connector" ]; then
+          echo detect > "$connector" || true
+        fi
+      done
+
+      # Log resume event
+      ${pkgs.coreutils}/bin/echo "Display resume script executed at $(${pkgs.coreutils}/bin/date)" | ${pkgs.systemd}/bin/systemd-cat -t display-resume
+    '';
+  };
 
   services.gnome = {
     gnome-keyring.enable = true;
@@ -187,7 +243,7 @@ in
   };
 
   services.xserver = {
-    enable = false;
+    enable = true;
     desktopManager = {
       xterm.enable = false;
     };
@@ -246,6 +302,9 @@ in
     wayland.enable = true;
   };
 
+  # Set default session for SDDM
+  services.displayManager.defaultSession = "niri";
+
   services.envfs.enable = true;
 
   # services.mako.enable = true;
@@ -262,6 +321,7 @@ in
       "adbusers"
       "plugdev"
       "inputs"
+      "video"  # Fix: Add video group for DRM device access (niri display hotplug)
     ];
     packages = with pkgs; [
       #  thunderbird
@@ -376,6 +436,35 @@ in
 
     # cursor theme
     phinger-cursors
+
+    # Display diagnostics tool for external display issues
+    (pkgs.writeShellScriptBin "display-diag" ''
+      echo "=== Display Diagnostics ==="
+      echo
+      echo "--- Connector Status ---"
+      for connector in /sys/class/drm/card*/status; do
+        name=$(basename $(dirname $connector))-status
+        status=$(cat $connector 2>/dev/null || echo "error")
+        echo "$name: $status"
+      done
+      echo
+      echo "--- Enabled Displays ---"
+      for enabled in /sys/class/drm/card*/enabled; do
+        name=$(basename $(dirname $enabled))-enabled
+        status=$(cat $enabled 2>/dev/null || echo "error")
+        echo "$name: $status"
+      done
+      echo
+      echo "--- Active i915 Parameters ---"
+      for param in /sys/module/i915/parameters/*; do
+        name=$(basename $param)
+        value=$(cat $param 2>/dev/null || echo "error")
+        echo "$name: $value"
+      done
+      echo
+      echo "--- Recent suspend/resume logs ---"
+      ${pkgs.systemd}/bin/journalctl -b -n 100 | ${pkgs.gnugrep}/bin/grep -i -E "(suspend|resume|drm|i915|thunderbolt)" | ${pkgs.coreutils}/bin/tail -20
+    '')
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -394,7 +483,7 @@ in
   # Android Debug Bridge
   # programs.adb.enable = true;
 
-  programs.waybar.enable = true;
+  programs.waybar.enable = false;
 
   programs.xwayland.enable = pkgs.lib.mkForce false;
 
