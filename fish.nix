@@ -103,7 +103,7 @@
     # fish_add_path $HOME/local/
 
     alias nixos-rebuild="/run/current-system/sw/bin/nixos-rebuild"
-    alias magit="emacsclient -nw --eval '(magit)'"
+    alias magit="emacsclient -c --eval '(magit)'"
     alias register-asdf="ln -s (pwd) '$HOME/common-lisp/$(basename $(pwd))'"
     alias supa "bunx supabase"
 
@@ -174,7 +174,7 @@
     export GOPATH=$HOME/go
 
     abbr --add e $EDITOR
-    abbr --add a emacsclient -nw
+    abbr --add a emacsclient -c
 
     set -x ELIXIR_ERL_OPTIONS "+fnu"
     set -gx FYNE_FONT /usr/share/fonts/PlemolJP/PlemolJP-Regular.ttf
