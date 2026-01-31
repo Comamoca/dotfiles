@@ -62,7 +62,6 @@ with pkgs;
   polkit_gnome
   poweralertd
   re2c
-  reiserfsprogs
   rlwrap
   rofi-power-menu
   rsync

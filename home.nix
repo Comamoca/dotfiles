@@ -21,6 +21,13 @@ let
 
   xremap-config = import ./xremap.nix { inherit pkgs; };
 
+  programming-english = pkgs.fetchFromGitHub {
+    owner = "MatsumotoDesuyo";
+    repo = "programming-english";
+    rev = "main";
+    hash = "sha256-PZRJqDMfy4F92i10jeUY0R5P45YYBvEB3hm55dSbubo=";
+  };
+
   batch =
     pkgs.writers.writePython3Bin "convert_and_resize"
       {
@@ -249,12 +256,11 @@ rec {
       ".skk-dict/SKK-JISYO.L".source = "${pkgs.skkDictionaries.l}/share/skk/SKK-JISYO.L";
       ".skk-dict/SKK-JISYO.im@sparql.all.utf8".source =
         "${nurpkgs.skk-jisyo-imasparql}/share/SKK-JISYO.im@sparql.all.utf8";
+      # Removed: programming-english-dict (file doesn't exist in repo structure)
+      # ".spell-dict/programming-english-dict".source =
+      #   "${programming-english}/share/dict/programming-english-dict";
 
       ".migemo/utf-8/migemo-dict".source = "${pkgs.cmigemo}/share/migemo/utf-8";
-
-      # ".spell-dict/programming-english-dict".source =
-      #   "${nurpkgs.programming-english}/share/dict/programming-english-dict";
-      ".spell-dict/dict.txt".source = ./word_dicts/dict.txt;
 
       # TODO: 後で消す
       # ".config/" = {
@@ -449,6 +455,9 @@ rec {
 
     # Runtime directory (usually already set, but explicit for clarity)
     XDG_RUNTIME_DIR = "/run/user/1000";
+
+    # GPG agent socket - required for GPG operations in Emacs daemon
+    GPG_AGENT_INFO = "/run/user/1000/gnupg/S.gpg-agent";
   };
 
   # PATH management centralized here to avoid duplications
@@ -545,6 +554,9 @@ rec {
       font = {
         size = 13.5;
       };
+      window = {
+        opacity = 0.6;
+      };
     };
   };
 
@@ -557,6 +569,10 @@ rec {
 
   programs = {
     dank-material-shell.enable = true;
+  };
+
+  programs.nix-index = {
+    enable = true;
   };
 
   services.spotifyd = {
@@ -582,6 +598,7 @@ rec {
   };
 
   catppuccin = {
+    flavor = "mocha";
     hyprland.enable = true;
     foot.enable = true;
     bat.enable = true;
@@ -592,9 +609,15 @@ rec {
   services.gpg-agent = {
     enable = true;
     enableSshSupport = true;
-    pinentryPackage = pkgs.pinentry-qt;
+    pinentryPackage = pkgs.pinentry-qt;  # Keep as fallback for non-Emacs contexts
     defaultCacheTtl = 3600;
     maxCacheTtl = 7200;
+
+    # Enable loopback pinentry for Emacs
+    extraConfig = ''
+      allow-loopback-pinentry
+      allow-emacs-pinentry
+    '';
   };
 
   # programs.lem-editor.enable = true

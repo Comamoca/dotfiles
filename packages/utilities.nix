@@ -33,5 +33,6 @@ with pkgs;
   pavucontrol
   pulsemixer
 
+  inotify-tools
   happy-coder
 ]
