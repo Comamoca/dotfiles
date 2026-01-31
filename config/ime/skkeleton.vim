@@ -46,5 +46,5 @@ autocmd InsertEnter * ++once call skkeleton#register_kanatable('azik', {
     \ })
 
 
-imap <C-i> <Plug>(skkeleton-enable)
+imap <C-k> <Plug>(skkeleton-enable)
 imap <C-l> <Plug>(skkeleton-disable)

@@ -220,14 +220,17 @@ endfor
 repo = "vim-skk/skkeleton"
 on_source = 'ddc.vim'
 hook_source = '''
+imap <C-i> <Plug>(skkeleton-enable)
+imap <C-l> <Plug>(skkeleton-disable)
+
 call skkeleton#azik#add_table("jis")
 
 call skkeleton#config(#{
-\   globalDictionaries: [[ "~/.skk-dict/SKK-JISYO.L", "utf-8" ]],
+\   globalDictionaries: [[ "~/.skk-dict/SKK-JISYO.im@sparql.all.utf8", "utf-8" ],
+\                        [ "~/.skk-dict/SKK-JISYO.L", "utf-8" ]],
 \   databasePath: "~/.skk/database",
 \   kanaTable: "azik"
 \   })
-
 
 call skkeleton#register_keymap('henkan', "<", 'purgeCandidate')
 call skkeleton#register_keymap('henkan', "X", '')
@@ -264,10 +267,6 @@ autocmd InsertEnter * ++once call skkeleton#register_kanatable('azik', {
     \   'z ':         ['　', ''],
     \   'z:':         ['：', ''],
     \ })
-
-
-imap <C-i> <Plug>(skkeleton-enable)
-imap <C-l> <Plug>(skkeleton-disable)
 '''
 
 [[plugins]]

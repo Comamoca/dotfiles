@@ -64,6 +64,7 @@ end
 
 -- ddu keymap
 keymap("n", "<C-o>", "<cmd>Ddu file_external<CR>", opts) -- file open
+-- Note: <C-i> == <Tab> in terminal, but we only use this in normal mode
 keymap("n", "<C-i>", "<cmd>Ddu buffer<CR>", opts) -- buffer ope
 -- keymap("n", "<C-i>", function()
 --   vim.cmd([[call ddu#start({'sources': [{'name': 'mr'}]})]])
