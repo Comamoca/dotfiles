@@ -3,6 +3,20 @@
 // Check the wiki for a full description of the configuration:
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Overview
 
+// 外部ディスプレイのホットプラグ問題に対するデバッグオプション
+debug {
+    // niri 0.1.9/0.1.10で同一make/model/serialのモニターを2台接続した際に
+    // クラッシュするバグの回避策。将来のniriバージョンで修正された場合は
+    // 削除可能。検証手順は config/niri/WORKAROUNDS.md を参照。
+    disable-monitor-names
+
+    // 外部モニター接続時のフリッカー（画面のちらつき）を防止する。
+    // フレームのレンダリング完了を待ってからDRMに渡すことで、
+    // マルチディスプレイ環境での表示安定性を向上させる。
+    // パフォーマンスに若干の影響がある可能性あり。
+    wait-for-frame-completion-before-queueing
+}
+
 // Input device configuration.
 // Find the full list of options on the wiki:
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Input
@@ -60,9 +74,10 @@ input {
     // focus-follows-mouse max-scroll-amount="0%"
 }
 
-// You can configure outputs by their name, which you can find
-// by running `niri msg outputs` while inside a niri instance.
-// The built-in laptop monitor is usually called "eDP-1".
+// ディスプレイ出力設定
+// `niri msg outputs` で接続中のディスプレイ一覧と対応モードを確認可能。
+// 外部ディスプレイはniriの自動検出に委ねるため、明示的なoutput設定は追加しない。
+// 特定のモニターで自動検出が失敗する場合は、個別のoutputブロックを追加する。
 // Find more information on the wiki:
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Outputs
 // Remember to uncomment the node by removing "/-"!
@@ -262,8 +277,7 @@ window-rule {
 
 // Picture-in-Picture windows from sway config
 window-rule {
-    match app-id="firefox"
-    match title=r#"^ピクチャーインピクチャー$"#
+    match app-id="firefox" title=r#"^ピクチャーインピクチャー$"#
     open-floating true
 }
 
@@ -294,8 +308,11 @@ window-rule {
     // block-out-from "screencast"
 }
 
-// Example: enable rounded corners for all windows.
-// (This example rule is commented out with a "/-" in front.)
+// Enable rounded corners for all windows
+// NOTE: 無効化 - マルチディスプレイ環境（異なるスケーリングファクター）での
+// ホットプラグ時にクラッシュを引き起こすため。niriの将来のバージョンで
+// 修正された場合は再有効化を検討する。
+// See: https://gist.github.com/Comamoca/2baa860a7245448688b3e40b8c01d0c5
 /-window-rule {
     geometry-corner-radius 12
     clip-to-geometry true
@@ -317,7 +334,7 @@ binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
     // Suggested binds for running programs: terminal, app launcher, screen locker.
     // Mod+T { spawn "kitty"; }
-    Mod+Return { spawn "kitty"; }
+    Mod+Return { spawn "foot"; }
     Mod+D { spawn "rofi" "-show" "combi"; }
     Mod+Space { spawn "rofi" "-show" "drun"; }
     Mod+B { spawn "firefox"; }
@@ -352,10 +369,10 @@ binds {
     Mod+K     { focus-window-up; }
     Mod+L     { focus-column-right; }
 
-    Mod+P     { focus-workspace-down; }
-    Mod+N     { focus-workspace-up; }
-    Mod+Shift+P { move-column-to-workspace-down; }
-    Mod+Shift+N { move-column-to-workspace-up; }
+    Mod+P     { focus-workspace-up; }
+    Mod+N     { focus-workspace-down; }
+    Mod+Shift+P { move-column-to-workspace-up; }
+    Mod+Shift+N { move-column-to-workspace-down; }
 
     Mod+Ctrl+Left  { move-column-left; }
     Mod+Ctrl+Down  { move-window-down; }
@@ -534,8 +551,8 @@ binds {
     Alt+Print { screenshot-window; }
 
     // The quit action will show a confirmation dialog to avoid accidental exits.
-    Mod+Shift+E { quit; }
-    Ctrl+Alt+Delete { quit; }
+    Mod+Shift+E { spawn "bash" "-c" "/home/coma/.bin/scripts/niri-logout.sh"; }
+    Ctrl+Alt+Delete { spawn "bash" "-c" "/home/coma/.bin/scripts/niri-logout.sh"; }
 
     // Powers off the monitors. To turn them back on, do any input like
     // moving the mouse or pressing any other key.
