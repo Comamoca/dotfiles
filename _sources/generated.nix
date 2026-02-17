@@ -13,6 +13,20 @@
     };
     date = "2026-01-10";
   };
+  autoclaude = {
+    pname = "autoclaude";
+    version = "39ad5ef1818a9c71241bea463da3af33f1dccf69";
+    src = fetchgit {
+      url = "https://github.com/henryaj/autoclaude";
+      rev = "39ad5ef1818a9c71241bea463da3af33f1dccf69";
+      fetchSubmodules = false;
+      deepClone = false;
+      leaveDotGit = false;
+      sparseCheckout = [ ];
+      sha256 = "sha256-+EEeijp1FfHK/ScpegdTaIYfaM9JM89NizvpGh2ezFM=";
+    };
+    date = "2026-01-15";
+  };
   claude-code = {
     pname = "claude-code";
     version = "4a9914bd4161eb43f489820f9174c62390e5adc8";
@@ -75,17 +89,17 @@
   };
   eca = {
     pname = "eca";
-    version = "298849d1aae3241bf8828b6558c6deb45d75a3c8";
+    version = "f5ea2d098b90ac4fcb0e6ebfe71dd5524bf42d81";
     src = fetchgit {
       url = "https://github.com/editor-code-assistant/eca-emacs";
-      rev = "298849d1aae3241bf8828b6558c6deb45d75a3c8";
+      rev = "f5ea2d098b90ac4fcb0e6ebfe71dd5524bf42d81";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
       sparseCheckout = [ ];
-      sha256 = "sha256-QpJGTDfvFzCvDmmB8YZ7xEI2d9EiDc7nJDe5k7TUEUA=";
+      sha256 = "sha256-saYUW+5I2PxY5LVWSvZjoBNtSpsskTNIci9PueuQMWY=";
     };
-    date = "2026-01-21";
+    date = "2026-01-26";
   };
   eglot-booster = {
     pname = "eglot-booster";
@@ -224,15 +238,15 @@
   };
   python-mode = {
     pname = "python-mode";
-    version = "02b92f2d903d357800a31903f69834ec54cda39b";
+    version = "2a6fdb1c823bf8125f6354727db63c8894092821";
     src = fetchFromGitHub {
       owner = "emacsmirror";
       repo = "python-mode";
-      rev = "02b92f2d903d357800a31903f69834ec54cda39b";
+      rev = "2a6fdb1c823bf8125f6354727db63c8894092821";
       fetchSubmodules = false;
-      sha256 = "sha256-tiR3qOFsbbbNiebaQyOB/Yn+bZ2wJGaPm6Fpt/IX+Gk=";
+      sha256 = "sha256-sTnmfDF8QLc4aVI5Pqx9kqL4zqkPsopX1Sz3EJ7Ddx0=";
     };
-    date = "2025-12-15";
+    date = "2026-01-31";
   };
   quickrun = {
     pname = "quickrun";
@@ -305,15 +319,15 @@
   };
   smudge = {
     pname = "smudge";
-    version = "dcca1b9ac15886060788df83c7da63faa5ae027f";
+    version = "c90db830e84e34ac5724f57eda2f1112a589df5c";
     src = fetchFromGitHub {
       owner = "danielfm";
       repo = "smudge";
-      rev = "dcca1b9ac15886060788df83c7da63faa5ae027f";
+      rev = "c90db830e84e34ac5724f57eda2f1112a589df5c";
       fetchSubmodules = false;
-      sha256 = "sha256-pwL9S+pZFrzlg07ZHL3kBQwa6SRcc++YlEseZrwDeVo=";
+      sha256 = "sha256-ZBci8h1f0s0b9yKPXESr0iYyqejnAoWyct7NeJVCFFM=";
     };
-    date = "2025-12-24";
+    date = "2026-02-02";
   };
   typst-mode = {
     pname = "typst-mode";
