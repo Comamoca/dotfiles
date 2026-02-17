@@ -320,12 +320,14 @@
   (leaf kaocha-runner
     :after cider-mode)
 
-  ;; flycheck
+  ;; flycheck（入力中の頻繁なチェックを抑制してCPU負荷を削減）
   (leaf flycheck
     :hook
     (after-init . global-flycheck-mode)
     ((text-mode-hook markdown-mode-hook gfm-mode-hook org-mode-hook) . flycheck-mode)
-    :custom ((flycheck-display-errors-delay . 0.3)
+    :custom ((flycheck-display-errors-delay . 0.5)
+             (flycheck-idle-change-delay . 1.0)  ; デフォルト0.5秒→1秒に延長
+             (flycheck-idle-buffer-switch-delay . 1.0)
              (flycheck-indication-mode . 'left-margin))
     :config
     (add-hook 'flycheck-mode-hook #'flycheck-set-indication-mode)
@@ -417,11 +419,12 @@
 		 '(python-mode . "python"))
 
     (defun corfu-lsp-setup ()
-      (setq completion-at-point-functions '(lsp-completion-at-point))
+      (setq-local completion-at-point-functions
+                  (list #'lsp-completion-at-point))
       (setq-local completion-styles '(orderless)
 		  completion-category-defaults nil))
 
-    ;; (add-hook 'lsp-mode-hook #'corfu-lsp-setup)
+    (add-hook 'lsp-mode-hook #'corfu-lsp-setup)
     ;; (add-hook 'prog-mode-hook #'lsp-deferred)
     (with-eval-after-load 'lsp-mode
       (add-to-list 'lsp-disabled-clients 'semgrep-ls))
@@ -462,47 +465,47 @@
   (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 
   ;; Eglot
-  (defun deno-project-p ()
-    "Predicate for determining if the open project is a Deno one."
-    (let ((p-root (nth 2 (project-current))))
-      (or (file-exists-p (expand-file-name "deno.json" default-directory))
-	  (file-exists-p (expand-file-name "deno.jsonc" default-directory)))))
+  ;; (defun deno-project-p ()
+  ;;   "Predicate for determining if the open project is a Deno one."
+  ;;   (let ((p-root (nth 2 (project-current))))
+  ;;     (or (file-exists-p (expand-file-name "deno.json" default-directory))
+  ;; 	  (file-exists-p (expand-file-name "deno.jsonc" default-directory)))))
 
-  (defun node-project-p ()
-    "Predicate for determining if the open project is a Deno one."
-    (let ((p-root (nth 2 (project-current))))
-      (file-exists-p (expand-file-name "package.json" default-directory))))
+  ;; (defun node-project-p ()
+  ;;   "Predicate for determining if the open project is a Deno one."
+  ;;   (let ((p-root (nth 2 (project-current))))
+  ;;     (file-exists-p (expand-file-name "package.json" default-directory))))
 
-  (defun es-server-program (_)
-    "Decide which server to use for ECMA Script based on project characteristics."
-    (cond ((deno-project-p) '("lspx" "--lsp" "deno" "lsp" :initializationOptions (:enable t :lint t)))
-          ((node-project-p) '("lspx" "--lsp" "typescript-language-server" "--stdio"))
-          (t nil)))
+  ;; (defun es-server-program (_)
+  ;;   "Decide which server to use for ECMA Script based on project characteristics."
+  ;;   (cond ((deno-project-p) '("lspx" "--lsp" "deno" "lsp" :initializationOptions (:enable t :lint t)))
+  ;;         ((node-project-p) '("lspx" "--lsp" "typescript-language-server" "--stdio"))
+  ;;         (t nil)))
 
-  (leaf eglot
-    :hook
-    (c++-mode . eglot-ensure)
-    (sh-mode . eglot-ensure)
-    (python-mode . eglot-ensure)
-    (html-mode . eglot-ensure)
-    (cmake-mode . eglot-ensure)
-    (bitbake-mode . eglot-ensure)
-    (typescript-ts-mode . eglot-ensure)
-    :config
-    ;; (add-to-list 'eglot-server-programs '((bitbake-mode) "bitbake-language-server"))
-    ;; (add-to-list 'eglot-server-programs '((js-mode typescript-mode) . es-server-program))
-    ;; (add-to-list 'eglot-server-programs '(gleam-ts-mode . ("lspx" "--lsp" "gleam lsp")))
+  ;; (leaf eglot
+  ;;   :hook
+  ;;   (c++-mode . eglot-ensure)
+  ;;   (sh-mode . eglot-ensure)
+  ;;   (python-mode . eglot-ensure)
+  ;;   (html-mode . eglot-ensure)
+  ;;   (cmake-mode . eglot-ensure)
+  ;;   (bitbake-mode . eglot-ensure)
+  ;;   (typescript-ts-mode . eglot-ensure)
+  ;;   :config
+  ;;   ;; (add-to-list 'eglot-server-programs '((bitbake-mode) "bitbake-language-server"))
+  ;;   ;; (add-to-list 'eglot-server-programs '((js-mode typescript-mode) . es-server-program))
+  ;;   ;; (add-to-list 'eglot-server-programs '(gleam-ts-mode . ("lspx" "--lsp" "gleam lsp")))
 
-    (setq eglot-server-programs
-          (append
-           '(
-	     (haskell-mode . ("haskell-language-server-wrapper"))
-	     (gleam-ts-mode . ("lspx" "--lsp" "gleam lsp")))
-           eglot-server-programs))
+  ;;   (setq eglot-server-programs
+  ;;         (append
+  ;;          '(
+  ;; 	     (haskell-mode . ("haskell-language-server-wrapper"))
+  ;; 	     (gleam-ts-mode . ("lspx" "--lsp" "gleam lsp")))
+  ;;          eglot-server-programs))
 
-    :bind (("M-t" . xref-find-definitions)
-           ("M-r" . xref-find-references)
-           ("C-t" . xref-go-back)))
+  ;;   :bind (("M-t" . xref-find-definitions)
+  ;;          ("M-r" . xref-find-references)
+  ;;          ("C-t" . xref-go-back)))
 
   ;; (leaf eglot-booster
   ;;   :after eglot
@@ -785,11 +788,10 @@
     :config
     (direnv-mode))
 
-  ;; Nyan-mode
+  ;; Nyan-mode（アニメーションはタイマーを使い常時redisplayを発生させるため無効化）
   (leaf nyan-mode
     :init
-    (progn (nyan-mode)
-	   (nyan-start-animation)))
+    (nyan-mode))
 
   ;; Snippets
   (leaf tempel
@@ -931,9 +933,11 @@
     (aas-set-snippets 'markdown-mode)
     (aas-set-snippets 'prog-mode))
 
-  (leaf smartparens
-    :config
-    (smartparens-global-mode t))
+  ;; smartparens: puni-global-modeと機能が重複するため無効化
+  ;; sp--save-pre-command-state がpost-command-hookで3,439回実行されていた
+  ;; (leaf smartparens
+  ;;   :config
+  ;;   (smartparens-global-mode t))
 
   (leaf vterm
     :config
@@ -1091,6 +1095,7 @@
     )
 
 
+  ;; minimap: デフォルト無効化（常時表示はredisplayの倍増を引き起こす）
   (leaf minimap
     :require t
     :custom ((minimap-window-location . 'right)
@@ -1099,9 +1104,7 @@
                                       markdown-mode
                                       html-mode
                                       fundamental-mode)))
-    :bind ("C-x m" . minimap-mode)
-    :config
-    (minimap-mode 1))
+    :bind ("C-x m" . minimap-mode))
 
   (leaf rainbow-delimiters
     :hook
@@ -1150,6 +1153,7 @@
 	      (setq smudge-oauth2-client-id (get-secret "spotify-id"))))
 
   (leaf smudge
+    :ensure t
     :require t)
 
   (leaf ox-typst
@@ -1395,8 +1399,8 @@
   (format " [%d] " (buffer-size)))
 
 (defun mode-line-time ()
-  ;; Update every second
-  (setq display-time-interval 1)
+  ;; 更新間隔を60秒に設定（毎秒更新はtimer-event-handlerの負荷になる）
+  (setq display-time-interval 60)
   (setq display-time-string-forms
 	'((format "%s/%s %s:%s" (string-to-number month) (string-to-number day) 24-hours minutes seconds)))
   (setq display-time-day-and-date t)
@@ -1568,6 +1572,8 @@
 
 ;; ================ My configuratons ================
 
+(setq browse-url-browser-function 'browse-url-firefox)
+
 ;; Enable auto revert
 (global-auto-revert-mode 1)
 
@@ -1585,8 +1591,38 @@
 (setq auth-sources '("~/.emacs.d/.authinfo.gpg"))
 (setq create-lockfiles nil)
 
+;; ================================================
+;; パフォーマンス最適化設定
+;; ================================================
+
+;; redisplay最適化（最大の問題: redisplay_internal が70%のCPUを消費）
+;; redisplay-skip-fontification-on-input は lsp-mode の補完 UI に干渉するため無効化
+;; (setq redisplay-skip-fontification-on-input t)
+(setq fast-but-imprecise-scrolling t)           ; スクロール中の精度より速度を優先
+
+;; jit-lock最適化（シンタックスハイライトの遅延処理）
+(setq jit-lock-stealth-time 1.0)     ; アイドル時のバックグラウンド処理開始を遅らせる
+(setq jit-lock-stealth-nice 0.2)     ; バックグラウンド処理の間隔
+;; jit-lock-defer-time は補完（corfu/eglot）の表示タイミングに干渉するため無効化
+;; (setq jit-lock-defer-time 0.1)
+(setq jit-lock-chunk-size 1000)      ; 一度に処理するチャンクサイズ
+
+;; スクロール最適化
+(setq scroll-conservatively 101)
+(setq scroll-margin 0)
+(setq scroll-preserve-screen-position t)
+
+;; フレームのリサイズを抑制（redisplayの原因）
+(setq frame-inhibit-implied-resize t)
+
+;; GC: 起動完了後に適切な値に設定（early-init.elで最大化した値を戻す）
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq gc-cons-threshold (* 100 1024 1024))  ; 100MB
+            (setq gc-cons-percentage 0.1)
+            (message "GC threshold restored: %s MB" (/ gc-cons-threshold 1024 1024))))
+
 ;; For lsp-mode
-(setq gc-cons-threshold 100000000)
 (setq read-process-output-max (* 1024 1024))
 
 ;; Key mapping
