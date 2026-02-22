@@ -201,3 +201,32 @@ vim.api.nvim_create_autocmd("BufEnter", {
 -- vim.g['denops_server_addr'] = "127.0.0.1:32123"
 
 -- require("configs/kastel")
+
+vim.api.nvim_create_user_command("Init", "e $MYVIMRC", {})
+vim.api.nvim_create_user_command("Scratch", function ()
+  require("snacks").scratch()
+end, {})
+
+----- Neovide ----- 
+
+if vim.g.neovide then
+  vim.g.neovide_cursor_vfx_mode = "torpedo"
+  vim.o.background = "dark"
+  vim.g.neovide_theme = "dark"
+
+  -- vim.api.nvim_set_hl(0, "Normal", {
+  --   bg = "#1e1e2e",
+  -- })
+
+  local bg = "#1e1e2e"
+
+  for _, group in ipairs({
+    "Normal",
+    "NormalNC",
+    "NormalFloat",
+    "SignColumn",
+    "EndOfBuffer",
+  }) do
+    vim.api.nvim_set_hl(0, group, { bg = bg })
+  end
+end

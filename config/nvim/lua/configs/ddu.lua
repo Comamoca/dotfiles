@@ -26,10 +26,10 @@ ddu_custom_patch_global({
       sorters = { "sorter_fzf" },
     },
     spotify = {
-      matchers = { "matcher_kensaku" },
+      -- matchers = { "matcher_kensaku" },
     },
     file_external = {
-      matchers = { "matcher_kensaku" },
+      -- matchers = { "matcher_kensaku" },
     },
   },
   sourceParams = {
@@ -44,7 +44,7 @@ ddu_custom_patch_global({
   filterParams = {
     merge = {
       filters = {
-        { name = "matcher_kensaku", weight = 1.0 },
+        -- { name = "matcher_kensaku", weight = 1.0 },
         { name = "matcher_fzf", weight = 1.0 },
       },
     },
@@ -100,7 +100,7 @@ ddu_custom_patch_global({
 
 ddu_custom_patch_global("sourceOptions", {
   spotify = {
-    matchers = { "matcher_kensaku" },
+    -- matchers = { "matcher_kensaku" },
   },
 })
 

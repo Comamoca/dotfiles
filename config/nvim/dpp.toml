@@ -82,3 +82,16 @@ repo = "Shougo/dpp-protocol-git"
 
 [[plugins]]
 repo = 'folke/lazydev.nvim'
+
+[[plugins]]
+repo = "https://github.com/folke/snacks.nvim"
+
+[[plugins]]
+repo = 'https://github.com/tkmpypy/chowcho.nvim'
+lua_add = '''
+require('chowcho').setup {
+  labels = { "A", "S", "D", "F", "G", "H", "K", "L", },
+  -- selector = "statusline",
+  ignore_case = true
+}
+'''

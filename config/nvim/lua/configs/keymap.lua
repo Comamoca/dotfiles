@@ -67,6 +67,10 @@ keymap("n", "<C-o>", "<cmd>Ddu file_external<CR>", opts) -- file open
 -- Note: <C-i> == <Tab> in terminal, but we only use this in normal mode
 keymap("n", "<C-i>", "<cmd>Ddu buffer<CR>", opts) -- buffer ope
 -- keymap("n", "<C-i>", function()
+--   require("snacks.picker").buffers()
+-- end, opts) -- buffer ope
+
+-- keymap("n", "<C-i>", function()
 --   vim.cmd([[call ddu#start({'sources': [{'name': 'mr'}]})]])
 -- end)
 -- keymap("n", "<C-u>", "<cmd>Ddu source<CR>") -- search sources
@@ -89,7 +93,6 @@ vim.fn.getwininfo()
 vim.fn.filter(vim.fn.getwininfo(), function(key, val)
   return val.quickfix
 end)
-vim.print()
 
 -- keymap("n", "q", function()
 --   if vim.fn.empty(vim.fn.filter(vim.fn.getwininfo(), "v:val.quickfix")) then
