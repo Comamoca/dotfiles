@@ -1,6 +1,6 @@
-vim.api.nvim_create_user_command("Config", "e $MYVIMRC", {})
 vim.api.nvim_create_user_command("Ddutoml", "", {})
 vim.api.nvim_create_user_command("DdcToml", "", {})
+
 -- vim.api.nvim_create_user_command("DduToml", "e $MYVIMRC", {})
 
 vim.api.nvim_create_user_command("Ddu", function(args)

@@ -186,9 +186,9 @@ on_source = 'ddu.vim'
 repo = 'Shougo/ddu-filter-matcher_substring'
 on_source = 'ddu.vim'
 
-[[plugins]]
-repo = "Milly/ddu-filter-kensaku"
-on_source = "ddu.vim"
+# [[plugins]]
+# repo = "Milly/ddu-filter-kensaku"
+# on_source = "ddu.vim"
 
 [[plugins]]
 repo = "Milly/ddu-filter-merge"

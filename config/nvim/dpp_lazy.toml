@@ -1250,3 +1250,18 @@ on_event = ['BufRead', 'CursorHold']
 [[plugins]]
 repo = 'chomosuke/typst-preview.nvim'
 on_ft = ["typst"]
+
+[[plugins]]
+repo = 'https://github.com/lambdalisue/nvim-aibo'
+on_cmd = ["Aibo"]
+
+[[plugins]]
+repo = 'https://github.com/NeogitOrg/neogit'
+on_cmd = ["Neogit"]
+
+[[plugins]]
+repo = "https://github.com/APZelos/blamer.nvim"
+on_event = ['BufRead', 'CursorHold']
+hook_add = '''
+let g:blamer_enabled = 1
+'''
