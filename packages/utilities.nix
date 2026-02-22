@@ -1,4 +1,24 @@
 { pkgs }:
+let
+  generated = import ../_sources/generated.nix;
+  sources = generated {
+    inherit (pkgs)
+      fetchurl
+      fetchgit
+      fetchFromGitHub
+      dockerTools
+      ;
+  };
+
+  autoclaude = pkgs.buildGoModule {
+    pname = "autoclaude ";
+    version = "0.1.2";
+    src = sources.autoclaude.src;
+    vendorHash = "sha256-bq27PpkygOvE0HQpqWCbDRcNgYRP8pV+Q3RSNovCN58=";
+
+    doCheck = false;
+    };
+in
 with pkgs;
 [
   # CLI utilities
@@ -35,4 +55,6 @@ with pkgs;
 
   inotify-tools
   happy-coder
+
+  autoclaude
 ]

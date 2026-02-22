@@ -253,6 +253,22 @@ let
       editorconfig
     ];
   };
+
+  ob-gleam = pkgs.emacsPackages.trivialBuild {
+    pname = "ob-gleam";
+    version = "main";
+    src = sources.ob-gleam.src;
+  };
+
+  tramps3 = pkgs.emacsPackages.trivialBuild {
+    pname = "";
+    version = "main";
+    src = sources.tramps3.src;
+    buildInputs = with pkgs.emacsPackages; [
+      seq
+      dash
+    ];
+  };
 in
 {
   epkgs = with epkgs; [
@@ -374,6 +390,9 @@ in
 
     # for org-babel
     ob-hy
+    ob-ledger
+    ob-gleam
+
     envrc
 
     flycheck
@@ -425,7 +444,6 @@ in
     ledger-mode
     flycheck-ledger
     evil-ledger
-    ob-ledger
 
     forge
     consult-gh-forge
@@ -510,6 +528,8 @@ in
 
     #highlight
     polymode
-    poly-markdown
+    poly-markdown 
+
+    tramps3 
   ];
 }

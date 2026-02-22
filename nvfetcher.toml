@@ -128,3 +128,15 @@ fetch.url = "https://raw.githubusercontent.com/mighty-gerbils/gerbil/refs/heads/
 [eca]
 src.git = "https://github.com/editor-code-assistant/eca-emacs"
 fetch.git = "https://github.com/editor-code-assistant/eca-emacs"
+
+[autoclaude]
+src.git = "https://github.com/henryaj/autoclaude"
+fetch.git = "https://github.com/henryaj/autoclaude"
+
+[ob-gleam]
+src.git = "https://github.com/takeokunn/ob-gleam"
+fetch.git = "https://github.com/takeokunn/ob-gleam"
+
+[tramps3]
+src.git = "https://github.com/protez/tramps3"
+fetch.git = "https://github.com/protez/tramps3"

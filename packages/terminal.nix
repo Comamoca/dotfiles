@@ -18,4 +18,6 @@ with pkgs;
   xfce.thunar
 
   claude-code
+  opencode
+  gemini-cli
 ]

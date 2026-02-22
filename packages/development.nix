@@ -13,9 +13,12 @@ with pkgs;
   clojure
   babashka
   ruby
-
   # Common Lisp
   # sbcl'
   # roswell
   # sbclPackages.qlot-cli
+
+  typescript
+  typescript-language-server
+  luau
 ]

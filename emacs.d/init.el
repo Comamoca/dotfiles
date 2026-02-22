@@ -192,6 +192,7 @@
     (set-language-environment "Japanese")
     (prefer-coding-system 'utf-8)
     (set-default 'buffer-file-coding-system 'utf-8)
+    (setq org-confirm-babel-evaluate nil)
 
     (org-babel-do-load-languages
      'org-babel-load-languages
@@ -202,7 +203,9 @@
        (hy . t)
        (ruby . t)
        (sparql . t)
-       (ledger . t)))
+       (ledger . t)
+       (verb . t)
+       (gleam . t)))
     :bind ((:calendar-mode-map
             ("C-c c" . org-capture-from-calendar))))
 
@@ -266,10 +269,12 @@
     :init
     (with-eval-after-load 'org (global-org-modern-mode)))
 
-  (leaf org-modern-indent)
+  ;; (leaf org-modern-indent)
 
   ;; org-babel
   (leaf ob-hy)
+
+  (leaf ob-gleam)
 
   (leaf org-nix-shell)
 
@@ -639,6 +644,8 @@
     :require t
     :config
     (projectile-mode +1)
+    (setq projectile-project-root-files-bottom-up
+	  '("package.json" "Cargo.toml" "gleam.toml"))
     :bind ((:projectile-mode-map
             ("C-c p" . projectile-command-map))))
 
@@ -1139,7 +1146,13 @@
     :require t)
 
   (leaf quickrun
-    :require t)
+    :require t
+    :config
+    (quickrun-add-command "gleam"
+      '((:command . "gleam")
+	(:exec    . ("gleam run"))
+	(:remove  . ("build")))
+      :default "gleam"))
 
   (leaf smartchr
     :require t
@@ -1223,6 +1236,9 @@
 
   (leaf gerbil-mode
     :hook ((inferior-scheme-mode-hook . gambit-inferior-mode))
+    :require t)
+
+  (leaf tramps3
     :require t)
 
   ;; ================ My extentions ================

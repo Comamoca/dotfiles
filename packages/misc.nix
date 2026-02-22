@@ -3,7 +3,6 @@ with pkgs;
 [
   # Misc tools
   zenn-cli
-  comma
   nb
   w3m
   nixVersions.nix_2_28
@@ -34,6 +33,7 @@ with pkgs;
   nix-output-monitor
   lazydocker
   cmigemo
+  bubblewrap
 
   # Social
   nurpkgs.bsky

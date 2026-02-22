@@ -53,53 +53,53 @@
   };
   claudemacs = {
     pname = "claudemacs";
-    version = "41c5da556548e220f641fae994bc5110e8c65858";
+    version = "639b5a7986e10b8812bf987d39a21fe603879bea";
     src = fetchFromGitHub {
       owner = "cpoile";
       repo = "claudemacs";
-      rev = "41c5da556548e220f641fae994bc5110e8c65858";
+      rev = "639b5a7986e10b8812bf987d39a21fe603879bea";
       fetchSubmodules = false;
-      sha256 = "sha256-j7ypcsvdKPaawmzh+1l4ZabILODNqNYOgJ+62PjeJHs=";
+      sha256 = "sha256-O0PKAf7Pv32zuG2TDbCuDlSmTyOwAOrWh9/ZPt2vP/Y=";
     };
-    date = "2026-01-16";
+    date = "2026-02-11";
   };
   copilot = {
     pname = "copilot";
-    version = "7ee4758bb748beac7d29e62de5d2e752ebafb858";
+    version = "f887594a1a8caaebaa640170a767485838ad882b";
     src = fetchFromGitHub {
       owner = "copilot-emacs";
       repo = "copilot.el";
-      rev = "7ee4758bb748beac7d29e62de5d2e752ebafb858";
+      rev = "f887594a1a8caaebaa640170a767485838ad882b";
       fetchSubmodules = false;
-      sha256 = "sha256-jzrf6k9yJEMR0H1hOkf1LY2p5ik++poMoAlrhrYPD2U=";
+      sha256 = "sha256-OZQKrlJS8cDON6EhXRv8GHQ1a85Oh7ObfDTi8xPEfI4=";
     };
-    date = "2025-12-10";
+    date = "2026-02-21";
   };
   digs = {
     pname = "digs";
-    version = "7b6a0776ced84e868556a2c9711e5637e9fb9b88";
+    version = "28ef827c3be6a862551e6e6e022cd9537f8692c9";
     src = fetchFromGitHub {
       owner = "zonuexe";
       repo = "digs.el";
-      rev = "7b6a0776ced84e868556a2c9711e5637e9fb9b88";
+      rev = "28ef827c3be6a862551e6e6e022cd9537f8692c9";
       fetchSubmodules = false;
-      sha256 = "sha256-2mj6wngnU8wohC0fyFdbOswdTDqvYSBVTtwu4r2ooHQ=";
+      sha256 = "sha256-0qhSnElWrNNIFtQaQ66B6qQV95YRBXJZRCiD5cqTyyc=";
     };
-    date = "2025-02-17";
+    date = "2026-02-14";
   };
   eca = {
     pname = "eca";
-    version = "f5ea2d098b90ac4fcb0e6ebfe71dd5524bf42d81";
+    version = "32943e61016b1ae6f205a1483e3a5853dd64e3f8";
     src = fetchgit {
       url = "https://github.com/editor-code-assistant/eca-emacs";
-      rev = "f5ea2d098b90ac4fcb0e6ebfe71dd5524bf42d81";
+      rev = "32943e61016b1ae6f205a1483e3a5853dd64e3f8";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
       sparseCheckout = [ ];
-      sha256 = "sha256-saYUW+5I2PxY5LVWSvZjoBNtSpsskTNIci9PueuQMWY=";
+      sha256 = "sha256-ckz3PAqQUHHOo5AC3UfX0V7LPJ0lmXJ+L9daXQmSupA=";
     };
-    date = "2026-01-26";
+    date = "2026-02-19";
   };
   eglot-booster = {
     pname = "eglot-booster";
@@ -202,6 +202,20 @@
       sha256 = "sha256-Cb7G8d2v1l0VghUSPBKFJo7J0hKtPRnIhULzGUBp27s=";
     };
     date = "2026-01-21";
+  };
+  ob-gleam = {
+    pname = "ob-gleam";
+    version = "ab78f5e4631c8467e9f6f77395464ec20a6c4785";
+    src = fetchgit {
+      url = "https://github.com/takeokunn/ob-gleam";
+      rev = "ab78f5e4631c8467e9f6f77395464ec20a6c4785";
+      fetchSubmodules = false;
+      deepClone = false;
+      leaveDotGit = false;
+      sparseCheckout = [ ];
+      sha256 = "sha256-O/wBVHv96kwBPbILrh3neHWvFEIeKWho2cuILBlNoi0=";
+    };
+    date = "2026-02-22";
   };
   ob-ledger = {
     pname = "ob-ledger";
@@ -329,6 +343,20 @@
     };
     date = "2026-02-02";
   };
+  tramps3 = {
+    pname = "tramps3";
+    version = "07e2bb6faf5ff18f4fb7282d1134f484a66442ef";
+    src = fetchgit {
+      url = "https://github.com/protez/tramps3";
+      rev = "07e2bb6faf5ff18f4fb7282d1134f484a66442ef";
+      fetchSubmodules = false;
+      deepClone = false;
+      leaveDotGit = false;
+      sparseCheckout = [ ];
+      sha256 = "sha256-yMMA/1IxgXP9wHmr5S2dMIhceiuybQIsByBWJYYQEyA=";
+    };
+    date = "2018-01-24";
+  };
   typst-mode = {
     pname = "typst-mode";
     version = "5776fd4f3608350ff6a2b61b118d38165d342aa3";
@@ -343,15 +371,15 @@
   };
   typst-preview = {
     pname = "typst-preview";
-    version = "c685857f2d61133fc268509b39796b2718728f29";
+    version = "7e89cf105e4fef5e79977a4a790d5b3b18d305f6";
     src = fetchFromGitHub {
       owner = "havarddj";
       repo = "typst-preview.el";
-      rev = "c685857f2d61133fc268509b39796b2718728f29";
+      rev = "7e89cf105e4fef5e79977a4a790d5b3b18d305f6";
       fetchSubmodules = false;
-      sha256 = "sha256-+426otCa0TASEo9Z+2yH8SUJIGtGEdl35/BdmfBBDbA=";
+      sha256 = "sha256-XMwtY3oNvJmlIzGyoz3NW/y3tJXoGTQTXfLXiWLKS1M=";
     };
-    date = "2025-11-10";
+    date = "2026-02-15";
   };
   typst-ts-mode = {
     pname = "typst-ts-mode";
