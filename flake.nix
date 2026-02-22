@@ -129,7 +129,9 @@
             # })
             ./configuration.nix
             chaotic.nixosModules.nyx-cache
-            chaotic.nixosModules.nyx-overlay
+            # NOTE: nyx-overlay disabled due to replaceStdenv incompatibility with current nixpkgs
+            # Re-enable when chaotic-nyx is updated
+            # chaotic.nixosModules.nyx-overlay
             chaotic.nixosModules.nyx-registry
             nix-ld.nixosModules.nix-ld
             {

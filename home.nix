@@ -89,21 +89,12 @@ let
     hash = "sha256-+bzNCqGOnVkpgvTdpWfcRtVfHQO2pX1/nYgluMA7VYo";
   };
 
-  # pgtkでビルドするとエラーこそ出ないものの有効にならない
-  # Gitでビルドするとwebkitがない旨のエラーが出る
-  # emacs' = pkgs.emacs-pgtk.overrideAttrs (old: {
-  # emacs' = pkgs.emacs-git.overrideAttrs (old: {
-  #   # configureFlags = old.configureFlags or [] ++ [ "--with-cairo" "--with-xwidgets" "--with-x-toolkit=gtk3" ];
-  #   withXwidgets = true;
-  #   withGTK3 = true;
-  #   # buildInputs = (old.buildInputs or []) ++ [
-  #   #   pkgs.webkitgtk_4_0
-  #   # ];
-  # });
+  # emacs-pgtk: Wayland native版 + xwidgets
+  emacs-pgtk' = pkgs.emacs-pgtk.override {
+    withXwidgets = true;
+  };
 
-  # emacs' = (pkgs.emacsPackagesFor pkgs.emacs-unstable).emacsWithPackages (
-  # emacs' = (pkgs.emacsPackagesFor pkgs.emacs).emacsWithPackages (
-  emacs' = (pkgs.emacsPackagesFor pkgs.emacs-pgtk).emacsWithPackages (
+  emacs' = (pkgs.emacsPackagesFor emacs-pgtk').emacsWithPackages (
     epkgs: (import ./emacs.nix { inherit pkgs epkgs nurpkgs; }).epkgs
   );
 
@@ -385,6 +376,11 @@ rec {
         recursive = true;
       };
 
+      ".config/rclone" = {
+        source = (symlink /${dotfiles}/config/rclone);
+        recursive = true;
+      };
+
       ".config/xremap/config.yaml".source = (symlink xremap-config.xremap-config-yaml);
 
       ".czrc".source = (symlink /${dotfiles}/czrc);
@@ -573,6 +569,11 @@ rec {
 
   programs.nix-index = {
     enable = true;
+    enableFishIntegration = true;
+  };
+  
+  programs.nix-index-database = {
+    comma.enable = true; 
   };
 
   services.spotifyd = {
@@ -609,7 +610,7 @@ rec {
   services.gpg-agent = {
     enable = true;
     enableSshSupport = true;
-    pinentryPackage = pkgs.pinentry-qt;  # Keep as fallback for non-Emacs contexts
+    pinentry.package = pkgs.pinentry-qt;
     defaultCacheTtl = 3600;
     maxCacheTtl = 7200;
 
