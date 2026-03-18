@@ -105,7 +105,7 @@
     },
     "copilot": {
         "cargoLocks": null,
-        "date": "2026-02-21",
+        "date": "2026-03-16",
         "extract": null,
         "name": "copilot",
         "passthru": null,
@@ -117,12 +117,12 @@
             "name": null,
             "owner": "copilot-emacs",
             "repo": "copilot.el",
-            "rev": "f887594a1a8caaebaa640170a767485838ad882b",
-            "sha256": "sha256-OZQKrlJS8cDON6EhXRv8GHQ1a85Oh7ObfDTi8xPEfI4=",
+            "rev": "c8c06efaa508569e13d7191882ae33435bb14543",
+            "sha256": "sha256-1uHPtz0F0pim7KlotB1+pmls1i7H3hRhZ0DX1h53cPc=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "f887594a1a8caaebaa640170a767485838ad882b"
+        "version": "c8c06efaa508569e13d7191882ae33435bb14543"
     },
     "digs": {
         "cargoLocks": null,
@@ -147,7 +147,7 @@
     },
     "eca": {
         "cargoLocks": null,
-        "date": "2026-02-19",
+        "date": "2026-03-17",
         "extract": null,
         "name": "eca",
         "passthru": null,
@@ -157,13 +157,13 @@
             "fetchSubmodules": false,
             "leaveDotGit": false,
             "name": null,
-            "rev": "32943e61016b1ae6f205a1483e3a5853dd64e3f8",
-            "sha256": "sha256-ckz3PAqQUHHOo5AC3UfX0V7LPJ0lmXJ+L9daXQmSupA=",
+            "rev": "46fac752365492b236bcc9bde24181d12dc472b9",
+            "sha256": "sha256-HWQVpV778CtEV7tqB4hbZb0PIiXv9eOKOEPdstZaMtw=",
             "sparseCheckout": [],
             "type": "git",
             "url": "https://github.com/editor-code-assistant/eca-emacs"
         },
-        "version": "32943e61016b1ae6f205a1483e3a5853dd64e3f8"
+        "version": "46fac752365492b236bcc9bde24181d12dc472b9"
     },
     "eglot-booster": {
         "cargoLocks": null,
@@ -230,7 +230,7 @@
     },
     "gerbil": {
         "cargoLocks": null,
-        "date": "2025-12-17",
+        "date": "2026-03-13",
         "extract": null,
         "name": "gerbil",
         "passthru": null,
@@ -241,11 +241,32 @@
             "type": "url",
             "url": "https://raw.githubusercontent.com/mighty-gerbils/gerbil/refs/heads/master/etc/gerbil-mode.el"
         },
-        "version": "b3417266a8a76dd63b0b870ba600bb8a9ec308ad"
+        "version": "785ded734df99f395f536d0449c998c2914b9e0b"
+    },
+    "git-wt": {
+        "cargoLocks": null,
+        "date": null,
+        "extract": null,
+        "name": "git-wt",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "k1LoW",
+            "repo": "git-wt",
+            "rev": "v0.25.0",
+            "sha256": "sha256-QdyONDVokpOaH5dI5v1rmaymCgIiWZ16h26FAIsAHPc=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v0.25.0"
     },
     "gleam-mode": {
         "cargoLocks": null,
-        "date": "2025-11-06",
+        "date": "2026-03-15",
         "extract": null,
         "name": "gleam-mode",
         "passthru": null,
@@ -257,12 +278,12 @@
             "name": null,
             "owner": "gleam-lang",
             "repo": "gleam-mode",
-            "rev": "91cf073c5fb889c091b1797f44cc52419b7c9ae2",
-            "sha256": "sha256-EVuEVzjlHg5d9RG69KQGm4T/BnBjzb2X7RRnuKnHpzU=",
+            "rev": "bbd7c19084b23b427a49790077f54ad4b9244c6c",
+            "sha256": "sha256-XmKoKzAXHMeCeD0+XdQoDty06ZwHDgsPs28Rt+XVuf8=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "91cf073c5fb889c091b1797f44cc52419b7c9ae2"
+        "version": "bbd7c19084b23b427a49790077f54ad4b9244c6c"
     },
     "hydra-posframe": {
         "cargoLocks": null,
@@ -323,7 +344,7 @@
     },
     "mcp": {
         "cargoLocks": null,
-        "date": "2026-01-21",
+        "date": "2026-02-22",
         "extract": null,
         "name": "mcp",
         "passthru": null,
@@ -335,12 +356,12 @@
             "name": null,
             "owner": "lizqwerscott",
             "repo": "mcp.el",
-            "rev": "2e947d2ddc8cbe655f846e23711e412d41f1bf6a",
-            "sha256": "sha256-Cb7G8d2v1l0VghUSPBKFJo7J0hKtPRnIhULzGUBp27s=",
+            "rev": "5c105a8db470eb9777fdbd26251548dec42c03f0",
+            "sha256": "sha256-tTbClmM0FgE4SS6rAdqq6vj5O8f4kAYGB24w90Gx1w4=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "2e947d2ddc8cbe655f846e23711e412d41f1bf6a"
+        "version": "5c105a8db470eb9777fdbd26251548dec42c03f0"
     },
     "ob-gleam": {
         "cargoLocks": null,
@@ -665,7 +686,7 @@
     },
     "verb": {
         "cargoLocks": null,
-        "date": "2025-12-22",
+        "date": "2026-03-03",
         "extract": null,
         "name": "verb",
         "passthru": null,
@@ -677,12 +698,12 @@
             "name": null,
             "owner": "federicotdn",
             "repo": "verb",
-            "rev": "f45e31b2bcdea2a859bb28cbb1819469978457c9",
-            "sha256": "sha256-NpEDFq0BHNaixiVFWHmgs9TixzIjh0hpYwBqP+oM+cc=",
+            "rev": "40ad1f06aac3373db788aedffd0eba113b80972f",
+            "sha256": "sha256-aNi6UDROHQR4nAptusL2RZc2fl49A6VCbtug8lYSz2c=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "f45e31b2bcdea2a859bb28cbb1819469978457c9"
+        "version": "40ad1f06aac3373db788aedffd0eba113b80972f"
     },
     "zenn-cli": {
         "cargoLocks": null,

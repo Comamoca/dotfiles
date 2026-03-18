@@ -65,15 +65,15 @@
   };
   copilot = {
     pname = "copilot";
-    version = "f887594a1a8caaebaa640170a767485838ad882b";
+    version = "c8c06efaa508569e13d7191882ae33435bb14543";
     src = fetchFromGitHub {
       owner = "copilot-emacs";
       repo = "copilot.el";
-      rev = "f887594a1a8caaebaa640170a767485838ad882b";
+      rev = "c8c06efaa508569e13d7191882ae33435bb14543";
       fetchSubmodules = false;
-      sha256 = "sha256-OZQKrlJS8cDON6EhXRv8GHQ1a85Oh7ObfDTi8xPEfI4=";
+      sha256 = "sha256-1uHPtz0F0pim7KlotB1+pmls1i7H3hRhZ0DX1h53cPc=";
     };
-    date = "2026-02-21";
+    date = "2026-03-16";
   };
   digs = {
     pname = "digs";
@@ -89,17 +89,17 @@
   };
   eca = {
     pname = "eca";
-    version = "32943e61016b1ae6f205a1483e3a5853dd64e3f8";
+    version = "46fac752365492b236bcc9bde24181d12dc472b9";
     src = fetchgit {
       url = "https://github.com/editor-code-assistant/eca-emacs";
-      rev = "32943e61016b1ae6f205a1483e3a5853dd64e3f8";
+      rev = "46fac752365492b236bcc9bde24181d12dc472b9";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
       sparseCheckout = [ ];
-      sha256 = "sha256-ckz3PAqQUHHOo5AC3UfX0V7LPJ0lmXJ+L9daXQmSupA=";
+      sha256 = "sha256-HWQVpV778CtEV7tqB4hbZb0PIiXv9eOKOEPdstZaMtw=";
     };
-    date = "2026-02-19";
+    date = "2026-03-17";
   };
   eglot-booster = {
     pname = "eglot-booster";
@@ -139,24 +139,35 @@
   };
   gerbil = {
     pname = "gerbil";
-    version = "b3417266a8a76dd63b0b870ba600bb8a9ec308ad";
+    version = "785ded734df99f395f536d0449c998c2914b9e0b";
     src = fetchurl {
       url = "https://raw.githubusercontent.com/mighty-gerbils/gerbil/refs/heads/master/etc/gerbil-mode.el";
       sha256 = "sha256-P1nRW6roc6Kr27Un744FF8KL/ihSCiw8K2WpnzxtZq8=";
     };
-    date = "2025-12-17";
+    date = "2026-03-13";
+  };
+  git-wt = {
+    pname = "git-wt";
+    version = "v0.25.0";
+    src = fetchFromGitHub {
+      owner = "k1LoW";
+      repo = "git-wt";
+      rev = "v0.25.0";
+      fetchSubmodules = false;
+      sha256 = "sha256-QdyONDVokpOaH5dI5v1rmaymCgIiWZ16h26FAIsAHPc=";
+    };
   };
   gleam-mode = {
     pname = "gleam-mode";
-    version = "91cf073c5fb889c091b1797f44cc52419b7c9ae2";
+    version = "bbd7c19084b23b427a49790077f54ad4b9244c6c";
     src = fetchFromGitHub {
       owner = "gleam-lang";
       repo = "gleam-mode";
-      rev = "91cf073c5fb889c091b1797f44cc52419b7c9ae2";
+      rev = "bbd7c19084b23b427a49790077f54ad4b9244c6c";
       fetchSubmodules = false;
-      sha256 = "sha256-EVuEVzjlHg5d9RG69KQGm4T/BnBjzb2X7RRnuKnHpzU=";
+      sha256 = "sha256-XmKoKzAXHMeCeD0+XdQoDty06ZwHDgsPs28Rt+XVuf8=";
     };
-    date = "2025-11-06";
+    date = "2026-03-15";
   };
   hydra-posframe = {
     pname = "hydra-posframe";
@@ -193,15 +204,15 @@
   };
   mcp = {
     pname = "mcp";
-    version = "2e947d2ddc8cbe655f846e23711e412d41f1bf6a";
+    version = "5c105a8db470eb9777fdbd26251548dec42c03f0";
     src = fetchFromGitHub {
       owner = "lizqwerscott";
       repo = "mcp.el";
-      rev = "2e947d2ddc8cbe655f846e23711e412d41f1bf6a";
+      rev = "5c105a8db470eb9777fdbd26251548dec42c03f0";
       fetchSubmodules = false;
-      sha256 = "sha256-Cb7G8d2v1l0VghUSPBKFJo7J0hKtPRnIhULzGUBp27s=";
+      sha256 = "sha256-tTbClmM0FgE4SS6rAdqq6vj5O8f4kAYGB24w90Gx1w4=";
     };
-    date = "2026-01-21";
+    date = "2026-02-22";
   };
   ob-gleam = {
     pname = "ob-gleam";
@@ -397,15 +408,15 @@
   };
   verb = {
     pname = "verb";
-    version = "f45e31b2bcdea2a859bb28cbb1819469978457c9";
+    version = "40ad1f06aac3373db788aedffd0eba113b80972f";
     src = fetchFromGitHub {
       owner = "federicotdn";
       repo = "verb";
-      rev = "f45e31b2bcdea2a859bb28cbb1819469978457c9";
+      rev = "40ad1f06aac3373db788aedffd0eba113b80972f";
       fetchSubmodules = false;
-      sha256 = "sha256-NpEDFq0BHNaixiVFWHmgs9TixzIjh0hpYwBqP+oM+cc=";
+      sha256 = "sha256-aNi6UDROHQR4nAptusL2RZc2fl49A6VCbtug8lYSz2c=";
     };
-    date = "2025-12-22";
+    date = "2026-03-03";
   };
   zenn-cli = {
     pname = "zenn-cli";

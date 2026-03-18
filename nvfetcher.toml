@@ -140,3 +140,8 @@ fetch.git = "https://github.com/takeokunn/ob-gleam"
 [tramps3]
 src.git = "https://github.com/protez/tramps3"
 fetch.git = "https://github.com/protez/tramps3"
+
+# git-wt
+[git-wt]
+src.github = "k1LoW/git-wt"
+fetch.github = "k1LoW/git-wt"

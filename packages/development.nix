@@ -2,6 +2,7 @@
 with pkgs;
 [
   # Development tools
+  (import ../pkgs/git-wt { inherit pkgs; })
   gleam.bin.latest
   deno."2.5.4"
   nodejs_24
