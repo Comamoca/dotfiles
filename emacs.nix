@@ -261,13 +261,49 @@ let
   };
 
   tramps3 = pkgs.emacsPackages.trivialBuild {
-    pname = "";
+    pname = "tramps3 ";
     version = "main";
     src = sources.tramps3.src;
     buildInputs = with pkgs.emacsPackages; [
       seq
       dash
     ];
+  };
+  
+  nskk = pkgs.emacsPackages.trivialBuild {
+    pname = "nskk";
+    version = "main";
+    src = sources.nskk.src;
+    buildInputs = with pkgs.emacsPackages; [
+    ];
+  };
+
+  kuro-native = pkgs.rustPlatform.buildRustPackage {
+    pname = "kuro-core";
+    version = "main";
+    src = sources.kuro.src;
+    cargoLock = {
+      lockFile = "${sources.kuro.src}/Cargo.lock";
+    };
+    buildInputs = [ pkgs.emacs ];
+    nativeBuildInputs = [ pkgs.pkg-config ];
+    cargoBuildFlags = [ "--package" "kuro-core" "--lib" ];
+    doCheck = false;
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out/lib
+      find target -name "libkuro_core.so" -not -path "*/deps/*" -exec cp {} $out/lib/ \;
+      runHook postInstall
+    '';
+  };
+
+  kuro = pkgs.emacsPackages.trivialBuild {
+    pname = "kuro";
+    version = "main";
+    src = "${sources.kuro.src}/emacs-lisp";
+    postInstall = ''
+      cp ${kuro-native}/lib/libkuro_core.so $out/share/emacs/site-lisp/
+    '';
   };
 in
 {
@@ -530,6 +566,11 @@ in
     polymode
     poly-markdown 
 
-    tramps3 
+    tramps3
+    consult-ghq
+
+    nskk
+    kuro
+    sparql-mode
   ];
 }
