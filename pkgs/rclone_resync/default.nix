@@ -1,5 +1,5 @@
 { pkgs, homeDirectory, ... }:
-pkgs.writers.writePython3Bin "rclone-sync" {
+pkgs.writers.writePython3Bin "rclone-resync" {
         libraries = [ pkgs.python3Packages.requests ];
         flakeIgnore = [ "E501" "W503" ];
       } ''
@@ -8,16 +8,14 @@ pkgs.writers.writePython3Bin "rclone-sync" {
       import sys
 
       cmd = [
-        "rclone",
-        "--config",
-        "/home/coma/.config/rclone/rclone.conf",
-        "bisync",
-        "r2:memo", 
-        "/home/coma/.ghq/github.com/Comamoca/memo",
-        "--use-json-log",
-        "--log-level",
-        "INFO",
-        "--resync"
+          "${pkgs.rclone}/bin/rclone",
+          "--config", "${homeDirectory}/.config/rclone/rclone.conf",
+          "bisync",
+          "r2:memo",
+          "${homeDirectory}/.ghq/github.com/Comamoca/memo",
+          "--use-json-log",
+          "--log-level", "INFO",
+          "--resync"
       ]
 
       process = subprocess.Popen(
@@ -57,6 +55,3 @@ pkgs.writers.writePython3Bin "rclone-sync" {
           msg = str(changes) + " changes applied"
           subprocess.run([notify, "Memo Sync", msg])
       ''
-
-
-# rclone --config /home/coma//.config/rclone/rclone.conf bisync r2:memo /home/coma/.ghq/github.com/Comamoca/memo --use-json-log --log-level "INFO" --resync

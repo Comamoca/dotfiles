@@ -17,13 +17,19 @@ pkgs.buildGoModule {
   pname = "git-wt";
   inherit version src;
 
-  vendorHash = "sha256-O4vqouNxvA3GvrnpRO6GXDD8ysPfFCaaSJVFj2ufxwI=";
+  vendorHash = "sha256-jXGG5CbJSy4FeLNT/IEOzoHlxrXOnf+WLjFUHno/C+w=";
 
   doCheck = false;
 
   postPatch = ''
     substituteInPlace go.mod --replace-fail 'go 1.25.7' 'go 1.25'
   '';
+
+  overrideModAttrs = _: {
+    preBuild = ''
+      go mod tidy
+    '';
+  };
 
   meta = with pkgs.lib; {
     description = "A git worktree management tool";
