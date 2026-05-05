@@ -185,7 +185,6 @@
             inputs.catppuccin.homeModules.catppuccin
             inputs.sops-nix.homeManagerModules.sops
             inputs.nix-index-database.homeModules.default
-            inputs.claude-code-overlay.overlays.default 
             {
               nixpkgs.overlays = overlays ++ [
                 (final: prev: {
