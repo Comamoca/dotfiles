@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  inputs,
   modulesPath,
   ...
 }:
@@ -9,9 +10,9 @@
 let
   user = "guest";
   password = "guest";
-  # SSID = "mywifi";
-  # SSIDpassword = "mypassword";
-  # interface = "wlan0";
+  SSID = "WIFI_SSID_PLACEHOLDER";
+  SSIDpassword = "WIFI_PASSWORD_PLACEHOLDER";
+  interface = "wlan0";
   hostname = "raspi";
 in
 {
@@ -33,7 +34,7 @@ in
   ];
 
   boot = {
-    kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
+    kernelPackages = pkgs.linuxKernel.packages.linux_rpi3;
     initrd = {
       # dw-hdmiモジュールが存在しない問題を回避するため、デフォルトモジュールを無効化
       includeDefaultModules = false;
@@ -61,27 +62,22 @@ in
   };
 
   networking = {
-    useNetworkd = true;
-    useDHCP = true;
-
+    usePredictableInterfaceNames = false;
     hostName = hostname;
-    wireless = {
-      # enable = true;
-      # networks."${SSID}".psk = SSIDpassword;
-      # interfaces = [ interface ];
-    };
+    networkmanager.enable = true;
   };
 
-  systemd.network.networks."eth0" = {
-    matchConfig.Name = "eth0";
-    gateway = [ "192.168.10.1" ];
-    dns = [ "1.1.1.1" ];
-    address = [
-      "192.168.10.50/24"
-    ];
+  environment.systemPackages = with pkgs; [ vim networkmanager docker-compose ];
+
+  virtualisation.docker = {
+    enable = true;
+    enableOnBoot = true;
   };
 
-  environment.systemPackages = with pkgs; [ vim ];
+  services.tailscale = {
+    enable = true;
+    extraUpFlags = [ "--ssh" ];
+  };
 
   services.openssh = {
     enable = true;
@@ -93,19 +89,84 @@ in
 
   users.users.coma = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = [ "wheel" "networkmanager" "docker" "hermes" ];
+    initialPassword = "changeme";
     openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINZWLYeAZNYt2ZHjJl4zd6rsS+2LT9uL4AqUJid6gikl coma@comabook"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGHn646g17wEv7rZoSKQCFNGGyLqVJnQ9mlEn7aQuOLj coma@comabook"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHPL4pgOxCwPRIGRDuIt7KeExLZqNdQ3VsbAqgGeaLNV u0_a588@localhost"
     ];
   };
 
   security.sudo.wheelNeedsPassword = false;
   time.timeZone = "Asia/Tokyo";
 
+  console = {
+    font = "Lat2-Terminus16";
+    keyMap = "jp106";
+  };
+
+  i18n.defaultLocale = "ja_JP.UTF-8";
+
   hardware.enableRedistributableFirmware = true;
 
   # Flakesとnix-commandを有効化
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.trusted-users = [ "root" "coma" ];
+
+  sops = {
+    defaultSopsFile = ../secrets/raspi/hermes.yaml;
+    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+    secrets = {
+      "OPENROUTER_API_KEY" = { };
+      "TELEGRAM_BOT_TOKEN" = { };
+      "TELEGRAM_ALLOWED_USERS" = { };
+    };
+    templates."hermes-env" = {
+      content = ''
+        OPENROUTER_API_KEY=${config.sops.placeholder."OPENROUTER_API_KEY"}
+        TELEGRAM_BOT_TOKEN=${config.sops.placeholder."TELEGRAM_BOT_TOKEN"}
+        TELEGRAM_ALLOWED_USERS=${config.sops.placeholder."TELEGRAM_ALLOWED_USERS"}
+      '';
+    };
+  };
+
+  services.hermes-agent = {
+    enable = true;
+    settings = {
+      model = {
+        default = "google/gemini-3-flash-preview";
+        base_url = "https://openrouter.ai/api/v1";
+      };
+      toolsets = [ "all" ];
+      telegram = {
+        require_mention = false;
+        reactions = true;
+      };
+    };
+    environmentFiles = [ config.sops.templates."hermes-env".path ];
+    addToSystemPackages = true;
+    documents = {
+      "USER.md"                    = "${inputs.openclaw-workspace}/USER.md";
+      "AGENTS.md"                  = "${inputs.openclaw-workspace}/AGENTS.md";
+      "IDENTITY.md"                = "${inputs.openclaw-workspace}/IDENTITY.md";
+      "TOOLS.md"                   = "${inputs.openclaw-workspace}/TOOLS.md";
+      "skill-gleam-search.md"      = "${inputs.openclaw-workspace}/skills/gleam-package-search/SKILL.md";
+      "skill-location.md"          = "${inputs.openclaw-workspace}/skills/location/SKILL.md";
+      "skill-sfeed.md"             = "${inputs.openclaw-workspace}/skills/sfeed/SKILL.md";
+      "skill-todo.md"              = "${inputs.openclaw-workspace}/skills/todo/SKILL.md";
+      "skill-url-summarizer.md"    = "${inputs.openclaw-workspace}/skills/url-summarizer/SKILL.md";
+    };
+  };
+
+  system.activationScripts.hermes-soul = {
+    text = ''
+      mkdir -p /var/lib/hermes/.hermes
+      cp ${inputs.openclaw-workspace}/SOUL.md /var/lib/hermes/.hermes/SOUL.md
+      chown hermes:hermes /var/lib/hermes/.hermes/SOUL.md
+      chmod 640 /var/lib/hermes/.hermes/SOUL.md
+    '';
+    deps = [ "users" "groups" ];
+  };
 
   system.stateVersion = "25.05";
 }
