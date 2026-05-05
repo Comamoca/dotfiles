@@ -212,7 +212,7 @@
   (add-hook 'org-mode-hook
             (lambda ()
               (evil-define-key 'normal org-mode-map (kbd "TAB") #'org-cycle)
-	      (evil-define-key 'normal org-mode-map (kbd "C-<return>") (lambda ()
+              (evil-define-key 'normal org-mode-map (kbd "C-<return>") (lambda ()
 									 (interactive)
 									 (vterm-toggle-insert-cd)
 									 (vterm-toggle-insert-cd)))))
@@ -293,7 +293,6 @@
     :ensure t
     :after magit)
 
-  ;; SKK
   (leaf ddskk
     :custom ((default-input-method . "japanease-skk")
              (skk-auto-insert-paren . t)
@@ -307,6 +306,34 @@
 
   (leaf ddskk-posframe
     :global-minor-mode t)
+
+  ;; (leaf nskk
+  ;;   ;; :bind (("<henkan>" . nskk-kakutei)
+  ;;   ;;        ("<muhenkan>" . nskk-handle-l))
+  ;;   :require t
+  ;;   :custom
+  ;;   ((nskk-converter-romaji-style . 'azik)
+  ;;    (nskk-dict-user-dictionary-file . "~/.nskk/jisyo")
+  ;;    (nskk-dict-system-dictionary-files . '("~/.skk-dict/SKK-JISYO.L"
+  ;;                                           "~/.skk-dict/SKK-JISYO.im@sparql.all.utf8")))
+  ;;   :config
+  ;;   ;; ;をsticky-shift（変換開始/送り仮名開始）に変更
+  ;;   ;; っはAZIKのlキーで入力する（Ka;lta → 買った）
+  ;;   (nskk-prolog-retract-all 'semicolon-key-action 2)
+  ;;   (nskk-prolog-define-fact-table semicolon-key-action (:arity 2 :index :hash)
+  ;;     (azik     sticky-shift)
+  ;;     (standard sticky-shift))
+  ;;   ;; l → っ（latin-mode切替は<muhenkan>で代替）
+  ;;   (nskk-converter-add-rule "l" "っ")
+  ;;   (global-set-key (kbd "<henkan>") #'nskk-set-mode-hiragana)
+  ;;   (global-set-key (kbd "<muhenkan>") #'nskk-set-mode-latin)
+  ;;   (nskk-global-mode))
+
+  (leaf kuro
+    :config
+    (setq kuro-module-binary-path
+          (expand-file-name "libkuro_core.so"
+                            (file-name-directory (locate-library "kuro")))))
 
   ;; Common Lisp
   (leaf slime
@@ -392,8 +419,8 @@
 		     (is-js-file (or (= ext "js") (= ext "jsx"))))
 		(if (and (or is-ts-file is-js-file)  (file-exists-p (expand-file-name "package.json" project-path)))
 		    "typescript-language-server"
-		  "deno")
-		))))
+		  "deno")))))
+    
 
     (add-hook 'typescript-ts-mode 'lsp-bridge-setup-for-ts-js-mode)
     (add-hook 'javascript-mode 'lsp-bridge-setup-for-ts-js-mode)
@@ -404,36 +431,37 @@
     ;; 		    (string-suffix-p ".tsx" file-path))
     ;; 	    "deno")))
 
-    :init 
-    ;; (global-lsp-bridge-mode)
-    )
+    :init) 
+  ;; (global-lsp-bridge-mode)
+
 
   ;; lso-mode
   (leaf lsp-mode
     :require t
     :custom
-    ((lsp-completion-provider . :none))
+    ((lsp-completion-provider . :none)
+     (gc-cons-threshold . 100000000)           ; 100MB
+     (read-process-output-max . (* 1024 1024))) ; 1MB
     :config
     (setq lsp-idle-delay 1.0)
-    (setenv "LSP_USE_PLISTS" "true") 
+
 
     (define-key evil-normal-state-map (kbd "K") 'lsp-ui-doc-glance)
 
-    (add-to-list 'lsp-language-id-configuration
-		 '(nix-mode . "nil")
-		 '(python-mode . "python"))
+    (add-to-list 'lsp-language-id-configuration '(nix-mode . "nil"))
+    (add-to-list 'lsp-language-id-configuration '(python-mode . "python"))
 
     (defun corfu-lsp-setup ()
       (setq-local completion-at-point-functions
                   (list #'lsp-completion-at-point))
-      (setq-local completion-styles '(orderless)
-		  completion-category-defaults nil))
+      (setq-local completion-styles '(orderless basic)
+		  completion-category-defaults nil
+		  completion-category-overrides nil))
 
     (add-hook 'lsp-mode-hook #'corfu-lsp-setup)
     ;; (add-hook 'prog-mode-hook #'lsp-deferred)
     (with-eval-after-load 'lsp-mode
-      (add-to-list 'lsp-disabled-clients 'semgrep-ls))
-    )
+      (add-to-list 'lsp-disabled-clients 'semgrep-ls)))
 
   ;; LSP Booster
   (defun lsp-booster--advice-json-parse (old-fn &rest args)
@@ -449,22 +477,23 @@
 			 (fboundp 'json-parse-buffer))
                   'json-parse-buffer
 		'json-read)
-              :around
-              #'lsp-booster--advice-json-parse)
+	      :around
+	      #'lsp-booster--advice-json-parse)
 
   (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
-    "Prepend emacs-lsp-booster command to lsp CMD."
+    "Prepend emacs-lsp-booster command to lsp CMD.
+Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists=nil)."
     (let ((orig-result (funcall old-fn cmd test?)))
       (if (and (not test?)                             ;; for check lsp-server-present?
-               (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
-               lsp-use-plists
-               (not (functionp 'json-rpc-connection))  ;; native json-rpc
-               (executable-find "emacs-lsp-booster"))
+	       (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+	       (not (functionp 'json-rpc-connection))  ;; native json-rpc
+	       (executable-find "emacs-lsp-booster"))
           (progn
             (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
-              (setcar orig-result command-from-exec-path))
+	      (setcar orig-result command-from-exec-path))
             (message "Using emacs-lsp-booster for %s!" orig-result)
-            (cons "emacs-lsp-booster" orig-result))
+            ;; Nix の lsp-mode は hashtable でコンパイル済みのため --json-object-type hashtable を指定
+            (append (list "emacs-lsp-booster" "--json-object-type" "hashtable" "--") orig-result))
 	orig-result)))
 
   (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
@@ -538,7 +567,7 @@
   (leaf corfu
     :custom
     ((corfu-cycle . t)
-     (corfu-auto . t )
+     (corfu-auto . t)
      (corfu-auto-prefix . 1))
 
     :config
@@ -686,11 +715,11 @@
     :require t
     :custom
     (google-translate-translation-directions-alist . '(("en" . "ja")
-                                                       ("ja" . "en"))))
+						       ("ja" . "en"))))
   ;; Wakatime
   (add-hook 'server-after-make-frame-hook
             (lambda ()
-              (setq wakatime-api-key (get-secret "wakatime"))))
+	      (setq wakatime-api-key (get-secret "wakatime"))))
 
   (leaf wakatime-mode
     :config
@@ -819,8 +848,8 @@
                                     (setq-local completion-at-point-functions #'tempel-complete)))
 
     (add-hook 'git-commit-mode-hook (lambda ()
-                                      (setup-gitmoji)
-                                      (setq-local completion-at-point-functions
+				      (setup-gitmoji)
+				      (setq-local completion-at-point-functions
 						  (list (cape-capf-super
 							 #'tempel-complete
 							 #'gitmoji-completion))))))
@@ -836,25 +865,25 @@
 
   (setq newsticker-url-list
 	'(("Gleam Weekly" "https://gleamweekly.com/atom.xml")
-          ("Zenn Gleam" "https://zenn.dev/topics/gleam/feed")
-          ("Gleam Releases" "https://github.com/gleam-lang/gleam/releases.atom")
-          ("Zenn Trend" "https://zenn.dev/feed")
-          ("Zenn Emacs" "https://zenn.dev/topics/emacs/feed")
-          ("Zenn TS" "https://zenn.dev/topics/typescript/feed")
-          ("Zenn CL" "https://zenn.dev/topics/commonlisp/feed")
-          ("Zenn Deno" "https://zenn.dev/topics/deno/feed")
-          ("Zenn Bun" "https://zenn.dev/topics/bun/feed")
-          ("Zenn Rust" "https://zenn.dev/topics/rust/feed")
-          ("Zenn Vim" "https://zenn.dev/topics/vim/feed")
-          ("Zenn Neovim" "https://zenn.dev/topics/neovim/feed")
-          ("Zenn Scheme" "https://zenn.dev/topics/scheme/feed")
-          ("Zenn Hono" "https://zenn.dev/topics/hono/feed")
-          ("Zenn React" "https://zenn.dev/topics/react/feed")
-          ("Zenn GCP" "https://zenn.dev/topics/googlecloud/feed")
-          ("Zenn AWS" "https://zenn.dev/topics/aws/feed")
-          ("TechFeed" "https://techfeed.io/feeds/categories/all")
-          ("Hacker News" "https://hnrss.org/frontpage")
-          ("輪ごむの空き箱" "https://wagomu.me/rss.xml")))
+	  ("Zenn Gleam" "https://zenn.dev/topics/gleam/feed")
+	  ("Gleam Releases" "https://github.com/gleam-lang/gleam/releases.atom")
+	  ("Zenn Trend" "https://zenn.dev/feed")
+	  ("Zenn Emacs" "https://zenn.dev/topics/emacs/feed")
+	  ("Zenn TS" "https://zenn.dev/topics/typescript/feed")
+	  ("Zenn CL" "https://zenn.dev/topics/commonlisp/feed")
+	  ("Zenn Deno" "https://zenn.dev/topics/deno/feed")
+	  ("Zenn Bun" "https://zenn.dev/topics/bun/feed")
+	  ("Zenn Rust" "https://zenn.dev/topics/rust/feed")
+	  ("Zenn Vim" "https://zenn.dev/topics/vim/feed")
+	  ("Zenn Neovim" "https://zenn.dev/topics/neovim/feed")
+	  ("Zenn Scheme" "https://zenn.dev/topics/scheme/feed")
+	  ("Zenn Hono" "https://zenn.dev/topics/hono/feed")
+	  ("Zenn React" "https://zenn.dev/topics/react/feed")
+	  ("Zenn GCP" "https://zenn.dev/topics/googlecloud/feed")
+	  ("Zenn AWS" "https://zenn.dev/topics/aws/feed")
+	  ("TechFeed" "https://techfeed.io/feeds/categories/all")
+	  ("Hacker News" "https://hnrss.org/frontpage")
+	  ("輪ごむの空き箱" "https://wagomu.me/rss.xml")))
 
   ;; newsticker keybinds
   (evil-define-key 'normal newsticker-treeview-mode-map (kbd "o") 'newsticker-treeview-browse-url)
@@ -911,6 +940,7 @@
   (leaf iscroll)
 
   (leaf folding-mode
+    :if (locate-library "folding-mode")
     :require t)
 
   (leaf rg
@@ -935,7 +965,7 @@
 
   (leaf aas
     ;; :hook (text-mode . aas-activate-for-major-mode)
-    :init
+    :config
     (aas-set-snippets 'global)
     (aas-set-snippets 'markdown-mode)
     (aas-set-snippets 'prog-mode))
@@ -950,33 +980,51 @@
     :config
     (evil-define-key 'insert vterm-mode-map (kbd "C-l") 'vterm-clear))
 
-  (leaf vterm-toggle
-    :after evil
+  ;; (leaf vterm-toggle
+  ;;   :after evil
+  ;;   :bind (("C-<return>" . (lambda ()
+  ;;                            (interactive)
+  ;;                            (vterm-toggle)
+  ;;                            (vterm-toggle-insert-cd)))))
+
+  ;; (leaf multi-vterm
+  ;;   :config
+  ;;   (setq multi-vterm-dedicated-window-height 50))
+
+  (leaf kuro
+    :require t
     :bind (("C-<return>" . (lambda ()
                              (interactive)
                              (vterm-toggle)
                              (vterm-toggle-insert-cd)))))
 
-  (leaf multi-vterm
-    :config
-    (setq multi-vterm-dedicated-window-height 50))
-
   ;; AI
+  (defvar openrouter-apikey nil "OpenRouter API key.")
+  (defvar figma-apikey nil "Figma API key.")
+
+  (defun get-secret (key)
+    "Retrieve secret for KEY from auth-source."
+    (require 'auth-source)
+    (when-let* ((result (auth-source-search :host key :require '(:secret) :max 1))
+		(secret (plist-get (car result) :secret)))
+      (if (functionp secret) (funcall secret) secret)))
+
   (add-hook 'server-after-make-frame-hook
             (lambda ()
-              (setenv "GEMINI_API_KEY" (get-secret "gemini.google.com"))
-              (setenv "OPENROUTER_API_KEY" (get-secret "openrouter.ai"))
-              (setq wakatime-api-key (get-secret "wakatime"))
+	      (setenv "GEMINI_API_KEY" (get-secret "gemini.google.com"))
+	      (setenv "OPENROUTER_API_KEY" (get-secret "openrouter.ai"))
+	      (setenv "ZAI_API_KEY" (get-secret "z.ai"))
+	      (setq wakatime-api-key (get-secret "wakatime"))
 	      (setq openrouter-apikey (get-secret "openrouter.ai"))
-              (setq gemini-apikey (get-secret "gemini.google.com"))
-	      (setq figma-apikey (get-secret "figma-apikey"))))
+	      (setq gemini-apikey (get-secret "gemini.google.com"))
+	      (setq figma-apikey (get-secret "figma-apikey"))
+	      (setq claude-shell-api-token (get-secret "openrouter.ai"))))
 
   ;; ECA
   (leaf eca
     :require t
-    :custom
-    ((eca-custom-command "~/.bin/eca"))
-    :config)
+    :config
+    (setq eca-custom-command '("~/.bin/eca")))
 
   ;; (leaf mcp
   ;;   :after gptel
@@ -1020,8 +1068,8 @@
     (gptel-make-tool
      :function (lambda (filepath)
 		 (with-temp-buffer
-		   (insert-file-contents (expand-file-name filepath))
-		   (buffer-string)))
+                   (insert-file-contents (expand-file-name filepath))
+                   (buffer-string)))
      :name "read_file"
      :description "Read and display the contents of a file"
      :args (list '(:name "filepath"
@@ -1032,13 +1080,13 @@
     (gptel-make-tool
      :function (lambda (url)
 		 (with-current-buffer (url-retrieve-synchronously url)
-		   (goto-char (point-min))
-		   (forward-paragraph)
-		   (let ((dom (libxml-parse-html-region (point) (point-max))))
+                   (goto-char (point-min))
+                   (forward-paragraph)
+                   (let ((dom (libxml-parse-html-region (point) (point-max))))
                      (run-at-time 0 nil #'kill-buffer (current-buffer))
                      (with-temp-buffer
-                       (shr-insert-document dom)
-                       (buffer-substring-no-properties (point-min) (point-max))))))
+		       (shr-insert-document dom)
+		       (buffer-substring-no-properties (point-min) (point-max))))))
      :name "read_url"
      :description "Fetch and read the contents of a URL"
      :args (list '(:name "url"
@@ -1049,8 +1097,8 @@
     (gptel-make-tool
      :function (lambda (filepath)
 		 (with-temp-buffer
-		   (insert-file-contents (expand-file-name filepath))
-		   (buffer-string)))
+                   (insert-file-contents (expand-file-name filepath))
+                   (buffer-string)))
      :name "read_file"
      :description "Read and display the contents of a file"
      :args (list '(:name "filepath"
@@ -1068,16 +1116,16 @@
   (leaf aider
     :require t
     :custom
-    ((aider-args . '("--watch-files" "--model" "gemini/gemini-2.0-flash"))))
+    ((aider-args . '("--watch-files" "--model" "zai/glm-4.5"))))
 
   (leaf aidermacs
     :require t
     :config
     (setq aidermacs-watch-files t)
-    (setq aidermacs-extra-args '("--yes-always"))
+    (setq aidermacs-extra-args '("--yes-always" "--model" "zai/glm-4.5"))
 
     :custom
-    ((aidermacs-default-model . "openrouter/anthropic/claude-3.7-sonnet")
+    ((aidermacs-default-model . "zai/glm-4.5")
      (setq aidermacs-backend 'vterm)
      (aidermacs-watch-files . t)))
 
@@ -1088,18 +1136,18 @@
     :require t
     :config
     (let ((figma-api-key (concat "--figma-api-key=" figma-apikey))
-	  (home (getenv "HOME")))
+          (home (getenv "HOME")))
       (setq mcp-hub-servers
 	    `(("filesystem" . (:command "npx" :args ("-y" "@modelcontextprotocol/server-filesystem" ,home)))
-              ("fetch" . (:command "uvx" :args ("mcp-server-fetch")))
+	      ("fetch" . (:command "uvx" :args ("mcp-server-fetch")))
 	      ("awesome-yasunori" . (:command "npx" :args ("mcp-remote" "https://api.yasunori.dev/awesome/mcp")))
 	      ("imasparql" . (:command "npx" :args ("mcp-remote" "https://gitmcp.io/imas/imasparql")))
 	      ("figma" . (:command "npx" :args ("-y" "figma-developer-mcp" ,figma-api-key "--stdio")))
 	      ("claude_code" . (:command "claude" :args ("mcp" "serve")))
-	      ("serena" . (:command "uvx" :args ("--from" "git+https://github.com/oraios/serena" "serena" "start-mcp-server"))))))
+	      ("serena" . (:command "uvx" :args ("--from" "git+https://github.com/oraios/serena" "serena" "start-mcp-server")))))))
 
-    ;; :hook (server-after-make-frame-hook . #'mcp-hub-start-all-server)
-    )
+  ;; :hook (server-after-make-frame-hook . #'mcp-hub-start-all-server)
+
 
 
   ;; minimap: デフォルト無効化（常時表示はredisplayの倍増を引き起こす）
@@ -1108,9 +1156,9 @@
     :custom ((minimap-window-location . 'right)
              (minimap-minimum-width . 20)
              (minimap-major-modes . '(prog-mode
-                                      markdown-mode
-                                      html-mode
-                                      fundamental-mode)))
+				      markdown-mode
+				      html-mode
+				      fundamental-mode)))
     :bind ("C-x m" . minimap-mode))
 
   (leaf rainbow-delimiters
@@ -1158,7 +1206,7 @@
     :require t
     :config
     (define-key evil-insert-state-map (kbd ">")
-		(smartchr '( ">" "-> " "|>" "<>" "<-" ))))
+		(smartchr '( ">" "-> " "|>" "<>" "<-"))))
 
   (add-hook 'server-after-make-frame-hook
 	    (lambda ()
@@ -1175,17 +1223,11 @@
   ;; Claude code
   (leaf claude-code
     :require t
-    :config
-    (claude-code-mode)
     :hook
-    ((claude-code--start . sm-setup-claude-faces))
-    :init
-    (claude-code-mode))
+    ((claude-code--start . sm-setup-claude-faces)))
 
   (leaf claude-shell
-    :require t
-    :config
-    (setq claude-shell-api-token (get-secret "openrouter.ai")))
+    :require t)
 
   (leaf dirvish)
 
@@ -1223,11 +1265,11 @@
     :hook
     (html-ts-mode . emmet-mode))
 
-  (leaf tabspace-mode
+  (leaf tabspaces
     :require t)
 
-  (leaf elscreen
-    :require t)
+  ;; (leaf elscreen
+  ;;   :require t)
 
   (leaf apheleia
     :require t
@@ -1239,6 +1281,9 @@
     :require t)
 
   (leaf tramps3
+    :require t)
+
+  (leaf consult-ghq
     :require t)
 
   ;; ================ My extentions ================
@@ -1280,7 +1325,7 @@
 		;; otherwise
 		(t
 		 (let ((last-command-char (aref action 0))
-                       (command (key-binding action)))
+		       (command (key-binding action)))
                    (when command
                      (call-interactively command)))
 		 (message "Quit")
@@ -1310,8 +1355,8 @@
     (let* ((found (cl-first (auth-source-search :host host
 						:user "coma")))
            (credentials (when found
-			  (eval `(ht ,@(--map `(,it ,(plist-get found it))
-                                              '(:user :secret :save-function))))))
+                          (eval `(ht ,@(--map `(,it ,(plist-get found it))
+					      '(:user :secret :save-function))))))
            (secret (when credentials
                      (ht-get credentials :secret))))
 
@@ -1320,7 +1365,7 @@
 		 "")
 	(if (functionp secret)
             (funcall secret)
-	  secret))))
+          secret))))
 
   (defun nyan-region ()
     "選択範囲をにゃーんで置換する"
@@ -1434,28 +1479,28 @@
 
 (defun date-to-tempalte (year month day)
   (let* ((time (encode-time 0 0 0 day month year))
-	 (yymmdd (format-time-string "%Y-%m-%d" time))
-	 (date (format-time-string "%-m/%-d" time))
-	 (us-date (format-time-string "%b %-d %Y" time))
-	 (tmpl `("---"
-		 ,(format "title: '%sの日報'" yymmdd)
-		 ,(format "description: '%sの日報をお届けいたします。'" date)
-		 ,(format "pubDate: '%s'" us-date)
-		 "emoji: 🦊"
-		 "tags: []"
-		 "draft: false"
-		 "---"
-		 "\n"
-		 "## 今日やったこと"
-		 "\n"
-		 "## 明日以降やりたいこと")))
+         (yymmdd (format-time-string "%Y-%m-%d" time))
+         (date (format-time-string "%-m/%-d" time))
+         (us-date (format-time-string "%b %-d %Y" time))
+         (tmpl `("---"
+                 ,(format "title: '%sの日報'" yymmdd)
+                 ,(format "description: '%sの日報をお届けいたします。'" date)
+                 ,(format "pubDate: '%s'" us-date)
+                 "emoji: 🦊"
+                 "tags: []"
+                 "draft: false"
+                 "---"
+                 "\n"
+                 "## 今日やったこと"
+                 "\n"
+                 "## 明日以降やりたいこと")))
     (mapconcat #'identity tmpl "\n")))
 
 (defun create-diary-path (year month day)
   (let* ((time (encode-time 0 0 0 day month year))
-	 (date-str (format-time-string "%Y-%m-%d" time))
-	 (file-name (format "%s-diary.md" date-str))
-	 (path (concat (expand-file-name "src/blog/" blog-repo) file-name))) 
+         (date-str (format-time-string "%Y-%m-%d" time))
+         (file-name (format "%s-diary.md" date-str))
+         (path (concat (expand-file-name "src/blog/" blog-repo) file-name))) 
     path))
 
 (defun create-and-insert-diary (path text)
@@ -1468,11 +1513,11 @@
   (interactive)
   (let* ((date (calendar-cursor-to-date))
 	 ;; (9 14 2025)
-	 (month (nth 0 date))
-	 (day (nth 1 date))
-	 (year (nth 2 date))
-	 (path (create-diary-path year month day))
-	 (template (date-to-tempalte year month day)))
+         (month (nth 0 date))
+         (day (nth 1 date))
+         (year (nth 2 date))
+         (path (create-diary-path year month day))
+         (template (date-to-tempalte year month day)))
 
     (create-and-insert-diary path template)))
 
@@ -1481,12 +1526,12 @@
   "Open latest diary. This function call in `src/blog/` directory at blog repository."
   (interactive)
   (let* ((now (current-time))
-	 (decoded (decode-time now))
-	 (day    (nth 3 decoded))
-	 (month  (nth 4 decoded))
-	 (year   (nth 5 decoded)) 
-	 (path (create-diary-path year month day))
-	 (template (date-to-tempalte year month day)))
+         (decoded (decode-time now))
+         (day    (nth 3 decoded))
+         (month  (nth 4 decoded))
+         (year   (nth 5 decoded)) 
+         (path (create-diary-path year month day))
+         (template (date-to-tempalte year month day)))
     (create-and-insert-diary path template)))
 
 (defun new-blog-article ()
@@ -1560,7 +1605,7 @@
 (defun consult-roam ()
   (interactive)
   (let* ((node-items (mapcar (lambda (node)
-                               (cons (org-roam-node-title node) node))
+			       (cons (org-roam-node-title node) node))
                              (org-roam-node-list)))
          (select-node-title (consult--read
                              (mapcar #'car node-items)))
