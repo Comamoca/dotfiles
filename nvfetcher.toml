@@ -1,3 +1,8 @@
+# opensrc
+[opensrc]
+src.github = "vercel-labs/opensrc"
+fetch.github = "vercel-labs/opensrc"
+
 # lspx
 [lspx]
 src.git = "https://github.com/thefrontside/lspx"
@@ -141,7 +146,26 @@ fetch.git = "https://github.com/takeokunn/ob-gleam"
 src.git = "https://github.com/protez/tramps3"
 fetch.git = "https://github.com/protez/tramps3"
 
-# git-wt
 [git-wt]
 src.github = "k1LoW/git-wt"
 fetch.github = "k1LoW/git-wt"
+
+[nskk]
+src.git = "https://github.com/takeokunn/nskk.el"
+fetch.git = "https://github.com/takeokunn/nskk.el"
+
+[kuro]
+src.git = "https://github.com/takeokunn/kuro"
+fetch.git = "https://github.com/takeokunn/kuro"
+
+[wl-mirror]
+src.github = "Ferdi265/wl-mirror"
+fetch.github = "Ferdi265/wl-mirror"
+
+[vibe-kanban]
+src.github = "BloopAI/vibe-kanban"
+fetch.github = "BloopAI/vibe-kanban"
+
+[niri-scratchpad]
+src.github = "argosnothing/niri-scratchpad-rs"
+fetch.github = "argosnothing/niri-scratchpad-rs"
