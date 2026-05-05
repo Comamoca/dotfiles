@@ -13,16 +13,20 @@ let
   src = sources.opensrc.src;
   version = sources.opensrc.version;
 in
-pkgs.buildNpmPackage {
+pkgs.rustPlatform.buildRustPackage {
   pname = "opensrc";
-  inherit version src;
+  inherit version;
 
-  npmDepsHash = pkgs.lib.fakeHash;
+  src = "${src}/packages/opensrc/cli";
+
+  cargoLock = {
+    lockFile = "${src}/packages/opensrc/cli/Cargo.lock";
+  };
 
   meta = with pkgs.lib; {
     description = "Fetch source code of dependencies for AI coding agents";
     homepage = "https://github.com/vercel-labs/opensrc";
-    license = licenses.mit;
+    license = licenses.asl20;
     mainProgram = "opensrc";
   };
 }
