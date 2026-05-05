@@ -18,6 +18,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nix-index-database = {
+     url = "github:nix-community/nix-index-database";
+     inputs.nixpkgs.follows = "nixpkgs";
+    }; 
+
     mozilla-overlay.url = "github:mozilla/nixpkgs-mozilla";
     catppuccin.url = "github:catppuccin/nix";
     treefmt-nix.url = "github:numtide/treefmt-nix";
@@ -35,11 +40,6 @@
     ghostty.url = "github:ghostty-org/ghostty";
     lem.url = "github:lem-project/lem";
 
-    nix-index-database = {
-      url = "github:nix-community/nix-index-database";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
     niri.url = "github:sodiboo/niri-flake";
     deno-overlay.url = "github:haruki7049/deno-overlay";
@@ -50,6 +50,19 @@
     };
 
     gleam-overlay.url = "github:Comamoca/gleam-overlay";
+    llm-agents.url = "github:numtide/llm-agents.nix";
+    go-overlay.url = "github:purpleclay/go-overlay";
+    deploy-rs.url = "github:serokell/deploy-rs";
+    hermes-agent.url = "github:NousResearch/hermes-agent";
+    openclaw-workspace = {
+      url = "git+ssh://git@github.com/Comamoca/openclaw-workspace";
+      flake = false;
+    };
+  };
+
+  nixConfig = {
+    extra-substituters = [ "https://cache.numtide.com" ];
+    extra-trusted-public-keys = [ "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=" ];
   };
 
   outputs =
@@ -62,6 +75,8 @@
       chaotic,
       nix-ld,
       gleam-overlay,
+      nix-index-database,
+      deploy-rs,
       ...
     }@inputs:
     let
@@ -81,6 +96,8 @@
         inputs.mozilla-overlay.overlays.firefox
         inputs.niri.overlays.niri
         inputs.gleam-overlay.overlays.default
+        inputs.llm-agents.overlays.default
+        inputs.go-overlay.overlays.default
       ];
     in
     # code = _: s: s;
@@ -93,8 +110,11 @@
 
       nixosConfigurations = {
         raspi = nixpkgs.lib.nixosSystem {
-          inherit system;
+          system = "aarch64-linux";
+          specialArgs = { inherit inputs; };
           modules = [
+            inputs.sops-nix.nixosModules.sops
+            inputs.hermes-agent.nixosModules.default
             ./raspi/configuration.nix
           ];
         };
@@ -118,7 +138,7 @@
           system = "x86_64-linux";
           modules = [
             inputs.catppuccin.nixosModules.catppuccin
-            inputs.nix-index-database.nixosModules.nix-index
+            inputs.nix-index-database.nixosModules.default
             # home-manager.nixosModules.home-manager
             inputs.xremap.nixosModules.default
             inputs.niri.nixosModules.niri
@@ -164,11 +184,12 @@
             ./home-manager/wsl
             inputs.catppuccin.homeModules.catppuccin
             inputs.sops-nix.homeManagerModules.sops
-            inputs.nix-index-database.homeModules.nix-index
+            inputs.nix-index-database.homeModules.default
+            inputs.claude-code-overlay.overlays.default 
             {
               nixpkgs.overlays = overlays ++ [
                 (final: prev: {
-                  xremap = inputs.xremap.packages.${pkgs.system}.default;
+                  xremap = inputs.xremap.packages.${pkgs.stdenv.hostPlatform.system}.default;
                 })
               ];
             }
@@ -187,18 +208,29 @@
             ./home.nix
             inputs.catppuccin.homeModules.catppuccin
             inputs.sops-nix.homeManagerModules.sops
-            inputs.nix-index-database.homeModules.nix-index
             inputs.dms.homeModules.dank-material-shell
+            inputs.nix-index-database.homeModules.default
             {
               nixpkgs.overlays = overlays ++ [
+                inputs.deploy-rs.overlays.default
                 (final: prev: {
                   # nak = inputs.nak.packages.x86_64-linux.default;
                   ghostty = inputs.ghostty.packages.x86_64-linux.default;
-                  xremap = inputs.xremap.packages.${pkgs.system}.default;
+                  xremap = inputs.xremap.packages.${pkgs.stdenv.hostPlatform.system}.default;
                 })
               ];
             }
           ];
+        };
+      };
+
+      deploy.nodes.raspi = {
+        hostname = "raspi.tailbd3ca7.ts.net";
+        profiles.system = {
+          user = "root";
+          sshUser = "coma";
+          sshOpts = [ "-o" "IdentitiesOnly=yes" "-i" "/home/coma/.ssh/id_ed25519" ];
+          path = deploy-rs.lib.aarch64-linux.activate.nixos self.nixosConfigurations.raspi;
         };
       };
 

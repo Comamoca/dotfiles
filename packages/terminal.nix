@@ -1,6 +1,7 @@
 { pkgs }:
 with pkgs;
 [
+  yazi
   # Terminal emulators
   wezterm
   alacritty
@@ -15,9 +16,14 @@ with pkgs;
   # File managers
   felix-fm
   ranger
-  xfce.thunar
+  thunar
+  ghostty
 
-  claude-code
-  opencode
-  gemini-cli
+  aider-chat
+
+  llm-agents.claude-code
+  llm-agents.opencode
+  llm-agents.oh-my-opencode 
+  llm-agents.gemini-cli
+  llm-agents.crush
 ]

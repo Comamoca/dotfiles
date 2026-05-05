@@ -134,7 +134,7 @@ rec {
     # Show key stroke
     showmethekey
 
-    nodePackages."@antfu/ni"
+    ni
     nix-output-monitor
 
     kickstart
@@ -276,7 +276,7 @@ rec {
     avahi
 
     # b43-fwcutter
-    b43FirmwareCutter
+    b43-fwcutter
 
     babashka
 
@@ -539,7 +539,7 @@ rec {
 
     texinfo
 
-    xfce.thunar
+    thunar
 
     # timeshift-autosnap-manjaro
 

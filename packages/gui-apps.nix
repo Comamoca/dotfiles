@@ -8,7 +8,7 @@ with pkgs;
   slack
   teams-for-linux
   discord
-  signal-desktop-bin
+  signal-desktop
 
   # Media
   spotify
