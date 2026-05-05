@@ -15,11 +15,20 @@
 	undo = reset --sort HEAD^
 [http]
 	postBuffer = 524288000
-[credential "https://github.com"]
-	helper = 
+[credential "https://github"]
+	helper =
 	helper = !/home/coma/.nix-profile/bin/gh auth git-credential
 [credential "https://gist.github.com"]
 	helper = 
 	helper = !/home/coma/.nix-profile/bin/gh auth git-credential
 [github]
 	user = Comamoca
+
+[pager]
+    diff = delta
+    log = delta
+    reflog = delta
+    show = delta
+[credential "https://github.com"]
+	helper = 
+	helper = !/home/coma/.nix-profile/bin/gh auth git-credential
