@@ -53,6 +53,10 @@ vim.api.nvim_create_autocmd("User", {
 ---------------------------------------------------------
 
 vim.opt.runtimepath:append(vim.fn.expand("~/.config/nvim"))
+-- nvim-treesitter install_dir must be in rtp before lazy loading
+vim.opt.runtimepath:prepend(vim.fn.stdpath('data') .. '/site')
+-- Nix-managed nvim-treesitter: all parsers (326) + queries bundled via symlinkJoin
+vim.opt.runtimepath:prepend(vim.fn.expand('~/.cache/dpp/_generated/nvim-treesitter'))
 
 -- autocmd BufRead *.rs let g:rustfmt_autosave = 0
 vim.api.nvim_create_autocmd("BufRead", {

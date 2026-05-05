@@ -93,7 +93,17 @@ local parsers = {
   "vimdoc",
   "query",
   "gleam",
+  "javascript",
+  "typescript",
 }
+
+-- nvim-treesitter (main) puts queries under runtime/queries/ instead of queries/
+-- so we need to add that subdirectory to runtimepath
+local ts_plugin_files = vim.api.nvim_get_runtime_file('plugin/nvim-treesitter.lua', false)
+if #ts_plugin_files > 0 then
+  local ts_runtime = vim.fn.fnamemodify(ts_plugin_files[1], ':h:h') .. '/runtime'
+  vim.opt.runtimepath:append(ts_runtime)
+end
 
 -- Configure nvim-treesitter with textobjects integration
 require'nvim-treesitter'.setup {
@@ -1264,4 +1274,26 @@ repo = "https://github.com/APZelos/blamer.nvim"
 on_event = ['BufRead', 'CursorHold']
 hook_add = '''
 let g:blamer_enabled = 1
+'''
+
+[[plugins]]
+repo = "https://github.com/tani/dmacro.vim"
+on_event = ['BufRead', 'CursorHold']
+lua_add = '''
+vim.keymap.set({ "i", "n" }, '<C-y>', '<Plug>(dmacro-play-macro)')
+'''
+
+[[plugins]]
+repo = "https://github.com/t9md/vim-choosewin"
+on_event = ['BufRead', 'CursorHold']
+hook_add = '''
+nnoremap - <Plug>(choosewin)
+let g:choosewin_overlay_enable = 1
+'''
+
+[[plugins]]
+repo = "https://github.com/yorickpeterse/nvim-window"
+on_event = ['BufRead', 'CursorHold']
+hook_add = '''
+map <silent> <C-w><C-w> :lua require('nvim-window').pick()<CR>
 '''

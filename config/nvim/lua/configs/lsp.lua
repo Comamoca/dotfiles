@@ -6,7 +6,7 @@
 -- -- local mason = require("mason")
 -- -- local mason_lspconfig = require("mason-lspconfig")
 -- require("lazydev").setup()
--- require("ddc_source_lsp_setup").setup()
+require("ddc_source_lsp_setup").setup()
 -- local capabilities = require("ddc_source_lsp").make_client_capabilities()
 --
 -- local util = lspconfig.util
@@ -132,33 +132,28 @@
 
 -------------------------------------------------------------------
 
-local is_node_dir = function(fname)
-  return vim.fs.root(fname, 'package.json') ~= nil
-end
+-- astro: home.nix で pkgs.typescript を ~/.cache/nvim-lsp/typescript に配置済み
+vim.lsp.config('astro', {
+  cmd = { "astro-ls", "--stdio" },
+  init_options = {
+    typescript = {
+      tsdk = vim.fn.expand("~/.cache/nvim-lsp/typescript"),
+    },
+  },
+})
+vim.lsp.enable('astro')
 
--- ts_ls: Node プロジェクトでのみ有効にする  
+-- ts_ls: package.json があるプロジェクトでのみ起動
 vim.lsp.config('ts_ls', {
-  on_attach = function(client, bufnr)
-    local fname = vim.api.nvim_buf_get_name(bufnr)
-    if not is_node_dir(fname) then
-      client.stop(true)
-    end
-  end,
+  root_markers = { "package.json", "tsconfig.json" },
 })
 vim.lsp.enable('ts_ls')
 
+-- denols: deno.json があるプロジェクトでのみ起動
 vim.lsp.config('denols', {
-  on_attach = function(client, bufnr)
-    local fname = vim.api.nvim_buf_get_name(bufnr)
-    if is_node_dir(fname) then
-      client.stop(true)
-    end
-  end,
+  root_markers = { "deno.json", "deno.jsonc" },
 })
 vim.lsp.enable('denols')
-
-vim.lsp.enable('lua_ls')
-vim.lsp.enable('luau_ls')
 
 -- lsp keymaps
 vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
