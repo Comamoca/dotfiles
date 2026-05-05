@@ -37,4 +37,6 @@ with pkgs;
 
   # Social
   nurpkgs.bsky
+
+  pinta
 ]

@@ -9,7 +9,7 @@ with pkgs;
   autoconf-archive
   autotiling
   avahi
-  b43FirmwareCutter
+  b43-fwcutter
   bison
   bluez
   bluez-tools

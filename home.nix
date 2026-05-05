@@ -6,6 +6,8 @@
   ...
 }:
 let
+  username = "coma";
+  homeDirectory = "/home/${username}";
   system = "x86_64-linux";
   nurpkgs = inputs.nur-packages.legacyPackages.${system};
 
@@ -90,9 +92,11 @@ let
   };
 
   # emacs-pgtk: Wayland native版 + xwidgets
-  emacs-pgtk' = pkgs.emacs-pgtk.override {
-    withXwidgets = true;
-  };
+  emacs-pgtk' = (pkgs.emacs-pgtk.override {
+    # withXwidgets = true;
+  }).overrideAttrs (old: {
+    buildInputs = old.buildInputs ++ [ pkgs.webkitgtk_4_1 ];
+  });
 
   emacs' = (pkgs.emacsPackagesFor emacs-pgtk').emacsWithPackages (
     epkgs: (import ./emacs.nix { inherit pkgs epkgs nurpkgs; }).epkgs
@@ -104,6 +108,10 @@ let
       slynk
     ]
   );
+
+  rclone-sync = import ./pkgs/rclone_sync { inherit pkgs homeDirectory; };
+  rclone-resync = import ./pkgs/rclone_resync { inherit pkgs homeDirectory; };
+  niri-scratchpad = import ./pkgs/niri-scratchpad { inherit pkgs; };
 in
 rec {
   nixpkgs.config = {
@@ -134,8 +142,9 @@ rec {
 
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home.username = "coma";
-  home.homeDirectory = "/home/coma";
+  home = {
+    inherit username homeDirectory;
+  };
 
   # systemd.user.services.mbsync.Unit.After = [ "sops-nix.service" ];
 
@@ -164,7 +173,7 @@ rec {
     ++ (import ./packages/misc.nix { inherit pkgs nurpkgs; })
     ++ (with pkgs; [
       # Additional packages
-      nodePackages."@antfu/ni"
+      ni
       asar
       nak
       vim-startuptime
@@ -172,6 +181,8 @@ rec {
 
       # NOTE: 2025/06/22 hashまわりで壊れたので一旦無効化
       # (import ./pkgs/lspx { inherit pkgs; })
+      rclone-sync
+      rclone-resync
     ]);
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -210,6 +221,10 @@ rec {
             ++ ts.withAllGrammars.dependencies;
           };
         };
+      # astro-language-server が要求する typescript.tsdk を安定したパスに配置
+      ".cache/nvim-lsp/typescript" = {
+        source = "${pkgs.typescript}/lib/node_modules/typescript/lib";
+      };
       # scripts
       ".bin/scripts/ime" = {
         source = (symlink /${dotfiles}/bin/scripts/ime);
@@ -381,6 +396,11 @@ rec {
         recursive = true;
       };
 
+      ".config/yazi" = {
+        source = (symlink /${dotfiles}/config/yazi);
+        recursive = true;
+      };
+
       ".config/xremap/config.yaml".source = (symlink xremap-config.xremap-config-yaml);
 
       ".czrc".source = (symlink /${dotfiles}/czrc);
@@ -531,6 +551,10 @@ rec {
     fish = import ./fish.nix { inherit pkgs; };
     hyprlock.settings = import ./hyprlock.nix { inherit wallpaper; };
     hyprlock.enable = true;
+    delta = {
+      enable = true;
+      enableGitIntegration = true;
+    };
   };
 
   programs.foot = {
@@ -540,6 +564,26 @@ rec {
         term = "xterm-256color";
         font = "UDEV Gothic NFLG:size=12.5";
         dpi-aware = "yes";
+      };
+      colors-dark = {
+        background = "1e1e2e";
+        foreground = "cdd6f4";
+        regular0 = "45475a";
+        regular1 = "f38ba8";
+        regular2 = "a6e3a1";
+        regular3 = "f9e2af";
+        regular4 = "89b4fa";
+        regular5 = "f5c2e7";
+        regular6 = "94e2d5";
+        regular7 = "bac2de";
+        bright0 = "585b70";
+        bright1 = "f38ba8";
+        bright2 = "a6e3a1";
+        bright3 = "f9e2af";
+        bright4 = "89b4fa";
+        bright5 = "f5c2e7";
+        bright6 = "94e2d5";
+        bright7 = "a6adc8";
       };
     };
   };
@@ -574,7 +618,7 @@ rec {
   
   programs.nix-index-database = {
     comma.enable = true; 
-  };
+  }; 
 
   services.spotifyd = {
     enable = true;
@@ -598,21 +642,65 @@ rec {
     # extraOptions = [ "--with-xwidgets" ];
   };
 
+  systemd.user.services.niri-scratchpad-daemon = {
+    Unit = {
+      Description = "niri-scratchpad daemon";
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${niri-scratchpad}/bin/niri-scratchpad daemon";
+      Restart = "on-failure";
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+  };
+
+  systemd.user.services.rclone-sync = {
+      Unit = {
+        Description = "Rclone bisync for memo directory";
+        After = [ "network-online.target" ];
+        Wants = [ "network-online.target" ];
+      };
+
+      Service = {
+        Type = "oneshot";
+        ExecStart = "${rclone-sync}/bin/rclone-sync";
+      };
+    };
+
+    systemd.user.timers.rclone-sync = {
+      Unit = {
+        Description = "Timer for rclone-sync";
+      };
+
+      Timer = {
+        OnCalendar = "*:0/5";
+        Unit = "rclone-sync.service";
+      };
+
+      Install = {
+        WantedBy = [ "timers.target" ];
+      };
+    };
+
   catppuccin = {
     flavor = "mocha";
     hyprland.enable = true;
-    foot.enable = true;
     bat.enable = true;
     sway.enable = true;
     alacritty.enable = true;
+    delta.enable = true;
   };
 
   services.gpg-agent = {
     enable = true;
     enableSshSupport = true;
     pinentry.package = pkgs.pinentry-qt;
-    defaultCacheTtl = 3600;
-    maxCacheTtl = 7200;
+    defaultCacheTtl = 86400;
+    maxCacheTtl = 31536000;
 
     # Enable loopback pinentry for Emacs
     extraConfig = ''
@@ -620,6 +708,5 @@ rec {
       allow-emacs-pinentry
     '';
   };
-
   # programs.lem-editor.enable = true
 }

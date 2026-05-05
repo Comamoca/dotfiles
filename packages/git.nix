@@ -2,8 +2,9 @@
 with pkgs;
 [
   # Git tools
+  # (import ../pkgs/git-wt { inherit pkgs; })
   git
-  delta
+  # delta  # Home Managerから管理するため
   lazygit
   tig
   github-cli

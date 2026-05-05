@@ -57,4 +57,7 @@ with pkgs;
   happy-coder
 
   autoclaude
+  telegram-desktop
+  wlr-randr
+  deploy-rs.deploy-rs
 ]

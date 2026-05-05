@@ -10,11 +10,20 @@
 }:
 let
   xremap = import ./xremap.nix { inherit pkgs; };
+  username = "coma";
+  homeDirectory = config.users.users.${username}.home;
+
+  containers = import ./containers.nix { inherit pkgs; };
 
   old-pkgs = import (builtins.fetchTarball {
     url = "https://github.com/NixOS/nixpkgs/archive/e89cf1c932006531f454de7d652163a9a5c86668.tar.gz";
     sha256 = "sha256:09cbqscrvsd6p0q8rswwxy7pz1p1qbcc8cdkr6p6q8sx0la9r12c";
   }) { };
+
+  unstable-pkgs = import (builtins.fetchTarball {
+    url = "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
+    sha256 = "sha256:1xfg014g26v79y4088s02qm0gq33fjasplznxjwjwxw2zffc1236";
+  }) { system = "x86_64-linux"; };
 
   hyprland-0-35-0 = old-pkgs.hyprland;
 in
@@ -112,7 +121,11 @@ in
     "i915.enable_psr=0"      # Panel Self Refreshを無効化 - 外部ディスプレイ接続/切断時の表示崩れを防止
     "i915.enable_fbc=0"      # Frame Buffer Compressionを無効化 - マルチディスプレイ時のレンダリング安定性向上
     "i915.enable_dc=0"       # Display C-statesを無効化 - ディスプレイの電力状態遷移によるブラックアウト防止
+    "loglevel=7"             # カーネルログ詳細化 - パニック調査のためデフォルト(4)から引き上げ
+    "crash_kexec_post_notifiers" # パニック時にnotifier完了後にkexecを実行 - クラッシュダンプ保存を確実にする
   ];
+  # カーネルパニック時のクラッシュダンプ保存
+  boot.crashDump.enable = true;
   # niriがDRMデバイスに早期アクセスできるよう、initrd段階でi915モジュールをロードする。
   # これにより、ディスプレイのホットプラグ検出が安定する。
   boot.initrd.kernelModules = [ "i915" ];
@@ -138,16 +151,23 @@ in
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
+
+  networking.nat = {
+    enable = true;
+    internalInterfaces = [ "ve-+" ];
+    externalInterface = "wlo1";
+  };
+
   # Enable networking
   networking.networkmanager.enable = true;
 
   services.logind.settings.Login.HandlePowerKey = "ignore";
 
   # systemd sleep configuration for suspend/hibernate
-  systemd.sleep.extraConfig = ''
-    SuspendState=mem
-    HibernateMode=platform
-  '';
+  systemd.sleep.settings.Sleep = {
+    SuspendState = "mem";
+    HibernateMode = "platform";
+  };
 
   # Power management: Force DRM connector detection after resume
   powerManagement = {
@@ -175,6 +195,8 @@ in
 
   services.ollama = {
     enable = true;
+    package = unstable-pkgs.ollama;
+    loadModels = [ "qwen2.5-coder:1.5b" "qwen2.5-coder:0.5b" ];
   };
 
   services.xremap = {
@@ -306,6 +328,7 @@ in
   services.displayManager.defaultSession = "niri";
 
   services.envfs.enable = true;
+  services.tailscale.enable = true;
 
   # services.mako.enable = true;
   # services.mako.catppuccin.enable = true;
@@ -408,12 +431,12 @@ in
     xdg-desktop-portal-wlr
 
     # gparted
-    lan-mouse_git
+    lan-mouse
 
     # showmethekey
 
     # gnupg
-    light
+    brightnessctl
 
     # waybar
 
@@ -499,6 +522,70 @@ in
 
   programs.niri = {
     enable = true;
+  };
+
+  programs.nix-ld.dev.enable = true;
+
+  containers = {
+    webserver = {
+      autoStart = true;
+      privateNetwork = true;
+      hostAddress = "192.168.100.1";
+      localAddress = "192.168.100.2";
+
+      forwardPorts = [
+        { hostPort = 10001; containerPort = 80; }
+      ];
+
+      hostAddress6 = "fc00::1";
+      localAddress6 = "fc00::2";
+      config = { config, pkgs, lib, ... }: {
+        services.httpd = {
+          enable = true;
+          adminAddr = "admin@example.org";
+        };
+    
+        networking = {
+          firewall.allowedTCPPorts = [ 22 80 ];
+          useHostResolvConf = lib.mkForce false;
+        };
+        services.resolved.enable = true;
+        system.stateVersion = "24.11";
+      };
+    };
+
+    ai-agent = {
+      autoStart = true;
+      privateNetwork = true;
+      hostAddress = "192.168.100.1";
+      localAddress = "192.168.100.3";
+
+      forwardPorts = [
+        { hostPort = 10002; containerPort = 80; }
+      ];
+
+      hostAddress6 = "fc00::3";
+      localAddress6 = "fc00::4";
+      config = { config, pkgs, lib, ... }: {
+        networking = {
+          firewall.allowedTCPPorts = [ 22 80 ];
+          useHostResolvConf = lib.mkForce false;
+        };
+
+        users.users.coma = {
+          isNormalUser = true;
+          home = "/home/coma";
+          extraGroups = [ "wheel" ];
+        };
+
+        environment.systemPackages = with pkgs; [
+          git
+        ];
+
+        services.resolved.enable = true;
+        system.stateVersion = "24.11";
+      };
+    };
   };
 
   # Open ports in the firewall.
