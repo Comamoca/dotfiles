@@ -98,6 +98,12 @@
         inputs.gleam-overlay.overlays.default
         inputs.llm-agents.overlays.default
         inputs.go-overlay.overlays.default
+        # openldap のフラッキーなテストをスキップ (bottles の依存)
+        (final: prev: {
+          openldap = prev.openldap.overrideAttrs (_: {
+            doCheck = false;
+          });
+        })
       ];
     in
     # code = _: s: s;
