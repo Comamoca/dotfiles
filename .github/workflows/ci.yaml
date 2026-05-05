@@ -39,7 +39,7 @@ jobs:
             accept-flake-config = true
 
       - name: Setup Cachix
-        uses: cachix/cachix-action@v31
+        uses: cachix/cachix-action@v17
         with:
           name: dotfiles
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
