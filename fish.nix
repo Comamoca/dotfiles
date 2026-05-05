@@ -177,6 +177,7 @@
     abbr --add a emacsclient -c
 
     set -x ELIXIR_ERL_OPTIONS "+fnu"
+    set -x SSH_ASKPASS ${pkgs.kdePackages.ksshaskpass}
     set -gx FYNE_FONT /usr/share/fonts/PlemolJP/PlemolJP-Regular.ttf
 
     set GH_BINPATH /home/coma/.bin/
@@ -186,7 +187,6 @@
     #set PATH /home/coma/go/bin $PATH
 
     starship init fish | source
-    just --completions fish | source
 
     # arduino-cli completion fish | source
 
@@ -260,6 +260,6 @@
 
     # opam configuration
 
-    # envman removed - not in use
+    function claude; set -x CLAUDE_AUTO_RETRY_ACTIVE 1; node "/home/coma/.bun/install/global/node_modules/claude-auto-retry/src/launcher.js" $argv; set -e CLAUDE_AUTO_RETRY_ACTIVE; end
   '';
 }
