@@ -21,3 +21,26 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Apply Code Formatter
+
+  build-home:
+    name: Build Home Manager
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+
+      - name: Setup Cachix
+        uses: cachix/cachix-action@v31
+        with:
+          name: dotfiles
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - name: Build Home Manager
+        run: nix build .#homeConfigurations.Home.activationPackage
