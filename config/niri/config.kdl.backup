@@ -3,20 +3,6 @@
 // Check the wiki for a full description of the configuration:
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Overview
 
-// 外部ディスプレイのホットプラグ問題に対するデバッグオプション
-debug {
-    // niri 0.1.9/0.1.10で同一make/model/serialのモニターを2台接続した際に
-    // クラッシュするバグの回避策。将来のniriバージョンで修正された場合は
-    // 削除可能。検証手順は config/niri/WORKAROUNDS.md を参照。
-    disable-monitor-names
-
-    // 外部モニター接続時のフリッカー（画面のちらつき）を防止する。
-    // フレームのレンダリング完了を待ってからDRMに渡すことで、
-    // マルチディスプレイ環境での表示安定性を向上させる。
-    // パフォーマンスに若干の影響がある可能性あり。
-    wait-for-frame-completion-before-queueing
-}
-
 // Input device configuration.
 // Find the full list of options on the wiki:
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Input
@@ -74,10 +60,9 @@ input {
     // focus-follows-mouse max-scroll-amount="0%"
 }
 
-// ディスプレイ出力設定
-// `niri msg outputs` で接続中のディスプレイ一覧と対応モードを確認可能。
-// 外部ディスプレイはniriの自動検出に委ねるため、明示的なoutput設定は追加しない。
-// 特定のモニターで自動検出が失敗する場合は、個別のoutputブロックを追加する。
+// You can configure outputs by their name, which you can find
+// by running `niri msg outputs` while inside a niri instance.
+// The built-in laptop monitor is usually called "eDP-1".
 // Find more information on the wiki:
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Outputs
 // Remember to uncomment the node by removing "/-"!
@@ -117,7 +102,7 @@ input {
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Layout
 layout {
     // Set gaps around windows in logical pixels.
-    gaps 10
+    gaps 16
 
     // When to center a column when changing focus, options are:
     // - "never", default behavior, focusing an off-screen column will keep at the left
@@ -228,12 +213,8 @@ layout {
 // spawn-at-startup "alacritty" "-e" "fish"
 
 // Startup applications from sway config
-spawn-at-startup "nm-applet"
-spawn-at-startup "dms" "run"
-// stash ワークスペース（idx=1）を回避して通常作業用のワークスペースへ移動
-spawn-at-startup "bash" "-c" "sleep 0.5 && niri msg action focus-workspace 2"
+spawn-at-startup "waybar"
 spawn-at-startup "fcitx5"
-spawn-at-startup "sandsmark-notificationd"
 spawn-at-startup "swaync"
 spawn-at-startup "wlsunset" "-t" "5500"
 
@@ -263,9 +244,6 @@ animations {
     // slowdown 3.0
 }
 
-// niri-scratchpad で使用する stash ワークスペース
-workspace "stash" { }
-
 // Window rules let you adjust behavior for individual windows.
 // Find more information on the wiki:
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Window-Rules
@@ -282,18 +260,13 @@ window-rule {
 
 // Picture-in-Picture windows from sway config
 window-rule {
-    match app-id="firefox" title=r#"^ピクチャーインピクチャー$"#
+    match app-id="firefox"
+    match title=r#"^ピクチャーインピクチャー$"#
     open-floating true
 }
 
 window-rule {
     match title=r#"^ピクチャー イン ピクチャー$"#
-    open-floating true
-}
-
-// Show Me The Key (キーストローク表示)
-window-rule {
-    match app-id=r#"^showmethekey"#
     open-floating true
 }
 
@@ -305,17 +278,6 @@ window-rule {
     open-floating true
     // Block from screen capture for privacy (IME input)
     block-out-from "screen-capture"
-}
-
-// Scratchpad windows (niri-scratchpad)
-window-rule {
-    match app-id=r#"^foot-scratch$"#
-    open-floating true
-}
-
-window-rule {
-    match title=r#"^emacs-scratch$"#
-    open-floating true
 }
 
 // Example: block out two password managers from screen capture.
@@ -330,11 +292,8 @@ window-rule {
     // block-out-from "screencast"
 }
 
-// Enable rounded corners for all windows
-// NOTE: 無効化 - マルチディスプレイ環境（異なるスケーリングファクター）での
-// ホットプラグ時にクラッシュを引き起こすため。niriの将来のバージョンで
-// 修正された場合は再有効化を検討する。
-// See: https://gist.github.com/Comamoca/2baa860a7245448688b3e40b8c01d0c5
+// Example: enable rounded corners for all windows.
+// (This example rule is commented out with a "/-" in front.)
 /-window-rule {
     geometry-corner-radius 12
     clip-to-geometry true
@@ -356,14 +315,12 @@ binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
     // Suggested binds for running programs: terminal, app launcher, screen locker.
     // Mod+T { spawn "kitty"; }
-    Mod+Return { spawn "foot"; }
+    Mod+Return { spawn "kitty"; }
     Mod+D { spawn "rofi" "-show" "combi"; }
     Mod+Space { spawn "rofi" "-show" "drun"; }
     Mod+B { spawn "firefox"; }
-    // Scratchpad: foot 端末をトグル (niri-scratchpad)
-    Mod+T { spawn "niri-scratchpad" "target" "--spawn" "foot --app-id foot-scratch" "appid" "foot-scratch"; }
-    // Scratchpad: Emacs をトグル (niri-scratchpad) - デフォルトデーモンに接続、タイトルで識別
-    Mod+O { spawn "niri-scratchpad" "target" "--spawn" "emacsclient -c -F '((name . \"emacs-scratch\"))'" "title" "emacs-scratch"; }
+    Mod+O { spawn "/home/coma/.bin/scripts/ime/ime.sh" "float"; }
+    Super+Shift+L { spawn "swaylock"; }
 
     // You can also use a shell. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument in the end.
@@ -390,14 +347,12 @@ binds {
     Mod+Up    { focus-window-up; }
     Mod+Right { focus-column-right; }
     Mod+H     { focus-column-left; }
-    Mod+J     { focus-window-down; }
-    Mod+K     { focus-window-up; }
+    Mod+J     { focus-workspace-down; }
+    Mod+K     { focus-workspace-up; }
     Mod+L     { focus-column-right; }
 
-    Mod+P     { focus-workspace-up; }
-    Mod+N     { focus-workspace-down; }
-    Mod+Shift+P { move-column-to-workspace-up; }
-    Mod+Shift+N { move-column-to-workspace-down; }
+    Mod+P     { focus-column-right; }
+    Mod+N     { focus-column-left; }
 
     Mod+Ctrl+Left  { move-column-left; }
     Mod+Ctrl+Down  { move-window-down; }
@@ -423,14 +378,14 @@ binds {
     Mod+Ctrl+Home { move-column-to-first; }
     Mod+Ctrl+End  { move-column-to-last; }
 
-    Mod+Shift+Left  { move-column-left; }
-    Mod+Shift+Down  { move-window-down; }
-    Mod+Shift+Up    { move-window-up; }
-    Mod+Shift+Right { move-column-right; }
-    Mod+Shift+H     { move-column-left; }
-    Mod+Shift+J     { move-window-down; }
-    Mod+Shift+K     { move-window-up; }
-    Mod+Shift+L     { move-column-right; }
+    Mod+Shift+Left  { focus-monitor-left; }
+    Mod+Shift+Down  { focus-monitor-down; }
+    Mod+Shift+Up    { focus-monitor-up; }
+    Mod+Shift+Right { focus-monitor-right; }
+    Mod+Shift+H     { focus-monitor-left; }
+    Mod+Shift+J     { focus-monitor-down; }
+    Mod+Shift+K     { focus-monitor-up; }
+    Mod+Shift+L     { focus-monitor-right; }
 
     Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
     Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
@@ -516,15 +471,15 @@ binds {
     Mod+7 { focus-workspace 7; }
     Mod+8 { focus-workspace 8; }
     Mod+9 { focus-workspace 9; }
-    Mod+Shift+1 { move-column-to-workspace 1; }
-    Mod+Shift+2 { move-column-to-workspace 2; }
-    Mod+Shift+3 { move-column-to-workspace 3; }
-    Mod+Shift+4 { move-column-to-workspace 4; }
-    Mod+Shift+5 { move-column-to-workspace 5; }
-    Mod+Shift+6 { move-column-to-workspace 6; }
-    Mod+Shift+7 { move-column-to-workspace 7; }
-    Mod+Shift+8 { move-column-to-workspace 8; }
-    Mod+Shift+9 { move-column-to-workspace 9; }
+    Mod+Ctrl+1 { move-column-to-workspace 1; }
+    Mod+Ctrl+2 { move-column-to-workspace 2; }
+    Mod+Ctrl+3 { move-column-to-workspace 3; }
+    Mod+Ctrl+4 { move-column-to-workspace 4; }
+    Mod+Ctrl+5 { move-column-to-workspace 5; }
+    Mod+Ctrl+6 { move-column-to-workspace 6; }
+    Mod+Ctrl+7 { move-column-to-workspace 7; }
+    Mod+Ctrl+8 { move-column-to-workspace 8; }
+    Mod+Ctrl+9 { move-column-to-workspace 9; }
 
     // Alternatively, there are commands to move just a single window:
     // Mod+Ctrl+1 { move-window-to-workspace 1; }
@@ -556,7 +511,6 @@ binds {
     // * adjust width as a percentage of screen width: "-10%" or "+10%"
     // Pixel sizes use logical, or scaled, pixels. I.e. on an output with scale 2.0,
     // set-column-width "100" will make the column occupy 200 physical screen pixels.
-
     Mod+Minus { set-column-width "-10%"; }
     Mod+Equal { set-column-width "+10%"; }
 
@@ -577,10 +531,10 @@ binds {
     Alt+Print { screenshot-window; }
 
     // The quit action will show a confirmation dialog to avoid accidental exits.
-    Mod+Shift+E { spawn "bash" "-c" "/home/coma/.bin/scripts/niri-logout.sh"; }
-    Ctrl+Alt+Delete { spawn "bash" "-c" "/home/coma/.bin/scripts/niri-logout.sh"; }
+    Mod+Shift+E { quit; }
+    Ctrl+Alt+Delete { quit; }
 
     // Powers off the monitors. To turn them back on, do any input like
     // moving the mouse or pressing any other key.
-    // Mod+Shift+P { power-off-monitors; }  // Removed: conflicts with workspace movement
+    Mod+Shift+P { power-off-monitors; }
 }
