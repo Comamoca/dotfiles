@@ -88,7 +88,7 @@ let
 
   gitmoji = pkgs.fetchurl {
     url = "https://gitmoji.dev/api/gitmojis";
-    hash = "sha256-+bzNCqGOnVkpgvTdpWfcRtVfHQO2pX1/nYgluMA7VYo";
+    hash = "sha256-KrK2YWthwkuNalREJ+X4B/z6W3CFzfsP+ptqg3tfuIc=";
   };
 
   # emacs-pgtk: Wayland native版 + xwidgets
