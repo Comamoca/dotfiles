@@ -9,4 +9,5 @@ with pkgs;
   tig
   github-cli
   ghq
+  worktrunk 
 ]

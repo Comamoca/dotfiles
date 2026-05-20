@@ -642,6 +642,17 @@ rec {
     # extraOptions = [ "--with-xwidgets" ];
   };
 
+  # Emacs (PGTK) requires a Wayland display — delay start until graphical session is ready
+  systemd.user.services.emacs = {
+    Unit = {
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+  };
+
   systemd.user.services.niri-scratchpad-daemon = {
     Unit = {
       Description = "niri-scratchpad daemon";
