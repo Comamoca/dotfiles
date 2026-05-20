@@ -20,14 +20,14 @@ lua_source = """
 require("mason").setup()
 """
 
-[[plugins]]
-repo = 'williamboman/mason-lspconfig.nvim'
-on_source = 'mason.nvim'
-lua_source = """
-require("mason-lspconfig").setup_handlers({
-	function(server_name)
-		-- require("lspconfig")[server_name].setup({})
-		vim.lsp.enable(server_name)
-	end,
-})
-"""
+# [[plugins]]
+# repo = 'williamboman/mason-lspconfig.nvim'
+# on_source = 'mason.nvim'
+# lua_source = """
+# require("mason-lspconfig").setup_handlers({
+# 	function(server_name)
+# 		-- require("lspconfig")[server_name].setup({})
+# 		vim.lsp.enable(server_name)
+# 	end,
+# })
+# """

@@ -273,7 +273,7 @@ let
   nskk = pkgs.emacsPackages.trivialBuild {
     pname = "nskk";
     version = "main";
-    src = sources.nskk.src;
+    src = "${sources.nskk.src}/src";
     buildInputs = with pkgs.emacsPackages; [
     ];
   };
@@ -301,9 +301,33 @@ let
     pname = "kuro";
     version = "main";
     src = "${sources.kuro.src}/emacs-lisp";
+    preBuild = ''
+      find . -mindepth 2 -name "*.el" -exec cp --backup=numbered {} . \;
+    '';
     postInstall = ''
       cp ${kuro-native}/lib/libkuro_core.so $out/share/emacs/site-lisp/
     '';
+  };
+
+  shell-maker = pkgs.emacsPackages.trivialBuild {
+    pname = "shell-maker";
+    version = "main";
+    src = sources.shell-maker.src;
+    buildInputs = with pkgs.emacsPackages; [ ];
+  };
+
+  acp = pkgs.emacsPackages.trivialBuild {
+    pname = "acp";
+    version = "main";
+    src = sources.acp.src;
+    buildInputs = [ shell-maker ];
+  };
+
+  agent-shell = pkgs.emacsPackages.trivialBuild {
+    pname = "agent-shell";
+    version = "main";
+    src = sources.agent-shell.src;
+    buildInputs = [ shell-maker acp ];
   };
 in
 {
@@ -523,6 +547,8 @@ in
 
     claude-shell
     shell-maker
+    acp
+    agent-shell
 
     haskell-mode
 

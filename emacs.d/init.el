@@ -1148,8 +1148,6 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
 
   ;; :hook (server-after-make-frame-hook . #'mcp-hub-start-all-server)
 
-
-
   ;; minimap: デフォルト無効化（常時表示はredisplayの倍増を引き起こす）
   (leaf minimap
     :require t
@@ -1219,6 +1217,17 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
 
   (leaf ox-typst
     :after org-mode)
+
+  (leaf agent-shell
+    :require t
+    :config
+    (setq agent-shell-anthropic-authentication
+	  (agent-shell-anthropic-make-authentication :login t))
+    (setq agent-shell-anthropic-claude-acp-command
+	  `("env" "--unset=CLAUDECODE" ,(executable-find "claude-agent-acp")))
+    (setq agent-shell-anthropic-claude-environment
+	  `(,(format "CLAUDE_CODE_EXECUTABLE=%s"
+		     (expand-file-name "~/.nix-profile/bin/.claude-wrapped")))))
 
   ;; Claude code
   (leaf claude-code
@@ -1687,7 +1696,12 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
 (setq read-process-output-max (* 1024 1024))
 
 ;; Key mapping
-(evil-define-key 'normal 'global (kbd "C-o") 'projectile-find-file)
+(evil-define-key 'normal 'global (kbd "C-o")
+  (lambda ()
+    (interactive)
+    (if (projectile-project-p)
+        (projectile-find-file)
+      (call-interactively #'find-file))))
 (evil-define-key 'normal 'global (kbd "SPC l") #'toggle-truncate-lines)
 
 (global-set-key (kbd "C-c C-r") 'window-resizer)

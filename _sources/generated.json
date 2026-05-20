@@ -1,4 +1,46 @@
 {
+    "acp": {
+        "cargoLock": null,
+        "date": "2026-05-18",
+        "extract": null,
+        "name": "acp",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "xenodium",
+            "repo": "acp.el",
+            "rev": "4f3b0945660aff4f23e686a785b874688133f43b",
+            "sha256": "sha256-NFjpMspMw4xIUoA/3OefNVSodXAlvwgWyfhgy03x2S8=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "4f3b0945660aff4f23e686a785b874688133f43b"
+    },
+    "agent-shell": {
+        "cargoLock": null,
+        "date": "2026-05-19",
+        "extract": null,
+        "name": "agent-shell",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "xenodium",
+            "repo": "agent-shell",
+            "rev": "dcf789d989680ad7d720c63a64ca166e2e0f52e8",
+            "sha256": "sha256-TfFZdaKm1tD9xIGlIuxbONEJUW8zZELGMt5YwxIlhcs=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "dcf789d989680ad7d720c63a64ca166e2e0f52e8"
+    },
     "aider": {
         "cargoLock": null,
         "date": "2026-01-10",
@@ -42,7 +84,7 @@
     },
     "claude-code": {
         "cargoLock": null,
-        "date": "2026-04-19",
+        "date": "2026-04-30",
         "extract": null,
         "name": "claude-code",
         "passthru": null,
@@ -54,12 +96,12 @@
             "name": null,
             "owner": "stevemolitor",
             "repo": "claude-code.el",
-            "rev": "e2d29b05a97fdded88ba7ca0586a5483ca2e3dcb",
-            "sha256": "sha256-AvriQS0mI02N9frOL6xCnezzvp2ID03ZuRiOBrlujsw=",
+            "rev": "03199df8b3a1e9cd4857f0851f7a912ba524aff3",
+            "sha256": "sha256-5QJrWIu4EgnHcOqMwlrs2JBBx7aI9OaSJswesr6Apfk=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "e2d29b05a97fdded88ba7ca0586a5483ca2e3dcb"
+        "version": "03199df8b3a1e9cd4857f0851f7a912ba524aff3"
     },
     "claude-shell": {
         "cargoLock": null,
@@ -147,7 +189,7 @@
     },
     "eca": {
         "cargoLock": null,
-        "date": "2026-04-23",
+        "date": "2026-05-18",
         "extract": null,
         "name": "eca",
         "passthru": null,
@@ -157,13 +199,13 @@
             "fetchSubmodules": false,
             "leaveDotGit": false,
             "name": null,
-            "rev": "bd5a72aef67eca944a7ad0d9916eb0d0f0f11f9d",
-            "sha256": "sha256-1Fis+nszDKlQb7t7klbPJsbGiRfBVbiUZoQMBMu56lk=",
+            "rev": "9ea15cd61aa7d0164c2e79c28e794e29c5dbcbb3",
+            "sha256": "sha256-6EmrfPeTWiYWC9CGpiWDFoPHdXhTTujk3Bwt6ue5Qfs=",
             "sparseCheckout": [],
             "type": "git",
             "url": "https://github.com/editor-code-assistant/eca-emacs"
         },
-        "version": "bd5a72aef67eca944a7ad0d9916eb0d0f0f11f9d"
+        "version": "9ea15cd61aa7d0164c2e79c28e794e29c5dbcbb3"
     },
     "eglot-booster": {
         "cargoLock": null,
@@ -230,7 +272,7 @@
     },
     "gerbil": {
         "cargoLock": null,
-        "date": "2026-04-02",
+        "date": "2026-05-02",
         "extract": null,
         "name": "gerbil",
         "passthru": null,
@@ -241,7 +283,7 @@
             "type": "url",
             "url": "https://raw.githubusercontent.com/mighty-gerbils/gerbil/refs/heads/master/etc/gerbil-mode.el"
         },
-        "version": "07c8481588a8b07dbf05832687817cd398902ac0"
+        "version": "0618730d4e30bf3f48538d6b09722ad3b6056414"
     },
     "git-wt": {
         "cargoLock": null,
@@ -257,12 +299,12 @@
             "name": null,
             "owner": "k1LoW",
             "repo": "git-wt",
-            "rev": "v0.27.0",
-            "sha256": "sha256-oGY9uMqP/hlIG9p/JaVqoBaxI7VFDIEIlwP5rBa3Diw=",
+            "rev": "v0.28.0",
+            "sha256": "sha256-JXPJlPAsbXXXN86ZB7PQNv31QZMiAn5DaYfHlnGWknc=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "v0.27.0"
+        "version": "v0.28.0"
     },
     "gleam-mode": {
         "cargoLock": null,
@@ -323,7 +365,7 @@
     },
     "kuro": {
         "cargoLock": null,
-        "date": "2026-04-06",
+        "date": "2026-05-01",
         "extract": null,
         "name": "kuro",
         "passthru": null,
@@ -333,13 +375,13 @@
             "fetchSubmodules": false,
             "leaveDotGit": false,
             "name": null,
-            "rev": "8758810ae9ea7659568a6f9c15f7e10accf69ebe",
-            "sha256": "sha256-WKkU+S98e/6rnI4i/Act+ATis3I0lUxXPsU8xgGFAy4=",
+            "rev": "a3fba2e77a16aa6f23b85af36b227c6a3f24d82f",
+            "sha256": "sha256-kgLHdaE+IRnWdLgr+gSvg6t3F1YAm754mBamwdVL9oo=",
             "sparseCheckout": [],
             "type": "git",
             "url": "https://github.com/takeokunn/kuro"
         },
-        "version": "8758810ae9ea7659568a6f9c15f7e10accf69ebe"
+        "version": "a3fba2e77a16aa6f23b85af36b227c6a3f24d82f"
     },
     "lspx": {
         "cargoLock": null,
@@ -364,7 +406,7 @@
     },
     "mcp": {
         "cargoLock": null,
-        "date": "2026-02-22",
+        "date": "2026-05-08",
         "extract": null,
         "name": "mcp",
         "passthru": null,
@@ -376,12 +418,12 @@
             "name": null,
             "owner": "lizqwerscott",
             "repo": "mcp.el",
-            "rev": "5c105a8db470eb9777fdbd26251548dec42c03f0",
-            "sha256": "sha256-tTbClmM0FgE4SS6rAdqq6vj5O8f4kAYGB24w90Gx1w4=",
+            "rev": "f10768e16f94f65527a0ea657ec91ab2eeaf244d",
+            "sha256": "sha256-/fEdhKiTG6CRIgowXmPswKRtJ5VWZGe8odFyBji7IPs=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "5c105a8db470eb9777fdbd26251548dec42c03f0"
+        "version": "f10768e16f94f65527a0ea657ec91ab2eeaf244d"
     },
     "niri-scratchpad": {
         "cargoLock": null,
@@ -406,7 +448,7 @@
     },
     "nskk": {
         "cargoLock": null,
-        "date": "2026-04-04",
+        "date": "2026-05-16",
         "extract": null,
         "name": "nskk",
         "passthru": null,
@@ -416,13 +458,13 @@
             "fetchSubmodules": false,
             "leaveDotGit": false,
             "name": null,
-            "rev": "784edc6c05b4c3f0659d5a6d73d918f2e21b3492",
-            "sha256": "sha256-9NeX2XTAPlCgsJ3QtQIzRFDlXB4igHxj+9LGCeElQnE=",
+            "rev": "e429c83b4c75042444c6d30d3fee79be6877febe",
+            "sha256": "sha256-sc64yUTmAjT6t4pSzYv5bDTPDi8nyzrzr83Qtgk1jl4=",
             "sparseCheckout": [],
             "type": "git",
             "url": "https://github.com/takeokunn/nskk.el"
         },
-        "version": "784edc6c05b4c3f0659d5a6d73d918f2e21b3492"
+        "version": "e429c83b4c75042444c6d30d3fee79be6877febe"
     },
     "ob-gleam": {
         "cargoLock": null,
@@ -606,6 +648,27 @@
         },
         "version": "a7344713c61d32339162df50ed7d77d11d5b3505"
     },
+    "shell-maker": {
+        "cargoLock": null,
+        "date": "2026-05-12",
+        "extract": null,
+        "name": "shell-maker",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "xenodium",
+            "repo": "shell-maker",
+            "rev": "11f4a9913e7625f122625dd89d668ad5c93cf151",
+            "sha256": "sha256-4xJ4X7CuosPA0PEjiKRcfdR8mj7vUkGnajUIDBV+oEk=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "11f4a9913e7625f122625dd89d668ad5c93cf151"
+    },
     "skk-capf": {
         "cargoLock": null,
         "date": "2024-09-23",
@@ -683,6 +746,27 @@
             "type": "github"
         },
         "version": "c90db830e84e34ac5724f57eda2f1112a589df5c"
+    },
+    "takt": {
+        "cargoLock": null,
+        "date": "2026-05-19",
+        "extract": null,
+        "name": "takt",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "nrslib",
+            "repo": "takt",
+            "rev": "3382ee802c37270f7a1a7eab636be1ee0ef78d4b",
+            "sha256": "sha256-EPTI+8kvGkk2Jvx2109L/DCg8dTo4b99o9Va60zIEzY=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "3382ee802c37270f7a1a7eab636be1ee0ef78d4b"
     },
     "tramps3": {
         "cargoLock": null,
@@ -768,7 +852,7 @@
     },
     "verb": {
         "cargoLock": null,
-        "date": "2026-04-14",
+        "date": "2026-04-28",
         "extract": null,
         "name": "verb",
         "passthru": null,
@@ -780,12 +864,12 @@
             "name": null,
             "owner": "federicotdn",
             "repo": "verb",
-            "rev": "9bc8960c0dcd2331566d876fd98fbc4522171b1e",
-            "sha256": "sha256-4zKL2AUQgYM1r2Z/2/H+VrfH5gglvAxP9FmL89Cj8OY=",
+            "rev": "e2cf58fdc86510c025d4a8dbbacacbf7998beb26",
+            "sha256": "sha256-eRAYC2JMvdWvwPXjKxKtKueSTA3rzQv/eGJLqs3Ov1Y=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "9bc8960c0dcd2331566d876fd98fbc4522171b1e"
+        "version": "e2cf58fdc86510c025d4a8dbbacacbf7998beb26"
     },
     "vibe-kanban": {
         "cargoLock": null,
@@ -801,12 +885,12 @@
             "name": null,
             "owner": "BloopAI",
             "repo": "vibe-kanban",
-            "rev": "v0.1.43-20260417125614",
-            "sha256": "sha256-+nCJn2I5FSSPbIjYVGNCaLNVeYCFrRblx9McwToaci4=",
+            "rev": "v0.1.44-20260424091429",
+            "sha256": "sha256-PNfk8spdjxg2TAaA6g83YJPugH2O5UirrjJIJ1GVoeo=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "v0.1.43-20260417125614"
+        "version": "v0.1.44-20260424091429"
     },
     "wl-mirror": {
         "cargoLock": null,

@@ -29,6 +29,7 @@ keymap("n", "<c-n>", "}", opts)
 keymap("n", "<C-f>", "<cmd>close<CR>", opts)
 
 keymap("n", "<leader>f", "<cmd>Fern . -reveal=% -drawer -toggle -width=23<CR>", opts)
+keymap("n", "<leader>t", "<cmd>ToggleTerm direction=float<CR>", opts)
 
 keymap("n", "<M-x>", "")
 

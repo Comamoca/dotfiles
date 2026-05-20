@@ -169,3 +169,20 @@ fetch.github = "BloopAI/vibe-kanban"
 [niri-scratchpad]
 src.github = "argosnothing/niri-scratchpad-rs"
 fetch.github = "argosnothing/niri-scratchpad-rs"
+
+[agent-shell]
+src.git = "https://github.com/xenodium/agent-shell.git"
+fetch.github = "xenodium/agent-shell"
+
+[acp]
+src.git = "https://github.com/xenodium/acp.el"
+fetch.github = "xenodium/acp.el"
+
+[shell-maker]
+src.git = "https://github.com/xenodium/shell-maker"
+fetch.github = "xenodium/shell-maker"
+
+
+[takt]
+src.git = "https://github.com/nrslib/takt"
+fetch.github = "nrslib/takt"
