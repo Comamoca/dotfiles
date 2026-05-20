@@ -1297,3 +1297,10 @@ on_event = ['BufRead', 'CursorHold']
 hook_add = '''
 map <silent> <C-w><C-w> :lua require('nvim-window').pick()<CR>
 '''
+
+[[plugins]]
+repo = "https://github.com/akinsho/toggleterm.nvim"
+on_event = ['BufRead', 'CursorHold']
+lua_source = """
+require("toggleterm").setup()
+"""

@@ -6,6 +6,30 @@
   dockerTools,
 }:
 {
+  acp = {
+    pname = "acp";
+    version = "4f3b0945660aff4f23e686a785b874688133f43b";
+    src = fetchFromGitHub {
+      owner = "xenodium";
+      repo = "acp.el";
+      rev = "4f3b0945660aff4f23e686a785b874688133f43b";
+      fetchSubmodules = false;
+      sha256 = "sha256-NFjpMspMw4xIUoA/3OefNVSodXAlvwgWyfhgy03x2S8=";
+    };
+    date = "2026-05-18";
+  };
+  agent-shell = {
+    pname = "agent-shell";
+    version = "dcf789d989680ad7d720c63a64ca166e2e0f52e8";
+    src = fetchFromGitHub {
+      owner = "xenodium";
+      repo = "agent-shell";
+      rev = "dcf789d989680ad7d720c63a64ca166e2e0f52e8";
+      fetchSubmodules = false;
+      sha256 = "sha256-TfFZdaKm1tD9xIGlIuxbONEJUW8zZELGMt5YwxIlhcs=";
+    };
+    date = "2026-05-19";
+  };
   aider = {
     pname = "aider";
     version = "ac10526c5cfcc2f4288d3539853ff23f4ee7f915";
@@ -34,15 +58,15 @@
   };
   claude-code = {
     pname = "claude-code";
-    version = "e2d29b05a97fdded88ba7ca0586a5483ca2e3dcb";
+    version = "03199df8b3a1e9cd4857f0851f7a912ba524aff3";
     src = fetchFromGitHub {
       owner = "stevemolitor";
       repo = "claude-code.el";
-      rev = "e2d29b05a97fdded88ba7ca0586a5483ca2e3dcb";
+      rev = "03199df8b3a1e9cd4857f0851f7a912ba524aff3";
       fetchSubmodules = false;
-      sha256 = "sha256-AvriQS0mI02N9frOL6xCnezzvp2ID03ZuRiOBrlujsw=";
+      sha256 = "sha256-5QJrWIu4EgnHcOqMwlrs2JBBx7aI9OaSJswesr6Apfk=";
     };
-    date = "2026-04-19";
+    date = "2026-04-30";
   };
   claude-shell = {
     pname = "claude-shell";
@@ -94,17 +118,17 @@
   };
   eca = {
     pname = "eca";
-    version = "bd5a72aef67eca944a7ad0d9916eb0d0f0f11f9d";
+    version = "9ea15cd61aa7d0164c2e79c28e794e29c5dbcbb3";
     src = fetchgit {
       url = "https://github.com/editor-code-assistant/eca-emacs";
-      rev = "bd5a72aef67eca944a7ad0d9916eb0d0f0f11f9d";
+      rev = "9ea15cd61aa7d0164c2e79c28e794e29c5dbcbb3";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
       sparseCheckout = [ ];
-      sha256 = "sha256-1Fis+nszDKlQb7t7klbPJsbGiRfBVbiUZoQMBMu56lk=";
+      sha256 = "sha256-6EmrfPeTWiYWC9CGpiWDFoPHdXhTTujk3Bwt6ue5Qfs=";
     };
-    date = "2026-04-23";
+    date = "2026-05-18";
   };
   eglot-booster = {
     pname = "eglot-booster";
@@ -144,22 +168,22 @@
   };
   gerbil = {
     pname = "gerbil";
-    version = "07c8481588a8b07dbf05832687817cd398902ac0";
+    version = "0618730d4e30bf3f48538d6b09722ad3b6056414";
     src = fetchurl {
       url = "https://raw.githubusercontent.com/mighty-gerbils/gerbil/refs/heads/master/etc/gerbil-mode.el";
       sha256 = "sha256-P1nRW6roc6Kr27Un744FF8KL/ihSCiw8K2WpnzxtZq8=";
     };
-    date = "2026-04-02";
+    date = "2026-05-02";
   };
   git-wt = {
     pname = "git-wt";
-    version = "v0.27.0";
+    version = "v0.28.0";
     src = fetchFromGitHub {
       owner = "k1LoW";
       repo = "git-wt";
-      rev = "v0.27.0";
+      rev = "v0.28.0";
       fetchSubmodules = false;
-      sha256 = "sha256-oGY9uMqP/hlIG9p/JaVqoBaxI7VFDIEIlwP5rBa3Diw=";
+      sha256 = "sha256-JXPJlPAsbXXXN86ZB7PQNv31QZMiAn5DaYfHlnGWknc=";
     };
   };
   gleam-mode = {
@@ -197,17 +221,17 @@
   };
   kuro = {
     pname = "kuro";
-    version = "8758810ae9ea7659568a6f9c15f7e10accf69ebe";
+    version = "a3fba2e77a16aa6f23b85af36b227c6a3f24d82f";
     src = fetchgit {
       url = "https://github.com/takeokunn/kuro";
-      rev = "8758810ae9ea7659568a6f9c15f7e10accf69ebe";
+      rev = "a3fba2e77a16aa6f23b85af36b227c6a3f24d82f";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
       sparseCheckout = [ ];
-      sha256 = "sha256-WKkU+S98e/6rnI4i/Act+ATis3I0lUxXPsU8xgGFAy4=";
+      sha256 = "sha256-kgLHdaE+IRnWdLgr+gSvg6t3F1YAm754mBamwdVL9oo=";
     };
-    date = "2026-04-06";
+    date = "2026-05-01";
   };
   lspx = {
     pname = "lspx";
@@ -223,15 +247,15 @@
   };
   mcp = {
     pname = "mcp";
-    version = "5c105a8db470eb9777fdbd26251548dec42c03f0";
+    version = "f10768e16f94f65527a0ea657ec91ab2eeaf244d";
     src = fetchFromGitHub {
       owner = "lizqwerscott";
       repo = "mcp.el";
-      rev = "5c105a8db470eb9777fdbd26251548dec42c03f0";
+      rev = "f10768e16f94f65527a0ea657ec91ab2eeaf244d";
       fetchSubmodules = false;
-      sha256 = "sha256-tTbClmM0FgE4SS6rAdqq6vj5O8f4kAYGB24w90Gx1w4=";
+      sha256 = "sha256-/fEdhKiTG6CRIgowXmPswKRtJ5VWZGe8odFyBji7IPs=";
     };
-    date = "2026-02-22";
+    date = "2026-05-08";
   };
   niri-scratchpad = {
     pname = "niri-scratchpad";
@@ -246,17 +270,17 @@
   };
   nskk = {
     pname = "nskk";
-    version = "784edc6c05b4c3f0659d5a6d73d918f2e21b3492";
+    version = "e429c83b4c75042444c6d30d3fee79be6877febe";
     src = fetchgit {
       url = "https://github.com/takeokunn/nskk.el";
-      rev = "784edc6c05b4c3f0659d5a6d73d918f2e21b3492";
+      rev = "e429c83b4c75042444c6d30d3fee79be6877febe";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
       sparseCheckout = [ ];
-      sha256 = "sha256-9NeX2XTAPlCgsJ3QtQIzRFDlXB4igHxj+9LGCeElQnE=";
+      sha256 = "sha256-sc64yUTmAjT6t4pSzYv5bDTPDi8nyzrzr83Qtgk1jl4=";
     };
-    date = "2026-04-04";
+    date = "2026-05-16";
   };
   ob-gleam = {
     pname = "ob-gleam";
@@ -364,6 +388,18 @@
     };
     date = "2025-12-18";
   };
+  shell-maker = {
+    pname = "shell-maker";
+    version = "11f4a9913e7625f122625dd89d668ad5c93cf151";
+    src = fetchFromGitHub {
+      owner = "xenodium";
+      repo = "shell-maker";
+      rev = "11f4a9913e7625f122625dd89d668ad5c93cf151";
+      fetchSubmodules = false;
+      sha256 = "sha256-4xJ4X7CuosPA0PEjiKRcfdR8mj7vUkGnajUIDBV+oEk=";
+    };
+    date = "2026-05-12";
+  };
   skk-capf = {
     pname = "skk-capf";
     version = "b2aa36d5fec2ac3cea2cf9dede8f7200efc7570a";
@@ -408,6 +444,18 @@
       sha256 = "sha256-ZBci8h1f0s0b9yKPXESr0iYyqejnAoWyct7NeJVCFFM=";
     };
     date = "2026-02-02";
+  };
+  takt = {
+    pname = "takt";
+    version = "3382ee802c37270f7a1a7eab636be1ee0ef78d4b";
+    src = fetchFromGitHub {
+      owner = "nrslib";
+      repo = "takt";
+      rev = "3382ee802c37270f7a1a7eab636be1ee0ef78d4b";
+      fetchSubmodules = false;
+      sha256 = "sha256-EPTI+8kvGkk2Jvx2109L/DCg8dTo4b99o9Va60zIEzY=";
+    };
+    date = "2026-05-19";
   };
   tramps3 = {
     pname = "tramps3";
@@ -463,25 +511,25 @@
   };
   verb = {
     pname = "verb";
-    version = "9bc8960c0dcd2331566d876fd98fbc4522171b1e";
+    version = "e2cf58fdc86510c025d4a8dbbacacbf7998beb26";
     src = fetchFromGitHub {
       owner = "federicotdn";
       repo = "verb";
-      rev = "9bc8960c0dcd2331566d876fd98fbc4522171b1e";
+      rev = "e2cf58fdc86510c025d4a8dbbacacbf7998beb26";
       fetchSubmodules = false;
-      sha256 = "sha256-4zKL2AUQgYM1r2Z/2/H+VrfH5gglvAxP9FmL89Cj8OY=";
+      sha256 = "sha256-eRAYC2JMvdWvwPXjKxKtKueSTA3rzQv/eGJLqs3Ov1Y=";
     };
-    date = "2026-04-14";
+    date = "2026-04-28";
   };
   vibe-kanban = {
     pname = "vibe-kanban";
-    version = "v0.1.43-20260417125614";
+    version = "v0.1.44-20260424091429";
     src = fetchFromGitHub {
       owner = "BloopAI";
       repo = "vibe-kanban";
-      rev = "v0.1.43-20260417125614";
+      rev = "v0.1.44-20260424091429";
       fetchSubmodules = false;
-      sha256 = "sha256-+nCJn2I5FSSPbIjYVGNCaLNVeYCFrRblx9McwToaci4=";
+      sha256 = "sha256-PNfk8spdjxg2TAaA6g83YJPugH2O5UirrjJIJ1GVoeo=";
     };
   };
   wl-mirror = {
