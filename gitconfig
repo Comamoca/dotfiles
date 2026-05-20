@@ -32,3 +32,5 @@
 [credential "https://github.com"]
 	helper = 
 	helper = !/home/coma/.nix-profile/bin/gh auth git-credential
+[push]
+	autoSetupRemote = true

@@ -12,12 +12,95 @@ let
 
   src = sources.takt.src;
   version = sources.takt.version;
+
+  node_modules = pkgs.stdenvNoCC.mkDerivation {
+    pname = "takt-node_modules";
+    inherit version src;
+
+    nativeBuildInputs = [
+      pkgs.bun
+      pkgs.writableTmpDirAsHomeHook
+    ];
+
+    dontConfigure = true;
+
+    buildPhase = ''
+      runHook preBuild
+
+      export BUN_INSTALL_CACHE_DIR=$(mktemp -d)
+
+      bun install \
+        --frozen-lockfile \
+        --ignore-scripts \
+        --no-progress \
+        --production
+
+      runHook postBuild
+    '';
+
+    installPhase = ''
+      runHook preInstall
+
+      mkdir -p $out/node_modules
+      cp -R ./node_modules $out
+
+      runHook postInstall
+    '';
+
+    dontFixup = true;
+
+    outputHash = "sha256-q0tVBEy+SKuToc6qQqUtub2cESM6msPjSusxsYzjsL0=";
+    outputHashAlgo = "sha256";
+    outputHashMode = "recursive";
+  };
 in
-pkgs.buildNpmPackage {
+pkgs.stdenvNoCC.mkDerivation {
   pname = "takt";
   inherit version src;
 
-  npmDepsHash = "sha256-fLbB77Q8AJ24qnS5+t2t0WTAG8hhjIubU4oTtK1+Uk8=";
+  nativeBuildInputs = [
+    pkgs.bun
+    pkgs.nodejs
+    pkgs.typescript
+    pkgs.writableTmpDirAsHomeHook
+  ];
+
+  configurePhase = ''
+    runHook preConfigure
+
+    cp -R ${node_modules}/node_modules .
+    patchShebangs node_modules
+
+    runHook postConfigure
+  '';
+
+  buildPhase = ''
+    runHook preBuild
+
+    bun run build
+
+    runHook postBuild
+  '';
+
+  postPatch = ''
+    substituteInPlace bin/takt \
+      --replace-fail '#!/usr/bin/env node' '#!/usr/bin/env bun'
+  '';
+
+  installPhase = ''
+    runHook preInstall
+
+    mkdir -p $out/bin $out/lib/takt
+
+    cp -R dist $out/lib/takt/dist
+    cp -R bin $out/lib/takt/bin
+    cp -R ${node_modules}/node_modules $out/lib/takt/node_modules
+    cp package.json $out/lib/takt/
+
+    ln -s $out/lib/takt/bin/takt $out/bin/takt
+
+    runHook postInstall
+  '';
 
   meta = with pkgs.lib; {
     description = "AI Agent Piece Orchestration tool";

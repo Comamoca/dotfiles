@@ -49,3 +49,4 @@ emacs.d/tree-sitter/
 .mcp.json
 .pre-commit-config.yaml
 .env
+/.agent-shell/

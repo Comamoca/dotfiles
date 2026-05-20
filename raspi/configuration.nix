@@ -14,9 +14,12 @@ let
   SSIDpassword = "WIFI_PASSWORD_PLACEHOLDER";
   interface = "wlan0";
   hostname = "raspi";
+
+  opensrc = import ../packages/opensrc.nix { inherit pkgs; };
 in
 {
   nixpkgs.hostPlatform = "aarch64-linux";
+  nixpkgs.config.allowUnfree = true;
 
   imports = [
     "${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
@@ -67,7 +70,14 @@ in
     networkmanager.enable = true;
   };
 
-  environment.systemPackages = with pkgs; [ vim networkmanager docker-compose ];
+  environment.systemPackages = with pkgs; [
+    vim
+    networkmanager
+    docker-compose
+    claude-code
+    opensrc 
+    gh
+  ];
 
   virtualisation.docker = {
     enable = true;

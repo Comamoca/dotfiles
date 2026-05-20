@@ -1,4 +1,7 @@
 { pkgs }:
+let
+  takt = import ../pkgs/takt { inherit pkgs; };
+in
 with pkgs;
 [
   yazi
@@ -20,10 +23,13 @@ with pkgs;
   ghostty
 
   aider-chat
+  claude-code-acp
 
   llm-agents.claude-code
   llm-agents.opencode
-  llm-agents.oh-my-opencode 
+  llm-agents.oh-my-opencode
   llm-agents.gemini-cli
   llm-agents.crush
+
+  takt
 ]

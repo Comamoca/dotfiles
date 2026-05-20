@@ -49,3 +49,5 @@ export NVM_DIR="$HOME/.nvm"
 [[ -f /home/coma/.dart-cli-completion/zsh-config.zsh ]] && . /home/coma/.dart-cli-completion/zsh-config.zsh || true
 ## [/Completion]
 
+
+if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
