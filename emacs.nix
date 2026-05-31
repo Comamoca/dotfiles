@@ -33,13 +33,6 @@ let
     buildInputs = with pkgs.emacsPackages; [ ];
   };
 
-  zenn-cli = pkgs.emacsPackages.trivialBuild {
-    pname = "zenn-cli";
-    version = "main";
-    src = sources.zenn-cli.src;
-    buildInputs = with pkgs.emacsPackages; [ ];
-  };
-
   claudemacs = pkgs.emacsPackages.trivialBuild {
     pname = "claudemacs";
     version = "main";
@@ -557,7 +550,6 @@ in
     sparql-mode
 
     exec-path-from-shell
-    zenn-cli
 
     emmet-mode
     tabspaces
