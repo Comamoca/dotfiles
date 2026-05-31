@@ -685,7 +685,11 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
     (neo-autorefresh . t)
     (neo-auto-indent-point . t)
     (neo-show-updir-line . nil)
-    (projectile-switch-project-action . 'neotree-projectile-action)
+    (projectile-switch-project-action . (lambda ()
+                                           (when (get-buffer "*NeoTree*")
+                                             (neotree-dir (projectile-project-root)))
+                                           (switch-to-buffer
+                                            (get-buffer-create (format "*%s*" (projectile-project-name))))))
     :config
     (progn
       (add-hook 'find-file-hook (lambda ()
@@ -1188,6 +1192,145 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
       :recursive t
       :publishing-function 'org-zenn-publish-to-markdown)))
 
+  ;; Zenn CLI
+  (defvar zenn-cli-executable "zenn")
+
+  (defun zenn-cli--project-root ()
+    (or (and (fboundp 'projectile-project-root)
+             (ignore-errors (projectile-project-root)))
+        default-directory))
+
+  (defun zenn-cli-p ()
+    (let ((root (zenn-cli--project-root)))
+      (or (file-directory-p (expand-file-name "articles" root))
+          (file-directory-p (expand-file-name "books" root))
+          (and (file-exists-p (expand-file-name "package.json" root))
+               (with-temp-buffer
+                 (insert-file-contents (expand-file-name "package.json" root))
+                 (search-forward "zenn-cli" nil t))))))
+
+  (defmacro zenn-cli--with-check (&rest body)
+    `(if (zenn-cli-p)
+         (progn ,@body)
+       (message "このディレクトリはZennリポジトリではありません。`zenn init' で初期化してください。")))
+
+  (defun zenn-cli--build-args (&rest flag-val-pairs)
+    "Build CLI arg string from alternating FLAG VALUE pairs.
+VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
+    (let (parts)
+      (while flag-val-pairs
+        (let ((flag (pop flag-val-pairs))
+              (val  (pop flag-val-pairs)))
+          (cond
+           ((null val))
+           ((eq val t) (push flag parts))
+           ((and (stringp val) (not (string-empty-p val)))
+            (push (concat flag " " (shell-quote-argument val)) parts)))))
+      (string-join (nreverse parts) " ")))
+
+  (defun zenn-cli--run (subcmd args)
+    (let ((default-directory (zenn-cli--project-root))
+          (cmd (concat zenn-cli-executable " " subcmd
+                       (if (string-empty-p args) "" (concat " " args)))))
+      (compile cmd)))
+
+  (defun zenn-cli--run-async (subcmd args)
+    (let ((default-directory (zenn-cli--project-root))
+          (cmd (concat zenn-cli-executable " " subcmd
+                       (if (string-empty-p args) "" (concat " " args))))
+          (buf (format "*zenn %s*" subcmd)))
+      (async-shell-command cmd buf)
+      (message "zenn %s を起動しました" subcmd)))
+
+  (defun zenn-cli-init ()
+    (interactive)
+    (let ((default-directory (zenn-cli--project-root)))
+      (compile (concat zenn-cli-executable " init"))))
+
+  (defun zenn-cli-preview ()
+    (interactive)
+    (zenn-cli--with-check
+     (let* ((port  (read-string "ポート番号 (デフォルト: 8000): "))
+            (host  (read-string "ホスト名 (省略可): "))
+            (open  (y-or-n-p "起動時にブラウザを開く? "))
+            (watch (y-or-n-p "ホットリロードを有効にする? "))
+            (args  (zenn-cli--build-args
+                    "--port"  (if (string-empty-p port) nil port)
+                    "--host"  (if (string-empty-p host) nil host)
+                    "--open"  (if open t nil)
+                    "--no-watch" (if watch nil t))))
+       (zenn-cli--run-async "preview" args))))
+
+  (defun zenn-cli-new-article ()
+    (interactive)
+    (zenn-cli--with-check
+     (let* ((slug  (read-string "スラッグ (12〜50字, 省略可): "))
+            (title (read-string "タイトル (省略可): "))
+            (type  (completing-read "タイプ: " '("tech" "idea") nil t))
+            (emoji (read-string "絵文字 (1文字, 省略可): "))
+            (pub   (y-or-n-p "公開設定を true にする? "))
+            (pubname (read-string "Publication名 (省略可): "))
+            (args  (zenn-cli--build-args
+                    "--slug"             (if (string-empty-p slug) nil slug)
+                    "--title"            (if (string-empty-p title) nil title)
+                    "--type"             (if (string-empty-p type) nil type)
+                    "--emoji"            (if (string-empty-p emoji) nil emoji)
+                    "--published"        (if pub "true" "false")
+                    "--publication-name" (if (string-empty-p pubname) nil pubname))))
+       (zenn-cli--run "new:article" args))))
+
+  (defun zenn-cli-new-book ()
+    (interactive)
+    (zenn-cli--with-check
+     (let* ((slug    (read-string "スラッグ (12〜50字, 省略可): "))
+            (title   (read-string "タイトル (省略可): "))
+            (summary (read-string "紹介文 (省略可): "))
+            (price   (read-string "価格 (0 または 200〜5000, 省略可): "))
+            (pub     (y-or-n-p "公開設定を true にする? "))
+            (args    (zenn-cli--build-args
+                      "--slug"      (if (string-empty-p slug) nil slug)
+                      "--title"     (if (string-empty-p title) nil title)
+                      "--summary"   (if (string-empty-p summary) nil summary)
+                      "--price"     (if (string-empty-p price) nil price)
+                      "--published" (if pub "true" "false"))))
+       (zenn-cli--run "new:book" args))))
+
+  (defun zenn-cli-list-articles ()
+    (interactive)
+    (zenn-cli--with-check
+     (let* ((fmt  (completing-read "フォーマット (省略可): " '("" "tsv" "json") nil t))
+            (args (zenn-cli--build-args "--format" (if (string-empty-p fmt) nil fmt))))
+       (zenn-cli--run "list:articles" args))))
+
+  (defun zenn-cli-list-books ()
+    (interactive)
+    (zenn-cli--with-check
+     (let* ((fmt  (completing-read "フォーマット (省略可): " '("" "tsv" "json") nil t))
+            (args (zenn-cli--build-args "--format" (if (string-empty-p fmt) nil fmt))))
+       (zenn-cli--run "list:books" args))))
+
+  (defun zenn-cli-version ()
+    (interactive)
+    (message "%s" (string-trim
+                   (shell-command-to-string (concat zenn-cli-executable " --version")))))
+
+  (pretty-hydra-define zenn-cli-hydra
+    (:separator "-" :title "Zenn CLI" :foreign-key warn :quit-key "q" :exit t)
+    ("New"
+     (("a" zenn-cli-new-article "新しい記事")
+      ("b" zenn-cli-new-book    "新しい本"))
+
+     "List"
+     (("la" zenn-cli-list-articles "記事一覧")
+      ("lb" zenn-cli-list-books    "本一覧"))
+
+     "Other"
+     (("p" zenn-cli-preview "プレビュー")
+      ("i" zenn-cli-init    "初期化")
+      ("v" zenn-cli-version "バージョン"))))
+
+  (define-key evil-normal-state-map (kbd "SPC z") #'zenn-cli-hydra/body)
+
   (leaf verb
     :require t)
 
@@ -1250,23 +1393,7 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
   (leaf exec-path-from-shell
     :require t
     :init
-    (exec-path-from-shell-initialize))
-
-  (leaf zenn-cli
-    :require t
-    :config
-    (defcustom zenn-cli-command "npx"
-      "Command to execute Zenn CLI"
-      :type 'string
-      :group 'zenn-cli)
-
-    (defcustom zenn-cli-subcommand "zenn"
-      "Zenn CLI subcommand"
-      :type 'string
-      :group 'zenn-cli)
-    (setq zenn-cli-command "/usr/local/bin/zenn")
-    (setq zenn-cli-subcommand "")
-    :custom ((zenn-cli-default-directory . "~/.ghq/github.com/Comamoca/zenn")))
+    (exec-path-from-shell-initialize)) 
 
   (leaf emmet-mode
     :config
