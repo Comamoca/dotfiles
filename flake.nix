@@ -120,6 +120,7 @@
           system = "aarch64-linux";
           specialArgs = { inherit inputs; };
           modules = [
+            { nixpkgs.buildPlatform.system = "x86_64-linux"; }
             inputs.sops-nix.nixosModules.sops
             inputs.hermes-agent.nixosModules.default
             ./raspi/configuration.nix

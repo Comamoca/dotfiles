@@ -33,6 +33,9 @@ in
         prev.makeModulesClosure (x // {
           allowMissing = true;
         });
+      libqmi = prev.libqmi.overrideAttrs (old: {
+        mesonFlags = (old.mesonFlags or [ ]) ++ [ "-Dgtk_doc=false" ];
+      });
     })
   ];
 
@@ -75,8 +78,7 @@ in
     networkmanager
     docker-compose
     claude-code
-    opensrc 
-    gh
+    opensrc
   ];
 
   virtualisation.docker = {
@@ -119,6 +121,10 @@ in
 
   hardware.enableRedistributableFirmware = true;
 
+  services.dbus.implementation = "dbus";
+
+  systemd.services.nscd.startLimitIntervalSec = lib.mkForce 0;
+
   # Flakesとnix-commandを有効化
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.settings.trusted-users = [ "root" "coma" ];
@@ -130,18 +136,27 @@ in
       "OPENROUTER_API_KEY" = { };
       "TELEGRAM_BOT_TOKEN" = { };
       "TELEGRAM_ALLOWED_USERS" = { };
+
+      "R2_ACCESS_KEY_ID" = { };
+      "R2_SECRET_ACCESS_KEY" = { };
+      "R2_ENDPOINT" = { };
     };
     templates."hermes-env" = {
       content = ''
         OPENROUTER_API_KEY=${config.sops.placeholder."OPENROUTER_API_KEY"}
         TELEGRAM_BOT_TOKEN=${config.sops.placeholder."TELEGRAM_BOT_TOKEN"}
         TELEGRAM_ALLOWED_USERS=${config.sops.placeholder."TELEGRAM_ALLOWED_USERS"}
+
+        R2_ACCESS_KEY_ID=${config.sops.placeholder."R2_ACCESS_KEY_ID"}
+        R2_SECRET_ACCESS_KEY=${config.sops.placeholder."R2_SECRET_ACCESS_KEY"}
+        R2_ENDPOINT=${config.sops.placeholder."R2_ENDPOINT"}
       '';
     };
   };
 
   services.hermes-agent = {
     enable = true;
+    extraDependencyGroups = [ "messaging" ];
     settings = {
       model = {
         default = "google/gemini-3-flash-preview";
