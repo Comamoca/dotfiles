@@ -70,7 +70,6 @@ in
 
   nix = {
     settings = {
-      auto-optimise-store = true;
       experimental-features = [
         "nix-command"
         "flakes"
@@ -90,6 +89,10 @@ in
       automatic = true;
       dates = "weekly";
       options = "--delete-older-than 7d";
+    };
+    optimise = {
+      automatic = true;
+      dates = [ "03:00" ];
     };
   };
 
@@ -126,6 +129,8 @@ in
   ];
   # カーネルパニック時のクラッシュダンプ保存
   boot.crashDump.enable = true;
+  # ZFS 未使用のため明示的に false に設定 (26.11 からのデフォルト変更に備える)
+  boot.zfs.forceImportRoot = false;
   # niriがDRMデバイスに早期アクセスできるよう、initrd段階でi915モジュールをロードする。
   # これにより、ディスプレイのホットプラグ検出が安定する。
   boot.initrd.kernelModules = [ "i915" ];
@@ -405,8 +410,8 @@ in
     wlr.enable = true;
     extraPortals = with pkgs; [
       xdg-desktop-portal-gtk
+      xdg-desktop-portal-gnome
       # xdg-desktop-portal-wlr
-      # xdg-desktop-portal-gnome
       xdg-desktop-portal-hyprland
     ];
     config = {
@@ -416,6 +421,10 @@ in
       ];
       sway.default = pkgs.lib.mkForce [
         "wlr"
+        "gtk"
+      ];
+      niri.default = [
+        "gnome"
         "gtk"
       ];
       common.default = "*";
@@ -429,6 +438,21 @@ in
     xdg-desktop-portal
     xdg-desktop-portal-gtk
     xdg-desktop-portal-wlr
+    xdg-desktop-portal-gnome
+
+    # xwayland-satellite — provides X11 support on pure Wayland compositors (niri).
+    # Discord (and other Electron apps) still call X11 functions even when running
+    # as Wayland native clients. Without XWayland, they hang on startup.
+    xwayland-satellite
+
+    # Discord wrapper: --disable-gpu avoids SIGSEGV (kernel 6.12+ DRM regression),
+    # --ozone-platform=x11 avoids the Wayland compatibility hang.
+    (pkgs.writeShellApplication {
+      name = "discord";
+      text = ''
+        exec ${pkgs.discord}/bin/discord --disable-gpu --ozone-platform=x11 "$@"
+      '';
+    })
 
     # gparted
     lan-mouse
