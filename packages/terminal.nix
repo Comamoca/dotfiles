@@ -30,6 +30,7 @@ with pkgs;
   llm-agents.oh-my-opencode
   llm-agents.gemini-cli
   llm-agents.crush
+  llm-agents.bernstein
 
-  takt
+  takt 
 ]
