@@ -13,6 +13,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    quickshell = {
+      url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     dms = {
       url = "github:AvengeMedia/DankMaterialShell/stable";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -31,6 +36,11 @@
     emacs.url = "github:cmacrae/emacs";
     nak.url = "github:comamoca/flake-nak";
     nur-packages.url = "github:Comamoca/nur-packages";
+    eqsh = {
+      url = "github:eq-desktop/eqsh";
+      flake = false;
+    };
+
     disko = {
       url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -78,6 +88,8 @@
       gleam-overlay,
       nix-index-database,
       deploy-rs,
+      eqsh,
+      quickshell,
       ...
     }@inputs:
     let
@@ -99,6 +111,7 @@
         inputs.gleam-overlay.overlays.default
         inputs.llm-agents.overlays.default
         inputs.go-overlay.overlays.default
+        # inputs.quickshell.overlays.default  # dmsバンドル版と競合するため無効化
         # openldap のフラッキーなテストをスキップ (bottles の依存)
         (final: prev: {
           openldap = prev.openldap.overrideAttrs (_: {
@@ -120,7 +133,6 @@
           system = "aarch64-linux";
           specialArgs = { inherit inputs; };
           modules = [
-            { nixpkgs.buildPlatform.system = "x86_64-linux"; }
             inputs.sops-nix.nixosModules.sops
             inputs.hermes-agent.nixosModules.default
             ./raspi/configuration.nix

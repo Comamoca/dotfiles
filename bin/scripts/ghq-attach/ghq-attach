@@ -41,8 +41,12 @@ select_repository() {
 # セッション名を生成（サニタイズ込み）
 generate_session_name() {
     local repo_path="$1"
+    # ghqパス全体 (github.com/owner/repo) からユニークなセッション名を生成
+    # 例: github.com/Comamoca/hoge → github.com_Comamoca_hoge
+    # 例: github.com/owner/hoge     → github.com_owner_hoge
+    # これでfork元とfork先が区別できる
     local session_name
-    session_name=$(basename "$repo_path" | tr '.:' '__')
+    session_name=$(echo "$repo_path" | tr './' '__')
     echo "$session_name"
 }
 

@@ -8,27 +8,27 @@
 {
   acp = {
     pname = "acp";
-    version = "4f3b0945660aff4f23e686a785b874688133f43b";
+    version = "3ddfa907eb7f17949a4a8e731ea5c5241e6cbcb4";
     src = fetchFromGitHub {
       owner = "xenodium";
       repo = "acp.el";
-      rev = "4f3b0945660aff4f23e686a785b874688133f43b";
+      rev = "3ddfa907eb7f17949a4a8e731ea5c5241e6cbcb4";
       fetchSubmodules = false;
-      sha256 = "sha256-NFjpMspMw4xIUoA/3OefNVSodXAlvwgWyfhgy03x2S8=";
+      sha256 = "sha256-hN5c1kOKBPq+rbuh0ILxq8oRVDgZLxQqQmeDj5PUKzE=";
     };
-    date = "2026-05-18";
+    date = "2026-05-27";
   };
   agent-shell = {
     pname = "agent-shell";
-    version = "dcf789d989680ad7d720c63a64ca166e2e0f52e8";
+    version = "e382e41750a27ea2fbb8ae9e9c3d88edb08fa257";
     src = fetchFromGitHub {
       owner = "xenodium";
       repo = "agent-shell";
-      rev = "dcf789d989680ad7d720c63a64ca166e2e0f52e8";
+      rev = "e382e41750a27ea2fbb8ae9e9c3d88edb08fa257";
       fetchSubmodules = false;
-      sha256 = "sha256-TfFZdaKm1tD9xIGlIuxbONEJUW8zZELGMt5YwxIlhcs=";
+      sha256 = "sha256-vIUXzq7vtoqpooUhykirS21OGbA7cRj99LSHdWYa1P0=";
     };
-    date = "2026-05-19";
+    date = "2026-06-14";
   };
   aider = {
     pname = "aider";
@@ -118,17 +118,17 @@
   };
   eca = {
     pname = "eca";
-    version = "9ea15cd61aa7d0164c2e79c28e794e29c5dbcbb3";
+    version = "eb702479eafb4fb49b4790f308e21fe4fc172838";
     src = fetchgit {
       url = "https://github.com/editor-code-assistant/eca-emacs";
-      rev = "9ea15cd61aa7d0164c2e79c28e794e29c5dbcbb3";
+      rev = "eb702479eafb4fb49b4790f308e21fe4fc172838";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
       sparseCheckout = [ ];
-      sha256 = "sha256-6EmrfPeTWiYWC9CGpiWDFoPHdXhTTujk3Bwt6ue5Qfs=";
+      sha256 = "sha256-Q5UrFWw2kWPnP1uUmqQp0hYrHRIudLfZADCSNAls4Lw=";
     };
-    date = "2026-05-18";
+    date = "2026-06-13";
   };
   eglot-booster = {
     pname = "eglot-booster";
@@ -177,26 +177,26 @@
   };
   git-wt = {
     pname = "git-wt";
-    version = "v0.28.0";
+    version = "v0.29.0";
     src = fetchFromGitHub {
       owner = "k1LoW";
       repo = "git-wt";
-      rev = "v0.28.0";
+      rev = "v0.29.0";
       fetchSubmodules = false;
-      sha256 = "sha256-JXPJlPAsbXXXN86ZB7PQNv31QZMiAn5DaYfHlnGWknc=";
+      sha256 = "sha256-1u0GDC1Sc4Xy4URuM6TnR/ENsdIWa94Ixu3mL6WrmFg=";
     };
   };
   gleam-mode = {
     pname = "gleam-mode";
-    version = "bbd7c19084b23b427a49790077f54ad4b9244c6c";
+    version = "ae8aecda23e9dca755d80e86cdb7c336011c2321";
     src = fetchFromGitHub {
       owner = "gleam-lang";
       repo = "gleam-mode";
-      rev = "bbd7c19084b23b427a49790077f54ad4b9244c6c";
+      rev = "ae8aecda23e9dca755d80e86cdb7c336011c2321";
       fetchSubmodules = false;
-      sha256 = "sha256-XmKoKzAXHMeCeD0+XdQoDty06ZwHDgsPs28Rt+XVuf8=";
+      sha256 = "sha256-q8G8DMeILdjGJaHw8jGNXcjncOTKJdOXe4nomBMZ6ek=";
     };
-    date = "2026-03-15";
+    date = "2026-06-04";
   };
   hydra-posframe = {
     pname = "hydra-posframe";
@@ -340,6 +340,20 @@
     };
     date = "2026-01-02";
   };
+  picoclaw = {
+    pname = "picoclaw";
+    version = "13a38bd1c498cd0c5031d7b1a51353dc73609c31";
+    src = fetchgit {
+      url = "https://github.com/sipeed/picoclaw";
+      rev = "13a38bd1c498cd0c5031d7b1a51353dc73609c31";
+      fetchSubmodules = false;
+      deepClone = false;
+      leaveDotGit = false;
+      sparseCheckout = [ ];
+      sha256 = "sha256-3hSzXV1Ik3qoe1rawML8K7o2wUNf1AGXhVQ4duFqwVI=";
+    };
+    date = "2026-06-14";
+  };
   python-mode = {
     pname = "python-mode";
     version = "c6f7bcd79d43b2a4915b75c481355601f95968a0";
@@ -390,15 +404,15 @@
   };
   shell-maker = {
     pname = "shell-maker";
-    version = "11f4a9913e7625f122625dd89d668ad5c93cf151";
+    version = "43ee9e1862994cbaa89715d324edb7a424181f22";
     src = fetchFromGitHub {
       owner = "xenodium";
       repo = "shell-maker";
-      rev = "11f4a9913e7625f122625dd89d668ad5c93cf151";
+      rev = "43ee9e1862994cbaa89715d324edb7a424181f22";
       fetchSubmodules = false;
-      sha256 = "sha256-4xJ4X7CuosPA0PEjiKRcfdR8mj7vUkGnajUIDBV+oEk=";
+      sha256 = "sha256-nJNZBZKmzEVn5gNEL0DT4S09Hfd8hk6DLaZTtoRksS0=";
     };
-    date = "2026-05-12";
+    date = "2026-06-09";
   };
   skk-capf = {
     pname = "skk-capf";
@@ -447,15 +461,15 @@
   };
   takt = {
     pname = "takt";
-    version = "3382ee802c37270f7a1a7eab636be1ee0ef78d4b";
+    version = "b71586640f5a59e3f009bf033532a79fd643677f";
     src = fetchFromGitHub {
       owner = "nrslib";
       repo = "takt";
-      rev = "3382ee802c37270f7a1a7eab636be1ee0ef78d4b";
+      rev = "b71586640f5a59e3f009bf033532a79fd643677f";
       fetchSubmodules = false;
-      sha256 = "sha256-EPTI+8kvGkk2Jvx2109L/DCg8dTo4b99o9Va60zIEzY=";
+      sha256 = "sha256-bea1bljvcedqDMF8PVGQi6aCmJ9kqq/G5Bf+kvmXlgQ=";
     };
-    date = "2026-05-19";
+    date = "2026-06-14";
   };
   tramps3 = {
     pname = "tramps3";
@@ -511,15 +525,15 @@
   };
   verb = {
     pname = "verb";
-    version = "e2cf58fdc86510c025d4a8dbbacacbf7998beb26";
+    version = "81aa67dffb17b3d88b35f16787aa3292d5761abb";
     src = fetchFromGitHub {
       owner = "federicotdn";
       repo = "verb";
-      rev = "e2cf58fdc86510c025d4a8dbbacacbf7998beb26";
+      rev = "81aa67dffb17b3d88b35f16787aa3292d5761abb";
       fetchSubmodules = false;
-      sha256 = "sha256-eRAYC2JMvdWvwPXjKxKtKueSTA3rzQv/eGJLqs3Ov1Y=";
+      sha256 = "sha256-PfMD6NAWiIbOTMxp2LhLPLTUZctOvAMeHPqSFjgN5C8=";
     };
-    date = "2026-04-28";
+    date = "2026-05-23";
   };
   vibe-kanban = {
     pname = "vibe-kanban";
@@ -542,17 +556,5 @@
       fetchSubmodules = false;
       sha256 = "sha256-KUS0mN9JpLFBDeztzn+3NnJWQZSDZjeqKTFwhRJf+hI=";
     };
-  };
-  zenn-cli = {
-    pname = "zenn-cli";
-    version = "011ca9dc9fcf36d1339fa3487c750ce0e328b09c";
-    src = fetchFromGitHub {
-      owner = "wurly200a";
-      repo = "zenn-cli.el";
-      rev = "011ca9dc9fcf36d1339fa3487c750ce0e328b09c";
-      fetchSubmodules = false;
-      sha256 = "sha256-fiU9vbNzJZ5OxswqMDJPtU7xZQXUnfDVe8UMhALAn/8=";
-    };
-    date = "2024-11-09";
   };
 }

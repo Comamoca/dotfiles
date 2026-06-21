@@ -26,6 +26,7 @@ This is Comamoca's dotfiles repository.
 ## 🔧 Stack
 
 - NixOS
+- Niri
 - fish
 - Neovim
 - and more...

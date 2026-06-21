@@ -84,6 +84,11 @@ let
     sha256 = "sha256:0rd6hfd88bsprjg68saxxlgf2c2lv1ldyr6a8i7m4lgg6nahbrw7";
   };
 
+  shinycolors-wallpaper = pkgs.fetchurl {
+    url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/data/img/special/wallpaper/1/wp_3840x2160_41200follower_imassc_prism.png";
+    hash = "sha256-ZCvXkZySkvDDLV56DAmGAz8wx/OeQfQ0zJGzYmKVvkU=";
+  };
+
   wallpaper = "${wallpapers}/misc/cat-sound.png";
 
   gitmoji = pkgs.fetchurl {
@@ -112,6 +117,10 @@ let
   rclone-sync = import ./pkgs/rclone_sync { inherit pkgs homeDirectory; };
   rclone-resync = import ./pkgs/rclone_resync { inherit pkgs homeDirectory; };
   niri-scratchpad = import ./pkgs/niri-scratchpad { inherit pkgs; };
+
+  # eqsh (一時的に無効化)
+  # eqsh-src = inputs.eqsh;
+
 in
 rec {
   nixpkgs.config = {
@@ -250,6 +259,12 @@ rec {
         source = (symlink /${dotfiles}/bin/scripts/ghq-attach);
         recursive = true;
       };
+      ".bin/scripts/browser-focus.sh" = {
+        source = (symlink /${dotfiles}/bin/scripts/browser-focus.sh);
+      };
+      ".bin/scripts/browser-focus-niri.sh" = {
+        source = (symlink /${dotfiles}/bin/scripts/browser-focus-niri.sh);
+      };
 
       # Vim configs.
       # ".vimrc".source = (symlink /${dotfiles}/vimrc);
@@ -359,6 +374,21 @@ rec {
         recursive = true;
       };
 
+      # eqsh (一時的に無効化)
+      # ".local/share/equora" = {
+      #   source = "${eqsh-src}";
+      #   recursive = true;
+      # };
+
+      # eqsh Catppuccin Mocha config (一時的に無効化)
+      # ".config/aureli/config.json".text = builtins.toJSON {
+      #   general = {
+      #     darkMode = true;
+      #     language = "ja";
+      #   };
+      #   ... (catppuccin config, 全てコメントアウト)
+      # };
+
       ".config/waybar" = {
         source = (symlink /${dotfiles}/config/waybar);
         recursive = true;
@@ -401,6 +431,13 @@ rec {
         recursive = true;
       };
 
+      ".config/opencode/tui.json".source = (symlink /${dotfiles}/config/opencode/tui.json);
+
+      ".config/opencode/themes" = {
+        source = (symlink /${dotfiles}/config/opencode/themes);
+        recursive = true;
+      };
+
       ".config/xremap/config.yaml".source = (symlink xremap-config.xremap-config-yaml);
 
       ".czrc".source = (symlink /${dotfiles}/czrc);
@@ -423,7 +460,18 @@ rec {
       # ".local/share/tree-sitter".source = (symlink "${pkgs.tree-sitter-grammars}/lib");
       ".data/gitmoji.json".source = (symlink gitmoji);
       ".skk".source = (symlink /${dotfiles}/ddskk-config.el);
-      "Pictures/wallpapers".source = (symlink wallpapers);
+      "Pictures/wallpapers" = {
+        source = pkgs.symlinkJoin {
+          name = "wallpapers";
+          paths = [
+            wallpapers
+            (pkgs.runCommand "shinycolors-wallpapers" { } ''
+              mkdir -p $out/shinycolors
+              ln -s ${shinycolors-wallpaper} $out/shinycolors/wp_3840x2160_41200follower_imassc_prism.png
+            '')
+          ];
+        };
+      };
       "Pictures/.emacs-logos".source = (symlink "${emacs_fancy_logo}/share");
       ".aider.conf.yml".source = (pkgs.formats.yaml { }).generate ".aider.conf.yml" {
         read = [
@@ -514,6 +562,7 @@ rec {
 
   # Hyprland
   wayland.windowManager.hyprland.enable = true;
+  wayland.windowManager.hyprland.configType = "hyprlang";
   wayland.windowManager.hyprland.settings = import ./hyprland.nix {
     inherit
       pkgs
@@ -595,7 +644,7 @@ rec {
         size = 13.5;
       };
       window = {
-        opacity = 0.6;
+        opacity = 0.8;
       };
     };
   };
@@ -609,6 +658,7 @@ rec {
 
   programs = {
     dank-material-shell.enable = true;
+    # spawn-at-startup "au" "run"
   };
 
   programs.nix-index = {
@@ -628,29 +678,13 @@ rec {
     };
   };
 
+  # Emacs daemon is launched by niri (spawn-at-startup) instead of systemd,
+  # because PGTK Emacs requires a display connection to start --daemon.
+  # systemd services start before the compositor creates the Wayland display,
+  # causing the daemon to fail with "display connection is closed".
   services.emacs = {
-    enable = true;
-    # package = pkgs.emacs-git;
+    enable = false;
     package = emacs';
-    # package = (
-    #   with pkgs;
-    #   # ((emacsPackagesFor emacs').emacsWithPackages (
-    #   ((emacsPackagesFor emacs-git).emacsWithPackages (
-    #     epkgs: (import ./emacs.nix { inherit pkgs epkgs; }).epkgs
-    #   ))
-    # );
-    # extraOptions = [ "--with-xwidgets" ];
-  };
-
-  # Emacs (PGTK) requires a Wayland display — delay start until graphical session is ready
-  systemd.user.services.emacs = {
-    Unit = {
-      After = [ "graphical-session.target" ];
-      PartOf = [ "graphical-session.target" ];
-    };
-    Install = {
-      WantedBy = [ "graphical-session.target" ];
-    };
   };
 
   systemd.user.services.niri-scratchpad-daemon = {
@@ -698,6 +732,8 @@ rec {
     };
 
   catppuccin = {
+    enable = true;
+    autoEnable = true;
     flavor = "mocha";
     hyprland.enable = true;
     bat.enable = true;

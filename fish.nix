@@ -175,6 +175,7 @@
 
     abbr --add e $EDITOR
     abbr --add a emacsclient -c
+    abbr --add oc opencode
 
     set -x ELIXIR_ERL_OPTIONS "+fnu"
     set -x SSH_ASKPASS ${pkgs.kdePackages.ksshaskpass}

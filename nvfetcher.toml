@@ -178,7 +178,10 @@ fetch.github = "xenodium/acp.el"
 src.git = "https://github.com/xenodium/shell-maker"
 fetch.github = "xenodium/shell-maker"
 
-
 [takt]
 src.git = "https://github.com/nrslib/takt"
 fetch.github = "nrslib/takt"
+
+[picoclaw]
+src.git = "https://github.com/sipeed/picoclaw"
+fetch.git = "https://github.com/sipeed/picoclaw"

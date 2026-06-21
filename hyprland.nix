@@ -201,7 +201,7 @@ in
     "$mainMod, space, exec, $menu"
     # bind = $mainMod, P, pseudo, # dwindle
     "$mainMod, J, togglesplit," # dwindle
-    "$mainMod, b, exec, $browser"
+    "$mainMod, b, exec, ${dotfiles}/bin/scripts/browser-focus.sh"
 
     # Move focus with mainMod + arrow keys
     "$mainMod, h, movefocus, l"

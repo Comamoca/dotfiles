@@ -73,6 +73,7 @@ in
   };
 
   catppuccin.enable = true;
+  catppuccin.autoEnable = true;
 
   networking.hostName = "comabook"; # Define your hostname.
   # networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.

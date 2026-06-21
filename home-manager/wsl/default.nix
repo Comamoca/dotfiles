@@ -815,6 +815,8 @@ rec {
   };
 
   catppuccin = {
+    enable = true;
+    autoEnable = true;
     bat.enable = true;
   };
 
