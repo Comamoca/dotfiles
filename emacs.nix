@@ -393,7 +393,6 @@ in
     kind-icon
     all-the-icons
     transient-dwim
-    neotree
     google-translate
     wakatime-mode
 
@@ -411,6 +410,7 @@ in
 
     project
     projectile
+    persp-projectile
     migemo
     nyan-mode
 
@@ -552,7 +552,6 @@ in
     exec-path-from-shell
 
     emmet-mode
-    tabspaces
 
     go-mode
     gerbil-mode
@@ -590,5 +589,11 @@ in
     nskk
     kuro
     sparql-mode
+
+    perspective
+    treemacs
+    treemacs-evil
+    treemacs-projectile
+    treemacs-perspective
   ];
 }

@@ -2,9 +2,10 @@
 
 ;; <leaf-install-code>
 (eval-and-compile
-  ;; treesit ライブラリを先にロードしておかないと、ツリーベースのメジャーモードの
-  ;; オートロードで treesit-ready-p が未定義のエラーになる
-  (require 'treesit nil t)
+  ;; このEmacsビルドは tree-sitter 非対応
+  ;; astro-ts-mode の autoload が (treesit-ready-p 'astro) を呼ぶので事前に定義
+  (unless (fboundp 'treesit-ready-p)
+    (defalias 'treesit-ready-p (lambda (&rest _) nil)))
   (customize-set-variable
    'package-archives '(("org" . "https://orgmode.org/elpa/")
                        ("melpa" . "https://melpa.org/packages/")
@@ -16,9 +17,7 @@
 
   (leaf leaf-keywords
     :init
-    ;; optional packages if you want to use :hydra, :el-get, :blackout,,,
     :config
-    ;; initialize leaf-keywords.el
     (leaf-keywords-init)))
 ;; </leaf-install-code>
 
@@ -84,9 +83,9 @@
           ("C-j" . evil-scroll-down))
          (:evil-insert-state-map
 	  ;; ("C-j" . newline-and-indent)
-          ("C-h" . backward-char)))
-  
+	  ("C-h" . evil-delete-backward-char-and-join)))
   :config
+  (setq evil-backspace-join-lines t)
   (evil-mode 1))
 
 ;; Structured editing 
@@ -217,9 +216,9 @@
             (lambda ()
               (evil-define-key 'normal org-mode-map (kbd "TAB") #'org-cycle)
               (evil-define-key 'normal org-mode-map (kbd "C-<return>") (lambda ()
-									 (interactive)
-									 (vterm-toggle-insert-cd)
-									 (vterm-toggle-insert-cd)))))
+                                                                         (interactive)
+                                                                         (vterm-toggle-insert-cd)
+                                                                         (vterm-toggle-insert-cd)))))
 
   ;; org-calendar
   ;; (with-eval-after-load 'calendar
@@ -294,7 +293,6 @@
 
   ;; Forge
   (leaf forge
-    :ensure t
     :after magit)
 
   (leaf ddskk
@@ -380,10 +378,10 @@
     :command ("textlint" "--format" "unix" source-inplace)
     :error-patterns
     ((warning line-start (file-name) ":" line ":" column ": "
-	      (id (one-or-more (not (any " "))))
-	      (message (one-or-more not-newline)
+              (id (one-or-more (not (any " "))))
+              (message (one-or-more not-newline)
 		       (zero-or-more "\n" (any " ") (one-or-more not-newline)))
-	      line-end))
+              line-end))
     :modes (text-mode markdown-mode gfm-mode org-mode web-mode))
 
   ;; Copilot
@@ -418,7 +416,7 @@
     (defun lsp-bridge-setup-for-ts-js-mode ()
       (setq lsp-bridge-get-single-lang-server-by-project
 	    (lambda (project-path file-path)
-	      (let* ((ext (file-name-extension (or buffer-file-name "")))
+              (let* ((ext (file-name-extension (or buffer-file-name "")))
 		     (is-ts-file (or (= ext "ts") (= ext "tsx")))
 		     (is-js-file (or (= ext "js") (= ext "jsx"))))
 		(if (and (or is-ts-file is-js-file)  (file-exists-p (expand-file-name "package.json" project-path)))
@@ -462,7 +460,7 @@
     (or
      (when (equal (following-char) ?#)
        (let ((bytecode (read (current-buffer))))
-	 (when (byte-code-function-p bytecode)
+         (when (byte-code-function-p bytecode)
            (funcall bytecode))))
      (apply old-fn args)))
 
@@ -470,20 +468,20 @@
 			 (fboundp 'json-parse-buffer))
                   'json-parse-buffer
 		'json-read)
-	      :around
-	      #'lsp-booster--advice-json-parse)
+              :around
+              #'lsp-booster--advice-json-parse)
 
   (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
     "Prepend emacs-lsp-booster command to lsp CMD.
 Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists=nil)."
     (let ((orig-result (funcall old-fn cmd test?)))
       (if (and (not test?)                             ;; for check lsp-server-present?
-	       (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
-	       (not (functionp 'json-rpc-connection))  ;; native json-rpc
-	       (executable-find "emacs-lsp-booster"))
+               (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+               (not (functionp 'json-rpc-connection))  ;; native json-rpc
+               (executable-find "emacs-lsp-booster"))
           (progn
             (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
-	      (setcar orig-result command-from-exec-path))
+              (setcar orig-result command-from-exec-path))
             (message "Using emacs-lsp-booster for %s!" orig-result)
             ;; Nix の lsp-mode は hashtable でコンパイル済みのため --json-object-type hashtable を指定
             (append (list "emacs-lsp-booster" "--json-object-type" "hashtable" "--") orig-result))
@@ -672,56 +670,78 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
     :config
     (projectile-mode +1)
     (setq projectile-project-root-files-bottom-up
-	  '("package.json" "Cargo.toml" "gleam.toml"))
+	  '("package.json" "Cargo.toml" "gleam.toml" "flake.nix"))
+    (setq projectile-project-search-path
+	  '("~/.ghq/github.com/"))
     :bind ((:projectile-mode-map
             ("C-c p" . projectile-command-map))))
 
-  ;; Tree filer
-  (leaf neotree
+  ;; Perspective workspace management
+  (leaf perspective
     :custom
-    (neo-smart-open . t)
-    (neo-autorefresh . t)
-    (neo-auto-indent-point . t)
-    (neo-show-updir-line . nil)
-    (projectile-switch-project-action . (lambda ()
-                                          (when (get-buffer "*NeoTree*")
-                                            (neotree-dir (projectile-project-root)))
-                                          (switch-to-buffer
-                                           (get-buffer-create (format "*%s*" (projectile-project-name))))))
+    ((persp-auto-save-opt . 1))
     :config
-    (progn
-      (add-hook 'find-file-hook (lambda ()
-                                  (when (and (buffer-file-name)
-                                             (get-buffer "*NeoTree*")
-                                             (projectile-project-p))
-                                    (neotree-dir (projectile-project-root)))))
-      (evil-define-key 'normal neotree-mode-map (kbd "q") 'neotree-hide)
-      (evil-define-key 'normal neotree-mode-map (kbd "l") 'neotree-enter)
-      (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
-      (evil-define-key 'normal neotree-mode-map (kbd "h") 'neotree-enter)
-      (evil-define-key 'normal neotree-mode-map (kbd "g") 'neotree-refresh)
-      (evil-define-key 'normal neotree-mode-map (kbd "j") 'neotree-next-line)
-      (evil-define-key 'normal neotree-mode-map (kbd "k") 'neotree-previous-line)
-      (evil-define-key 'normal neotree-mode-map (kbd "A") 'neotree-stretch-toggle)
-      (evil-define-key 'normal neotree-mode-map (kbd "H") 'neotree-hidden-file-toggle)
-      (evil-define-key 'normal neotree-mode-map (kbd "N") 'neotree-create-node)
-      (evil-define-key 'normal neotree-mode-map (kbd "K") 'neotree-create-node)
-      (evil-define-key 'normal neotree-mode-map (kbd "D") 'neotree-delete-node)
-      (evil-define-key 'normal neotree-mode-map (kbd "M") 'neotree-rename-node))
-    
-    ;; For neotree
-    (define-key evil-normal-state-map (kbd "SPC f") #'neotree-toggle))
+    (setq persp-save-dir (expand-file-name "perspectives/" user-emacs-directory))
+    (make-directory persp-save-dir t)
+    (persp-mode 1))
+
+  ;; Perspective x Projectile bridge
+  (leaf persp-projectile
+    :after (perspective projectile)
+    :bind ((:projectile-mode-map
+            ("C-c p p" . projectile-persp-switch-project))))
+
+  (leaf treemacs-projectile
+    :after (treemacs projectile))
+
+  ;; Tree file explorer (Treemacs)
+  (leaf treemacs
+    :require
+    :custom
+    (treemacs-width . 35)
+    (treemacs-is-never-other-window . nil)
+    :config
+    (treemacs-projectile-mode t)
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (treemacs-git-mode 'extended)
+    (treemacs-hide-gitignored-mode t)
+    (treemacs-fringe-indicator-mode t)
+    (treemacs-project-follow-mode t)
+    ;; M-g でのプロジェクト切り替え時にも treemacs を追従させる
+    (add-hook 'projectile-after-switch-project-hook
+              #'treemacs-display-current-project-exclusively))
+
+  ;; Treemacs x Evil integration
+  (leaf treemacs-evil
+    :require t
+    :after treemacs evil
+    :config
+    ;; Neotree 時代のキーバインドを再現
+    (define-key evil-treemacs-state-map (kbd "q") #'treemacs-quit)
+    (define-key evil-treemacs-state-map (kbd "g") #'treemacs-refresh)
+    (define-key evil-treemacs-state-map (kbd "l") #'treemacs-RET-action)
+    (define-key evil-treemacs-state-map (kbd "N") #'treemacs-create-file)
+    (define-key evil-treemacs-state-map (kbd "K") #'treemacs-create-dir)
+    (define-key evil-treemacs-state-map (kbd "D") #'treemacs-delete)
+    (define-key evil-treemacs-state-map (kbd "M") #'treemacs-rename)
+    (define-key evil-treemacs-state-map (kbd "H") #'treemacs-toggle-hidden-files))
+
+  ;; Treemacs x Perspective integration
+  ;; 使うときは (treemacs-perspective-mode 1) を明示的に有効化
+  (leaf treemacs-perspective
+    :after (treemacs perspective))
 
   ;; Translate
   (leaf google-translate
     :require t
     :custom
     (google-translate-translation-directions-alist . '(("en" . "ja")
-						       ("ja" . "en"))))
+                                                       ("ja" . "en"))))
   ;; Wakatime
   (add-hook 'server-after-make-frame-hook
             (lambda ()
-	      (setq wakatime-api-key (get-secret "wakatime"))))
+              (setq wakatime-api-key (get-secret "wakatime"))))
 
   (leaf wakatime-mode
     :config
@@ -806,7 +826,7 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
      (("<Tab>" . markdown-cycle)))
     :hook
     (markdown-mode . (lambda ()
-		       (setq-local completion-at-point-functions
+                       (setq-local completion-at-point-functions
 				   (cons #'cape-emoji completion-at-point-functions)))))
 
   ;; Migemo
@@ -852,8 +872,8 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
                                                       completion-at-point-functions))))
 
     (add-hook 'git-commit-mode-hook (lambda ()
-				      (setup-gitmoji)
-				      (setq-local completion-at-point-functions
+                                      (setup-gitmoji)
+                                      (setq-local completion-at-point-functions
 						  (list (cape-capf-super
 							 #'tempel-complete
 							 #'gitmoji-completion))))))
@@ -902,6 +922,11 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
   (evil-define-key 'normal newsticker-treeview-mode-map (kbd "n") 'newsticker-treeview-next-item)
   (evil-define-key 'normal newsticker-treeview-mode-map (kbd "p") 'newsticker-treeview-prev-item)
 
+  (evil-define-key 'normal newsticker-treeview-mode-map (kbd "p") 'newsticker-treeview-prev-item)
+
+  (evil-define-key 'normal global-map (kbd "SPC f") 'treemacs)
+  (evil-define-key 'normal evil-treemacs-state-map (kbd "l") 'treemacs-RET-action)
+
   (leaf eww
     :config
     (evil-define-key 'normal eww-mode-map
@@ -933,7 +958,7 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
      'number
      (lambda (arg &optional rev)
        (let ((num (string-to-number arg)))
-	 (number-to-string (if rev (- num 1) (+ num 1)))))))
+         (number-to-string (if rev (- num 1) (+ num 1)))))))
 
   (leaf good-scroll
     :init
@@ -1010,19 +1035,19 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
     "Retrieve secret for KEY from auth-source."
     (require 'auth-source)
     (when-let* ((result (auth-source-search :host key :require '(:secret) :max 1))
-		(secret (plist-get (car result) :secret)))
+                (secret (plist-get (car result) :secret)))
       (if (functionp secret) (funcall secret) secret)))
 
   (add-hook 'server-after-make-frame-hook
             (lambda ()
-	      (setenv "GEMINI_API_KEY" (get-secret "gemini.google.com"))
-	      (setenv "OPENROUTER_API_KEY" (get-secret "openrouter.ai"))
-	      (setenv "ZAI_API_KEY" (get-secret "z.ai"))
-	      (setq wakatime-api-key (get-secret "wakatime"))
-	      (setq openrouter-apikey (get-secret "openrouter.ai"))
-	      (setq gemini-apikey (get-secret "gemini.google.com"))
-	      (setq figma-apikey (get-secret "figma-apikey"))
-	      (setq claude-shell-api-token (get-secret "openrouter.ai"))))
+              (setenv "GEMINI_API_KEY" (get-secret "gemini.google.com"))
+              (setenv "OPENROUTER_API_KEY" (get-secret "openrouter.ai"))
+              (setenv "ZAI_API_KEY" (get-secret "z.ai"))
+              (setq wakatime-api-key (get-secret "wakatime"))
+              (setq openrouter-apikey (get-secret "openrouter.ai"))
+              (setq gemini-apikey (get-secret "gemini.google.com"))
+              (setq figma-apikey (get-secret "figma-apikey"))
+              (setq claude-shell-api-token (get-secret "openrouter.ai"))))
 
   ;; ECA
   (leaf eca
@@ -1071,7 +1096,7 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
 
     (gptel-make-tool
      :function (lambda (filepath)
-		 (with-temp-buffer
+                 (with-temp-buffer
                    (insert-file-contents (expand-file-name filepath))
                    (buffer-string)))
      :name "read_file"
@@ -1083,14 +1108,14 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
 
     (gptel-make-tool
      :function (lambda (url)
-		 (with-current-buffer (url-retrieve-synchronously url)
+                 (with-current-buffer (url-retrieve-synchronously url)
                    (goto-char (point-min))
                    (forward-paragraph)
                    (let ((dom (libxml-parse-html-region (point) (point-max))))
                      (run-at-time 0 nil #'kill-buffer (current-buffer))
                      (with-temp-buffer
-		       (shr-insert-document dom)
-		       (buffer-substring-no-properties (point-min) (point-max))))))
+                       (shr-insert-document dom)
+                       (buffer-substring-no-properties (point-min) (point-max))))))
      :name "read_url"
      :description "Fetch and read the contents of a URL"
      :args (list '(:name "url"
@@ -1100,7 +1125,7 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
 
     (gptel-make-tool
      :function (lambda (filepath)
-		 (with-temp-buffer
+                 (with-temp-buffer
                    (insert-file-contents (expand-file-name filepath))
                    (buffer-string)))
      :name "read_file"
@@ -1143,12 +1168,12 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
           (home (getenv "HOME")))
       (setq mcp-hub-servers
 	    `(("filesystem" . (:command "npx" :args ("-y" "@modelcontextprotocol/server-filesystem" ,home)))
-	      ("fetch" . (:command "uvx" :args ("mcp-server-fetch")))
-	      ("awesome-yasunori" . (:command "npx" :args ("mcp-remote" "https://api.yasunori.dev/awesome/mcp")))
-	      ("imasparql" . (:command "npx" :args ("mcp-remote" "https://gitmcp.io/imas/imasparql")))
-	      ("figma" . (:command "npx" :args ("-y" "figma-developer-mcp" ,figma-api-key "--stdio")))
-	      ("claude_code" . (:command "claude" :args ("mcp" "serve")))
-	      ("serena" . (:command "uvx" :args ("--from" "git+https://github.com/oraios/serena" "serena" "start-mcp-server")))))))
+              ("fetch" . (:command "uvx" :args ("mcp-server-fetch")))
+              ("awesome-yasunori" . (:command "npx" :args ("mcp-remote" "https://api.yasunori.dev/awesome/mcp")))
+              ("imasparql" . (:command "npx" :args ("mcp-remote" "https://gitmcp.io/imas/imasparql")))
+              ("figma" . (:command "npx" :args ("-y" "figma-developer-mcp" ,figma-api-key "--stdio")))
+              ("claude_code" . (:command "claude" :args ("mcp" "serve")))
+              ("serena" . (:command "uvx" :args ("--from" "git+https://github.com/oraios/serena" "serena" "start-mcp-server")))))))
 
   ;; :hook (server-after-make-frame-hook . #'mcp-hub-start-all-server)
 
@@ -1158,9 +1183,9 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
     :custom ((minimap-window-location . 'right)
              (minimap-minimum-width . 20)
              (minimap-major-modes . '(prog-mode
-				      markdown-mode
-				      html-mode
-				      fundamental-mode)))
+                                      markdown-mode
+                                      html-mode
+                                      fundamental-mode)))
     :bind ("C-x m" . minimap-mode))
 
   (leaf rainbow-delimiters
@@ -1339,8 +1364,8 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
     :config
     (quickrun-add-command "gleam"
       '((:command . "gleam")
-	(:exec    . ("gleam run"))
-	(:remove  . ("build")))
+        (:exec    . ("gleam run"))
+        (:remove  . ("build")))
       :default "gleam"))
 
   (leaf smartchr
@@ -1351,11 +1376,10 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 
   (add-hook 'server-after-make-frame-hook
 	    (lambda ()
-	      (setq smudge-oauth2-client-secret (get-secret "spotify-secret"))
-	      (setq smudge-oauth2-client-id (get-secret "spotify-id"))))
+              (setq smudge-oauth2-client-secret (get-secret "spotify-secret"))
+              (setq smudge-oauth2-client-id (get-secret "spotify-id"))))
 
   (leaf smudge
-    :ensure t
     :require t)
 
   (leaf ox-typst
@@ -1406,9 +1430,6 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
     :hook
     (html-ts-mode . emmet-mode))
 
-  (leaf tabspaces
-    :require t)
-
   ;; (leaf elscreen
   ;;   :require t)
 
@@ -1456,7 +1477,7 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
                                                   (window-height))))
           (setq c (aref action 0))
           (cond ((= c ?l)
-		 (enlarge-window-horizontally dx))
+                 (enlarge-window-horizontally dx))
 		((= c ?h)
 		 (shrink-window-horizontally dx))
 		((= c ?j)
@@ -1466,7 +1487,7 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 		;; otherwise
 		(t
 		 (let ((last-command-char (aref action 0))
-		       (command (key-binding action)))
+                       (command (key-binding action)))
                    (when command
                      (call-interactively command)))
 		 (message "Quit")
@@ -1489,7 +1510,7 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 
   (defun is-node-project ()
     (file-exists-p (expand-file-name "package.json" (project-root (project-current)))))                       
-                                                                                                             
+  
   (defun nyan-region ()
     "選択範囲をにゃーんで置換する"
     (interactive)
@@ -1499,9 +1520,9 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
              (len (- end beg)))
 	(delete-region beg end)
 	(cond
-	 ((= len 1) (insert "にゃ"))
-	 ((= len 2) (insert "にゃん"))
-	 (t (insert (format "にゃ%sん" (make-string (- len 3) ?ー))))))))
+         ((= len 1) (insert "にゃ"))
+         ((= len 2) (insert "にゃん"))
+         (t (insert (format "にゃ%sん" (make-string (- len 3) ?ー))))))))
 
   (defun blackening-region ()
     "選択範囲を█で置換する"
@@ -1558,7 +1579,7 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
            (gitmoji-codes (make-hash-table)))
       (mapcar (lambda (item) 
 		(substring (digs-hash item "code") 1))
-	      (digs-hash json-data "gitmojis"))))
+              (digs-hash json-data "gitmojis"))))
 
   (defun setup-gitmoji ()
     (interactive)
@@ -1674,7 +1695,7 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
     (let* ((src-dir (expand-file-name "src/blog" blog-repo))
            (files (directory-files src-dir))
            (articles (cl-remove-if-not (lambda (file)
-					 (string-match "-diary.md$" file))
+                                         (string-match "-diary.md$" file))
 				       files))
            (selected (completing-read "blog " articles)))
       (find-file (expand-file-name selected src-dir))))
@@ -1728,7 +1749,7 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
   (defun consult-roam ()
     (interactive)
     (let* ((node-items (mapcar (lambda (node)
-				 (cons (org-roam-node-title node) node))
+                                 (cons (org-roam-node-title node) node))
                                (org-roam-node-list)))
            (select-node-title (consult--read
                                (mapcar #'car node-items)))
@@ -1753,9 +1774,7 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
       (setq truncate-lines t))
     (recenter))
 
-
-  ;; ================ My configuratons ================
-
+  ;; ================ My configuratons ================ 
   (setq browse-url-browser-function 'browse-url-firefox)
 
   ;; Enable auto revert
@@ -1770,10 +1789,6 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
   ;; Font
   (add-to-list 'default-frame-alist
                '(font . "UDEV Gothic NF-14"))
-
-  ;; Transparency (85%)
-  (add-to-list 'default-frame-alist
-               '(alpha . 98))
 
   ;; For auth-info
   (setq auth-sources '("~/.emacs.d/.authinfo.gpg"))
@@ -1824,7 +1839,7 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 
   (global-set-key (kbd "C-c C-r") 'window-resizer)
 
-  (define-key global-map (kbd "M-g") 'consult-ghq-find)
+  (define-key global-map (kbd "M-g") 'projectile-persp-switch-project)
   (define-key global-map (kbd "C-x s") 'blackening-region)
   (define-key global-map (kbd "C-;") 'comment-dwim)
   (define-key evil-insert-state-map (kbd "C-h") #'my/minibuffer-backspace)
@@ -1849,7 +1864,7 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
   ;; When org-mode
   (add-hook 'org-mode-hook
 	    (lambda ()
-	      (define-key evil-insert-state-map (kbd "C-h") #'org-insert-heading)))
+              (define-key evil-insert-state-map (kbd "C-h") #'org-insert-heading)))
 
   (add-hook 'org-mode-hook
             (lambda ()
@@ -1905,6 +1920,9 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
   (setq interprogram-cut-function 'wl-copy)
   (setq interprogram-paste-function 'wl-paste)
 
+  ;; Frame transparency
+  (add-to-list 'default-frame-alist '(alpha-background . 85))
+
   ;; ================================================
 
   (leaf leaf
@@ -1919,6 +1937,7 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 
   ;; (provide 'init)
   (put 'narrow-to-region 'disabled nil)
+
   (custom-set-variables
    ;; custom-set-variables was added by Custom.
    ;; If you edit it by hand, you could mess it up, so be careful.
@@ -1938,7 +1957,7 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 	   inf-ruby iscroll kaocha-runner kind-icon leaf-convert
 	   leaf-tree lsp-bridge lsp-ui lua-mode major-mode-hydra migemo
 	   minimap mix multi-vterm nano-box nano-journal nano-modeline
-	   nano-popup nano-read nano-theme neotree nix-mode nix-ts-mode
+	   nano-popup nano-read nano-theme nix-mode nix-ts-mode
 	   nyan-mode oauth2 ob-hy open-junk-file orderless org-journal
 	   org-modern org-nix-shell org-roam-ui ox-typst ox-zenn plz
 	   projectile puni reformatter request rg ruby-electric
@@ -1947,14 +1966,14 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 	   undo-tree vertico vterm-toggle wakatime-mode web-mode
 	   yasnippet-capf yasnippet-snippets yatemplate))
    '(skk-jisyo-edit-user-accepts-editing t))
-  (custom-set-faces)
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+  (custom-set-faces))
+;; custom-set-faces was added by Custom.
+;; If you edit it by hand, you could mess it up, so be careful.
+;; Your init file should contain only one such instance.
+;; If there is more than one, they won't work right.
 
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-)
+;; custom-set-faces was added by Custom.
+;; If you edit it by hand, you could mess it up, so be careful.
+;; Your init file should contain only one such instance.
+;; If there is more than one, they won't work right.
+
