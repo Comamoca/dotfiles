@@ -173,7 +173,7 @@ layout {
         // - CSS-like notation: "rgb(255, 127, 0)", rgba(), hsl() and a few others.
 
         // Color of the ring on the active monitor.
-        active-color "#7fc8ff"
+        // active-color "#7fc8ff"  // Gradients take precedence over solid colors.
 
         // Color of the ring on inactive monitors.
         inactive-color "#505050"
@@ -182,10 +182,7 @@ layout {
         // Gradients are rendered the same as CSS linear-gradient(angle, from, to).
         // The angle is the same as in linear-gradient, and is optional,
         // defaulting to 180 (top-to-bottom gradient).
-        // You can use any CSS linear-gradient tool on the web to set these up.
-        // Changing the color space is also supported, check the wiki for more info.
-        //
-        // active-gradient from="#80c8ff" to="#bbddff" angle=45
+        active-gradient from="#7fc8ff" to="#c8a0ff" angle=45
 
         // You can also color the gradient relative to the entire view
         // of the workspace, rather than relative to just the window itself.
@@ -227,9 +224,14 @@ layout {
 // See the binds section below for more spawn examples.
 // spawn-at-startup "alacritty" "-e" "fish"
 
+// Emacs (PGTK) requires a Wayland display for --daemon; start via compositor
+// (not systemd) to guarantee the display connection is available.
+spawn-at-startup "emacs" "--daemon"
+
 // Startup applications from sway config
 spawn-at-startup "nm-applet"
 spawn-at-startup "dms" "run"
+// spawn-at-startup "au" "run"
 // stash ワークスペース（idx=1）を回避して通常作業用のワークスペースへ移動
 spawn-at-startup "bash" "-c" "sleep 0.5 && niri msg action focus-workspace 2"
 spawn-at-startup "fcitx5"
@@ -244,7 +246,7 @@ spawn-at-startup "xwayland-satellite"
 // Additionally, clients will be informed that they are tiled, removing some client-side rounded corners.
 // This option will also fix border/focus ring drawing behind some semitransparent windows.
 // After enabling or disabling this, you need to restart the apps for this to take effect.
-// prefer-no-csd
+prefer-no-csd
 
 // You can change the path where screenshots are saved.
 // A ~ at the front will be expanded to the home directory.
@@ -299,6 +301,14 @@ window-rule {
     open-floating true
 }
 
+// alacritty: Niriのフォーカスリング背景塗り潰しを無効化
+// alacritty の透過ウィンドウで、Niriのデフォルトの
+// focus-ring背景（#7fc8ff 水色）がブレンドされて見える問題を回避
+window-rule {
+    match app-id=r#"^Alacritty$"#
+    draw-border-with-background false
+}
+
 // Floaterm window (ime.sh float)
 // Note: foot is configured with -W 80x20 (80 columns x 20 rows)
 window-rule {
@@ -337,7 +347,7 @@ window-rule {
 // ホットプラグ時にクラッシュを引き起こすため。niriの将来のバージョンで
 // 修正された場合は再有効化を検討する。
 // See: https://gist.github.com/Comamoca/2baa860a7245448688b3e40b8c01d0c5
-/-window-rule {
+window-rule {
     geometry-corner-radius 12
     clip-to-geometry true
 }
@@ -358,12 +368,12 @@ binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
     // Suggested binds for running programs: terminal, app launcher, screen locker.
     // Mod+T { spawn "kitty"; }
-    Mod+Return { spawn "foot"; }
+    Mod+Return { spawn "alacritty"; }
     Mod+D { spawn "rofi" "-show" "combi"; }
     Mod+Space { spawn "rofi" "-show" "drun"; }
-    Mod+B { spawn "firefox"; }
-    // Scratchpad: foot 端末をトグル (niri-scratchpad)
-    Mod+T { spawn "niri-scratchpad" "target" "--spawn" "foot --app-id foot-scratch" "appid" "foot-scratch"; }
+    Mod+B { spawn "bash" "-c" "/home/coma/.ghq/github.com/Comamoca/dotfiles/bin/scripts/browser-focus-niri.sh"; }
+    // Scratchpad: alacritty 端末をトグル (niri-scratchpad)
+    Mod+T { spawn "niri-scratchpad" "target" "--spawn" "alacritty --class foot-scratch" "appid" "foot-scratch"; }
     // Scratchpad: Emacs をトグル (niri-scratchpad) - デフォルトデーモンに接続、タイトルで識別
     Mod+O { spawn "niri-scratchpad" "target" "--spawn" "emacsclient -c -F '((name . \"emacs-scratch\"))'" "title" "emacs-scratch"; }
 

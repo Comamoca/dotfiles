@@ -6,6 +6,13 @@ pkgs.writers.writePython3Bin "rclone-resync" {
       import subprocess
       import json
       import sys
+      import os
+
+      bisync_dir = os.path.expanduser("~/.cache/rclone/bisync")
+      if os.path.isdir(bisync_dir):
+          for f in os.listdir(bisync_dir):
+              if f.endswith(".lck"):
+                  os.remove(os.path.join(bisync_dir, f))
 
       cmd = [
           "${pkgs.rclone}/bin/rclone",

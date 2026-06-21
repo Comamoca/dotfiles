@@ -1,7 +1,7 @@
 {
     "acp": {
         "cargoLock": null,
-        "date": "2026-05-18",
+        "date": "2026-05-27",
         "extract": null,
         "name": "acp",
         "passthru": null,
@@ -13,16 +13,16 @@
             "name": null,
             "owner": "xenodium",
             "repo": "acp.el",
-            "rev": "4f3b0945660aff4f23e686a785b874688133f43b",
-            "sha256": "sha256-NFjpMspMw4xIUoA/3OefNVSodXAlvwgWyfhgy03x2S8=",
+            "rev": "3ddfa907eb7f17949a4a8e731ea5c5241e6cbcb4",
+            "sha256": "sha256-hN5c1kOKBPq+rbuh0ILxq8oRVDgZLxQqQmeDj5PUKzE=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "4f3b0945660aff4f23e686a785b874688133f43b"
+        "version": "3ddfa907eb7f17949a4a8e731ea5c5241e6cbcb4"
     },
     "agent-shell": {
         "cargoLock": null,
-        "date": "2026-05-19",
+        "date": "2026-06-14",
         "extract": null,
         "name": "agent-shell",
         "passthru": null,
@@ -34,12 +34,12 @@
             "name": null,
             "owner": "xenodium",
             "repo": "agent-shell",
-            "rev": "dcf789d989680ad7d720c63a64ca166e2e0f52e8",
-            "sha256": "sha256-TfFZdaKm1tD9xIGlIuxbONEJUW8zZELGMt5YwxIlhcs=",
+            "rev": "e382e41750a27ea2fbb8ae9e9c3d88edb08fa257",
+            "sha256": "sha256-vIUXzq7vtoqpooUhykirS21OGbA7cRj99LSHdWYa1P0=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "dcf789d989680ad7d720c63a64ca166e2e0f52e8"
+        "version": "e382e41750a27ea2fbb8ae9e9c3d88edb08fa257"
     },
     "aider": {
         "cargoLock": null,
@@ -189,7 +189,7 @@
     },
     "eca": {
         "cargoLock": null,
-        "date": "2026-05-18",
+        "date": "2026-06-13",
         "extract": null,
         "name": "eca",
         "passthru": null,
@@ -199,13 +199,13 @@
             "fetchSubmodules": false,
             "leaveDotGit": false,
             "name": null,
-            "rev": "9ea15cd61aa7d0164c2e79c28e794e29c5dbcbb3",
-            "sha256": "sha256-6EmrfPeTWiYWC9CGpiWDFoPHdXhTTujk3Bwt6ue5Qfs=",
+            "rev": "eb702479eafb4fb49b4790f308e21fe4fc172838",
+            "sha256": "sha256-Q5UrFWw2kWPnP1uUmqQp0hYrHRIudLfZADCSNAls4Lw=",
             "sparseCheckout": [],
             "type": "git",
             "url": "https://github.com/editor-code-assistant/eca-emacs"
         },
-        "version": "9ea15cd61aa7d0164c2e79c28e794e29c5dbcbb3"
+        "version": "eb702479eafb4fb49b4790f308e21fe4fc172838"
     },
     "eglot-booster": {
         "cargoLock": null,
@@ -299,16 +299,16 @@
             "name": null,
             "owner": "k1LoW",
             "repo": "git-wt",
-            "rev": "v0.28.0",
-            "sha256": "sha256-JXPJlPAsbXXXN86ZB7PQNv31QZMiAn5DaYfHlnGWknc=",
+            "rev": "v0.29.0",
+            "sha256": "sha256-1u0GDC1Sc4Xy4URuM6TnR/ENsdIWa94Ixu3mL6WrmFg=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "v0.28.0"
+        "version": "v0.29.0"
     },
     "gleam-mode": {
         "cargoLock": null,
-        "date": "2026-03-15",
+        "date": "2026-06-04",
         "extract": null,
         "name": "gleam-mode",
         "passthru": null,
@@ -320,12 +320,12 @@
             "name": null,
             "owner": "gleam-lang",
             "repo": "gleam-mode",
-            "rev": "bbd7c19084b23b427a49790077f54ad4b9244c6c",
-            "sha256": "sha256-XmKoKzAXHMeCeD0+XdQoDty06ZwHDgsPs28Rt+XVuf8=",
+            "rev": "ae8aecda23e9dca755d80e86cdb7c336011c2321",
+            "sha256": "sha256-q8G8DMeILdjGJaHw8jGNXcjncOTKJdOXe4nomBMZ6ek=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "bbd7c19084b23b427a49790077f54ad4b9244c6c"
+        "version": "ae8aecda23e9dca755d80e86cdb7c336011c2321"
     },
     "hydra-posframe": {
         "cargoLock": null,
@@ -564,6 +564,26 @@
         },
         "version": "ebf9a8e571db523dc6e4cd9ed80d0e0626983ae4"
     },
+    "picoclaw": {
+        "cargoLock": null,
+        "date": "2026-06-14",
+        "extract": null,
+        "name": "picoclaw",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "rev": "13a38bd1c498cd0c5031d7b1a51353dc73609c31",
+            "sha256": "sha256-3hSzXV1Ik3qoe1rawML8K7o2wUNf1AGXhVQ4duFqwVI=",
+            "sparseCheckout": [],
+            "type": "git",
+            "url": "https://github.com/sipeed/picoclaw"
+        },
+        "version": "13a38bd1c498cd0c5031d7b1a51353dc73609c31"
+    },
     "python-mode": {
         "cargoLock": null,
         "date": "2026-04-10",
@@ -650,7 +670,7 @@
     },
     "shell-maker": {
         "cargoLock": null,
-        "date": "2026-05-12",
+        "date": "2026-06-09",
         "extract": null,
         "name": "shell-maker",
         "passthru": null,
@@ -662,12 +682,12 @@
             "name": null,
             "owner": "xenodium",
             "repo": "shell-maker",
-            "rev": "11f4a9913e7625f122625dd89d668ad5c93cf151",
-            "sha256": "sha256-4xJ4X7CuosPA0PEjiKRcfdR8mj7vUkGnajUIDBV+oEk=",
+            "rev": "43ee9e1862994cbaa89715d324edb7a424181f22",
+            "sha256": "sha256-nJNZBZKmzEVn5gNEL0DT4S09Hfd8hk6DLaZTtoRksS0=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "11f4a9913e7625f122625dd89d668ad5c93cf151"
+        "version": "43ee9e1862994cbaa89715d324edb7a424181f22"
     },
     "skk-capf": {
         "cargoLock": null,
@@ -749,7 +769,7 @@
     },
     "takt": {
         "cargoLock": null,
-        "date": "2026-05-19",
+        "date": "2026-06-14",
         "extract": null,
         "name": "takt",
         "passthru": null,
@@ -761,12 +781,12 @@
             "name": null,
             "owner": "nrslib",
             "repo": "takt",
-            "rev": "3382ee802c37270f7a1a7eab636be1ee0ef78d4b",
-            "sha256": "sha256-EPTI+8kvGkk2Jvx2109L/DCg8dTo4b99o9Va60zIEzY=",
+            "rev": "b71586640f5a59e3f009bf033532a79fd643677f",
+            "sha256": "sha256-bea1bljvcedqDMF8PVGQi6aCmJ9kqq/G5Bf+kvmXlgQ=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "3382ee802c37270f7a1a7eab636be1ee0ef78d4b"
+        "version": "b71586640f5a59e3f009bf033532a79fd643677f"
     },
     "tramps3": {
         "cargoLock": null,
@@ -852,7 +872,7 @@
     },
     "verb": {
         "cargoLock": null,
-        "date": "2026-04-28",
+        "date": "2026-05-23",
         "extract": null,
         "name": "verb",
         "passthru": null,
@@ -864,12 +884,12 @@
             "name": null,
             "owner": "federicotdn",
             "repo": "verb",
-            "rev": "e2cf58fdc86510c025d4a8dbbacacbf7998beb26",
-            "sha256": "sha256-eRAYC2JMvdWvwPXjKxKtKueSTA3rzQv/eGJLqs3Ov1Y=",
+            "rev": "81aa67dffb17b3d88b35f16787aa3292d5761abb",
+            "sha256": "sha256-PfMD6NAWiIbOTMxp2LhLPLTUZctOvAMeHPqSFjgN5C8=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "e2cf58fdc86510c025d4a8dbbacacbf7998beb26"
+        "version": "81aa67dffb17b3d88b35f16787aa3292d5761abb"
     },
     "vibe-kanban": {
         "cargoLock": null,
@@ -912,26 +932,5 @@
             "type": "github"
         },
         "version": "v0.18.5"
-    },
-    "zenn-cli": {
-        "cargoLock": null,
-        "date": "2024-11-09",
-        "extract": null,
-        "name": "zenn-cli",
-        "passthru": null,
-        "pinned": false,
-        "src": {
-            "deepClone": false,
-            "fetchSubmodules": false,
-            "leaveDotGit": false,
-            "name": null,
-            "owner": "wurly200a",
-            "repo": "zenn-cli.el",
-            "rev": "011ca9dc9fcf36d1339fa3487c750ce0e328b09c",
-            "sha256": "sha256-fiU9vbNzJZ5OxswqMDJPtU7xZQXUnfDVe8UMhALAn/8=",
-            "sparseCheckout": [],
-            "type": "github"
-        },
-        "version": "011ca9dc9fcf36d1339fa3487c750ce0e328b09c"
     }
 }

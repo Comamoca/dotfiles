@@ -2,6 +2,9 @@
 
 ;; <leaf-install-code>
 (eval-and-compile
+  ;; treesit ライブラリを先にロードしておかないと、ツリーベースのメジャーモードの
+  ;; オートロードで treesit-ready-p が未定義のエラーになる
+  (require 'treesit nil t)
   (customize-set-variable
    'package-archives '(("org" . "https://orgmode.org/elpa/")
                        ("melpa" . "https://melpa.org/packages/")
@@ -34,7 +37,8 @@
   (defvar vertico-count 10)
   ;; Completion style config
   (setq completion-styles '(orderless basic)
-	completion-category-overrides '((file (styles basic partial-completion))))
+        completion-auto-help nil
+        completion-category-overrides '((file (styles basic partial-completion))))
   :init 
   (vertico-mode))
 
@@ -439,27 +443,16 @@
   (leaf lsp-mode
     :require t
     :custom
-    ((lsp-completion-provider . :none)
-     (gc-cons-threshold . 100000000)           ; 100MB
-     (read-process-output-max . (* 1024 1024))) ; 1MB
+    ((lsp-completion-provider . :capf))   ;; :none → :capf (corfuと併用する標準設定)
     :config
+    (setq gc-cons-threshold 100000000)
+    (setq read-process-output-max (* 1024 1024))
     (setq lsp-idle-delay 1.0)
-
 
     (define-key evil-normal-state-map (kbd "K") 'lsp-ui-doc-glance)
 
     (add-to-list 'lsp-language-id-configuration '(nix-mode . "nil"))
     (add-to-list 'lsp-language-id-configuration '(python-mode . "python"))
-
-    (defun corfu-lsp-setup ()
-      (setq-local completion-at-point-functions
-                  (list #'lsp-completion-at-point))
-      (setq-local completion-styles '(orderless basic)
-		  completion-category-defaults nil
-		  completion-category-overrides nil))
-
-    (add-hook 'lsp-mode-hook #'corfu-lsp-setup)
-    ;; (add-hook 'prog-mode-hook #'lsp-deferred)
     (with-eval-after-load 'lsp-mode
       (add-to-list 'lsp-disabled-clients 'semgrep-ls)))
 
@@ -585,7 +578,12 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
 
   ;; Completion soruce
   (leaf cape
-    :after corfu)
+    :after corfu
+    :config
+    ;; lsp-mode のキャッシュ問題と二重補完を防止
+    (advice-add #'lsp-completion-at-point :around #'cape-wrap-buster)
+    ;; LSP 補完時のハングを防止
+    (advice-add #'lsp-completion-at-point :around #'cape-wrap-noninterruptible))
 
 
   ;; (add-to-list 'completion-at-point-functions #'cape-line)
@@ -686,10 +684,10 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
     (neo-auto-indent-point . t)
     (neo-show-updir-line . nil)
     (projectile-switch-project-action . (lambda ()
-                                           (when (get-buffer "*NeoTree*")
-                                             (neotree-dir (projectile-project-root)))
-                                           (switch-to-buffer
-                                            (get-buffer-create (format "*%s*" (projectile-project-name))))))
+                                          (when (get-buffer "*NeoTree*")
+                                            (neotree-dir (projectile-project-root)))
+                                          (switch-to-buffer
+                                           (get-buffer-create (format "*%s*" (projectile-project-name))))))
     :config
     (progn
       (add-hook 'find-file-hook (lambda ()
@@ -818,7 +816,7 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
     `((migemo-command . "cmigemo")
       (migemo-dictionary . "/usr/share/cmigemo/utf-8/migemo-dict"))
     :config
-    (setq migemo- "~/.migemo/utf-8/migemo-dict") 
+    (setq migemo-dictionary "~/.migemo/utf-8/migemo-dict") 
     (setq migemo-user-dictionary nil)
     (setq migemo-regex-dictionary nil)
     (setq migemo-coding-system 'utf-8-unix))
@@ -849,7 +847,9 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
     (add-hook 'text-mode-hook 'tempel-setup-capf)
 
     (add-hook 'markdown-mode-hook (lambda ()
-                                    (setq-local completion-at-point-functions #'tempel-complete)))
+                                    (setq-local completion-at-point-functions
+                                                (cons #'tempel-complete
+                                                      completion-at-point-functions))))
 
     (add-hook 'git-commit-mode-hook (lambda ()
 				      (setup-gitmoji)
@@ -1370,7 +1370,12 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 	  `("env" "--unset=CLAUDECODE" ,(executable-find "claude-agent-acp")))
     (setq agent-shell-anthropic-claude-environment
 	  `(,(format "CLAUDE_CODE_EXECUTABLE=%s"
-		     (expand-file-name "~/.nix-profile/bin/.claude-wrapped")))))
+		     (expand-file-name "~/.nix-profile/bin/.claude-wrapped"))))
+    ;; evil に奪われるので evil-define-key で設定
+    ;; RET で改行、C-j で送信
+    (evil-define-key 'insert agent-shell-mode-map
+      (kbd "RET") #'newline
+      (kbd "C-j") #'shell-maker-submit))
 
   ;; Claude code
   (leaf claude-code
@@ -1483,26 +1488,8 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
       (shell-command-to-string cmd)))
 
   (defun is-node-project ()
-    (file-exists-p (expand-file-name "package.json" (project-root (project-current)))))
-
-  (defun get-secret (host)
-    "Wrapper functino for auth-info"
-    (require 'ht) 
-    (let* ((found (cl-first (auth-source-search :host host
-						:user "coma")))
-           (credentials (when found
-                          (eval `(ht ,@(--map `(,it ,(plist-get found it))
-					      '(:user :secret :save-function))))))
-           (secret (when credentials
-                     (ht-get credentials :secret))))
-
-      (if (not secret)
-	  (progn (message (format "Does not found %s credential." host))
-		 "")
-	(if (functionp secret)
-            (funcall secret)
-          secret))))
-
+    (file-exists-p (expand-file-name "package.json" (project-root (project-current)))))                       
+                                                                                                             
   (defun nyan-region ()
     "選択範囲をにゃーんで置換する"
     (interactive)
@@ -1537,433 +1524,437 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 
     (let* ((query (read-from-minibuffer "query? > "))
            (url (concat "https://www.google.com/search?client=firefox-b-d&q=" (url-hexify-string query))))
-      (shell-command (concat "open " "'" url "'")))))
+      (shell-command (concat "open " "'" url "'"))))
 
-(defun home-manager ()
-  (interactive)
-  (start-process "home-manager-process"
-		 "*home-manager*"
-		 "home-manager"
-		 "switch"
-		 "--flake"
-		 ".#Home"
-		 "--impure"
-		 "-b"
-		 "backup"))
+  (defun home-manager ()
+    (interactive)
+    (start-process "home-manager-process"
+		   "*home-manager*"
+		   "home-manager"
+		   "switch"
+		   "--flake"
+		   ".#Home"
+		   "--impure"
+		   "-b"
+		   "backup"))
 
-;; (set-process-sentinel proc
-;;                           (lambda (process event)
-;;                             (when (string= event "finished\n"))))
+  ;; (set-process-sentinel proc
+  ;;                           (lambda (process event)
+  ;;                             (when (string= event "finished\n"))))
 
-(defun all (pred lst)
-  "Returns t if all elements of the list satisfy the predicate."
-  (catch 'done
-    (dolist (item lst t)
-      (unless (funcall pred item)
-        (throw 'done nil)))))
+  (defun all (pred lst)
+    "Returns t if all elements of the list satisfy the predicate."
+    (catch 'done
+      (dolist (item lst t)
+	(unless (funcall pred item)
+          (throw 'done nil)))))
 
-(defun setup-gitmoji-data ()
-  (require 'digs)
-  (let* ((gitmoji-file-path (expand-file-name "~/.data/gitmoji.json"))
-         (json-data (with-temp-buffer
-		      (insert-file-contents gitmoji-file-path)
-		      (json-parse-string (buffer-string) :object-type 'hash-table)))
-         (gitmoji-codes (make-hash-table)))
-    (mapcar (lambda (item) 
-	      (substring (digs-hash item "code") 1))
-	    (digs-hash json-data "gitmojis"))))
+  (defun setup-gitmoji-data ()
+    (require 'digs)
+    (let* ((gitmoji-file-path (expand-file-name "~/.data/gitmoji.json"))
+           (json-data (with-temp-buffer
+			(insert-file-contents gitmoji-file-path)
+			(json-parse-string (buffer-string) :object-type 'hash-table)))
+           (gitmoji-codes (make-hash-table)))
+      (mapcar (lambda (item) 
+		(substring (digs-hash item "code") 1))
+	      (digs-hash json-data "gitmojis"))))
 
-(defun setup-gitmoji ()
-  (interactive)
-  (unless (boundp 'gitmoji--codes) 
-    (setq gitmoji--codes (setup-gitmoji-data)))
-  gitmoji--codes)
+  (defun setup-gitmoji ()
+    (interactive)
+    (unless (boundp 'gitmoji--codes) 
+      (setq gitmoji--codes (setup-gitmoji-data)))
+    gitmoji--codes)
 
-(setup-gitmoji)
-(defun gitmoji-completion ()
-  (let ((beg (save-excursion (skip-chars-backward "a-zA-Z") (point)))
-        (end (point))
-        (candidates gitmoji--codes))
-    (list beg end candidates :exclusive 'no)))
+  (setup-gitmoji)
+  (defun gitmoji-completion ()
+    (let ((beg (save-excursion (skip-chars-backward "a-zA-Z") (point)))
+          (end (point))
+          (candidates gitmoji--codes))
+      (list beg end candidates :exclusive 'no)))
 
-;; Collect gitmoji when startup
-;; (add-hook 'emacs-startup-hook 'setup-gitmoji)
-;; Enable at git-commit-mode
+  ;; Collect gitmoji when startup
+  ;; (add-hook 'emacs-startup-hook 'setup-gitmoji)
+  ;; Enable at git-commit-mode
 
-;; Display character count in modeline
-(defun update-buffer-char-count ()
-  (interactive)
-  (format " [%d] " (buffer-size)))
+  ;; Display character count in modeline
+  (defun update-buffer-char-count ()
+    (interactive)
+    (format " [%d] " (buffer-size)))
 
-(defun mode-line-time ()
-  ;; 更新間隔を60秒に設定（毎秒更新はtimer-event-handlerの負荷になる）
-  (setq display-time-interval 60)
-  (setq display-time-string-forms
-	'((format "%s/%s %s:%s" (string-to-number month) (string-to-number day) 24-hours minutes seconds)))
-  (setq display-time-day-and-date t)
-  (display-time-mode t))
+  (defun mode-line-time ()
+    ;; 更新間隔を60秒に設定（毎秒更新はtimer-event-handlerの負荷になる）
+    (setq display-time-interval 60)
+    (setq display-time-string-forms
+	  '((format "%s/%s %s:%s" (string-to-number month) (string-to-number day) 24-hours minutes seconds)))
+    (setq display-time-day-and-date t)
+    (display-time-mode t))
 
-(defun mode-line-format-update ()
-  (interactive)
-  (setq-default mode-line-format
-		(append mode-line-format
-			'((:eval (update-buffer-char-count))
-			  (:eval (mode-line-time))))))
+  (defun mode-line-format-update ()
+    (interactive)
+    (setq-default mode-line-format
+		  (append mode-line-format
+			  '((:eval (update-buffer-char-count))
+			    (:eval (mode-line-time))))))
 
-;; For diary
-(setq blog-repo "/home/coma/.ghq/github.com/Comamoca/blog/")
+  ;; For diary
+  (setq blog-repo "/home/coma/.ghq/github.com/Comamoca/blog/")
 
-(defun date-to-tempalte (year month day)
-  (let* ((time (encode-time 0 0 0 day month year))
-         (yymmdd (format-time-string "%Y-%m-%d" time))
-         (date (format-time-string "%-m/%-d" time))
-         (us-date (format-time-string "%b %-d %Y" time))
-         (tmpl `("---"
-                 ,(format "title: '%sの日報'" yymmdd)
-                 ,(format "description: '%sの日報をお届けいたします。'" date)
-                 ,(format "pubDate: '%s'" us-date)
-                 "emoji: 🦊"
-                 "tags: []"
-                 "draft: false"
-                 "---"
-                 "\n"
-                 "## 今日やったこと"
-                 "\n"
-                 "## 明日以降やりたいこと")))
-    (mapconcat #'identity tmpl "\n")))
+  (defun date-to-tempalte (year month day)
+    (let* ((time (encode-time 0 0 0 day month year))
+           (yymmdd (format-time-string "%Y-%m-%d" time))
+           (date (format-time-string "%-m/%-d" time))
+           (us-date (format-time-string "%b %-d %Y" time))
+           (tmpl `("---"
+                   ,(format "title: '%sの日報'" yymmdd)
+                   ,(format "description: '%sの日報をお届けいたします。'" date)
+                   ,(format "pubDate: '%s'" us-date)
+                   "emoji: 🦊"
+                   "tags: []"
+                   "draft: false"
+                   "---"
+                   "\n"
+                   "## 今日やったこと"
+                   "\n"
+                   "## 明日以降やりたいこと")))
+      (mapconcat #'identity tmpl "\n")))
 
-(defun create-diary-path (year month day)
-  (let* ((time (encode-time 0 0 0 day month year))
-         (date-str (format-time-string "%Y-%m-%d" time))
-         (file-name (format "%s-diary.md" date-str))
-         (path (concat (expand-file-name "src/blog/" blog-repo) file-name))) 
-    path))
+  (defun create-diary-path (year month day)
+    (let* ((time (encode-time 0 0 0 day month year))
+           (date-str (format-time-string "%Y-%m-%d" time))
+           (file-name (format "%s-diary.md" date-str))
+           (path (concat (expand-file-name "src/blog/" blog-repo) file-name))) 
+      path))
 
-(defun create-and-insert-diary (path text)
-  (find-file path)
-  (if (= (buffer-size) 0)
-      (insert text)))
-
-;; calendar-modeで選んだ日付から日報を作る
-(defun create-diary-from-calendar ()
-  (interactive)
-  (let* ((date (calendar-cursor-to-date))
-	 ;; (9 14 2025)
-         (month (nth 0 date))
-         (day (nth 1 date))
-         (year (nth 2 date))
-         (path (create-diary-path year month day))
-         (template (date-to-tempalte year month day)))
-
-    (create-and-insert-diary path template)))
-
-;; 今日の日付で日報を作る
-(defun latest-diary ()
-  "Open latest diary. This function call in `src/blog/` directory at blog repository."
-  (interactive)
-  (let* ((now (current-time))
-         (decoded (decode-time now))
-         (day    (nth 3 decoded))
-         (month  (nth 4 decoded))
-         (year   (nth 5 decoded)) 
-         (path (create-diary-path year month day))
-         (template (date-to-tempalte year month day)))
-    (create-and-insert-diary path template)))
-
-(defun new-blog-article ()
-  "Open latest diary. This function call in `src/blog/` directory at blog repository."
-  (interactive)
-  (let* ((date (format-time-string "%Y-%m-%d"))
-         (slug (read-string "slug > "))
-         (file-name (format "%s-%s.md" date slug))
-         (path (concat (expand-file-name "src/blog/" blog-repo) file-name)))
-    ;; (projectile-switch-project-by-name "blog")
+  (defun create-and-insert-diary (path text)
     (find-file path)
     (if (= (buffer-size) 0)
-	(tempel-insert 'article))))
+	(insert text)))
 
-(defun consult-diary ()
-  (interactive)
-  (let* ((src-dir (expand-file-name "src/blog" blog-repo))
-         (files (directory-files src-dir))
-         (articles (cl-remove-if-not (lambda (file)
-				       (string-match "-diary.md$" file))
-				     files))
-         (selected (completing-read "blog " articles)))
-    (find-file (expand-file-name selected src-dir))))
-
-(defun consult-article ()
-  (interactive)
-  (let* ((src-dir (expand-file-name "src/blog" blog-repo))
-         (files (directory-files src-dir))
-         (articles (cl-remove-if (lambda (file)
-                                   (string-match "-diary.md$" file))
-                                 files)) 
-         (selected (completing-read "blog " articles)))
-    (find-file (expand-file-name selected src-dir)))) 
-
-(defun org-paste-image ()
-  (interactive)
-  (setq filename (concat
-                  (expand-file-name (format-time-string "%Y-%m-%d-%H%M%S")
-				    "~/.ghq/github.com/Comamoca/org/imgs") ".png"))
-  (shell-command (concat  "wl-paste -t image/png > " filename))
-  (insert (concat "[[" filename "]]"))
-  (org-display-inline-images))
-
-(defun blog-paste-image ()
-  (interactive)
-  (setq fullpath (concat
-                  (expand-file-name (format-time-string "%Y-%m-%d-%H%M%S")
-				    "~/.ghq/github.com/Comamoca/blog/src/img") ".png"))
-  (shell-command (concat  "wl-paste -t image/png > " fullpath))
-  (insert (concat "![](/img/" (file-name-nondirectory fullpath) ")"))
-  (org-display-inline-images))
-
-
-;; Gauche
-(defun gauche-mode ()
-  (interactive)
-
-  (kill-all-local-variables)
-  (setq mode-name "gauche")
-  (setq major-mode 'gauche-mode) 
-
-  (modify-coding-system-alist 'process "gosh" '(utf-8 . utf-8))
-
-  (if (executable-find "gosh")
-      (setq scheme-program-mode "gosh -i")
-    (message "gosh is not found"))
-
-  (run-hooks 'gauche-mode-hook))
-
-;; consult for org-roam
-(defun consult-roam ()
-  (interactive)
-  (let* ((node-items (mapcar (lambda (node)
-			       (cons (org-roam-node-title node) node))
-                             (org-roam-node-list)))
-         (select-node-title (consult--read
-                             (mapcar #'car node-items)))
-         (select-node (cdr (assoc select-node-title node-items))))
-    (find-file (org-roam-node-file select-node))))
-
-;; Pinentry Emacs
-(defun pinentry-emacs (desc prompt ok error)
-  (let ((str (read-passwd (concat (replace-regexp-in-string "%22" "\"" (replace-regexp-in-string "%0A" "\n" desc)) prompt ": "))))
-    str))
-
-;; initel function that behaves like `:e $MYVIMRC`
-(defun initel ()
-  (interactive)
-  (find-file user-init-file))
-
-(defun toggle-truncate-lines ()
-  "折り返し表示をトグル動作します."
-  (interactive)
-  (if truncate-lines
-      (setq truncate-lines nil)
-    (setq truncate-lines t))
-  (recenter))
-
-
-;; ================ My configuratons ================
-
-(setq browse-url-browser-function 'browse-url-firefox)
-
-;; Enable auto revert
-(global-auto-revert-mode 1)
-
-;; load-path
-(add-to-list 'load-path "~/.emacs.d/lisp/my-package")
-
-;; Ediff
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
-
-;; Font
-(add-to-list 'default-frame-alist
-             '(font . "UDEV Gothic NF-14"))
-
-;; For auth-info
-(setq auth-sources '("~/.emacs.d/.authinfo.gpg"))
-(setq create-lockfiles nil)
-
-;; ================================================
-;; パフォーマンス最適化設定
-;; ================================================
-
-;; redisplay最適化（最大の問題: redisplay_internal が70%のCPUを消費）
-;; redisplay-skip-fontification-on-input は lsp-mode の補完 UI に干渉するため無効化
-;; (setq redisplay-skip-fontification-on-input t)
-(setq fast-but-imprecise-scrolling t)           ; スクロール中の精度より速度を優先
-
-;; jit-lock最適化（シンタックスハイライトの遅延処理）
-(setq jit-lock-stealth-time 1.0)     ; アイドル時のバックグラウンド処理開始を遅らせる
-(setq jit-lock-stealth-nice 0.2)     ; バックグラウンド処理の間隔
-;; jit-lock-defer-time は補完（corfu/eglot）の表示タイミングに干渉するため無効化
-;; (setq jit-lock-defer-time 0.1)
-(setq jit-lock-chunk-size 1000)      ; 一度に処理するチャンクサイズ
-
-;; スクロール最適化
-(setq scroll-conservatively 101)
-(setq scroll-margin 0)
-(setq scroll-preserve-screen-position t)
-
-;; フレームのリサイズを抑制（redisplayの原因）
-(setq frame-inhibit-implied-resize t)
-
-;; GC: 起動完了後に適切な値に設定（early-init.elで最大化した値を戻す）
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (setq gc-cons-threshold (* 100 1024 1024))  ; 100MB
-            (setq gc-cons-percentage 0.1)
-            (message "GC threshold restored: %s MB" (/ gc-cons-threshold 1024 1024))))
-
-;; For lsp-mode
-(setq read-process-output-max (* 1024 1024))
-
-;; Key mapping
-(evil-define-key 'normal 'global (kbd "C-o")
-  (lambda ()
+  ;; calendar-modeで選んだ日付から日報を作る
+  (defun create-diary-from-calendar ()
     (interactive)
-    (if (projectile-project-p)
-        (projectile-find-file)
-      (call-interactively #'find-file))))
-(evil-define-key 'normal 'global (kbd "SPC l") #'toggle-truncate-lines)
+    (let* ((date (calendar-cursor-to-date))
+	   ;; (9 14 2025)
+           (month (nth 0 date))
+           (day (nth 1 date))
+           (year (nth 2 date))
+           (path (create-diary-path year month day))
+           (template (date-to-tempalte year month day)))
 
-(global-set-key (kbd "C-c C-r") 'window-resizer)
-(global-set-key (kbd "C-c C-r") 'window-resizer)
+      (create-and-insert-diary path template)))
 
-(define-key global-map (kbd "M-g") 'consult-ghq-find)
-(define-key global-map (kbd "C-x s") 'blackening-region)
-(define-key global-map (kbd "C-;") 'comment-dwim)
-(define-key evil-insert-state-map (kbd "C-h") #'my/minibuffer-backspace)
+  ;; 今日の日付で日報を作る
+  (defun latest-diary ()
+    "Open latest diary. This function call in `src/blog/` directory at blog repository."
+    (interactive)
+    (let* ((now (current-time))
+           (decoded (decode-time now))
+           (day    (nth 3 decoded))
+           (month  (nth 4 decoded))
+           (year   (nth 5 decoded)) 
+           (path (create-diary-path year month day))
+           (template (date-to-tempalte year month day)))
+      (create-and-insert-diary path template)))
 
-;; minibuffer
-(defun my/minibuffer-backspace ()
-  (interactive)
-  (delete-backward-char 1))
+  (defun new-blog-article ()
+    "Open latest diary. This function call in `src/blog/` directory at blog repository."
+    (interactive)
+    (let* ((date (format-time-string "%Y-%m-%d"))
+           (slug (read-string "slug > "))
+           (file-name (format "%s-%s.md" date slug))
+           (path (concat (expand-file-name "src/blog/" blog-repo) file-name)))
+      ;; (projectile-switch-project-by-name "blog")
+      (find-file path)
+      (if (= (buffer-size) 0)
+	  (tempel-insert 'article))))
 
-(define-key minibuffer-local-map (kbd "C-h") #'my/minibuffer-backspace)
-(define-key minibuffer-local-ns-map (kbd "C-h") #'my/minibuffer-backspace)
-(define-key minibuffer-local-completion-map (kbd "C-h") #'my/minibuffer-backspace)
-(define-key minibuffer-local-must-match-map (kbd "C-h") #'my/minibuffer-backspace)
-(define-key minibuffer-local-isearch-map (kbd "C-h") #'my/minibuffer-backspace)
+  (defun consult-diary ()
+    (interactive)
+    (let* ((src-dir (expand-file-name "src/blog" blog-repo))
+           (files (directory-files src-dir))
+           (articles (cl-remove-if-not (lambda (file)
+					 (string-match "-diary.md$" file))
+				       files))
+           (selected (completing-read "blog " articles)))
+      (find-file (expand-file-name selected src-dir))))
 
-;; Enable debug
-(setq debug-on-error nil)
+  (defun consult-article ()
+    (interactive)
+    (let* ((src-dir (expand-file-name "src/blog" blog-repo))
+           (files (directory-files src-dir))
+           (articles (cl-remove-if (lambda (file)
+                                     (string-match "-diary.md$" file))
+                                   files)) 
+           (selected (completing-read "blog " articles)))
+      (find-file (expand-file-name selected src-dir)))) 
 
-;; Custom modeline
-(mode-line-format-update)
+  (defun org-paste-image ()
+    (interactive)
+    (setq filename (concat
+                    (expand-file-name (format-time-string "%Y-%m-%d-%H%M%S")
+				      "~/.ghq/github.com/Comamoca/org/imgs") ".png"))
+    (shell-command (concat  "wl-paste -t image/png > " filename))
+    (insert (concat "[[" filename "]]"))
+    (org-display-inline-images))
 
-;; When org-mode
-(add-hook 'org-mode
-	  (lambda ()
-	    (local-set-key evil-insert-state-map (kbd "C-h") #'org-insert-heading)))
-
-(add-hook 'org-mode-hook
-          (lambda ()
-            (add-hook 'after-save-hook
-		      (lambda ()
-			(when (file-exists-p (concat (file-name-sans-extension (buffer-file-name)) ".html"))
-			  (org-html-export-to-html))
-                        
-			(when (file-exists-p (concat (file-name-sans-extension (buffer-file-name)) ".md"))
-			  (org-md-export-to-markdown)))
-		      
-		      
-		      nil t)))
-
-
-(electric-pair-mode 1)
-
-(global-hl-line-mode t)
-
-(setq vc-follow-symlinks t)
-(setq browse-url-generic-program "firefox")
-(setq ring-bell-function 'ignore)
-
-(setq display-warning-minimum-level :error)
-
-;; Disable to create backupfile
-(setq make-backup-files nil)
-
-;; Disable to auto save
-(setq auto-save-default nil)
-
-;; Copy & Paste with wl-clipboard
-;; ref: https://gist.github.com/yorickvP/6132f237fbc289a45c808d8d75e0e1fb
-(setenv "WAYLAND_DISPLAY" "wayland-1")
-
-(setq wl-copy-process nil)
-(defun wl-copy (text)
-  (setq wl-copy-process (make-process :name "wl-copy"
-				      :buffer nil
-				      :command '("wl-copy" "-f" "-n")
-				      ;; :command '("wl-copy")
-				      :connection-type 'pipe))
-  (process-send-string wl-copy-process text)
-  (process-send-eof wl-copy-process))
+  (defun blog-paste-image ()
+    (interactive)
+    (setq fullpath (concat
+                    (expand-file-name (format-time-string "%Y-%m-%d-%H%M%S")
+				      "~/.ghq/github.com/Comamoca/blog/src/img") ".png"))
+    (shell-command (concat  "wl-paste -t image/png > " fullpath))
+    (insert (concat "![](/img/" (file-name-nondirectory fullpath) ")"))
+    (org-display-inline-images))
 
 
-(defun wl-paste ()
-  (if (and wl-copy-process (process-live-p wl-copy-process))
-      nil    ; should return nil if we're the current paste owner
-    ;; (shell-command-to-string "wl-paste -n | tr -d \r")
-    (shell-command-to-string "wl-paste -n")))
+  ;; Gauche
+  (defun gauche-mode ()
+    (interactive)
 
-(setq interprogram-cut-function 'wl-copy)
-(setq interprogram-paste-function 'wl-paste)
+    (kill-all-local-variables)
+    (setq mode-name "gauche")
+    (setq major-mode 'gauche-mode) 
 
-;; ================================================
+    (modify-coding-system-alist 'process "gosh" '(utf-8 . utf-8))
 
-(leaf leaf
-  :config
-  (leaf leaf-convert)
-  (leaf leaf-tree
-    :custom ((imenu-list-size . 30)
-             (imenu-list-position . 'left))))
+    (if (executable-find "gosh")
+	(setq scheme-program-mode "gosh -i")
+      (message "gosh is not found"))
 
-(leaf macrostep
-  :bind (("C-c e" . macrostep-expand)))
+    (run-hooks 'gauche-mode-hook))
 
-;; (provide 'init)
-(put 'narrow-to-region 'disabled nil)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(aas ace-window acm affe aidermacs alert all-the-icons apheleia
-	 astro-ts-mode calfw calfw-cal calfw-gcal calfw-ical calfw-org
-	 cape catppuccin-theme cider-eval-sexp-fu cider-hydra
-	 consult-gh-forge consult-ghq corfu dashboard ddskk-posframe
-	 deft dimmer direnv dotnet eat editorconfig eldoc-box
-	 elixir-mode embark-consult enh-ruby-mode envrc evil-ledger
-	 evil-smartparens flycheck-inline flycheck-ledger
-	 flycheck-pos-tip focus gleam-ts-mode gnuplot gnuplot-mode
-	 god-mode good-scroll google-translate gptel grugru
-	 haskell-mode highlight-indent-guides hotfuzz inf-elixir
-	 inf-ruby iscroll kaocha-runner kind-icon leaf-convert
-	 leaf-tree lsp-bridge lsp-ui lua-mode major-mode-hydra migemo
-	 minimap mix multi-vterm nano-box nano-journal nano-modeline
-	 nano-popup nano-read nano-theme neotree nix-mode nix-ts-mode
-	 nyan-mode oauth2 ob-hy open-junk-file orderless org-journal
-	 org-modern org-nix-shell org-roam-ui ox-typst ox-zenn plz
-	 projectile puni reformatter request rg ruby-electric
-	 scala-mode scala-ts-mode sharper shell-maker slime sly-asdf
-	 sublimity tempel-collection transient-dwim treesit-auto
-	 undo-tree vertico vterm-toggle wakatime-mode web-mode
-	 yasnippet-capf yasnippet-snippets yatemplate))
- '(skk-jisyo-edit-user-accepts-editing t))
-(custom-set-faces)
-;; custom-set-faces was added by Custom.
-;; If you edit it by hand, you could mess it up, so be careful.
-;; Your init file should contain only one such instance.
-;; If there is more than one, they won't work right.
+  ;; consult for org-roam
+  (defun consult-roam ()
+    (interactive)
+    (let* ((node-items (mapcar (lambda (node)
+				 (cons (org-roam-node-title node) node))
+                               (org-roam-node-list)))
+           (select-node-title (consult--read
+                               (mapcar #'car node-items)))
+           (select-node (cdr (assoc select-node-title node-items))))
+      (find-file (org-roam-node-file select-node))))
 
-;; custom-set-faces was added by Custom.
-;; If you edit it by hand, you could mess it up, so be careful.
-;; Your init file should contain only one such instance.
-;; If there is more than one, they won't work right. 
+  ;; Pinentry Emacs
+  (defun pinentry-emacs (desc prompt ok error)
+    (let ((str (read-passwd (concat (replace-regexp-in-string "%22" "\"" (replace-regexp-in-string "%0A" "\n" desc)) prompt ": "))))
+      str))
+
+  ;; initel function that behaves like `:e $MYVIMRC`
+  (defun initel ()
+    (interactive)
+    (find-file user-init-file))
+
+  (defun toggle-truncate-lines ()
+    "折り返し表示をトグル動作します."
+    (interactive)
+    (if truncate-lines
+	(setq truncate-lines nil)
+      (setq truncate-lines t))
+    (recenter))
+
+
+  ;; ================ My configuratons ================
+
+  (setq browse-url-browser-function 'browse-url-firefox)
+
+  ;; Enable auto revert
+  (global-auto-revert-mode 1)
+
+  ;; load-path
+  (add-to-list 'load-path "~/.emacs.d/lisp/my-package")
+
+  ;; Ediff
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
+  ;; Font
+  (add-to-list 'default-frame-alist
+               '(font . "UDEV Gothic NF-14"))
+
+  ;; Transparency (85%)
+  (add-to-list 'default-frame-alist
+               '(alpha . 98))
+
+  ;; For auth-info
+  (setq auth-sources '("~/.emacs.d/.authinfo.gpg"))
+  (setq create-lockfiles nil)
+
+  ;; ================================================
+  ;; パフォーマンス最適化設定
+  ;; ================================================
+
+  ;; redisplay最適化（最大の問題: redisplay_internal が70%のCPUを消費）
+  ;; redisplay-skip-fontification-on-input は lsp-mode の補完 UI に干渉するため無効化
+  ;; (setq redisplay-skip-fontification-on-input t)
+  (setq fast-but-imprecise-scrolling t)           ; スクロール中の精度より速度を優先
+
+  ;; jit-lock最適化（シンタックスハイライトの遅延処理）
+  (setq jit-lock-stealth-time 1.0)     ; アイドル時のバックグラウンド処理開始を遅らせる
+  (setq jit-lock-stealth-nice 0.2)     ; バックグラウンド処理の間隔
+  ;; jit-lock-defer-time は補完（corfu/eglot）の表示タイミングに干渉するため無効化
+  ;; (setq jit-lock-defer-time 0.1)
+  (setq jit-lock-chunk-size 1000)      ; 一度に処理するチャンクサイズ
+
+  ;; スクロール最適化
+  (setq scroll-conservatively 101)
+  (setq scroll-margin 0)
+  (setq scroll-preserve-screen-position t)
+
+  ;; フレームのリサイズを抑制（redisplayの原因）
+  (setq frame-inhibit-implied-resize t)
+
+  ;; GC: 起動完了後に適切な値に設定（early-init.elで最大化した値を戻す）
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (setq gc-cons-threshold (* 100 1024 1024))  ; 100MB
+              (setq gc-cons-percentage 0.1)
+              (message "GC threshold restored: %s MB" (/ gc-cons-threshold 1024 1024))))
+
+  ;; For lsp-mode
+  (setq read-process-output-max (* 1024 1024))
+
+  ;; Key mapping
+  (evil-define-key 'normal 'global (kbd "C-o")
+    (lambda ()
+      (interactive)
+      (if (projectile-project-p)
+          (projectile-find-file)
+	(call-interactively #'find-file))))
+  (evil-define-key 'normal 'global (kbd "SPC l") #'toggle-truncate-lines)
+
+  (global-set-key (kbd "C-c C-r") 'window-resizer)
+
+  (define-key global-map (kbd "M-g") 'consult-ghq-find)
+  (define-key global-map (kbd "C-x s") 'blackening-region)
+  (define-key global-map (kbd "C-;") 'comment-dwim)
+  (define-key evil-insert-state-map (kbd "C-h") #'my/minibuffer-backspace)
+
+  ;; minibuffer
+  (defun my/minibuffer-backspace ()
+    (interactive)
+    (delete-backward-char 1))
+
+  (define-key minibuffer-local-map (kbd "C-h") #'my/minibuffer-backspace)
+  (define-key minibuffer-local-ns-map (kbd "C-h") #'my/minibuffer-backspace)
+  (define-key minibuffer-local-completion-map (kbd "C-h") #'my/minibuffer-backspace)
+  (define-key minibuffer-local-must-match-map (kbd "C-h") #'my/minibuffer-backspace)
+  (define-key minibuffer-local-isearch-map (kbd "C-h") #'my/minibuffer-backspace)
+
+  ;; Enable debug
+  (setq debug-on-error nil)
+
+  ;; Custom modeline
+  (mode-line-format-update)
+
+  ;; When org-mode
+  (add-hook 'org-mode-hook
+	    (lambda ()
+	      (define-key evil-insert-state-map (kbd "C-h") #'org-insert-heading)))
+
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (add-hook 'after-save-hook
+			(lambda ()
+			  (when (file-exists-p (concat (file-name-sans-extension (buffer-file-name)) ".html"))
+			    (org-html-export-to-html))
+                          
+			  (when (file-exists-p (concat (file-name-sans-extension (buffer-file-name)) ".md"))
+			    (org-md-export-to-markdown)))
+			
+			
+			nil t)))
+
+
+  (electric-pair-mode 1)
+
+  (global-hl-line-mode t)
+
+  (setq vc-follow-symlinks t)
+  (setq browse-url-generic-program "firefox")
+  (setq ring-bell-function 'ignore)
+
+  (setq warning-minimum-level :error)
+
+  ;; Disable to create backupfile
+  (setq make-backup-files nil)
+
+  ;; Disable to auto save
+  (setq auto-save-default nil)
+
+  ;; Copy & Paste with wl-clipboard
+  ;; ref: https://gist.github.com/yorickvP/6132f237fbc289a45c808d8d75e0e1fb
+  (setenv "WAYLAND_DISPLAY" "wayland-1")
+
+  (setq wl-copy-process nil)
+  (defun wl-copy (text)
+    (setq wl-copy-process (make-process :name "wl-copy"
+					:buffer nil
+					:command '("wl-copy" "-f" "-n")
+					;; :command '("wl-copy")
+					:connection-type 'pipe))
+    (process-send-string wl-copy-process text)
+    (process-send-eof wl-copy-process))
+
+
+  (defun wl-paste ()
+    (if (and wl-copy-process (process-live-p wl-copy-process))
+	nil    ; should return nil if we're the current paste owner
+      ;; (shell-command-to-string "wl-paste -n | tr -d \r")
+      (shell-command-to-string "wl-paste -n")))
+
+  (setq interprogram-cut-function 'wl-copy)
+  (setq interprogram-paste-function 'wl-paste)
+
+  ;; ================================================
+
+  (leaf leaf
+    :config
+    (leaf leaf-convert)
+    (leaf leaf-tree
+      :custom ((imenu-list-size . 30)
+               (imenu-list-position . 'left))))
+
+  (leaf macrostep
+    :bind (("C-c e" . macrostep-expand)))
+
+  ;; (provide 'init)
+  (put 'narrow-to-region 'disabled nil)
+  (custom-set-variables
+   ;; custom-set-variables was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(package-selected-packages
+     '(aas ace-window acm affe aidermacs alert all-the-icons apheleia
+	   astro-ts-mode calfw calfw-cal calfw-gcal calfw-ical calfw-org
+	   cape catppuccin-theme cider-eval-sexp-fu cider-hydra
+	   consult-gh-forge consult-ghq corfu dashboard ddskk-posframe
+	   deft dimmer direnv dotnet eat editorconfig eldoc-box
+	   elixir-mode embark-consult enh-ruby-mode envrc evil-ledger
+	   evil-smartparens flycheck-inline flycheck-ledger
+	   flycheck-pos-tip focus gleam-ts-mode gnuplot gnuplot-mode
+	   god-mode good-scroll google-translate gptel grugru
+	   haskell-mode highlight-indent-guides hotfuzz inf-elixir
+	   inf-ruby iscroll kaocha-runner kind-icon leaf-convert
+	   leaf-tree lsp-bridge lsp-ui lua-mode major-mode-hydra migemo
+	   minimap mix multi-vterm nano-box nano-journal nano-modeline
+	   nano-popup nano-read nano-theme neotree nix-mode nix-ts-mode
+	   nyan-mode oauth2 ob-hy open-junk-file orderless org-journal
+	   org-modern org-nix-shell org-roam-ui ox-typst ox-zenn plz
+	   projectile puni reformatter request rg ruby-electric
+	   scala-mode scala-ts-mode sharper shell-maker slime sly-asdf
+	   sublimity tempel-collection transient-dwim treesit-auto
+	   undo-tree vertico vterm-toggle wakatime-mode web-mode
+	   yasnippet-capf yasnippet-snippets yatemplate))
+   '(skk-jisyo-edit-user-accepts-editing t))
+  (custom-set-faces)
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+)

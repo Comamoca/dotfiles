@@ -141,6 +141,7 @@ in
   # boot.loader.grub.catppuccin.flavor = "mocha";
 
   catppuccin.enable = true;
+  catppuccin.autoEnable = true;
   catppuccin.flavor = "mocha";
   catppuccin.accent = "mauve";
   catppuccin.sddm.enable = true;

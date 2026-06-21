@@ -23,6 +23,9 @@ pkgs.rustPlatform.buildRustPackage {
     lockFile = "${src}/packages/opensrc/cli/Cargo.lock";
   };
 
+  # Bump to force rebuild (nixbuild.net cached failure workaround)
+  preBuild = "echo opensrc rebuild";
+
   meta = with pkgs.lib; {
     description = "Fetch source code of dependencies for AI coding agents";
     homepage = "https://github.com/vercel-labs/opensrc";
