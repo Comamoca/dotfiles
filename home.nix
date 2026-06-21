@@ -3,6 +3,7 @@
   pkgs,
   overlays,
   inputs,
+  lib,
   ...
 }:
 let
@@ -678,14 +679,20 @@ rec {
     };
   };
 
-  # Emacs daemon is launched by niri (spawn-at-startup) instead of systemd,
-  # because PGTK Emacs requires a display connection to start --daemon.
-  # systemd services start before the compositor creates the Wayland display,
-  # causing the daemon to fail with "display connection is closed".
+  # Emacs daemon managed by home-manager's services.emacs.
+  # Note: PGTK Emacs requires Wayland display, so it starts after graphical-session.target.
   services.emacs = {
-    enable = false;
+    enable = true;
     package = emacs';
   };
+
+  # tree-sitter-astro grammar doesn't ship with astro-ts-mode in emacs-packages-deps,
+  # so we symlink it from nixpkgs into Emacs' tree-sitter directory directly.
+  # This runs on every home-manager activation to stay in sync with nix store updates.
+  home.activation.createTreeSitterAstro = lib.hm.dag.entryAfter ["linkGeneration"] ''
+    mkdir -p ~/.emacs.d/tree-sitter
+    ln -sf ${pkgs.tree-sitter-grammars.tree-sitter-astro}/parser ~/.emacs.d/tree-sitter/libtree-sitter-astro.so
+  '';
 
   systemd.user.services.niri-scratchpad-daemon = {
     Unit = {
