@@ -427,6 +427,7 @@ in
     org-contrib
     org-project-capture
     org-projectile
+    org-transclusion
 
     calfw
     calfw-org

@@ -203,7 +203,7 @@
 
 ;; org-mode
 (leaf org
-  :after calendar-mode
+  :after text-mode calendar-mode
   :custom
   ((org-todo-keywords .
 		      '((sequence "TODO(t)" "PENDING(p)" "|" "DONE(d)" "CANCELED(c)")))
@@ -294,7 +294,19 @@
   :custom
   (`(org-roam-directory . ,(expand-file-name "roam" org-directory))
    `(org-roam-db-location . ,(expand-file-name "~/.emacs.d/org-roam/database.db"))
-   `(org-roam-index-file . ,(expand-file-name "index.org" org-roam-directory)))
+   `(org-roam-index-file . ,(expand-file-name "index.org" org-roam-directory))
+   (org-roam-capture-templates .
+    '(("d" "default" plain
+       "%?"
+       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                          "#+title: ${title}\n")
+       :unnarrowed t)
+      ("r" "reference" plain
+       "%?"
+       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                          "#+title: ${title}\n#+filetags: :reference:\n")
+       :unnarrowed t))))
+  :config
   (org-roam-db-autosync-mode))
 
 ;; Deft
@@ -307,6 +319,32 @@
 
 (leaf org-roam-ui)
 
+;; org-capture から org-roam ノートを作成するための設定
+(with-eval-after-load 'org-roam
+  (defun my/org-roam-capture-target ()
+    "Create a new org-roam node file and set it as the org-capture target."
+    (interactive)
+    (let* ((title (read-string "Title: "))
+           (slug (org-roam-node-slugify title))
+           (file (expand-file-name
+                  (format "%s-%s.org"
+                          (format-time-string "%Y%m%d%H%M%S")
+                          slug)
+                  org-roam-directory)))
+      (find-file file)
+      (insert "#+title: " title "\n\n")
+      (org-id-get-create)
+      (goto-char (point-min))))
+
+  ;; 古い "r" エントリがあれば削除してから追加
+  (setq org-capture-templates
+        (seq-remove (lambda (tmpl) (string= (car tmpl) "r"))
+                    org-capture-templates))
+  (add-to-list 'org-capture-templates
+               '("r" "Roam" plain (function my/org-roam-capture-target)
+                 "%?"
+                 :unnarrowed t) t))
+
 ;; org-bullets
 (leaf org-bullets
   :after org)
@@ -316,6 +354,20 @@
   :after
   :init
   (with-eval-after-load 'org (global-org-modern-mode)))
+
+;; org-transclusion — リンク先の内容をインライン展開
+(leaf org-transclusion
+  :after org
+  :bind (:org-mode-map
+         ("C-c t" . org-transclusion-mode))
+  :config
+  (setq org-transclusion-exclude-elements '(property-drawer keyword))
+  ;; org-roam の ID リンクに対して transclusion を有効化
+  (add-to-list 'org-transclusion-extensions 'org-roam)
+  :init
+  (with-eval-after-load 'org
+    (require 'org-transclusion)
+    (require 'org-transclusion-org-roam nil t)))
 
 ;; org-babel
 (leaf ob-hy)
@@ -336,20 +388,75 @@
   :config
   (setq howm-file-name-format "%Y-%m-%d.org"))
 
-;; org-project-capture
-;; プロジェクトごとにTODOをorg-captureで管理
-(leaf org-project-capture
-  :after org projectile
-  :require org-projectile
-  :bind (("C-c n p" . org-project-capture-project-todo-completing-read)
-         ("C-c n t" . org-project-capture-capture-for-current-project)
-         ("C-c n a" . org-project-capture-agenda-for-current-project))
-  :config
-  (setq org-project-capture-default-backend
-        (make-instance 'org-project-capture-projectile-backend))
-  (setq org-project-capture-projects-file
-        (expand-file-name "projects.org" org-directory))
-  (org-project-capture-single-file))
+;; ================================================
+;; Project notes - per-file org storage
+;; org-project-capture の機能をカスタムコードで置き換え
+;; プロジェクトごとに org/project/<project-name>.org で管理
+;; ================================================
+
+(defvar my/project-notes-dir
+  (expand-file-name "project" org-directory)
+  "Directory for per-project org note files.")
+
+(defun my/project-notes-file ()
+  "Return the org file path for the current projectile project.
+Uses author/repo.org format (e.g. Comamoca/dotfiles.org) to avoid
+collisions between forked repositories."
+  (when-let* ((root (projectile-project-root))
+              (dir (directory-file-name root))
+              (components (split-string dir "/" t))
+              (repo (car (last components)))
+              (author (car (last components 2))))
+    (if (and author repo)
+        (let ((dir-path (expand-file-name author my/project-notes-dir)))
+          (make-directory dir-path t)
+          (expand-file-name (concat repo ".org") dir-path))
+      ;; fallback: just use basename
+      (make-directory my/project-notes-dir t)
+      (expand-file-name (concat repo ".org") my/project-notes-dir))))
+
+(defun my/open-project-notes ()
+  "Open the org file for the current projectile project.
+Creates the file with default headings if it doesn't exist."
+  (interactive)
+  (let ((file-path (my/project-notes-file)))
+    (if file-path
+        (progn
+          (find-file file-path)
+          (when (= (buffer-size) 0)
+            (insert (format "#+title: %s\n\n* Tasks\n\n* Notes\n\n"
+                            (file-name-base (buffer-file-name))))))
+      (message "Not in a project"))))
+
+(defun my/capture-project-todo ()
+  "Capture a TODO into the current projectile project's org file."
+  (interactive)
+  (let ((file-path (my/project-notes-file)))
+    (if file-path
+        (org-capture nil "P")
+      (message "Not in a project"))))
+
+(defun my/project-notes-agenda ()
+  "Show agenda for the current project's notes file."
+  (interactive)
+  (let* ((file-path (my/project-notes-file))
+         (org-agenda-files (if file-path (list file-path))))
+    (if file-path
+        (org-agenda nil "a")
+      (message "Not in a project"))))
+
+;; Add capture template for project entries
+(with-eval-after-load 'org-capture
+  (add-to-list 'org-capture-templates
+               '("P" "Project" entry
+                 (file my/project-notes-file)
+                 "* TODO %?\n%U\n%a\n" :prepend t :empty-lines 1)
+               t))
+
+;; Keybindings
+(global-set-key (kbd "C-c n p") #'my/open-project-notes)
+(global-set-key (kbd "C-c n t") #'my/capture-project-todo)
+(global-set-key (kbd "C-c n a") #'my/project-notes-agenda)
 
 (leaf ddskk
   :custom ((default-input-method . "japanease-skk")
@@ -619,6 +726,8 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
   ;; それ以上深くするとリポジトリ内部 (node_modules/ 等) に入り込む
   (setq projectile-project-search-path
 	`(,(cons (expand-file-name "~/.ghq/github.com/") 2)))
+  ;; .opencode 等のサブディレクトリをプロジェクト検出から除外
+  (add-to-list 'projectile-globally-ignored-directories ".opencode")
   :bind ((:projectile-mode-map
           ("C-c p" . projectile-command-map))))
 
@@ -1361,13 +1470,81 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 (leaf consult-ghq
   :require t)
 
+;; Dashboard: ランダム画像表示のためのヘルパー関数
+(defvar my/dashboard-image-dir (expand-file-name "~/Pictures/shinycolors-jacket")
+  "Directory containing dashboard banner images.")
+
+(defvar my/dashboard-image-cache nil
+  "Cached list of full paths to image files in `my/dashboard-image-dir'.")
+
+(defun my/dashboard-image-list ()
+  "Return cached list of image file paths under `my/dashboard-image-dir'.
+Rebuilds cache when nil or invalid (e.g. stale non-list value)."
+  (unless (and my/dashboard-image-cache (listp my/dashboard-image-cache))
+    (setq my/dashboard-image-cache
+          (when (file-directory-p my/dashboard-image-dir)
+            (directory-files my/dashboard-image-dir t
+                             "\\.\\(jpg\\|jpeg\\|png\\|webp\\)\\'"))))
+  (when (listp my/dashboard-image-cache)
+    my/dashboard-image-cache))
+
+(defun my/dashboard-random-image ()
+  "Return a random image path from `my/dashboard-image-dir'.
+Returns nil when directory is empty or missing."
+  (when-let* ((files (my/dashboard-image-list))
+              (_ (not (null files))))
+    (nth (random (length files)) files)))
+
+(defun my/dashboard-on-banner-p ()
+  "Return non-nil if point is on or near the dashboard banner image.
+Scans up to 10 characters around point to find an image display property."
+  (cl-loop for offset from -10 to 10
+           for pos = (+ (point) offset)
+           when (and (> pos (point-min)) (< pos (point-max)))
+           thereis (when-let ((display (get-char-property pos 'display)))
+                     (imagep display))))
+
+(defun my/dashboard-randomize-banner ()
+  "Set a new random banner image and refresh the dashboard."
+  (interactive)
+  (when-let ((img (my/dashboard-random-image)))
+    (setq dashboard-startup-banner img)
+    (setq dashboard-banner-logo-title (or (my/dashboard-album-name) "SHINY COLORS"))
+    (dashboard-refresh-buffer)))
+
+(defun my/dashboard-album-name ()
+  "Extract album name from `dashboard-startup-banner' filename.
+Format: ALBUM__TRACK.jpg → \"ALBUM\" (underscores replaced with spaces).
+When ALBUM is \"OTHER\", use the track name instead (it's a single)."
+  (when-let* ((banner dashboard-startup-banner)
+              (fname (file-name-base banner))
+              (sep-pos (string-match "__" fname))
+              (prefix (substring fname 0 sep-pos))
+              (track  (substring fname (+ sep-pos 2)))
+              (name   (if (string= prefix "OTHER") track prefix)))
+    (replace-regexp-in-string "_" " " name)))
+
+(defun my/dashboard-update-banner-title ()
+  "Set `dashboard-banner-logo-title' based on the current banner image."
+  (setq dashboard-banner-logo-title (or (my/dashboard-album-name) "SHINY COLORS")))
+
 (leaf dashboard
   :require t
   :config
-  (setq dashboard-startup-banner
-        (expand-file-name "~/Pictures/shinycolors-jacket/BRILLI@NT_WING__BRILLI@NT_WING_04_夢咲きAfter_school.jpg"))
-  (setq dashboard-image-banner-max-width 600)
-  (setq dashboard-image-banner-max-height 300))
+  (setq dashboard-startup-banner (or (my/dashboard-random-image)
+                                     (expand-file-name "~/Pictures/shinycolors-jacket/BRILLI@NT_WING__BRILLI@NT_WING_04_夢咲きAfter_school.jpg")))
+  (my/dashboard-update-banner-title)
+  ;; 画像表示サイズ：アスペクト比を維持したまま、この範囲に収める
+  (setq dashboard-image-banner-max-width 300)
+  (setq dashboard-image-banner-max-height 300)
+  ;; RET: バナー画像上 → ランダム切替 / それ以外 → evil標準動作
+  (with-eval-after-load 'evil
+    (evil-define-key 'normal dashboard-mode-map (kbd "RET")
+      (lambda ()
+        (interactive)
+        (if (my/dashboard-on-banner-p)
+            (my/dashboard-randomize-banner)
+          (call-interactively #'evil-ret))))))
 
 (leaf minimal-dashboard
   :require t
@@ -1384,10 +1561,18 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 ;; emacsclient -c -F '((name . "emacs-scratch"))' で起動したフレームは
 ;; scratchバッファのままにする
 (defun my/after-make-frame-show-dashboard (&optional frame)
-  "Show dashboard in new FRAME, unless it's the scratchpad frame."
+  "Show dashboard in new FRAME, unless it's the scratchpad frame.
+Picks a random banner image each time."
   (let ((f (or frame (selected-frame))))
     (unless (string= (frame-parameter f 'name) "emacs-scratch")
       (with-selected-frame f
+        ;; 古い dashboard バッファを破棄して完全に再生成
+        (when-let ((buf (get-buffer "*dashboard*")))
+          (kill-buffer buf))
+        ;; 起動ごとにランダムな画像を選択 & アルバム名を表示
+        (when-let ((img (my/dashboard-random-image)))
+          (setq dashboard-startup-banner img))
+        (my/dashboard-update-banner-title)
         (dashboard-refresh-buffer)))))
 
 ;; フレーム生成時に dashboard を表示（alpha-background の可視化より先に
