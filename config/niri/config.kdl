@@ -330,6 +330,13 @@ window-rule {
     open-floating true
 }
 
+// Android Emulator: フローティングウィンドウとして表示
+// メイン画面とサイドバー両方をfloatingにする
+window-rule {
+    match app-id="Emulator"
+    open-floating true
+}
+
 // Example: block out two password managers from screen capture.
 // (This example rule is commented out with a "/-" in front.)
 /-window-rule {

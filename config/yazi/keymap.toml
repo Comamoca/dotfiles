@@ -1,0 +1,19 @@
+[[mgr.prepend_keymap]]
+on = "<C-r>"
+run = "refresh"
+desc = "Refresh"
+
+[[mgr.prepend_keymap]]
+on = "N"
+run = "create"
+desc = "Create a file"
+
+[[mgr.prepend_keymap]]
+on = "K"
+run = "create --dir=true"
+desc = "Create a directory"
+
+[[mgr.prepend_keymap]]
+on = "M"
+run = "rename"
+desc = "Rename"

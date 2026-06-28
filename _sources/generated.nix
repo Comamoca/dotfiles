@@ -20,15 +20,29 @@
   };
   agent-shell = {
     pname = "agent-shell";
-    version = "e382e41750a27ea2fbb8ae9e9c3d88edb08fa257";
+    version = "96343cf9a321f707e3007fb9a1543871d07f9937";
     src = fetchFromGitHub {
       owner = "xenodium";
       repo = "agent-shell";
-      rev = "e382e41750a27ea2fbb8ae9e9c3d88edb08fa257";
+      rev = "96343cf9a321f707e3007fb9a1543871d07f9937";
       fetchSubmodules = false;
-      sha256 = "sha256-vIUXzq7vtoqpooUhykirS21OGbA7cRj99LSHdWYa1P0=";
+      sha256 = "sha256-ncA3V2ZXGYG3jdkOMVvbY8iwouPu9ghmZKqwTJs/rzU=";
     };
-    date = "2026-06-14";
+    date = "2026-06-27";
+  };
+  agent-shell-manager = {
+    pname = "agent-shell-manager";
+    version = "53b73f13ed1ac9d2de128465a8504a7265490ea7";
+    src = fetchgit {
+      url = "https://github.com/jethrokuan/agent-shell-manager";
+      rev = "53b73f13ed1ac9d2de128465a8504a7265490ea7";
+      fetchSubmodules = false;
+      deepClone = false;
+      leaveDotGit = false;
+      sparseCheckout = [ ];
+      sha256 = "sha256-JPB/OnOhYbM0LMirSYQhpB6hW8SAg0Ri6buU8tMP7rA=";
+    };
+    date = "2026-02-13";
   };
   aider = {
     pname = "aider";
@@ -94,15 +108,15 @@
   };
   copilot = {
     pname = "copilot";
-    version = "ab5c58bc969f52f6d75e972658f2c3381c70b4fa";
+    version = "16664ca0b59c045c7209bdcd590fdc7831812dac";
     src = fetchFromGitHub {
       owner = "copilot-emacs";
       repo = "copilot.el";
-      rev = "ab5c58bc969f52f6d75e972658f2c3381c70b4fa";
+      rev = "16664ca0b59c045c7209bdcd590fdc7831812dac";
       fetchSubmodules = false;
-      sha256 = "sha256-hXZsu/pDE0/Li+GcFbC9ObbY4N1sVWDZ48CJfDrJmL4=";
+      sha256 = "sha256-vkmWLhL/CXD73VFs/EoA96oiXcqH6qtLixA3wk/GmG4=";
     };
-    date = "2026-03-31";
+    date = "2026-06-26";
   };
   digs = {
     pname = "digs";
@@ -118,17 +132,17 @@
   };
   eca = {
     pname = "eca";
-    version = "eb702479eafb4fb49b4790f308e21fe4fc172838";
+    version = "f91296cd8ddd1477700cc81c3edda0a45b1a6cd1";
     src = fetchgit {
       url = "https://github.com/editor-code-assistant/eca-emacs";
-      rev = "eb702479eafb4fb49b4790f308e21fe4fc172838";
+      rev = "f91296cd8ddd1477700cc81c3edda0a45b1a6cd1";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
       sparseCheckout = [ ];
-      sha256 = "sha256-Q5UrFWw2kWPnP1uUmqQp0hYrHRIudLfZADCSNAls4Lw=";
+      sha256 = "sha256-56dYFdvg+8w83ECAPUQVFceiCeVVsHZznCxvkvb+MXc=";
     };
-    date = "2026-06-13";
+    date = "2026-06-22";
   };
   eglot-booster = {
     pname = "eglot-booster";
@@ -166,6 +180,14 @@
     };
     date = "2019-11-07";
   };
+  follower_imassc_prism = {
+    pname = "follower_imassc_prism";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/data/img/special/wallpaper/1/wp_3840x2160_41200follower_imassc_prism.png";
+      sha256 = "sha256-ZCvXkZySkvDDLV56DAmGAz8wx/OeQfQ0zJGzYmKVvkU=";
+    };
+  };
   gerbil = {
     pname = "gerbil";
     version = "0618730d4e30bf3f48538d6b09722ad3b6056414";
@@ -198,6 +220,14 @@
     };
     date = "2026-06-04";
   };
+  hokura_thumb = {
+    pname = "hokura_thumb";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/hok/thumb.png";
+      sha256 = "sha256-0M1SVIHF/BsHfaFmpWohf/pXeAUPa1OWSdm2KpJCHNg=";
+    };
+  };
   hydra-posframe = {
     pname = "hydra-posframe";
     version = "142a04dd588af6c725e331863c3ca7bd5dda13ec";
@@ -221,17 +251,17 @@
   };
   kuro = {
     pname = "kuro";
-    version = "a3fba2e77a16aa6f23b85af36b227c6a3f24d82f";
+    version = "f282710cb9c530a863aeb75a4effa0fd77053f69";
     src = fetchgit {
       url = "https://github.com/takeokunn/kuro";
-      rev = "a3fba2e77a16aa6f23b85af36b227c6a3f24d82f";
+      rev = "f282710cb9c530a863aeb75a4effa0fd77053f69";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
       sparseCheckout = [ ];
-      sha256 = "sha256-kgLHdaE+IRnWdLgr+gSvg6t3F1YAm754mBamwdVL9oo=";
+      sha256 = "sha256-JhVYVtd8XRYKlgagk1iyxTOmsZTda1/M31fdLYoT37k=";
     };
-    date = "2026-05-01";
+    date = "2026-06-20";
   };
   lspx = {
     pname = "lspx";
@@ -247,15 +277,29 @@
   };
   mcp = {
     pname = "mcp";
-    version = "f10768e16f94f65527a0ea657ec91ab2eeaf244d";
+    version = "2d172809cbdb2a40d86b28ad73bd65547cefe0e1";
     src = fetchFromGitHub {
       owner = "lizqwerscott";
       repo = "mcp.el";
-      rev = "f10768e16f94f65527a0ea657ec91ab2eeaf244d";
+      rev = "2d172809cbdb2a40d86b28ad73bd65547cefe0e1";
       fetchSubmodules = false;
-      sha256 = "sha256-/fEdhKiTG6CRIgowXmPswKRtJ5VWZGe8odFyBji7IPs=";
+      sha256 = "sha256-50hvuP9q9fYV0lUCGXcQb5wPqkNAyHPFupOIA+Vu+w8=";
     };
-    date = "2026-05-08";
+    date = "2026-06-15";
+  };
+  minimal-dashboard = {
+    pname = "minimal-dashboard";
+    version = "b7dbce88a19777c0d33df025e2b830094e521af8";
+    src = fetchgit {
+      url = "https://github.com/dheerajshenoy/minimal-dashboard.el";
+      rev = "b7dbce88a19777c0d33df025e2b830094e521af8";
+      fetchSubmodules = false;
+      deepClone = false;
+      leaveDotGit = false;
+      sparseCheckout = [ ];
+      sha256 = "sha256-t8G2Q0M5XBAwSMfcaZUq2IgijV5ix/5R5B4jJ+PTQWE=";
+    };
+    date = "2025-11-02";
   };
   niri-scratchpad = {
     pname = "niri-scratchpad";
@@ -305,15 +349,29 @@
     };
     date = "2012-11-06";
   };
+  om-dash = {
+    pname = "om-dash";
+    version = "e89132365aef923c0493566f4ace5ece02c759ad";
+    src = fetchgit {
+      url = "https://github.com/gavv/om-dash";
+      rev = "e89132365aef923c0493566f4ace5ece02c759ad";
+      fetchSubmodules = false;
+      deepClone = false;
+      leaveDotGit = false;
+      sparseCheckout = [ ];
+      sha256 = "sha256-vkKm8F+/8B+Fo0hNyd+f8Zz79wfcJPcJMIuxNoo15gs=";
+    };
+    date = "2025-03-11";
+  };
   opensrc = {
     pname = "opensrc";
-    version = "v0.7.2";
+    version = "v0.7.3";
     src = fetchFromGitHub {
       owner = "vercel-labs";
       repo = "opensrc";
-      rev = "v0.7.2";
+      rev = "v0.7.3";
       fetchSubmodules = false;
-      sha256 = "sha256-t7QVes9MN8JsJMGtKsTUnErZDRbzGXsIOBpKJxumvFg=";
+      sha256 = "sha256-qRKbb2CA5omhFrxtKiEHEX4eH2ayvY8VZ/hH5Uckm8A=";
     };
   };
   org-bullets = {
@@ -340,43 +398,57 @@
     };
     date = "2026-01-02";
   };
-  picoclaw = {
-    pname = "picoclaw";
-    version = "13a38bd1c498cd0c5031d7b1a51353dc73609c31";
+  php-ts-mode = {
+    pname = "php-ts-mode";
+    version = "b479a7db89b5a01c429da69ea12889e51e4a362d";
     src = fetchgit {
-      url = "https://github.com/sipeed/picoclaw";
-      rev = "13a38bd1c498cd0c5031d7b1a51353dc73609c31";
+      url = "https://github.com/emacs-php/php-ts-mode";
+      rev = "b479a7db89b5a01c429da69ea12889e51e4a362d";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
       sparseCheckout = [ ];
-      sha256 = "sha256-3hSzXV1Ik3qoe1rawML8K7o2wUNf1AGXhVQ4duFqwVI=";
+      sha256 = "sha256-Q4W/d+paIeR8P856O2U4U04cl8rYbNgn0CV8b7KAMUk=";
     };
-    date = "2026-06-14";
+    date = "2025-04-22";
+  };
+  picoclaw = {
+    pname = "picoclaw";
+    version = "52320f48755852e53b8b6b10b1414a32c3f0a8a8";
+    src = fetchgit {
+      url = "https://github.com/sipeed/picoclaw";
+      rev = "52320f48755852e53b8b6b10b1414a32c3f0a8a8";
+      fetchSubmodules = false;
+      deepClone = false;
+      leaveDotGit = false;
+      sparseCheckout = [ ];
+      sha256 = "sha256-pdI6SS05aPiuqAflJW7kVk49ljDA+CXuo9syoyRBBTw=";
+    };
+    date = "2026-06-26";
   };
   python-mode = {
     pname = "python-mode";
-    version = "c6f7bcd79d43b2a4915b75c481355601f95968a0";
+    version = "4e2edae21655cf5d0559b1d7df23057ade20272c";
     src = fetchFromGitHub {
       owner = "emacsmirror";
       repo = "python-mode";
-      rev = "c6f7bcd79d43b2a4915b75c481355601f95968a0";
+      rev = "4e2edae21655cf5d0559b1d7df23057ade20272c";
       fetchSubmodules = false;
-      sha256 = "sha256-8+vokChih07oUyjYFvKQ268EHtEBo7QRJIMhMDWPECY=";
+      sha256 = "sha256-qshNdmuFIkM5hOi+oVDAIPR36PiUUQru85+hLYH/48Y=";
     };
-    date = "2026-04-10";
+    date = "2026-06-07";
   };
   quickrun = {
     pname = "quickrun";
-    version = "9199e222f95104ee83e115a9d5ac159d86816706";
+    version = "a25264bead36ea4cb8c6fe6ba3755508f5cb8d83";
     src = fetchFromGitHub {
       owner = "emacsorphanage";
       repo = "quickrun";
-      rev = "9199e222f95104ee83e115a9d5ac159d86816706";
+      rev = "a25264bead36ea4cb8c6fe6ba3755508f5cb8d83";
       fetchSubmodules = false;
-      sha256 = "sha256-VC9BRHCMnn+bw5VytGelTtCo7Y6tOniJYDtZAOAdp0U=";
+      sha256 = "sha256-zFhuriNZ7l0mxHF9KY0+tFWyYa6Q3txqg0Iv/h5iM7s=";
     };
-    date = "2026-01-04";
+    date = "2026-06-19";
   };
   rainbow-delimiters = {
     pname = "rainbow-delimiters";
@@ -389,6 +461,1556 @@
       sha256 = "sha256-JcNRW0+L65NtOBronwyT7SHP9QsNa3ysj4cHv88yfoI=";
     };
     date = "2023-08-30";
+  };
+  ruby-ts-mode = {
+    pname = "ruby-ts-mode";
+    version = "85bb2f678d37e0f3ad8f69596ba5a4694ef823e5";
+    src = fetchgit {
+      url = "https://github.com/pedz/ruby-ts-mode";
+      rev = "85bb2f678d37e0f3ad8f69596ba5a4694ef823e5";
+      fetchSubmodules = false;
+      deepClone = false;
+      leaveDotGit = false;
+      sparseCheckout = [ ];
+      sha256 = "sha256-zJlN3BKUCADM4xkmEfCf4Lj8XDumV9VlaEc398z0BYA=";
+    };
+    date = "2023-01-01";
+  };
+  sc_-28_Colors-_COLLECTION_-28_colors-_COLLECTION = {
+    pname = "sc_-28_Colors-_COLLECTION_-28_colors-_COLLECTION";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/07/LACA-39134.jpg";
+      sha256 = "sha256-kgYBhGvof+kB0GfSjHCHEPcbC9YFvrNQHs3bP+aiNCs=";
+    };
+  };
+  sc_-28_Colors-_COLLECTION_-28_colors-_COLLECTION_2 = {
+    pname = "sc_-28_Colors-_COLLECTION_-28_colors-_COLLECTION_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/07/LACA-19134.jpg";
+      sha256 = "sha256-2CsX7zpc94fQ/2J7aZ+A6m/SVTUajD/m77IHFAQVoC4=";
+    };
+  };
+  sc_-Halo_around-_-Halo_around-_01 = {
+    pname = "sc_-Halo_around-_-Halo_around-_01";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/05/LACM-24701.jpg";
+      sha256 = "sha256-6YBVw3buOGaYvfDvlxPTFd96lJXPrG5YKbOqP6pP630=";
+    };
+  };
+  sc_-Halo_around-_-Halo_around-_02 = {
+    pname = "sc_-Halo_around-_-Halo_around-_02";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/06/LACM-24702.jpg";
+      sha256 = "sha256-f7ia++pqgVxeffwLiz31rdtZfcEHRCb6r5X29rnjZrU=";
+    };
+  };
+  sc_-Halo_around-_-Halo_around-_03 = {
+    pname = "sc_-Halo_around-_-Halo_around-_03";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/07/LACM-24703.jpg";
+      sha256 = "sha256-jZns0bRT+cdOstMCuG3975KKk6eGg6cYvDXnS/aec2Q=";
+    };
+  };
+  sc_-Halo_around-_-Halo_around-_04 = {
+    pname = "sc_-Halo_around-_-Halo_around-_04";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/06/LACM-24704.jpg";
+      sha256 = "sha256-7ztR3QxzCyhuqrjZTwvuNKJQM/Ga7V1QsuZcrGd+VaY=";
+    };
+  };
+  sc_1stLIVE_THE_IDOLM_STER_SHINY_COLORS_1stLIVE_FLY_TO_THE_SHINY_SKY_Blu-ray = {
+    pname = "sc_1stLIVE_THE_IDOLM_STER_SHINY_COLORS_1stLIVE_FLY_TO_THE_SHINY_SKY_Blu-ray";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LABX-8376_7.jpg";
+      sha256 = "sha256-hWdeW/rNFpQkmZ91FR1j1wF8lhO7oXrOyyI7oZFBM98=";
+    };
+  };
+  sc_283PRODUCTION_SOLO_PERFORMANCE_LIVE_5_5th_Anniversary_LIVE_Blu-ray_BOX = {
+    pname = "sc_283PRODUCTION_SOLO_PERFORMANCE_LIVE_5_5th_Anniversary_LIVE_Blu-ray_BOX";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/10/LABX-38757_62.jpg";
+      sha256 = "sha256-3m/ebZhCccmdhn2UsH0LukmT8AYJzEAZLYMgKQHil3Q=";
+    };
+  };
+  sc_283PRODUCTION_SOLO_PERFORMANCE_LIVE_Blu-ray = {
+    pname = "sc_283PRODUCTION_SOLO_PERFORMANCE_LIVE_Blu-ray";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/10/LABX-8757_9.jpg";
+      sha256 = "sha256-zvJWUfDOucahFpmOjIlLfc4hfgEKMT6GIrQIPeA0WiA=";
+    };
+  };
+  sc_2ndLIVE_THE_IDOLM_STER_SHINY_COLORS_2ndLIVE_STEP_INTO_THE_SUNSET_SKY_Blu-ray = {
+    pname = "sc_2ndLIVE_THE_IDOLM_STER_SHINY_COLORS_2ndLIVE_STEP_INTO_THE_SUNSET_SKY_Blu-ray";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LABX-38512_6s.jpg";
+      sha256 = "sha256-qv/8jPyNdm2mll1yL9OfVhegVC4xm6uxj6YWPIOWJBw=";
+    };
+  };
+  sc_2ndLIVE_THE_IDOLM_STER_SHINY_COLORS_2ndLIVE_STEP_INTO_THE_SUNSET_SKY_Blu-ray_2 = {
+    pname = "sc_2ndLIVE_THE_IDOLM_STER_SHINY_COLORS_2ndLIVE_STEP_INTO_THE_SUNSET_SKY_Blu-ray_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LABX-8512_3.jpg";
+      sha256 = "sha256-d/oSQpE7vFaJoWj4zogej6nYV7hN7zmimmbRk+GfE4w=";
+    };
+  };
+  sc_2ndLIVE_THE_IDOLM_STER_SHINY_COLORS_2ndLIVE_STEP_INTO_THE_SUNSET_SKY_Blu-ray_3 = {
+    pname = "sc_2ndLIVE_THE_IDOLM_STER_SHINY_COLORS_2ndLIVE_STEP_INTO_THE_SUNSET_SKY_Blu-ray_3";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LABX-8514_5.jpg";
+      sha256 = "sha256-Tb6B1W6NkE3Y3Elqe9/Q+sUApTIuGg9OjKdPUqQo5pY=";
+    };
+  };
+  sc_2nd_season = {
+    pname = "sc_2nd_season";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LACM-24580.jpg";
+      sha256 = "sha256-Mcsa2wUPU0yxP8LCGucK1xRbm3KaPZ7DqsDyEgJoSwo=";
+    };
+  };
+  sc_2nd_season_Happy_Surprise_Trick = {
+    pname = "sc_2nd_season_Happy_Surprise_Trick";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LACA-25127-1.jpg";
+      sha256 = "sha256-/Yh2Uh9IDrOF45csByFpyBOcPjksEvip4/APCmL4T3w=";
+    };
+  };
+  sc_2nd_season_Over_the_prism = {
+    pname = "sc_2nd_season_Over_the_prism";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/10/LACA-35138_9.jpg";
+      sha256 = "sha256-6M8nXooA3KuAGG+4gtkiPa0pTWdGDJheH7lYk4wFcKQ=";
+    };
+  };
+  sc_2nd_season_Over_the_prism_2 = {
+    pname = "sc_2nd_season_Over_the_prism_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/10/LACA-25138.jpg";
+      sha256 = "sha256-OGwS4XFmG77imWwE5Q4jL+SkRp32g9Ian7hKpb3I1IE=";
+    };
+  };
+  sc_3rdLIVE_THE_IDOLM_STER_SHINY_COLORS_3rdLIVE_TOUR_PIECE_ON_PLANET_FUKUOKA_Blu-ray = {
+    pname = "sc_3rdLIVE_THE_IDOLM_STER_SHINY_COLORS_3rdLIVE_TOUR_PIECE_ON_PLANET_FUKUOKA_Blu-ray";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/01/LABX-8548_50.jpg";
+      sha256 = "sha256-2pnLzy7ldS3kVM5J2nyclV8cnGLZ8TlC+7+hDjJT/rc=";
+    };
+  };
+  sc_3rdLIVE_THE_IDOLM_STER_SHINY_COLORS_3rdLIVE_TOUR_PIECE_ON_PLANET_NAGOYA_Blu-ray = {
+    pname = "sc_3rdLIVE_THE_IDOLM_STER_SHINY_COLORS_3rdLIVE_TOUR_PIECE_ON_PLANET_NAGOYA_Blu-ray";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/01/LABX-8542_44.jpg";
+      sha256 = "sha256-gVlFqp0pQQYDU60K3cT7QHbj773HIlm+HHNIs2x2U9c=";
+    };
+  };
+  sc_3rdLIVE_THE_IDOLM_STER_SHINY_COLORS_3rdLIVE_TOUR_PIECE_ON_PLANET_TOKYO_Blu-ray = {
+    pname = "sc_3rdLIVE_THE_IDOLM_STER_SHINY_COLORS_3rdLIVE_TOUR_PIECE_ON_PLANET_TOKYO_Blu-ray";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/01/LABX-8545_47.jpg";
+      sha256 = "sha256-VeIiajdjG5NQ5TOBsGDrMjbzosWWP6rOa6Xz8mVBZJM=";
+    };
+  };
+  sc_4thLIVE_THE_IDOLM_STER_SHINY_COLORS_4thLIVE_Blu-ray = {
+    pname = "sc_4thLIVE_THE_IDOLM_STER_SHINY_COLORS_4thLIVE_Blu-ray";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/08/LABX-38629_33.jpg";
+      sha256 = "sha256-Opc1rNk4+uhJ+xDb52Cei/aVNcR+fInzxKISiZfNqi4=";
+    };
+  };
+  sc_4thLIVE_THE_IDOLM_STER_SHINY_COLORS_4thLIVE_Blu-ray_2 = {
+    pname = "sc_4thLIVE_THE_IDOLM_STER_SHINY_COLORS_4thLIVE_Blu-ray_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/08/LABX-8629_30.jpg";
+      sha256 = "sha256-yqUVoNMA9vW0JvkFe2qncybUy11pggh+zaxWWuV8Y+w=";
+    };
+  };
+  sc_4thLIVE_THE_IDOLM_STER_SHINY_COLORS_4thLIVE_Blu-ray_3 = {
+    pname = "sc_4thLIVE_THE_IDOLM_STER_SHINY_COLORS_4thLIVE_Blu-ray_3";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/08/LABX-8631_32.jpg";
+      sha256 = "sha256-ffNN+5BXyUo0jhbldpSLD9U0Eihf7ZpTlR+FXb6LrKI=";
+    };
+  };
+  sc_5_5th_Anniversary_LIVE_Blu-ray = {
+    pname = "sc_5_5th_Anniversary_LIVE_Blu-ray";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/10/LABX-8760_2.jpg";
+      sha256 = "sha256-vWHKLk/INKvs/I0rZi+u0szOfm8wcmtx37W9UbX8zjA=";
+    };
+  };
+  sc_5thLIVE_THE_IDOLM_STER_SHINY_COLORS_5thLIVE_If_I_wings_Blu-ray = {
+    pname = "sc_5thLIVE_THE_IDOLM_STER_SHINY_COLORS_5thLIVE_If_I_wings_Blu-ray";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LABX-38704_8.jpg";
+      sha256 = "sha256-cOrtcxBIzv9by3xhlxpd5a+TPLqY28JcFYSAMQ/csD0=";
+    };
+  };
+  sc_5thLIVE_THE_IDOLM_STER_SHINY_COLORS_5thLIVE_If_I_wings_Blu-ray_2 = {
+    pname = "sc_5thLIVE_THE_IDOLM_STER_SHINY_COLORS_5thLIVE_If_I_wings_Blu-ray_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LABX-8704_5.jpg";
+      sha256 = "sha256-FGjK/03f1TmFdY1V/SjDHQ/kpU4TlD0vPUWsJInWY4I=";
+    };
+  };
+  sc_5thLIVE_THE_IDOLM_STER_SHINY_COLORS_5thLIVE_If_I_wings_Blu-ray_3 = {
+    pname = "sc_5thLIVE_THE_IDOLM_STER_SHINY_COLORS_5thLIVE_If_I_wings_Blu-ray_3";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LABX-8706_7.jpg";
+      sha256 = "sha256-UG0cyI6uNy4f80D3aWLx9idlTGsSe2ZrkKp316ZdgZQ=";
+    };
+  };
+  sc_6_5thLIVE_THE_IDOLM_STER_SHINY_COLORS_6_5th_Anniversary_LIVE_Chapter_283_Blu-ray = {
+    pname = "sc_6_5thLIVE_THE_IDOLM_STER_SHINY_COLORS_6_5th_Anniversary_LIVE_Chapter_283_Blu-ray";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/06/LABX-38905_7.jpg";
+      sha256 = "sha256-s1i9mRBLX0B9Ax60GywuMIl4X+NMNmXTbPPs1Qf6ExE=";
+    };
+  };
+  sc_6_5thLIVE_THE_IDOLM_STER_SHINY_COLORS_6_5th_Anniversary_LIVE_Chapter_283_Blu-ray_2 = {
+    pname = "sc_6_5thLIVE_THE_IDOLM_STER_SHINY_COLORS_6_5th_Anniversary_LIVE_Chapter_283_Blu-ray_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/10/65thLIVE_DAY1.jpg";
+      sha256 = "sha256-ubP7KpvLBbVL642Q07h2mtf+pwhkNN7d0bohJiZ2dAY=";
+    };
+  };
+  sc_6_5thLIVE_THE_IDOLM_STER_SHINY_COLORS_6_5th_Anniversary_LIVE_Chapter_283_Blu-ray_3 = {
+    pname = "sc_6_5thLIVE_THE_IDOLM_STER_SHINY_COLORS_6_5th_Anniversary_LIVE_Chapter_283_Blu-ray_3";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/10/65thLIVE_DAY2.jpg";
+      sha256 = "sha256-AddJO2x93VKzpXJKfbjwLgauMRhI91rdtXIttLB5SNI=";
+    };
+  };
+  sc_6thLIVE_THE_IDOLM_STER_SHINY_COLORS_6thLIVE_TOUR_Come_and_Unite_Blu-ray = {
+    pname = "sc_6thLIVE_THE_IDOLM_STER_SHINY_COLORS_6thLIVE_TOUR_Come_and_Unite_Blu-ray";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LABX-38839s.jpg";
+      sha256 = "sha256-ihfn7FHujfP4VywIwPJsEiaGW9ffaam30s7GHkfF7WQ=";
+    };
+  };
+  sc_6thLIVE_THE_IDOLM_STER_SHINY_COLORS_6thLIVE_TOUR_Come_and_Unite_Blu-ray_2 = {
+    pname = "sc_6thLIVE_THE_IDOLM_STER_SHINY_COLORS_6thLIVE_TOUR_Come_and_Unite_Blu-ray_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LABX-8833s.jpg";
+      sha256 = "sha256-SVDHvT5sv1eDSzxS7c0S5GHaL8fkrd7MFs5/NQ/etPU=";
+    };
+  };
+  sc_6thLIVE_THE_IDOLM_STER_SHINY_COLORS_6thLIVE_TOUR_Come_and_Unite_Blu-ray_3 = {
+    pname = "sc_6thLIVE_THE_IDOLM_STER_SHINY_COLORS_6thLIVE_TOUR_Come_and_Unite_Blu-ray_3";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LABX-8836s.jpg";
+      sha256 = "sha256-b81jA6qBzfOtFs5bAXT93BcvcPGLfS38MkmMMoIv+MM=";
+    };
+  };
+  sc_BRILLI_NT_WING_BRILLI_NT_WING_01_Spread_the_Wings = {
+    pname = "sc_BRILLI_NT_WING_BRILLI_NT_WING_01_Spread_the_Wings";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/jk_LACM-14781.jpg";
+      sha256 = "sha256-YRO7jK6ETyAI/R0lyFKhwYdWdQ4HCfXrwBwRkYXbI2I=";
+    };
+  };
+  sc_BRILLI_NT_WING_BRILLI_NT_WING_02_destination = {
+    pname = "sc_BRILLI_NT_WING_BRILLI_NT_WING_02_destination";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14782.jpg";
+      sha256 = "sha256-NH6o+lCjAMDO53iPQamFM5UjPWw3BGm7XOCrsTZk4PE=";
+    };
+  };
+  sc_BRILLI_NT_WING_BRILLI_NT_WING_03 = {
+    pname = "sc_BRILLI_NT_WING_BRILLI_NT_WING_03";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14783.jpg";
+      sha256 = "sha256-WsolwAYxDVRZkgLNbFZ1RuOlOtE+ZZ/Su5+aTITCpnU=";
+    };
+  };
+  sc_BRILLI_NT_WING_BRILLI_NT_WING_04_After_school = {
+    pname = "sc_BRILLI_NT_WING_BRILLI_NT_WING_04_After_school";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14784.jpg";
+      sha256 = "sha256-UpzvCB4Qk5sG20NUHBR59PIjqDU3nhy6I6jgqKLV6Jg=";
+    };
+  };
+  sc_BRILLI_NT_WING_BRILLI_NT_WING_05 = {
+    pname = "sc_BRILLI_NT_WING_BRILLI_NT_WING_05";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14785.jpg";
+      sha256 = "sha256-aQO5n0RUB4eDNjKFa1FhfXRw+GoQHrF9jMHgx3HTJlk=";
+    };
+  };
+  sc_CANVAS_CANVAS_01 = {
+    pname = "sc_CANVAS_CANVAS_01";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/12/LACM-24361.jpg";
+      sha256 = "sha256-bA9SUlKCU9d6mD64l7T9NeP2P9raozLaI9pEr4TUbZ0=";
+    };
+  };
+  sc_CANVAS_CANVAS_02 = {
+    pname = "sc_CANVAS_CANVAS_02";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/04/LACM-24362.jpg";
+      sha256 = "sha256-z478Rb483An96noKpNmipmxvT29zbbjQ27MiYhiKhC0=";
+    };
+  };
+  sc_CANVAS_CANVAS_03 = {
+    pname = "sc_CANVAS_CANVAS_03";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/12/LACM-24363.jpg";
+      sha256 = "sha256-74qGycyAWdLO6Dcltr0oIhzFX+0QNjhaiiZLZXaXaZ4=";
+    };
+  };
+  sc_CANVAS_CANVAS_04 = {
+    pname = "sc_CANVAS_CANVAS_04";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/06/LACM-24364.jpg";
+      sha256 = "sha256-KBBqs1dTxLmwAZVgUQa7ytHOGP2O1u8PwX54H1HA7Oo=";
+    };
+  };
+  sc_CANVAS_CANVAS_05 = {
+    pname = "sc_CANVAS_CANVAS_05";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LACM-24365.jpg";
+      sha256 = "sha256-ZpnNZNehGvipHIG2SiPtTN93J5CDRI+1PEz2QOdNiR0=";
+    };
+  };
+  sc_CANVAS_CANVAS_06 = {
+    pname = "sc_CANVAS_CANVAS_06";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/08/LACM-24366.jpg";
+      sha256 = "sha256-OhLnjHBLARX0mp8Z8QBtmxubl2A4EsePe9V2Qphvyjs=";
+    };
+  };
+  sc_CANVAS_CANVAS_07 = {
+    pname = "sc_CANVAS_CANVAS_07";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/09/LACM-24367.jpg";
+      sha256 = "sha256-fvQLia8OMlCY3E+kn28b2v50NgvOnUerUPK/H+gUkl4=";
+    };
+  };
+  sc_CANVAS_CANVAS_08 = {
+    pname = "sc_CANVAS_CANVAS_08";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/10/LACM-24368.jpg";
+      sha256 = "sha256-Xf6iNelqi4Dit73AvDbqvvGHw7HvsRlbhxvcb7l+z0U=";
+    };
+  };
+  sc_COLORFUL_FE_THERS_COLORFUL_FE_THERS_-CoMETIK- = {
+    pname = "sc_COLORFUL_FE_THERS_COLORFUL_FE_THERS_-CoMETIK-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/11/LACA-25134.jpg";
+      sha256 = "sha256-KivlxE7V7YCBFnxQ00EJ5eoDyGG25Kr9YpEkxMTt/Y0=";
+    };
+  };
+  sc_COLORFUL_FE_THERS_COLORFUL_FE_THERS_-Luna- = {
+    pname = "sc_COLORFUL_FE_THERS_COLORFUL_FE_THERS_-Luna-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACA-15862.jpg";
+      sha256 = "sha256-PfOf3Nil7pFkdVC6iq6i1kzPNZvJafSeCmfma8Jars0=";
+    };
+  };
+  sc_COLORFUL_FE_THERS_COLORFUL_FE_THERS_-SHHis- = {
+    pname = "sc_COLORFUL_FE_THERS_COLORFUL_FE_THERS_-SHHis-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LACM-24395.jpg";
+      sha256 = "sha256-GLJV2s6ZYEamGyKGCxBrAi2f6EfGrY4bu2kZR5SgZ4s=";
+    };
+  };
+  sc_COLORFUL_FE_THERS_COLORFUL_FE_THERS_-Sol- = {
+    pname = "sc_COLORFUL_FE_THERS_COLORFUL_FE_THERS_-Sol-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACA-15863.jpg";
+      sha256 = "sha256-693vsoWyq2cRPgNagDMcWN/2RFgk1woJEnJv6yLoKxg=";
+    };
+  };
+  sc_COLORFUL_FE_THERS_COLORFUL_FE_THERS_-Stella- = {
+    pname = "sc_COLORFUL_FE_THERS_COLORFUL_FE_THERS_-Stella-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACA-15861.jpg";
+      sha256 = "sha256-s6vFim780v2Gh76+DlQhi+8kj7ktVrZvieCAjMj/aiw=";
+    };
+  };
+  sc_ECHOES_ECHOES_01 = {
+    pname = "sc_ECHOES_ECHOES_01";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/12/LACM-24541.jpg";
+      sha256 = "sha256-Mn3diTBCPBxdQryDT2f8ZhbpIU7KpXAMLEJuJSkGRJw=";
+    };
+  };
+  sc_ECHOES_ECHOES_02 = {
+    pname = "sc_ECHOES_ECHOES_02";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/05/LACM-24542.jpg";
+      sha256 = "sha256-OLCJPTlhUHN9ibefUu6AFkqro4/x+Y9Q/vsak2P01S8=";
+    };
+  };
+  sc_ECHOES_ECHOES_03 = {
+    pname = "sc_ECHOES_ECHOES_03";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/06/LACM-24543.jpg";
+      sha256 = "sha256-zMg51GRryb3P5574Y/7OzyS0LWLO8XYoyAnOH8uIc7s=";
+    };
+  };
+  sc_ECHOES_ECHOES_04 = {
+    pname = "sc_ECHOES_ECHOES_04";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LACM-24544.jpg";
+      sha256 = "sha256-F4+XaVpQPa0505kNBeGf52bV2H6MQK1gafwGmGzb/S8=";
+    };
+  };
+  sc_ECHOES_ECHOES_05 = {
+    pname = "sc_ECHOES_ECHOES_05";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/08/LACM-24545.jpg";
+      sha256 = "sha256-BR/6c4cAgUhHrjp9/0Rvb5xad3IEKGNxkuG0l0mwdmE=";
+    };
+  };
+  sc_ECHOES_ECHOES_06 = {
+    pname = "sc_ECHOES_ECHOES_06";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/09/LACM-24546.jpg";
+      sha256 = "sha256-pSNX3jd/FB/QywCRQtW9V4V3FBM/puXyf4IaF4UmKhY=";
+    };
+  };
+  sc_ECHOES_ECHOES_07 = {
+    pname = "sc_ECHOES_ECHOES_07";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/12/LACM_24547.jpg";
+      sha256 = "sha256-t+AWieAR2s7uJOLay46TqQwtlPAYaAYF8GQ4BfaLToY=";
+    };
+  };
+  sc_ECHOES_ECHOES_08 = {
+    pname = "sc_ECHOES_ECHOES_08";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/11/LACM-24548.jpg";
+      sha256 = "sha256-HKvOeRqoGj1pogy0eCZ3ug0JeRBm1gRYTmtBExsjOqg=";
+    };
+  };
+  sc_ECHOES_ECHOES_09 = {
+    pname = "sc_ECHOES_ECHOES_09";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/01/LACA-25115.jpg";
+      sha256 = "sha256-Ng2WQTNh3QmGhe0d7Xwfoq1X0P2JQNBck/G14nsVj1k=";
+    };
+  };
+  sc_FR_GMENT_WING_FR_GMENT_WING_01 = {
+    pname = "sc_FR_GMENT_WING_FR_GMENT_WING_01";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14861.jpg";
+      sha256 = "sha256-q9elWon2usFYdRshL+G1oMafvIjQX1OlZcEjdsbU1N0=";
+    };
+  };
+  sc_FR_GMENT_WING_FR_GMENT_WING_02 = {
+    pname = "sc_FR_GMENT_WING_FR_GMENT_WING_02";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14862.jpg";
+      sha256 = "sha256-YNoo0+EDc94e+n5t3DfDWt8qkxpdjuFsBMTs1epMlnQ=";
+    };
+  };
+  sc_FR_GMENT_WING_FR_GMENT_WING_03 = {
+    pname = "sc_FR_GMENT_WING_FR_GMENT_WING_03";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14863.jpg";
+      sha256 = "sha256-rtOO7olXhlkdG6KzldbzKXbOXklB7jklkpXYhWG69wk=";
+    };
+  };
+  sc_FR_GMENT_WING_FR_GMENT_WING_04 = {
+    pname = "sc_FR_GMENT_WING_FR_GMENT_WING_04";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14864.jpg";
+      sha256 = "sha256-HhJfHttHz9+qlKL6MSjjBpQYyhGKS+WdahCF4UilnHg=";
+    };
+  };
+  sc_FR_GMENT_WING_FR_GMENT_WING_05 = {
+    pname = "sc_FR_GMENT_WING_FR_GMENT_WING_05";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14865.jpg";
+      sha256 = "sha256-SYIZLFjZ2ux6d/oXOYltCV8oHgTnak/5+v5z64JtoxU=";
+    };
+  };
+  sc_FR_GMENT_WING_FR_GMENT_WING_06 = {
+    pname = "sc_FR_GMENT_WING_FR_GMENT_WING_06";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14866.jpg";
+      sha256 = "sha256-EcdjaosWSpRFLQo6bUv6urPdwrYneY4dTiSLvAfINWE=";
+    };
+  };
+  sc_GR_DATE_WING_GR_DATE_WING_01 = {
+    pname = "sc_GR_DATE_WING_GR_DATE_WING_01";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14982.jpg";
+      sha256 = "sha256-G5QkKNBIFHtp7r64Z+nTHfMtSuS/t+1dsSwwcSK5PzY=";
+    };
+  };
+  sc_GR_DATE_WING_GR_DATE_WING_02 = {
+    pname = "sc_GR_DATE_WING_GR_DATE_WING_02";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14983.jpg";
+      sha256 = "sha256-MBWMqOAH9RuZq/ehB/y7SnYP6H+1E5u8j2X5RNhS7wA=";
+    };
+  };
+  sc_GR_DATE_WING_GR_DATE_WING_03 = {
+    pname = "sc_GR_DATE_WING_GR_DATE_WING_03";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14984-1.jpg";
+      sha256 = "sha256-GrAotA+ixeh+rd9f+45GKTIUZZWsVJhogyGQfQJJrm4=";
+    };
+  };
+  sc_GR_DATE_WING_GR_DATE_WING_04 = {
+    pname = "sc_GR_DATE_WING_GR_DATE_WING_04";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14985.jpg";
+      sha256 = "sha256-dM224r7lkwi60iNkUWYRUQpGZqkDeHT9qN+n/wKB9Aw=";
+    };
+  };
+  sc_GR_DATE_WING_GR_DATE_WING_05 = {
+    pname = "sc_GR_DATE_WING_GR_DATE_WING_05";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14986.jpg";
+      sha256 = "sha256-6J7DKJDTm6I+DWbuuIpyFy5zwM8I2zued+GpZgRZXZI=";
+    };
+  };
+  sc_GR_DATE_WING_GR_DATE_WING_06 = {
+    pname = "sc_GR_DATE_WING_GR_DATE_WING_06";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14987.jpg";
+      sha256 = "sha256-lsrBvJ++7z9KiguX9cKdG0CkHyGXO2+xsvOLFhusnWU=";
+    };
+  };
+  sc_GR_DATE_WING_GR_DATE_WING_07 = {
+    pname = "sc_GR_DATE_WING_GR_DATE_WING_07";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24005.jpg";
+      sha256 = "sha256-95kdLK8WZJAX9103V04zN9BHHDGVV4v4fnB3C4Qk04I=";
+    };
+  };
+  sc_LACM-24508_jpg = {
+    pname = "sc_LACM-24508_jpg";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/10/LACM-24508.jpg";
+      sha256 = "sha256-Oxrdl0vfL6eIqQBkVNN1FTcPI0J1od8X5dPbMwjfZD0=";
+    };
+  };
+  sc_L_YERED_WING_L_YERED_WING_01 = {
+    pname = "sc_L_YERED_WING_L_YERED_WING_01";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24111.jpg";
+      sha256 = "sha256-WyBe94Z4eIjxD3sa2StZqoI5GTtacbh+m4ZVpy1rVY4=";
+    };
+  };
+  sc_L_YERED_WING_L_YERED_WING_02 = {
+    pname = "sc_L_YERED_WING_L_YERED_WING_02";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24112.jpg";
+      sha256 = "sha256-HYp52E2WnKHuivXVHhubrGvnuXSVi3gbOXFTj1Yfkqs=";
+    };
+  };
+  sc_L_YERED_WING_L_YERED_WING_03 = {
+    pname = "sc_L_YERED_WING_L_YERED_WING_03";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24113.jpg";
+      sha256 = "sha256-EpUKfHi50MqJHtkg3kjDdD0RwPABHeJO+YC/7d0IPfU=";
+    };
+  };
+  sc_L_YERED_WING_L_YERED_WING_04 = {
+    pname = "sc_L_YERED_WING_L_YERED_WING_04";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24114.jpg";
+      sha256 = "sha256-kDs4x1HWTUEiZUHPGlVsiXQX/h/QUAYAT15fiQHouIc=";
+    };
+  };
+  sc_L_YERED_WING_L_YERED_WING_05 = {
+    pname = "sc_L_YERED_WING_L_YERED_WING_05";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24115.jpg";
+      sha256 = "sha256-jAHugZjFSt9H0co172ufO3pyU2vsb8L6UB0gEtjCdY0=";
+    };
+  };
+  sc_L_YERED_WING_L_YERED_WING_06 = {
+    pname = "sc_L_YERED_WING_L_YERED_WING_06";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24116.jpg";
+      sha256 = "sha256-nrl6Ca8nQ9TAdlvkGXe5UahASgUAx4RXuQyX+Xe6iGw=";
+    };
+  };
+  sc_L_YERED_WING_L_YERED_WING_07 = {
+    pname = "sc_L_YERED_WING_L_YERED_WING_07";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24117.jpg";
+      sha256 = "sha256-RK+1DWpPgArS058c4ZhHMBWH6HPzmoshSxtiTHkCvNs=";
+    };
+  };
+  sc_L_YERED_WING_L_YERED_WING_08 = {
+    pname = "sc_L_YERED_WING_L_YERED_WING_08";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24118.jpeg";
+      sha256 = "sha256-Wdnj7W0Y1AZHjr5ZgAzM2ZESfRtZ8F/GjxFAXRmkbW0=";
+    };
+  };
+  sc_MUSIC_DAWN_THE_IDOLM_STER_SHINY_COLORS_MUSIC_DAWN_Blu-ray = {
+    pname = "sc_MUSIC_DAWN_THE_IDOLM_STER_SHINY_COLORS_MUSIC_DAWN_Blu-ray";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LABX-38463_7.jpg";
+      sha256 = "sha256-OBZWFYZATQMo1Z7FNFpFxD1+sWpSd0fvmyf03b83d4U=";
+    };
+  };
+  sc_MUSIC_DAWN_THE_IDOLM_STER_SHINY_COLORS_MUSIC_DAWN_Blu-ray_2 = {
+    pname = "sc_MUSIC_DAWN_THE_IDOLM_STER_SHINY_COLORS_MUSIC_DAWN_Blu-ray_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LABX-8463_4.jpg";
+      sha256 = "sha256-UrU1plmfu0RsGnF9W1E3VVR4d1L99akoObaK35rqoQg=";
+    };
+  };
+  sc_MUSIC_DAWN_THE_IDOLM_STER_SHINY_COLORS_MUSIC_DAWN_Blu-ray_3 = {
+    pname = "sc_MUSIC_DAWN_THE_IDOLM_STER_SHINY_COLORS_MUSIC_DAWN_Blu-ray_3";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LABX-8465_6.jpg";
+      sha256 = "sha256-YZxjqldqm7KowostJoHpPgj0F6v6kz986bDZNGXMVzg=";
+    };
+  };
+  sc_OFF_VOCAL_COLLECTION_OFF_VOCAL_COLLECTION_01 = {
+    pname = "sc_OFF_VOCAL_COLLECTION_OFF_VOCAL_COLLECTION_01";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACA-9872_4.jpeg";
+      sha256 = "sha256-tp0oSgKtNmfjnJvGDaV9pmVVZz+FOd0UsE+Cj+QuUMQ=";
+    };
+  };
+  sc_OFF_VOCAL_COLLECTION_OFF_VOCAL_COLLECTION_02 = {
+    pname = "sc_OFF_VOCAL_COLLECTION_OFF_VOCAL_COLLECTION_02";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/09/LACA-9944_45.jpg";
+      sha256 = "sha256-6YjyqObjq7irZkcLq7EGyo3EUEaF4q+ZRaAh/npKyK4=";
+    };
+  };
+  sc_OTHER = {
+    pname = "sc_OTHER";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LZC-2059-1.jpg";
+      sha256 = "sha256-e1l3lqroklPgliw+TxB724XlvK9xJ9S52XJvAjwV+E8=";
+    };
+  };
+  sc_OTHER_2 = {
+    pname = "sc_OTHER_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/09/LZC-2489.jpg";
+      sha256 = "sha256-6nSLDkjsxnFapCKddlbVOPAGo1liOyxhulFj42C55yk=";
+    };
+  };
+  sc_OTHER_20_NEED_YOU_FOR_WONDERFUL_STORY = {
+    pname = "sc_OTHER_20_NEED_YOU_FOR_WONDERFUL_STORY";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LACM-24643.jpg";
+      sha256 = "sha256-hh8T7UQD+clFZbxpIYlu3TUqqSIfQIkAa0NEPblynZY=";
+    };
+  };
+  sc_OTHER_283_-Luna- = {
+    pname = "sc_OTHER_283_-Luna-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/01/LACZ-10336.jpg";
+      sha256 = "sha256-SrU4RCzgmi1e2O+Hp1Q1zqPzCujNM8J0qcrD05XRRts=";
+    };
+  };
+  sc_OTHER_283_-Sol- = {
+    pname = "sc_OTHER_283_-Sol-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/01/LACZ-10337.jpg";
+      sha256 = "sha256-otsHinmk56yaKXx6TRp6SHi62RyCqOm6byBgCEKPAkU=";
+    };
+  };
+  sc_OTHER_283_-Stella- = {
+    pname = "sc_OTHER_283_-Stella-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/01/LACZ-10335.jpg";
+      sha256 = "sha256-mNeairGuV7w0vmt1CO7+xF5lAQ3nFTeG/XvpMXVVzdM=";
+    };
+  };
+  sc_OTHER_283_Production_MUSICAL_Performance_-_Veil_of_Order_-_Music_Collection = {
+    pname = "sc_OTHER_283_Production_MUSICAL_Performance_-_Veil_of_Order_-_Music_Collection";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/03/LACA-35264_5.jpg";
+      sha256 = "sha256-/2n/XvAKR52vwG4bKImge860Tq4zFJpLLrZtOS9IIGQ=";
+    };
+  };
+  sc_OTHER_283_Production_MUSICAL_Performance_-_Veil_of_Order_-_Music_Collection_2 = {
+    pname = "sc_OTHER_283_Production_MUSICAL_Performance_-_Veil_of_Order_-_Music_Collection_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/03/LACA-25264.jpg";
+      sha256 = "sha256-cHjvIiHTRsU+PKz79AdboiUurtJh6qn7MgOEUYaQdOs=";
+    };
+  };
+  sc_OTHER_283_Production_XXXX_Performance_XXX_S_N-GUL4R1TY_MUSIC_COLLECTION = {
+    pname = "sc_OTHER_283_Production_XXXX_Performance_XXX_S_N-GUL4R1TY_MUSIC_COLLECTION";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/04/LACM-34828.jpg";
+      sha256 = "sha256-KXNh3VSgWZDsFRFRaHT9+/HwiU+HlkKRNXPfFUVjuBI=";
+    };
+  };
+  sc_OTHER_283_Production_XXXX_Performance_XXX_S_N-GUL4R1TY_MUSIC_COLLECTION_2 = {
+    pname = "sc_OTHER_283_Production_XXXX_Performance_XXX_S_N-GUL4R1TY_MUSIC_COLLECTION_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/04/LACM-24828.jpg";
+      sha256 = "sha256-Uedvz3zmyRkpaeo0A5BnJYs93Od8vxjjhgPJZVBco/w=";
+    };
+  };
+  sc_OTHER_3 = {
+    pname = "sc_OTHER_3";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/10/LZC-2562.jpg";
+      sha256 = "sha256-9TzeKBzP0FINek+Nev4LzyBuxsjl89kZ3dhzqzk83Yk=";
+    };
+  };
+  sc_OTHER_4 = {
+    pname = "sc_OTHER_4";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/10/LZC-2563.jpg";
+      sha256 = "sha256-iDhcco9u8StzTBRJpHu9iydI6B7+pibE2piBq4lT8fI=";
+    };
+  };
+  sc_OTHER_5 = {
+    pname = "sc_OTHER_5";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/04/LZC-2730.jpg";
+      sha256 = "sha256-oRmQcGE+UV587jF01bi0SdVL30a/K5W6KUZik/X/dv8=";
+    };
+  };
+  sc_OTHER_6 = {
+    pname = "sc_OTHER_6";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/12/LACM-34808.jpg";
+      sha256 = "sha256-W6RL2Ozp4vcZGnxZnUZBC3Tt7lsWiy3Z2xar+rRv3vw=";
+    };
+  };
+  sc_OTHER_7 = {
+    pname = "sc_OTHER_7";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/12/LACM-24808.jpg";
+      sha256 = "sha256-FB/JT0CS4YDpxCj3OeaoD6sanmlMXUIMPtQ+vnDj56U=";
+    };
+  };
+  sc_OTHER_B_Health = {
+    pname = "sc_OTHER_B_Health";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/08/LACZ-10112.jpg";
+      sha256 = "sha256-2l52fWoS37kNEhebAH6U6rHBSbTZPrTw1VdHpgyV5fA=";
+    };
+  };
+  sc_OTHER_FUTURITY_SMILE = {
+    pname = "sc_OTHER_FUTURITY_SMILE";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14906.jpg";
+      sha256 = "sha256-sUM0dnsFemdPoDwFhHUpSXCvROSWWS6LI62lJC/dFSk=";
+    };
+  };
+  sc_OTHER_SWEET_STEP = {
+    pname = "sc_OTHER_SWEET_STEP";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14965.jpg";
+      sha256 = "sha256-x+7A/mKsZYtfM9Ou1cvPmAPoCPcC9ZB9CVJr6zQY/Jo=";
+    };
+  };
+  sc_OTHER_Shiny_Stories = {
+    pname = "sc_OTHER_Shiny_Stories";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/05/LZC-2403.jpg";
+      sha256 = "sha256-j87VQn7hezDtLan3F1syDrBI+jJ5u43x8AfPfRWV8fQ=";
+    };
+  };
+  sc_OTHER_Shiny_Stories_2 = {
+    pname = "sc_OTHER_Shiny_Stories_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LACM-24406.jpg";
+      sha256 = "sha256-Bwc0IfLjmEqigTrc5kKgtqsDaKUNcLuTwT0fb9pHhb8=";
+    };
+  };
+  sc_OTHER_THE_IDOLM_STER_15 = {
+    pname = "sc_OTHER_THE_IDOLM_STER_15";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24027.jpg";
+      sha256 = "sha256-gPMS7QtC5myUrT3aEKSog6vGQlBOFUUG2Lp32DAApw4=";
+    };
+  };
+  sc_OTHER_THE_IDOLM_STER_2021_VOY_GER = {
+    pname = "sc_OTHER_THE_IDOLM_STER_2021_VOY_GER";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24165.jpg";
+      sha256 = "sha256-2eFJ9HPrx6jN/SPSBmH1TtzO6puzA5USV+X7VUkC9TA=";
+    };
+  };
+  sc_OTHER_VS_V = {
+    pname = "sc_OTHER_VS_V";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10033.jpg";
+      sha256 = "sha256-c+GRQlHFCTbQVu/IoWNG31nyonkhwukcARPTgL1VkvA=";
+    };
+  };
+  sc_Over_the_prism_THE_IDOLM_STER_SHINY_COLORS_2nd_season_LIVE_Over_the_prism_Blu-ray = {
+    pname = "sc_Over_the_prism_THE_IDOLM_STER_SHINY_COLORS_2nd_season_LIVE_Over_the_prism_Blu-ray";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/10/LABX-38943_6.jpg";
+      sha256 = "sha256-th8t00lnzrUsBzCCAyH6E6NBH4h3OdO397Jtpuc+jE4=";
+    };
+  };
+  sc_Over_the_prism_THE_IDOLM_STER_SHINY_COLORS_2nd_season_LIVE_Over_the_prism_Blu-ray_2 = {
+    pname = "sc_Over_the_prism_THE_IDOLM_STER_SHINY_COLORS_2nd_season_LIVE_Over_the_prism_Blu-ray_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/10/LABX-8943_4.jpg";
+      sha256 = "sha256-hVDoOpkaF/56Ti07k6mVVp/qr8Fnn82IIIb9BbalpUM=";
+    };
+  };
+  sc_Over_the_prism_THE_IDOLM_STER_SHINY_COLORS_2nd_season_LIVE_Over_the_prism_Blu-ray_3 = {
+    pname = "sc_Over_the_prism_THE_IDOLM_STER_SHINY_COLORS_2nd_season_LIVE_Over_the_prism_Blu-ray_3";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/10/LABX-8945_6.jpg";
+      sha256 = "sha256-atRQQYSI5igHEa8MFSz7xwQxNyd5zAJn+Ul484lGLQU=";
+    };
+  };
+  sc_PANOR_MA_WING_PANOR_MA_WING_01 = {
+    pname = "sc_PANOR_MA_WING_PANOR_MA_WING_01";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24251.jpeg";
+      sha256 = "sha256-ebcUiDG6jYt3tHYG2n4k31Rv62h6hwlwA28NHPWuycA=";
+    };
+  };
+  sc_PANOR_MA_WING_PANOR_MA_WING_02 = {
+    pname = "sc_PANOR_MA_WING_PANOR_MA_WING_02";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24252.jpg";
+      sha256 = "sha256-uzYk/9bPq40OVJOsfE+OyJN6uDqr3LHAg/AvhZrcIzc=";
+    };
+  };
+  sc_PANOR_MA_WING_PANOR_MA_WING_03 = {
+    pname = "sc_PANOR_MA_WING_PANOR_MA_WING_03";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24253.jpg";
+      sha256 = "sha256-e5UYv8oJOwUqm+bYPl61QH77A9+xI0NXidE8/MlJcO0=";
+    };
+  };
+  sc_PANOR_MA_WING_PANOR_MA_WING_04 = {
+    pname = "sc_PANOR_MA_WING_PANOR_MA_WING_04";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24254.jpg";
+      sha256 = "sha256-8fSxz1R+pGFgj8KhAcEVJej4mTbNt7QMQPA57uvls2A=";
+    };
+  };
+  sc_PANOR_MA_WING_PANOR_MA_WING_05 = {
+    pname = "sc_PANOR_MA_WING_PANOR_MA_WING_05";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24255.jpg";
+      sha256 = "sha256-kPJstzpvvactNZckLzdSCv3d+p0U6HzVSPj6GojnAwY=";
+    };
+  };
+  sc_PANOR_MA_WING_PANOR_MA_WING_06 = {
+    pname = "sc_PANOR_MA_WING_PANOR_MA_WING_06";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24256.jpg";
+      sha256 = "sha256-3J/wV5R9GnKP+gg/+/gMppEzZBiyQ/7CAXFpxLaMTq8=";
+    };
+  };
+  sc_PANOR_MA_WING_PANOR_MA_WING_07 = {
+    pname = "sc_PANOR_MA_WING_PANOR_MA_WING_07";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24257.jpg";
+      sha256 = "sha256-h1qKWe7xbvNrdtt4z2RqEGrM+/+DYnwIM0e8VV6KVMs=";
+    };
+  };
+  sc_PANOR_MA_WING_PANOR_MA_WING_08 = {
+    pname = "sc_PANOR_MA_WING_PANOR_MA_WING_08";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24258.jpg";
+      sha256 = "sha256-iVmF8T0FsDHGhxGO1Cd9wWW0uMW3zzmxMsPOaqoSlTc=";
+    };
+  };
+  sc_PR_PR_Vol_1 = {
+    pname = "sc_PR_PR_Vol_1";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/01/LACM-24531.jpg";
+      sha256 = "sha256-v9hKYgegvVeNhbf89lRcFp33iakW9d1VIDBaWAiWSMY=";
+    };
+  };
+  sc_PR_PR_Vol_2 = {
+    pname = "sc_PR_PR_Vol_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/01/LACM-24532.jpg";
+      sha256 = "sha256-89Vii5nxkTqIua39Ln+oUqGAW5Gv8ny5IYKOxYxnsZE=";
+    };
+  };
+  sc_PR_PR_Vol_3 = {
+    pname = "sc_PR_PR_Vol_3";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/03/LACM-24533.jpg";
+      sha256 = "sha256-IqWP5N35QMwxxBn30KMR99jJ561gcZpKSYUtTAXWWGk=";
+    };
+  };
+  sc_SE_SONAL_WINTER_SE_SONAL_WINTER = {
+    pname = "sc_SE_SONAL_WINTER_SE_SONAL_WINTER";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14820.jpg";
+      sha256 = "sha256-OtdPRPxAHZJ3yZ4T8l/HvO1O9ewQP07TDUQe2UXZJgA=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-1stLIVE_FLY_TO_THE_SHINY_SKY- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-1stLIVE_FLY_TO_THE_SHINY_SKY-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10018.jpg";
+      sha256 = "sha256-ILXY1gGd4o7HoHeERX8tnGs4o1mLFDJk2P6B+gN6EO4=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-2ndLIVE_STEP_INTO_THE_SUNSET_SKY- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-2ndLIVE_STEP_INTO_THE_SUNSET_SKY-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10031_2.jpg";
+      sha256 = "sha256-FveJvD7eItPlYwMo1X4XrzZuvbwOtJrDZGuGS64BHOM=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-2nd_season_LIVE_Over_the_prism_part1- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-2nd_season_LIVE_Over_the_prism_part1-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/02/LACZ-10262_3.jpg";
+      sha256 = "sha256-qDG9tzakeAe9B158RPGCpO51qeg6oz68TItReDasiSY=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-2nd_season_LIVE_Over_the_prism_part2- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-2nd_season_LIVE_Over_the_prism_part2-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/02/LACZ-10264_5.jpg";
+      sha256 = "sha256-Qp9lObtcUqwN48AIDSBXIJps11gNvyZE1cP/4R//UJk=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-2nd_season_LIVE_Over_the_prism_part3- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-2nd_season_LIVE_Over_the_prism_part3-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/02/LACZ-10266_7.jpg";
+      sha256 = "sha256-CLwaXTAXgng3sk4bjcF3nzYrVj2KtuvSHbJlk7LKLPI=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-2nd_season_LIVE_Over_the_prism_part4- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-2nd_season_LIVE_Over_the_prism_part4-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/02/LACZ-10268_9.jpg";
+      sha256 = "sha256-Gt+skpQNJ2eyN5pP5ey9uIr4RVnLVNyf9/i6DSY6Wrk=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-3rdLIVE_TOUR_PIECE_ON_PLANET_FUKUOKA- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-3rdLIVE_TOUR_PIECE_ON_PLANET_FUKUOKA-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10063_4.jpg";
+      sha256 = "sha256-Et2JjZjtLcXpgJwGQesIG0dFjSJYuOAD1ia3jXrJmls=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-3rdLIVE_TOUR_PIECE_ON_PLANET_TOKYO- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-3rdLIVE_TOUR_PIECE_ON_PLANET_TOKYO-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10061_2.jpg";
+      sha256 = "sha256-gSbDJcqNCsD9n/nqLcrolBX33u9tTyL4cMNLPrUfds8=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-5thLIVE_If_I_wings_Part2- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-5thLIVE_If_I_wings_Part2-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/03/LACZ-10143_4.jpg";
+      sha256 = "sha256-DiJZJn9r8P8sz/ceVb666beozIXXVLKa1WYN5TqodvE=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-5thLIVE_If_I_wings_part1- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-5thLIVE_If_I_wings_part1-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/03/LACZ-10141_2.jpg";
+      sha256 = "sha256-GUtTbGtJ0FvKPtCxgdNXRoKfgN3eFSzkBTCNWmnXjC0=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-6_5th_Anniversary_LIVE_Chapter_283_- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-6_5th_Anniversary_LIVE_Chapter_283_-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/09/LACZ-10230_1.jpg";
+      sha256 = "sha256-IJKa38qInYKdc/0TGdLURd8Klk2u5Oh4VkpRyQpzcBQ=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-6thLIVE_TOUR_Come_and_Unite_part1- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-6thLIVE_TOUR_Come_and_Unite_part1-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/02/LACZ-10195-1.jpg";
+      sha256 = "sha256-OhAVAj3z0oXIsIcIQH8fnFs8zHDJngv2gq4sAvvQUY4=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-6thLIVE_TOUR_Come_and_Unite_part2- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-6thLIVE_TOUR_Come_and_Unite_part2-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/02/LACZ-10197.jpg";
+      sha256 = "sha256-2ltv4YgdUbRlzu6Ne07lMyKlA8j09X4BGXXuJks58M4=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-6thLIVE_TOUR_Come_and_Unite_part3- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-6thLIVE_TOUR_Come_and_Unite_part3-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/02/LACZ-10199.jpg";
+      sha256 = "sha256-fIwyuw2t+htZKTZt6XhaQ7c3vztCpK6FFe2mqhmejAM=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-7th_LIVE_TOUR_-Halo_around-_The_origin_on_the_axes_- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-7th_LIVE_TOUR_-Halo_around-_The_origin_on_the_axes_-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/10/BNML_SC7_5th-CDpkg_H1.jpg";
+      sha256 = "sha256-q7iNZ7jM2mqXPpjcV82DwaCMbOrCou2EatzvzmbxF4A=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-7th_UNITLIVE_TOUR_-Halo_around-_part1- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-7th_UNITLIVE_TOUR_-Halo_around-_part1-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/06/LACZ-10296_7.jpg";
+      sha256 = "sha256-CnYG1RDofIvQmoCqxG/iKKqlGoMRI3B9gjJRTGaEc+c=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-7th_UNITLIVE_TOUR_-Halo_around-_part2- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-7th_UNITLIVE_TOUR_-Halo_around-_part2-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/06/LACZ-10298_9.jpg";
+      sha256 = "sha256-2Nndc30zij5HU4eAVuVJVVOmIsiOxg2QMgFo9I1opRQ=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-7th_UNITLIVE_TOUR_-Halo_around-_part3- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-7th_UNITLIVE_TOUR_-Halo_around-_part3-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/06/LACZ-10300_1.jpg";
+      sha256 = "sha256-/m4y7wtnt5y84gjjc+Rwd0yEk0Ut2r4sTbZc/vnJBQg=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-Beyond_the_Blue_sky_part1- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-Beyond_the_Blue_sky_part1-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LACZ-10218.jpg";
+      sha256 = "sha256-NCaLXHLJa2PVaREopCIRBohIhF1XI/dLjwmSiowgf1o=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-Beyond_the_Blue_sky_part2- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-Beyond_the_Blue_sky_part2-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LACZ-10227.jpg";
+      sha256 = "sha256-SZmxApJX5h8Fw/J0DrypizBOuwYJ7/omlYyd3UyXGb8=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-L_YERED_WING_part_1- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-L_YERED_WING_part_1-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10090_1.jpeg";
+      sha256 = "sha256-tnNOB9ZbTkG4KYuYumD4qjUrTUcBPGtYiooXN8re56Y=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-L_YERED_WING_part_2- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-L_YERED_WING_part_2-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10092_3.jpeg";
+      sha256 = "sha256-o0SzmJh9zrVi1PkSuYytHrpWvnWB4nhOg0qsbnrBVeo=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-MUSIC_DAWN- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-MUSIC_DAWN-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10042_3.jpg";
+      sha256 = "sha256-k0a77159owAV4zDxyb/eoeLpHJSA7pZ1sNWC4Pid3zA=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-M_STERS_OF_IDOL_WORLD_2023- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-M_STERS_OF_IDOL_WORLD_2023-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/01/SOLO_COLLECTION_MOIW.jpg";
+      sha256 = "sha256-Z6EVeUpOjYivKuxHmGVRPWI7VP3saG5UQNloPs9epRY=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-M_STERS_OF_IDOL_WORLD_2025_part1- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-M_STERS_OF_IDOL_WORLD_2025_part1-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/11/LACZ-10322.jpg";
+      sha256 = "sha256-Duyk0BGDjyxzQVf9SwIEA5mMniaBmof+b0XloH+LVFk=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-M_STERS_OF_IDOL_WORLD_2025_part2- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-M_STERS_OF_IDOL_WORLD_2025_part2-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/11/LACZ-10330.jpg";
+      sha256 = "sha256-HbZusGDcWNdzHWZ6xul/6kvw6wWwW+g2MKHxQT/S6mA=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-SOLO_PERFORMANCE_LIVE_Luna- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-SOLO_PERFORMANCE_LIVE_Luna-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LACZ-10166.jpg";
+      sha256 = "sha256-WFiUiU2B75kkU73urLCUpc+lHvhgw319jUr73kRH4Kk=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-SOLO_PERFORMANCE_LIVE_Sol- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-SOLO_PERFORMANCE_LIVE_Sol-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LACZ-10167.jpg";
+      sha256 = "sha256-jAkACkC6h1IB2oMw1e8HxoJmlNLL45G6r1lyjLP08xA=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-SOLO_PERFORMANCE_LIVE_Stella- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-SOLO_PERFORMANCE_LIVE_Stella-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LACZ-10165.jpg";
+      sha256 = "sha256-+y1JyNzAseyCLrq4WfCjsAMWsXvJy2zF7ebKnsgzHv0=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-SPRING_PARTY_2020- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-SPRING_PARTY_2020-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10027_8.jpg";
+      sha256 = "sha256-zvGKFzdOjxNi3fTt1GwC2NThD/wSfoZPDLHcW+uXLqY=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-SUMMER_PARTY_2019- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-SUMMER_PARTY_2019-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10025.jpg";
+      sha256 = "sha256-RV0PJaCdvIdc+y3vXg2TdKvNAebCa3BP4w971d9yDps=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-_283_part1- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-_283_part1-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/01/LACZ-10332.jpg";
+      sha256 = "sha256-jxFB2Vc6yvg19i7K3f8nF2Hbw+5FpBt0wbtiVX+YPBY=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-_283_part2- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-_283_part2-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/01/LACZ-10334.jpg";
+      sha256 = "sha256-X1vpvF3H9S+0kLcPGma238HandTCgYyl1jQHkuqnels=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-_th_LIVE_i_part1- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-_th_LIVE_i_part1-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/04/LACZ-10349_50.jpg";
+      sha256 = "sha256-Jkuu40SOhTZHzQnZ9McsFlieR74Z9ThdFf4avzcTX0M=";
+    };
+  };
+  sc_SOLO_COLLECTION_SOLO_COLLECTION_-_th_LIVE_i_part2- = {
+    pname = "sc_SOLO_COLLECTION_SOLO_COLLECTION_-_th_LIVE_i_part2-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/04/LACZ-10351_2.jpg";
+      sha256 = "sha256-ZEe7utgvnLieLmzlCvzFT81X0E1+crAVAwZeu0qTqG8=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism = {
+    pname = "sc_Song_for_Prism_Song_for_Prism";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LACM-24437.jpg";
+      sha256 = "sha256-iPCxqjjcLkzmlHCgV2OF5LFpiIM15hoTPYo/PjAo0Tc=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_-sanka-_-benibana- = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_-sanka-_-benibana-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/05/LACM-24826.jpg";
+      sha256 = "sha256-W6j2sPmxrpIWgwG9UniyN9vbWOOC/6ynFZBEyBpGpZA=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_2 = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/01/LACM-24525.jpg";
+      sha256 = "sha256-iYiMBoj9Hox7spb3a35ZYpUcE014NvVplD5XjqjOr8E=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_3 = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_3";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/01/LACM-24526.jpg";
+      sha256 = "sha256-d1FfLqmn/99JiZkQLMaHUu0grTr2U8eLZ2NO12nvPyo=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_After_Run_mellow_mellow = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_After_Run_mellow_mellow";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LACM-24609.jpg";
+      sha256 = "sha256-hwkPAu38SnFru90xoYBpxm8kiqtBACdwvmZgBHL8yPk=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_After_Run_mellow_mellow_2 = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_After_Run_mellow_mellow_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LACM-24610.jpg";
+      sha256 = "sha256-xuyCKy6Nf+Iqnj/xNDSzpQxzJuguuUUDwFug0cOytxk=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_Beautiful_Day = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_Beautiful_Day";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/11/LACM-24475.jpg";
+      sha256 = "sha256-q16SDtInfiSAGr5sjrtSTm4mbLQt7Mu5SBvU+ChSZ4M=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_Beautiful_Day_2 = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_Beautiful_Day_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/11/LACM-24476.jpg";
+      sha256 = "sha256-05fiMleWmT920T+PsS10HM5MBDE+hzottC1DEq3oZB8=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_Borderline_Summer_Night_Paradise = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_Borderline_Summer_Night_Paradise";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/10/LACA_25180.jpg";
+      sha256 = "sha256-F8PzDAsYC/NKF84ACFENRCvdMlniqb8Og9fQ5W2iJGE=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_C_mon_Join_Us_View = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_C_mon_Join_Us_View";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/08/LACA-25133-1.jpg";
+      sha256 = "sha256-Rvza2UG2HvgcRFhQAuMywQxX13UM5RR22w5ugsbFrSM=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_Fading_Stars_Future_Transit_KoiKyun = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_Fading_Stars_Future_Transit_KoiKyun";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/06/LACA-25155.jpg";
+      sha256 = "sha256-8PzvFD2r0AoTLSl+TZDob0Upd07pDi4N0p5l+3vKN9E=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_Happier = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_Happier";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/03/LACM-24528.jpg";
+      sha256 = "sha256-eBkN3aE/+u2Jhqtnqj6tJcDJLmoCMRuCblEQ0WUB/i4=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_Happier_2 = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_Happier_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/03/LACM-24529.jpg";
+      sha256 = "sha256-CdrKJY8dKYVQFnJHPTMrFM7fT1hCvi2v5dHdvA/BE5I=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_Heads_or_Tails = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_Heads_or_Tails";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/09/LACM-24628.jpg";
+      sha256 = "sha256-/TqkaC1W/lnnDwLdl6ShOdAC4dQmQL9cdXh8LmB0lns=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_Heads_or_Tails_2 = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_Heads_or_Tails_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/09/LACM-24629.jpg";
+      sha256 = "sha256-4aPkLDkl8iWyw/n3hAQyGJV7h1Jlb21MBZNZYP1tmKY=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_KAWAII = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_KAWAII";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/11/LACM-24821.jpg";
+      sha256 = "sha256-w3BkaFsfX8A+4ogZ/trwFg/3zR6NpvKd3LvRpK+XXXI=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_Karma_Naraku = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_Karma_Naraku";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/11/LACM-24822.jpg";
+      sha256 = "sha256-Zs+0ydVVViVxpRy9pZbXbU4DWOFWdrcvrtwYBs61iRQ=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_LINKs = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_LINKs";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/05/LACM-24552.jpg";
+      sha256 = "sha256-5gXy0K2XjVhz2xvyOviyZFu34w74+MxN+zsWJgtPKoY=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_LINKs_2 = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_LINKs_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/05/LACM-24553.jpg";
+      sha256 = "sha256-RMj6Ygca83aSLF1ZKzpBT8LpzmXAJcCpGX2NYC/mPLw=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_Oh_Yeah = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_Oh_Yeah";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/12/LACM-24823.jpg";
+      sha256 = "sha256-JMLwHleG6kVpvh/+ZQVCCMKhbIbaArwN3TcC+pk1E70=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_QUEEN_OF_THE_PIRATES_exe_Sleepless_Nights = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_QUEEN_OF_THE_PIRATES_exe_Sleepless_Nights";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/11/LACA-25234re.jpg";
+      sha256 = "sha256-CMBahPSHgaGumn/SaXEcxYSDUF8+wq4PCFe5wFMSXQ8=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_Real_Mind_Shakes_THE_LAST_PRIDE = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_Real_Mind_Shakes_THE_LAST_PRIDE";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/01/LACM-24636.jpg";
+      sha256 = "sha256-QgbMOThX/YY7lTEp75EXYRG8/yUl5Vz8/bgIeMFTfVY=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_Real_Mind_Shakes_THE_LAST_PRIDE_2 = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_Real_Mind_Shakes_THE_LAST_PRIDE_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/01/LACM-24637.jpg";
+      sha256 = "sha256-d2tLM50Z5gHDcMxKznnqj/Z48A5eJ0MVffocb1uMDy8=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_Ring_Ring_Ring = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_Ring_Ring_Ring";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/04/LACM_24825-1.webp";
+      sha256 = "sha256-u4cjZW8H3zJ2ev4aF9PyDFC7nQvjVbFVLD1YLTBKLgc=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_SUPER_DUPER_DREAMER_BEAST_MODE = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_SUPER_DUPER_DREAMER_BEAST_MODE";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/01/LACM-24824.jpg";
+      sha256 = "sha256-ezCvMBh/EbKNzLikfg4fnLK+bEO1jjVBDi/OyxjrFCA=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_Shower_of_light_V = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_Shower_of_light_V";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/11/LACM-24634.jpg";
+      sha256 = "sha256-OERHWLot5IzTL+EXGnbb6C3B+l0+NTBJLg0Ke4t2URA=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_Shower_of_light_V_2 = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_Shower_of_light_V_2";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/11/LACM-24635.jpg";
+      sha256 = "sha256-pmXb9JiW9GykMNyv4jXcYUUpZ/fojfIXSk55UAFsHSs=";
+    };
+  };
+  sc_Song_for_Prism_Song_for_Prism_Tokyo_My_time = {
+    pname = "sc_Song_for_Prism_Song_for_Prism_Tokyo_My_time";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/06/LACM-24827.jpg";
+      sha256 = "sha256-pWyJuUD5BKcXKi5Mkbb/EaJ3SNzFEgTmsihnxfKazX8=";
+    };
+  };
+  sc_Synthe-Side_Synthe-Side_01 = {
+    pname = "sc_Synthe-Side_Synthe-Side_01";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24244.jpg";
+      sha256 = "sha256-Zbm6EONz1aqDZVz5yKoP+H2Y6xqmnxE/ujy4X80HDRY=";
+    };
+  };
+  sc_Synthe-Side_Synthe-Side_02 = {
+    pname = "sc_Synthe-Side_Synthe-Side_02";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24245.jpg";
+      sha256 = "sha256-OdbkbyEZrdXGWsMSUpnWwKHBfDPlHTEkg8O4v8t0SrU=";
+    };
+  };
+  sc_Synthe-Side_Synthe-Side_03 = {
+    pname = "sc_Synthe-Side_Synthe-Side_03";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/01/LACM-24246.jpg";
+      sha256 = "sha256-FUy27mFoPN6QRj2qFO/JJvjV3jyo6W6/knOoUZO9HxU=";
+    };
+  };
+  sc_WING_COLLECTION_WING_COLLECTION_-A_side- = {
+    pname = "sc_WING_COLLECTION_WING_COLLECTION_-A_side-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/10/LACA-9946_7.jpg";
+      sha256 = "sha256-yykje+Wczp6Si7ZqBBhLPbIeQd0x54PvCbvC2n0Wf6I=";
+    };
+  };
+  sc_WING_COLLECTION_WING_COLLECTION_-B_side- = {
+    pname = "sc_WING_COLLECTION_WING_COLLECTION_-B_side-";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/10/LACA-9948_9.jpg";
+      sha256 = "sha256-h+2+TkwI9lRlcb3dl1raQ1xFR+jRbhXOitAjYMHWQTY=";
+    };
   };
   scroll-page-without-moving-point = {
     pname = "scroll-page-without-moving-point";
@@ -404,15 +2026,15 @@
   };
   shell-maker = {
     pname = "shell-maker";
-    version = "43ee9e1862994cbaa89715d324edb7a424181f22";
+    version = "55c383ca542efbb79abd9cb3d6bbd3ab0d92f5d9";
     src = fetchFromGitHub {
       owner = "xenodium";
       repo = "shell-maker";
-      rev = "43ee9e1862994cbaa89715d324edb7a424181f22";
+      rev = "55c383ca542efbb79abd9cb3d6bbd3ab0d92f5d9";
       fetchSubmodules = false;
-      sha256 = "sha256-nJNZBZKmzEVn5gNEL0DT4S09Hfd8hk6DLaZTtoRksS0=";
+      sha256 = "sha256-+fpxzcQqyp5crTCmqlH2nB7ijXQbQml8SaZxHSc5Tzc=";
     };
-    date = "2026-06-09";
+    date = "2026-06-27";
   };
   skk-capf = {
     pname = "skk-capf";
@@ -461,15 +2083,15 @@
   };
   takt = {
     pname = "takt";
-    version = "b71586640f5a59e3f009bf033532a79fd643677f";
+    version = "83caba0f7083fa9a33ac37ae85375870e326f6f0";
     src = fetchFromGitHub {
       owner = "nrslib";
       repo = "takt";
-      rev = "b71586640f5a59e3f009bf033532a79fd643677f";
+      rev = "83caba0f7083fa9a33ac37ae85375870e326f6f0";
       fetchSubmodules = false;
-      sha256 = "sha256-bea1bljvcedqDMF8PVGQi6aCmJ9kqq/G5Bf+kvmXlgQ=";
+      sha256 = "sha256-PTgUXNtOMhCDxbLsy7ehhWSVPAWoLsQ7elsuh3chGc0=";
     };
-    date = "2026-06-14";
+    date = "2026-06-28";
   };
   tramps3 = {
     pname = "tramps3";
@@ -499,15 +2121,15 @@
   };
   typst-preview = {
     pname = "typst-preview";
-    version = "7e89cf105e4fef5e79977a4a790d5b3b18d305f6";
+    version = "f2903a1b98e13be7c927de835ae0d9159dd9fb9a";
     src = fetchFromGitHub {
       owner = "havarddj";
       repo = "typst-preview.el";
-      rev = "7e89cf105e4fef5e79977a4a790d5b3b18d305f6";
+      rev = "f2903a1b98e13be7c927de835ae0d9159dd9fb9a";
       fetchSubmodules = false;
-      sha256 = "sha256-XMwtY3oNvJmlIzGyoz3NW/y3tJXoGTQTXfLXiWLKS1M=";
+      sha256 = "sha256-1OpJAeLg54KHoDaCcUKb64HLUrdc2fUOhy59abGEoX0=";
     };
-    date = "2026-02-15";
+    date = "2026-06-17";
   };
   typst-ts-mode = {
     pname = "typst-ts-mode";
@@ -525,15 +2147,15 @@
   };
   verb = {
     pname = "verb";
-    version = "81aa67dffb17b3d88b35f16787aa3292d5761abb";
+    version = "25a25456bb9ef5090d80105aaa8ad931f336a06e";
     src = fetchFromGitHub {
       owner = "federicotdn";
       repo = "verb";
-      rev = "81aa67dffb17b3d88b35f16787aa3292d5761abb";
+      rev = "25a25456bb9ef5090d80105aaa8ad931f336a06e";
       fetchSubmodules = false;
-      sha256 = "sha256-PfMD6NAWiIbOTMxp2LhLPLTUZctOvAMeHPqSFjgN5C8=";
+      sha256 = "sha256-G2ugRwidj8STKgjjFNfw7c5NuMbaDjhvxAvz04baR5s=";
     };
-    date = "2026-05-23";
+    date = "2026-06-17";
   };
   vibe-kanban = {
     pname = "vibe-kanban";

@@ -44,7 +44,14 @@ emacs.d/snippets/
 emacs.d/templates/
 emacs.d/tramp
 emacs.d/tree-sitter/
+emacs.d/agent/
+emacs.d/desktop/
+emacs.d/lisp/
+emacs.d/log
+emacs.d/nskk/
+emacs.d/themes/
 emacs.d/*.elc
+emacs.d/*.eln
 .aider*
 
 .mcp.json

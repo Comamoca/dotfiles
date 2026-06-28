@@ -10,17 +10,16 @@ let
       ;
   };
 
-  # Filter only shinycolors jacket entries (sc_ prefix)
+  mapping = builtins.fromJSON (builtins.readFile ./mapping.json);
+
   scEntries =
     builtins.filter
       (name: builtins.match "sc_.*" name != null)
       (builtins.attrNames sources);
 
-  # Create symlink commands for each jacket image.
-  # url.name is set in nvfetcher.toml, so basename gives the correct filename.
   linkCmds = builtins.concatStringsSep "\n" (
     builtins.map (name: ''
-      ln -s ${sources.${name}.src} "$out/$(basename ${sources.${name}.src})"
+      ln -s ${sources.${name}.src} "$out/${mapping.${name}.desc_name}"
     '') scEntries
   );
 in

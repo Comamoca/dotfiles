@@ -237,6 +237,7 @@
                   ghostty = inputs.ghostty.packages.x86_64-linux.default;
                   xremap = inputs.xremap.packages.${pkgs.stdenv.hostPlatform.system}.default;
                   worktrunk = inputs.worktrunk.packages.x86_64-linux.default;
+                  shinycolors-jacket = import ./pkgs/shinycolors-jacket { pkgs = final; };
                 })
               ];
             }
