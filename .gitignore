@@ -50,7 +50,6 @@ emacs.d/lisp/
 emacs.d/log
 emacs.d/forge-database.sqlite
 emacs.d/org-roam.db
-emacs.d/*.bak
 /log
 test-results/
 wallpapers/
