@@ -85,11 +85,6 @@ let
     sha256 = "sha256:0rd6hfd88bsprjg68saxxlgf2c2lv1ldyr6a8i7m4lgg6nahbrw7";
   };
 
-  shinycolors-wallpaper = pkgs.fetchurl {
-    url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/data/img/special/wallpaper/1/wp_3840x2160_41200follower_imassc_prism.png";
-    hash = "sha256-ZCvXkZySkvDDLV56DAmGAz8wx/OeQfQ0zJGzYmKVvkU=";
-  };
-
   wallpaper = "${wallpapers}/misc/cat-sound.png";
 
   gitmoji = pkgs.fetchurl {
@@ -97,15 +92,18 @@ let
     hash = "sha256-KrK2YWthwkuNalREJ+X4B/z6W3CFzfsP+ptqg3tfuIc=";
   };
 
-  # emacs-pgtk: Wayland native版 + xwidgets
-  emacs-pgtk' = (pkgs.emacs-pgtk.override {
-    # withXwidgets = true;
-  }).overrideAttrs (old: {
-    buildInputs = old.buildInputs ++ [ pkgs.webkitgtk_4_1 ];
-  });
-
-  emacs' = (pkgs.emacsPackagesFor emacs-pgtk').emacsWithPackages (
-    epkgs: (import ./emacs.nix { inherit pkgs epkgs nurpkgs; }).epkgs
+  emacs' = (pkgs.emacsPackagesFor pkgs.emacs-git-pgtk).emacsWithPackages (
+    epkgs: let
+      # projectile 20260627+ requires consult at compile-time but the MELPA
+      # recipe only declares (emacs compat). Override at the scope level so
+      # all dependents (persp-projectile, treemacs-projectile, etc.) use it.
+      epkgs' = epkgs.overrideScope (eself: esuper: {
+        projectile = esuper.projectile.overrideAttrs (old: {
+          nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ eself.consult ];
+          propagatedBuildInputs = (old.propagatedBuildInputs or []) ++ [ eself.consult ];
+        });
+      });
+    in (import ./emacs.nix { inherit pkgs; epkgs = epkgs'; inherit nurpkgs; }).epkgs
   );
 
   sbcl' = pkgs.sbcl.withPackages (
@@ -468,11 +466,13 @@ rec {
             wallpapers
             (pkgs.runCommand "shinycolors-wallpapers" { } ''
               mkdir -p $out/shinycolors
-              ln -s ${shinycolors-wallpaper} $out/shinycolors/wp_3840x2160_41200follower_imassc_prism.png
+              ln -s ${sources.follower_imassc_prism.src} $out/shinycolors/wp_3840x2160_41200follower_imassc_prism.png
+              ln -s ${sources.hokura_thumb.src} $out/shinycolors/hokura_thumb.png
             '')
           ];
         };
       };
+      "Pictures/shinycolors-jacket".source = pkgs.shinycolors-jacket;
       "Pictures/.emacs-logos".source = (symlink "${emacs_fancy_logo}/share");
       ".aider.conf.yml".source = (pkgs.formats.yaml { }).generate ".aider.conf.yml" {
         read = [
@@ -679,10 +679,12 @@ rec {
     };
   };
 
-  # Emacs daemon managed by home-manager's services.emacs.
-  # Note: PGTK Emacs requires Wayland display, so it starts after graphical-session.target.
+  # Emacs daemon managed by niri (spawn-at-startup) instead of systemd.
+  # PGTK Emacs requires a display connection to start --daemon.
+  # systemd services start before the compositor creates the Wayland display,
+  # causing the daemon to fail with "display connection is closed".
   services.emacs = {
-    enable = true;
+    enable = false;
     package = emacs';
   };
 
