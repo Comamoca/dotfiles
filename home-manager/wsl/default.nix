@@ -30,7 +30,17 @@ let
   });
 
   emacs = (pkgs.emacsPackagesFor pkgs.emacs-git).emacsWithPackages (
-    epkgs: (import ../../emacs.nix { inherit pkgs epkgs nurpkgs; }).epkgs
+    epkgs: let
+      # projectile 20260627+ requires consult at compile-time but the MELPA
+      # recipe only declares (emacs compat). Override at the scope level so
+      # all dependents (persp-projectile, treemacs-projectile, etc.) use it.
+      epkgs' = epkgs.overrideScope (eself: esuper: {
+        projectile = esuper.projectile.overrideAttrs (old: {
+          nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ eself.consult ];
+          propagatedBuildInputs = (old.propagatedBuildInputs or []) ++ [ eself.consult ];
+        });
+      });
+    in (import ../../emacs.nix { inherit pkgs; epkgs = epkgs'; inherit nurpkgs; }).epkgs
   );
 
   sbcl' = pkgs.sbcl.withPackages (

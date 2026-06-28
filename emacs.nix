@@ -14,6 +14,52 @@ let
       ;
   };
 
+  ruby-ts-mode = pkgs.emacsPackages.trivialBuild {
+    pname = "ruby-ts-mode";
+    version = "main";
+    src = sources.ruby-ts-mode.src;
+    buildInputs = with pkgs.emacsPackages; [
+    ];
+  };
+
+  php-ts-mode = pkgs.emacsPackages.trivialBuild {
+    pname = "php-ts-mode";
+    version = "main";
+    src = sources.php-ts-mode.src;
+    buildInputs = with pkgs.emacsPackages; [
+    ];
+  };
+
+  om-dash = pkgs.emacsPackages.trivialBuild {
+    pname = "om-dash";
+    version = "main";
+    src = sources.om-dash.src;
+    buildInputs = with pkgs.emacsPackages; [
+      org-ql
+      s
+      ts
+    ];
+  };
+
+  minimal-dashboard = pkgs.emacsPackages.trivialBuild {
+    pname = "minimal-dashboard";
+    version = "main";
+    src = sources.minimal-dashboard.src;
+    buildInputs = with pkgs.emacsPackages; [
+    ];
+  };
+
+  agent-shell-manager = pkgs.emacsPackages.trivialBuild {
+    pname = "agent-shell-manager";
+    version = "main";
+    src = sources.agent-shell-manager.src;
+    buildInputs = with pkgs.emacsPackages; [
+      agent-shell
+      acp
+      shell-maker
+    ];
+  };
+
   eca = pkgs.emacsPackages.trivialBuild {
     pname = "eca";
     version = "main";
@@ -294,6 +340,24 @@ let
     pname = "kuro";
     version = "main";
     src = "${sources.kuro.src}/emacs-lisp";
+    postPatch = ''
+      # kuro--run-session-setup-fns is a macro that references
+      # kuro--session-setup-fns at expansion time, but the defconst is in
+      # kuro-lifecycle.el -- not loaded during batch compilation. Convert
+      # to a function so the variable is evaluated at runtime instead.
+      awk '
+        /^\(defmacro kuro--run-session-setup-fns/ {
+          print "(defun kuro--run-session-setup-fns ()"
+          print "  \"Run the fixed session setup sequence in order.\""
+          print "  (dolist (fn kuro--session-setup-fns)"
+          print "    (funcall fn)))"
+          getline; getline; getline; getline
+          next
+        }
+        { print }
+      ' core/kuro-lifecycle-macros.el > _tmp.el
+      mv _tmp.el core/kuro-lifecycle-macros.el
+    '';
     preBuild = ''
       find . -mindepth 2 -name "*.el" -exec cp --backup=numbered {} . \;
     '';
@@ -331,6 +395,7 @@ in
 
     catppuccin-theme
     vertico
+    vertico-posframe
     orderless
     hotfuzz
 
@@ -340,7 +405,11 @@ in
     embark-consult
     consult-ghq
     evil
+
     puni
+    lispy
+    lispyville
+
     highlight-indent-guides
     treesit-auto
 
@@ -353,6 +422,11 @@ in
     org-modern
     org-modern-indent
     org-nix-shell
+    om-dash
+    org-ql
+    org-contrib
+    org-project-capture
+    org-projectile
 
     calfw
     calfw-org
@@ -399,6 +473,9 @@ in
     typst-preview
     typst-ts-mode
     typst-mode
+    kotlin-ts-mode
+    php-ts-mode
+    ruby-ts-mode
 
     lua-mode
     nix-mode
@@ -449,7 +526,7 @@ in
     envrc
 
     flycheck
-    flycheck-pos-tip
+    flycheck-posframe
     flycheck-inline
 
     nano-theme
@@ -538,10 +615,12 @@ in
     ox-typst
     eat
 
+    # coding agent
     claude-shell
     shell-maker
     acp
     agent-shell
+    agent-shell-manager
 
     haskell-mode
 
@@ -595,5 +674,11 @@ in
     treemacs-evil
     treemacs-projectile
     treemacs-perspective
+
+    minimal-dashboard
+    dashboard
+    howm
+
+    justl
   ];
 }

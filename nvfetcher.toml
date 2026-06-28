@@ -185,3 +185,799 @@ fetch.github = "nrslib/takt"
 [picoclaw]
 src.git = "https://github.com/sipeed/picoclaw"
 fetch.git = "https://github.com/sipeed/picoclaw"
+
+[agent-shell-manager]
+src.git= "https://github.com/jethrokuan/agent-shell-manager"
+fetch.git= "https://github.com/jethrokuan/agent-shell-manager"
+
+[minimal-dashboard]
+src.git= "https://github.com/dheerajshenoy/minimal-dashboard.el"
+fetch.git= "https://github.com/dheerajshenoy/minimal-dashboard.el"
+
+[om-dash]
+src.git= "https://github.com/gavv/om-dash"
+fetch.git= "https://github.com/gavv/om-dash"
+
+[sc_BRILLI_NT_WING_BRILLI_NT_WING_01_Spread_the_Wings]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/jk_LACM-14781.jpg"
+
+[sc_BRILLI_NT_WING_BRILLI_NT_WING_02_destination]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14782.jpg"
+
+[sc_BRILLI_NT_WING_BRILLI_NT_WING_03]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14783.jpg"
+
+[sc_BRILLI_NT_WING_BRILLI_NT_WING_04_After_school]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14784.jpg"
+
+[sc_BRILLI_NT_WING_BRILLI_NT_WING_05]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14785.jpg"
+
+[sc_FR_GMENT_WING_FR_GMENT_WING_01]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14861.jpg"
+
+[sc_FR_GMENT_WING_FR_GMENT_WING_02]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14862.jpg"
+
+[sc_FR_GMENT_WING_FR_GMENT_WING_03]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14863.jpg"
+
+[sc_FR_GMENT_WING_FR_GMENT_WING_04]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14864.jpg"
+
+[sc_FR_GMENT_WING_FR_GMENT_WING_05]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14865.jpg"
+
+[sc_FR_GMENT_WING_FR_GMENT_WING_06]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14866.jpg"
+
+[sc_GR_DATE_WING_GR_DATE_WING_01]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14982.jpg"
+
+[sc_GR_DATE_WING_GR_DATE_WING_02]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14983.jpg"
+
+[sc_GR_DATE_WING_GR_DATE_WING_03]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14984-1.jpg"
+
+[sc_GR_DATE_WING_GR_DATE_WING_04]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14985.jpg"
+
+[sc_GR_DATE_WING_GR_DATE_WING_05]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14986.jpg"
+
+[sc_GR_DATE_WING_GR_DATE_WING_06]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14987.jpg"
+
+[sc_GR_DATE_WING_GR_DATE_WING_07]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24005.jpg"
+
+[sc_L_YERED_WING_L_YERED_WING_01]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24111.jpg"
+
+[sc_L_YERED_WING_L_YERED_WING_02]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24112.jpg"
+
+[sc_L_YERED_WING_L_YERED_WING_03]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24113.jpg"
+
+[sc_L_YERED_WING_L_YERED_WING_04]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24114.jpg"
+
+[sc_L_YERED_WING_L_YERED_WING_05]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24115.jpg"
+
+[sc_L_YERED_WING_L_YERED_WING_06]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24116.jpg"
+
+[sc_L_YERED_WING_L_YERED_WING_07]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24117.jpg"
+
+[sc_L_YERED_WING_L_YERED_WING_08]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24118.jpeg"
+
+[sc_PANOR_MA_WING_PANOR_MA_WING_01]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24251.jpeg"
+
+[sc_PANOR_MA_WING_PANOR_MA_WING_02]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24252.jpg"
+
+[sc_PANOR_MA_WING_PANOR_MA_WING_03]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24253.jpg"
+
+[sc_PANOR_MA_WING_PANOR_MA_WING_04]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24254.jpg"
+
+[sc_PANOR_MA_WING_PANOR_MA_WING_05]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24255.jpg"
+
+[sc_PANOR_MA_WING_PANOR_MA_WING_06]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24256.jpg"
+
+[sc_PANOR_MA_WING_PANOR_MA_WING_07]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24257.jpg"
+
+[sc_PANOR_MA_WING_PANOR_MA_WING_08]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24258.jpg"
+
+[sc_CANVAS_CANVAS_01]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/12/LACM-24361.jpg"
+
+[sc_CANVAS_CANVAS_02]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/04/LACM-24362.jpg"
+
+[sc_CANVAS_CANVAS_03]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/12/LACM-24363.jpg"
+
+[sc_CANVAS_CANVAS_04]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/06/LACM-24364.jpg"
+
+[sc_CANVAS_CANVAS_05]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LACM-24365.jpg"
+
+[sc_CANVAS_CANVAS_06]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/08/LACM-24366.jpg"
+
+[sc_CANVAS_CANVAS_07]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/09/LACM-24367.jpg"
+
+[sc_CANVAS_CANVAS_08]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/10/LACM-24368.jpg"
+
+[sc_ECHOES_ECHOES_01]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/12/LACM-24541.jpg"
+
+[sc_ECHOES_ECHOES_02]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/05/LACM-24542.jpg"
+
+[sc_ECHOES_ECHOES_03]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/06/LACM-24543.jpg"
+
+[sc_ECHOES_ECHOES_04]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LACM-24544.jpg"
+
+[sc_ECHOES_ECHOES_05]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/08/LACM-24545.jpg"
+
+[sc_ECHOES_ECHOES_06]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/09/LACM-24546.jpg"
+
+[sc_ECHOES_ECHOES_07]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/12/LACM_24547.jpg"
+
+[sc_ECHOES_ECHOES_08]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/11/LACM-24548.jpg"
+
+[sc_ECHOES_ECHOES_09]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/01/LACA-25115.jpg"
+
+[sc_-Halo_around-_-Halo_around-_01]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/05/LACM-24701.jpg"
+
+[sc_-Halo_around-_-Halo_around-_02]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/06/LACM-24702.jpg"
+
+[sc_-Halo_around-_-Halo_around-_03]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/07/LACM-24703.jpg"
+
+[sc_-Halo_around-_-Halo_around-_04]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/06/LACM-24704.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LACM-24437.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_Beautiful_Day]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/11/LACM-24475.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_Beautiful_Day_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/11/LACM-24476.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/01/LACM-24525.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_3]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/01/LACM-24526.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_Happier]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/03/LACM-24528.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_Happier_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/03/LACM-24529.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_LINKs]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/05/LACM-24552.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_LINKs_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/05/LACM-24553.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_After_Run_mellow_mellow]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LACM-24609.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_After_Run_mellow_mellow_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LACM-24610.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_C_mon_Join_Us_View]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/08/LACA-25133-1.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_Heads_or_Tails]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/09/LACM-24628.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_Heads_or_Tails_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/09/LACM-24629.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_Shower_of_light_V]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/11/LACM-24634.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_Shower_of_light_V_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/11/LACM-24635.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_Real_Mind_Shakes_THE_LAST_PRIDE]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/01/LACM-24636.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_Real_Mind_Shakes_THE_LAST_PRIDE_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/01/LACM-24637.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_Fading_Stars_Future_Transit_KoiKyun]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/06/LACA-25155.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_Borderline_Summer_Night_Paradise]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/10/LACA_25180.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_KAWAII]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/11/LACM-24821.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_QUEEN_OF_THE_PIRATES_exe_Sleepless_Nights]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/11/LACA-25234re.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_Karma_Naraku]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/11/LACM-24822.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_Oh_Yeah]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/12/LACM-24823.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_SUPER_DUPER_DREAMER_BEAST_MODE]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/01/LACM-24824.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_Ring_Ring_Ring]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/04/LACM_24825-1.webp"
+
+[sc_Song_for_Prism_Song_for_Prism_-sanka-_-benibana-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/05/LACM-24826.jpg"
+
+[sc_Song_for_Prism_Song_for_Prism_Tokyo_My_time]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/06/LACM-24827.jpg"
+
+[sc_SE_SONAL_WINTER_SE_SONAL_WINTER]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14820.jpg"
+
+[sc_COLORFUL_FE_THERS_COLORFUL_FE_THERS_-Stella-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACA-15861.jpg"
+
+[sc_COLORFUL_FE_THERS_COLORFUL_FE_THERS_-Luna-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACA-15862.jpg"
+
+[sc_COLORFUL_FE_THERS_COLORFUL_FE_THERS_-Sol-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACA-15863.jpg"
+
+[sc_COLORFUL_FE_THERS_COLORFUL_FE_THERS_-SHHis-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LACM-24395.jpg"
+
+[sc_COLORFUL_FE_THERS_COLORFUL_FE_THERS_-CoMETIK-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/11/LACA-25134.jpg"
+
+[sc_Synthe-Side_Synthe-Side_01]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24244.jpg"
+
+[sc_Synthe-Side_Synthe-Side_02]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24245.jpg"
+
+[sc_Synthe-Side_Synthe-Side_03]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/01/LACM-24246.jpg"
+
+[sc_OFF_VOCAL_COLLECTION_OFF_VOCAL_COLLECTION_01]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACA-9872_4.jpeg"
+
+[sc_OFF_VOCAL_COLLECTION_OFF_VOCAL_COLLECTION_02]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/09/LACA-9944_45.jpg"
+
+[sc_WING_COLLECTION_WING_COLLECTION_-A_side-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/10/LACA-9946_7.jpg"
+
+[sc_WING_COLLECTION_WING_COLLECTION_-B_side-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/10/LACA-9948_9.jpg"
+
+[sc_-28_Colors-_COLLECTION_-28_colors-_COLLECTION]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/07/LACA-39134.jpg"
+
+[sc_-28_Colors-_COLLECTION_-28_colors-_COLLECTION_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/07/LACA-19134.jpg"
+
+[sc_LACM-24508_jpg]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/10/LACM-24508.jpg"
+
+[sc_2nd_season]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LACM-24580.jpg"
+
+[sc_2nd_season_Happy_Surprise_Trick]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LACA-25127-1.jpg"
+
+[sc_2nd_season_Over_the_prism]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/10/LACA-35138_9.jpg"
+
+[sc_2nd_season_Over_the_prism_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/10/LACA-25138.jpg"
+
+[sc_PR_PR_Vol_1]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/01/LACM-24531.jpg"
+
+[sc_PR_PR_Vol_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/01/LACM-24532.jpg"
+
+[sc_PR_PR_Vol_3]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/03/LACM-24533.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-1stLIVE_FLY_TO_THE_SHINY_SKY-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10018.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-SUMMER_PARTY_2019-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10025.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-SPRING_PARTY_2020-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10027_8.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-2ndLIVE_STEP_INTO_THE_SUNSET_SKY-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10031_2.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-MUSIC_DAWN-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10042_3.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-3rdLIVE_TOUR_PIECE_ON_PLANET_TOKYO-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10061_2.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-3rdLIVE_TOUR_PIECE_ON_PLANET_FUKUOKA-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10063_4.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-L_YERED_WING_part_1-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10090_1.jpeg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-L_YERED_WING_part_2-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10092_3.jpeg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-M_STERS_OF_IDOL_WORLD_2023-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/01/SOLO_COLLECTION_MOIW.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-5thLIVE_If_I_wings_part1-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/03/LACZ-10141_2.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-5thLIVE_If_I_wings_Part2-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/03/LACZ-10143_4.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-SOLO_PERFORMANCE_LIVE_Stella-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LACZ-10165.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-SOLO_PERFORMANCE_LIVE_Luna-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LACZ-10166.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-SOLO_PERFORMANCE_LIVE_Sol-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LACZ-10167.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-6thLIVE_TOUR_Come_and_Unite_part1-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/02/LACZ-10195-1.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-6thLIVE_TOUR_Come_and_Unite_part2-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/02/LACZ-10197.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-6thLIVE_TOUR_Come_and_Unite_part3-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/02/LACZ-10199.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-Beyond_the_Blue_sky_part1-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LACZ-10218.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-Beyond_the_Blue_sky_part2-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LACZ-10227.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-6_5th_Anniversary_LIVE_Chapter_283_-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/09/LACZ-10230_1.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-2nd_season_LIVE_Over_the_prism_part1-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/02/LACZ-10262_3.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-2nd_season_LIVE_Over_the_prism_part2-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/02/LACZ-10264_5.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-2nd_season_LIVE_Over_the_prism_part3-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/02/LACZ-10266_7.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-2nd_season_LIVE_Over_the_prism_part4-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/02/LACZ-10268_9.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-7th_UNITLIVE_TOUR_-Halo_around-_part1-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/06/LACZ-10296_7.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-7th_UNITLIVE_TOUR_-Halo_around-_part2-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/06/LACZ-10298_9.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-7th_UNITLIVE_TOUR_-Halo_around-_part3-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/06/LACZ-10300_1.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-7th_LIVE_TOUR_-Halo_around-_The_origin_on_the_axes_-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/10/BNML_SC7_5th-CDpkg_H1.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-M_STERS_OF_IDOL_WORLD_2025_part1-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/11/LACZ-10322.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-M_STERS_OF_IDOL_WORLD_2025_part2-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/11/LACZ-10330.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-_283_part1-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/01/LACZ-10332.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-_283_part2-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/01/LACZ-10334.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-_th_LIVE_i_part1-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/04/LACZ-10349_50.jpg"
+
+[sc_SOLO_COLLECTION_SOLO_COLLECTION_-_th_LIVE_i_part2-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/04/LACZ-10351_2.jpg"
+
+[sc_OTHER_FUTURITY_SMILE]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14906.jpg"
+
+[sc_OTHER_SWEET_STEP]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-14965.jpg"
+
+[sc_OTHER_VS_V]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACZ-10033.jpg"
+
+[sc_OTHER_THE_IDOLM_STER_15]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24027.jpg"
+
+[sc_OTHER_THE_IDOLM_STER_2021_VOY_GER]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LACM-24165.jpg"
+
+[sc_OTHER]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LZC-2059-1.jpg"
+
+[sc_OTHER_B_Health]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/08/LACZ-10112.jpg"
+
+[sc_OTHER_Shiny_Stories]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/05/LZC-2403.jpg"
+
+[sc_OTHER_Shiny_Stories_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LACM-24406.jpg"
+
+[sc_OTHER_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/09/LZC-2489.jpg"
+
+[sc_OTHER_3]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/10/LZC-2562.jpg"
+
+[sc_OTHER_4]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/10/LZC-2563.jpg"
+
+[sc_OTHER_5]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/04/LZC-2730.jpg"
+
+[sc_OTHER_20_NEED_YOU_FOR_WONDERFUL_STORY]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LACM-24643.jpg"
+
+[sc_OTHER_6]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/12/LACM-34808.jpg"
+
+[sc_OTHER_7]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/12/LACM-24808.jpg"
+
+[sc_OTHER_283_Production_MUSICAL_Performance_-_Veil_of_Order_-_Music_Collection]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/03/LACA-35264_5.jpg"
+
+[sc_OTHER_283_Production_MUSICAL_Performance_-_Veil_of_Order_-_Music_Collection_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/03/LACA-25264.jpg"
+
+[sc_OTHER_283_-Stella-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/01/LACZ-10335.jpg"
+
+[sc_OTHER_283_-Luna-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/01/LACZ-10336.jpg"
+
+[sc_OTHER_283_-Sol-]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/01/LACZ-10337.jpg"
+
+[sc_OTHER_283_Production_XXXX_Performance_XXX_S_N-GUL4R1TY_MUSIC_COLLECTION]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/04/LACM-34828.jpg"
+
+[sc_OTHER_283_Production_XXXX_Performance_XXX_S_N-GUL4R1TY_MUSIC_COLLECTION_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2026/04/LACM-24828.jpg"
+
+[sc_1stLIVE_THE_IDOLM_STER_SHINY_COLORS_1stLIVE_FLY_TO_THE_SHINY_SKY_Blu-ray]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LABX-8376_7.jpg"
+
+[sc_MUSIC_DAWN_THE_IDOLM_STER_SHINY_COLORS_MUSIC_DAWN_Blu-ray]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LABX-38463_7.jpg"
+
+[sc_MUSIC_DAWN_THE_IDOLM_STER_SHINY_COLORS_MUSIC_DAWN_Blu-ray_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LABX-8463_4.jpg"
+
+[sc_MUSIC_DAWN_THE_IDOLM_STER_SHINY_COLORS_MUSIC_DAWN_Blu-ray_3]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LABX-8465_6.jpg"
+
+[sc_2ndLIVE_THE_IDOLM_STER_SHINY_COLORS_2ndLIVE_STEP_INTO_THE_SUNSET_SKY_Blu-ray]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LABX-38512_6s.jpg"
+
+[sc_2ndLIVE_THE_IDOLM_STER_SHINY_COLORS_2ndLIVE_STEP_INTO_THE_SUNSET_SKY_Blu-ray_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LABX-8512_3.jpg"
+
+[sc_2ndLIVE_THE_IDOLM_STER_SHINY_COLORS_2ndLIVE_STEP_INTO_THE_SUNSET_SKY_Blu-ray_3]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2021/12/LABX-8514_5.jpg"
+
+[sc_3rdLIVE_THE_IDOLM_STER_SHINY_COLORS_3rdLIVE_TOUR_PIECE_ON_PLANET_NAGOYA_Blu-ray]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/01/LABX-8542_44.jpg"
+
+[sc_3rdLIVE_THE_IDOLM_STER_SHINY_COLORS_3rdLIVE_TOUR_PIECE_ON_PLANET_TOKYO_Blu-ray]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/01/LABX-8545_47.jpg"
+
+[sc_3rdLIVE_THE_IDOLM_STER_SHINY_COLORS_3rdLIVE_TOUR_PIECE_ON_PLANET_FUKUOKA_Blu-ray]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/01/LABX-8548_50.jpg"
+
+[sc_4thLIVE_THE_IDOLM_STER_SHINY_COLORS_4thLIVE_Blu-ray]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/08/LABX-38629_33.jpg"
+
+[sc_4thLIVE_THE_IDOLM_STER_SHINY_COLORS_4thLIVE_Blu-ray_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/08/LABX-8629_30.jpg"
+
+[sc_4thLIVE_THE_IDOLM_STER_SHINY_COLORS_4thLIVE_Blu-ray_3]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2022/08/LABX-8631_32.jpg"
+
+[sc_5thLIVE_THE_IDOLM_STER_SHINY_COLORS_5thLIVE_If_I_wings_Blu-ray]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LABX-38704_8.jpg"
+
+[sc_5thLIVE_THE_IDOLM_STER_SHINY_COLORS_5thLIVE_If_I_wings_Blu-ray_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LABX-8704_5.jpg"
+
+[sc_5thLIVE_THE_IDOLM_STER_SHINY_COLORS_5thLIVE_If_I_wings_Blu-ray_3]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/07/LABX-8706_7.jpg"
+
+[sc_283PRODUCTION_SOLO_PERFORMANCE_LIVE_5_5th_Anniversary_LIVE_Blu-ray_BOX]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/10/LABX-38757_62.jpg"
+
+[sc_283PRODUCTION_SOLO_PERFORMANCE_LIVE_Blu-ray]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/10/LABX-8757_9.jpg"
+
+[sc_5_5th_Anniversary_LIVE_Blu-ray]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2023/10/LABX-8760_2.jpg"
+
+[sc_6thLIVE_THE_IDOLM_STER_SHINY_COLORS_6thLIVE_TOUR_Come_and_Unite_Blu-ray]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LABX-38839s.jpg"
+
+[sc_6thLIVE_THE_IDOLM_STER_SHINY_COLORS_6thLIVE_TOUR_Come_and_Unite_Blu-ray_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LABX-8833s.jpg"
+
+[sc_6thLIVE_THE_IDOLM_STER_SHINY_COLORS_6thLIVE_TOUR_Come_and_Unite_Blu-ray_3]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2024/07/LABX-8836s.jpg"
+
+[sc_6_5thLIVE_THE_IDOLM_STER_SHINY_COLORS_6_5th_Anniversary_LIVE_Chapter_283_Blu-ray]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/06/LABX-38905_7.jpg"
+
+[sc_6_5thLIVE_THE_IDOLM_STER_SHINY_COLORS_6_5th_Anniversary_LIVE_Chapter_283_Blu-ray_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/10/65thLIVE_DAY1.jpg"
+
+[sc_6_5thLIVE_THE_IDOLM_STER_SHINY_COLORS_6_5th_Anniversary_LIVE_Chapter_283_Blu-ray_3]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/10/65thLIVE_DAY2.jpg"
+
+[sc_Over_the_prism_THE_IDOLM_STER_SHINY_COLORS_2nd_season_LIVE_Over_the_prism_Blu-ray]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/10/LABX-38943_6.jpg"
+
+[sc_Over_the_prism_THE_IDOLM_STER_SHINY_COLORS_2nd_season_LIVE_Over_the_prism_Blu-ray_2]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/10/LABX-8943_4.jpg"
+
+[sc_Over_the_prism_THE_IDOLM_STER_SHINY_COLORS_2nd_season_LIVE_Over_the_prism_Blu-ray_3]
+src.manual = "latest"
+fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/10/LABX-8945_6.jpg"
+
+[follower_imassc_prism]
+src.manual = "latest"
+fetch.url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/data/img/special/wallpaper/1/wp_3840x2160_41200follower_imassc_prism.png"
+
+[hokura_thumb]
+src.manual = "latest"
+fetch.url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/hok/thumb.png"
+
+[php-ts-mode]
+src.git= "https://github.com/emacs-php/php-ts-mode"
+fetch.git= "https://github.com/emacs-php/php-ts-mode"
+
+[ruby-ts-mode]
+src.git= "https://github.com/pedz/ruby-ts-mode"
+fetch.git= "https://github.com/pedz/ruby-ts-mode"

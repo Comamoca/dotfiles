@@ -1,0 +1,16 @@
+keys:
+  # メインシステムのage鍵
+  - &main age1ylw8czsr7pmme7tlvvz4qaplx8t3gjn6lrfj9gu5tah7r20e3djsq6qyye
+  # raspiのage鍵
+  - &raspi age13xzwrfqw97xpt2u3eytqy85kxck6q8vqsdhm83jglzvxn6p2l9ls3q0edm
+
+creation_rules:
+  - path_regex: secrets/raspi/.*\.yaml$
+    key_groups:
+      - age:
+          - *main
+          - *raspi
+  - path_regex: secrets/.*\.(yaml|env)$
+    key_groups:
+      - age:
+          - *main
