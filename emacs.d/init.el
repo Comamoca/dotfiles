@@ -49,12 +49,7 @@
                 (float-time (time-subtract after-init-time before-init-time))))))
 (add-hook 'after-init-hook #'my/emacs-init-time)
 
-;; 起動詳細プロファイル（プロファイラ）
-;; M-x profiler-report で起動後のプロファイルを確認できます
-;; 計測が不要な場合は以下の 3 行をコメントアウトしてください
-					; (require 'profiler)
-					; (profiler-start 'cpu)
-					; (add-hook 'after-init-hook (lambda () (profiler-report) (profiler-stop)))
+
 
 ;; ================================================
 
@@ -246,9 +241,7 @@
 				 :exclude ()
 				 :html-head "<link rel=\"stylesheet\" href=\"https://unpkg.com/mvp.css\">"))))
   
-  ;;  ;; org-babel
-  ;;  (org-confirm-babel-evaluate . nil)
-  ;;  (python-shell-interpreter . "python3"))
+
   :hook
   (org-mode . org-nix-shell-mode)
   :config
@@ -279,11 +272,6 @@
                                                                        (interactive)
                                                                        (vterm-toggle-insert-cd)
                                                                        (vterm-toggle-insert-cd)))))
-
-;; org-calendar
-;; (with-eval-after-load 'calendar
-;;     (define-key calendar-mode-map (kbd "C-c c") 'org-capture-from-calendar))
-
 
 ;; org-journal
 (leaf org-journal
@@ -322,17 +310,12 @@
 ;; org-bullets
 (leaf org-bullets
   :after org)
-;; :init
-;; (org-bullets-mode 1)
-
 
 ;; org-modern
 (leaf org-modern
   :after
   :init
   (with-eval-after-load 'org (global-org-modern-mode)))
-
-;; (leaf org-modern-indent)
 
 ;; org-babel
 (leaf ob-hy)
@@ -382,33 +365,15 @@
 (leaf ddskk-posframe
   :global-minor-mode t)
 
-;; (leaf nskk
-;;   ;; :bind (("<henkan>" . nskk-kakutei)
-;;   ;;        ("<muhenkan>" . nskk-handle-l))
-;;   :require t
-;;   :custom
-;;   ((nskk-converter-romaji-style . 'azik)
-;;    (nskk-dict-user-dictionary-file . "~/.nskk/jisyo")
-;;    (nskk-dict-system-dictionary-files . '("~/.skk-dict/SKK-JISYO.L"
-;;                                           "~/.skk-dict/SKK-JISYO.im@sparql.all.utf8")))
-;;   :config
-;;   ;; ;をsticky-shift（変換開始/送り仮名開始）に変更
-;;   ;; っはAZIKのlキーで入力する（Ka;lta → 買った）
-;;   (nskk-prolog-retract-all 'semicolon-key-action 2)
-;;   (nskk-prolog-define-fact-table semicolon-key-action (:arity 2 :index :hash)
-;;     (azik     sticky-shift)
-;;     (standard sticky-shift))
-;;   ;; l → っ（latin-mode切替は<muhenkan>で代替）
-;;   (nskk-converter-add-rule "l" "っ")
-;;   (global-set-key (kbd "<henkan>") #'nskk-set-mode-hiragana)
-;;   (global-set-key (kbd "<muhenkan>") #'nskk-set-mode-latin)
-;;   (nskk-global-mode))
-
 (leaf kuro
   :config
   (setq kuro-module-binary-path
         (expand-file-name "libkuro_core.so"
                           (file-name-directory (locate-library "kuro")))))
+
+(leaf vterm
+  :config
+  (evil-define-key 'insert vterm-mode-map (kbd "C-l") 'vterm-clear))
 
 ;; Common Lisp
 (leaf slime
@@ -417,7 +382,6 @@
 
 (leaf sly
   :config)
-;; (defvar inferior-lisp-program "sbcl")
 
 (leaf sly-asdf)
 
@@ -444,9 +408,6 @@
   :after flycheck
   :config (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode))
 
-;; (leaf flycheck-inline
-;;   :hook (flycheck-mode-hook . flycheck-inline-mode))
-
 ;; for textlint
 (flycheck-define-checker textlint
   "A linter for prose."
@@ -468,49 +429,6 @@
   (push '("typescript-ts-mode" . "typescript") copilot-major-mode-alist))
 
 ;; LSP
-;; (leaf lsp-bridge
-;;   :require t
-;;   :custom
-;;   ((acm-enable-capf . t)
-;;    (lsp-bridge-nix-lsp-server . "nil"))
-;;   :config
-;; (setq lsp-bridge-multi-lang-server-extension-list
-;; 	(cl-remove-if (lambda (item)
-;; 			(equal (car item) '("ts" "tsx")))
-;;                     lsp-bridge-multi-lang-server-extension-list))
-
-;; (setq lsp-bridge-multi-lang-server-extension-list
-;; 	(mapcar (lambda (item)
-;; 		  (cond
-;; 		   ((equal )))) lsp-bridge-multi-lang-server-extension-list))
-
-;; (when (file-exists-p (expand-file-name "package.json" project-path))
-;; 	    "typescript-language-server"
-;; 	    "deno")
-
-;; (defun lsp-bridge-setup-for-ts-js-mode ()
-;;   (setq lsp-bridge-get-single-lang-server-by-project
-;; 	    (lambda (project-path file-path)
-;;           (let* ((ext (file-name-extension (or buffer-file-name "")))
-;; 		     (is-ts-file (or (= ext "ts") (= ext "tsx")))
-;; 		     (is-js-file (or (= ext "js") (= ext "jsx"))))
-;; 		(if (and (or is-ts-file is-js-file)  (file-exists-p (expand-file-name "package.json" project-path)))
-;; 		    "typescript-language-server"
-;; 		  "deno")))))
-
-
-;; (add-hook 'typescript-ts-mode 'lsp-bridge-setup-for-ts-js-mode)
-;; (add-hook 'javascript-mode 'lsp-bridge-setup-for-ts-js-mode)
-
-;; (setq lsp-bridge-get-single-lang-server-by-project
-;; 	(lambda (project-path file-path)
-;; 	  (when (or (string-suffix-p ".ts" file-path)
-;; 		    (string-suffix-p ".tsx" file-path))
-;; 	    "deno")))
-
-;; :init) 
-;; (global-lsp-bridge-mode)
-
 ;; lsp-mode
 (leaf lsp-mode
   :hook
@@ -576,54 +494,6 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
 
 (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 
-;; Eglot
-;; (defun deno-project-p ()
-;;   "Predicate for determining if the open project is a Deno one."
-;;   (let ((p-root (nth 2 (project-current))))
-;;     (or (file-exists-p (expand-file-name "deno.json" default-directory))
-;; 	  (file-exists-p (expand-file-name "deno.jsonc" default-directory)))))
-
-;; (defun node-project-p ()
-;;   "Predicate for determining if the open project is a Deno one."
-;;   (let ((p-root (nth 2 (project-current))))
-;;     (file-exists-p (expand-file-name "package.json" default-directory))))
-
-;; (defun es-server-program (_)
-;;   "Decide which server to use for ECMA Script based on project characteristics."
-;;   (cond ((deno-project-p) '("lspx" "--lsp" "deno" "lsp" :initializationOptions (:enable t :lint t)))
-;;         ((node-project-p) '("lspx" "--lsp" "typescript-language-server" "--stdio"))
-;;         (t nil)))
-
-;; (leaf eglot
-;;   :hook
-;;   (c++-mode . eglot-ensure)
-;;   (sh-mode . eglot-ensure)
-;;   (python-mode . eglot-ensure)
-;;   (html-mode . eglot-ensure)
-;;   (cmake-mode . eglot-ensure)
-;;   (bitbake-mode . eglot-ensure)
-;;   (typescript-ts-mode . eglot-ensure)
-;;   :config
-;;   ;; (add-to-list 'eglot-server-programs '((bitbake-mode) "bitbake-language-server"))
-;;   ;; (add-to-list 'eglot-server-programs '((js-mode typescript-mode) . es-server-program))
-;;   ;; (add-to-list 'eglot-server-programs '(gleam-ts-mode . ("lspx" "--lsp" "gleam lsp")))
-
-;;   (setq eglot-server-programs
-;;         (append
-;;          '(
-;; 	     (haskell-mode . ("haskell-language-server-wrapper"))
-;; 	     (gleam-ts-mode . ("lspx" "--lsp" "gleam lsp")))
-;;          eglot-server-programs))
-
-;;   :bind (("M-t" . xref-find-definitions)
-;;          ("M-r" . xref-find-references)
-;;          ("C-t" . xref-go-back)))
-
-;; (leaf eglot-booster
-;;   :after eglot
-;;   ;; :init (eglot-booster-mode)
-;;   )
-
 ;; Auto Formatting
 (leaf reformatter
   :config 
@@ -671,8 +541,6 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
   ;; LSP 補完時のハングを防止
   (advice-add #'lsp-completion-at-point :around #'cape-wrap-noninterruptible))
 
-
-;; (add-to-list 'completion-at-point-functions #'cape-line)
 
 
 ;; with icon
@@ -732,21 +600,6 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
    "Capture"
    (("s" org-capture "Capture"))))
 
-
-;; (pretty-hydra-define org-roam-hydra
-;;   (:separator "-" :title "org-roam" :forigen-key warn :quit-key "q" :exit t)
-;;   ("Find"
-;;    (("a" 'org-roam-node-find "Find node"))
-
-;;    ""
-;;    (("s" 'org-roam- ""))
-
-;;    ""
-;;    (("d"  ""))
-
-;;    ""
-;;    (("f"  ""))
-;;     ))
 
 ;; Transient dispatcher
 (leaf transient-dwim
@@ -950,11 +803,12 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
   :config
   (direnv-mode))
 
-(leaf nyan-mode)
-(add-hook 'server-after-make-frame-hook
-          (lambda ()
-            (when (display-graphic-p)
-              (nyan-mode 1))))
+(leaf nyan-mode
+  :config
+  (add-hook 'server-after-make-frame-hook
+            (lambda ()
+              (when (display-graphic-p)
+                (nyan-mode 1)))))
 
 ;; Snippets
 (leaf tempel
@@ -1026,8 +880,6 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
 (evil-define-key 'normal newsticker-treeview-mode-map (kbd "n") 'newsticker-treeview-next-item)
 (evil-define-key 'normal newsticker-treeview-mode-map (kbd "p") 'newsticker-treeview-prev-item)
 
-(evil-define-key 'normal evil-treemacs-state-map (kbd "l") 'treemacs-RET-action)
-
 (leaf eww
   :config
   (evil-define-key 'normal eww-mode-map
@@ -1060,12 +912,6 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
      (let ((num (string-to-number arg)))
        (number-to-string (if rev (- num 1) (+ num 1)))))))
 
-;; 無効化: good-scroll--render タイマー(4つ) + post-command-hook が
-;; 常時 redisplay を発生させCPU負荷の主要原因になっていた
-;; (leaf good-scroll
-;;   :init
-;;   (good-scroll-mode 1))
-
 (leaf sublimity)
 
 (leaf iscroll)
@@ -1094,33 +940,6 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
     (aas-set-snippets 'global)
     (aas-set-snippets 'markdown-mode)
     (aas-set-snippets 'prog-mode)))
-
-;; smartparens: puni-global-modeと機能が重複するため無効化
-;; sp--save-pre-command-state がpost-command-hookで3,439回実行されていた
-;; (leaf smartparens
-;;   :config
-;;   (smartparens-global-mode t))
-
-(leaf vterm
-  :config
-  (evil-define-key 'insert vterm-mode-map (kbd "C-l") 'vterm-clear))
-
-;; (leaf vterm-toggle
-;;   :after evil
-;;   :bind (("C-<return>" . (lambda ()
-;;                            (interactive)
-;;                            (vterm-toggle)
-;;                            (vterm-toggle-insert-cd)))))
-
-;; (leaf multi-vterm
-;;   :config
-;;   (setq multi-vterm-dedicated-window-height 50))
-
-(leaf kuro
-  :bind (("C-<return>" . (lambda ()
-                           (interactive)
-                           (vterm-toggle)
-                           (vterm-toggle-insert-cd)))))
 
 ;; AI
 (defvar openrouter-apikey nil "OpenRouter API key.")
@@ -1528,9 +1347,6 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
   :hook
   (html-ts-mode . emmet-mode))
 
-;; (leaf elscreen
-;;   :require t)
-
 (leaf apheleia
   :require t
   :init
@@ -1689,10 +1505,6 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 		 "-b"
 		 "backup"))
 
-;; (set-process-sentinel proc
-;;                           (lambda (process event)
-;;                             (when (string= event "finished\n"))))
-
 (defun all (pred lst)
   "Returns t if all elements of the list satisfy the predicate."
   (catch 'done
@@ -1723,10 +1535,6 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
         (end (point))
         (candidates gitmoji--codes))
     (list beg end candidates :exclusive 'no)))
-
-;; Collect gitmoji when startup
-;; (add-hook 'emacs-startup-hook 'setup-gitmoji)
-;; Enable at git-commit-mode
 
 ;; Display character count in modeline
 (defun update-buffer-char-count ()
@@ -2131,7 +1939,6 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 (leaf macrostep
   :bind (("C-c e" . macrostep-expand)))
 
-;; (provide 'init)
 (put 'narrow-to-region 'disabled nil)
 
 (custom-set-variables
