@@ -1515,13 +1515,20 @@ Scans up to 10 characters around point to find an image display property."
 (defun my/dashboard-album-name ()
   "Extract album name from `dashboard-startup-banner' filename.
 Format: ALBUM__TRACK.jpg → \"ALBUM\" (underscores replaced with spaces).
-When ALBUM is \"OTHER\", use the track name instead (it's a single)."
+When ALBUM is \"OTHER\" or \"アニメ\", extract the song name instead."
   (when-let* ((banner dashboard-startup-banner)
               (fname (file-name-base banner))
               (sep-pos (string-match "__" fname))
               (prefix (substring fname 0 sep-pos))
               (track  (substring fname (+ sep-pos 2)))
-              (name   (if (string= prefix "OTHER") track prefix)))
+              (name   (cond
+                       ((string= prefix "アニメ")
+                        ;; 最後の[...]内の曲名を抽出
+                        (if (string-match "\\[\\([^]]*\\)\\][^]]*$" track)
+                            (match-string 1 track)
+                          track))
+                       ((string= prefix "OTHER") track)
+                       (t prefix))))
     (replace-regexp-in-string "_" " " name)))
 
 (defun my/dashboard-update-banner-title ()
@@ -1534,9 +1541,13 @@ When ALBUM is \"OTHER\", use the track name instead (it's a single)."
   (setq dashboard-startup-banner (or (my/dashboard-random-image)
                                      (expand-file-name "~/Pictures/shinycolors-jacket/BRILLI@NT_WING__BRILLI@NT_WING_04_夢咲きAfter_school.jpg")))
   (my/dashboard-update-banner-title)
-  ;; 画像表示サイズ：アスペクト比を維持したまま、この範囲に収める
-  (setq dashboard-image-banner-max-width 300)
-  (setq dashboard-image-banner-max-height 300)
+  ;; 全ジャケットを幅300pxに統一（高さはアスペクト比で自動計算）
+  (setq dashboard-image-banner-max-width 0)
+  (setq dashboard-image-banner-max-height 0)
+  (setq dashboard-image-extra-props '(:width 300))
+  ;; webp がアニメーション扱いでサイズ指定を無視されるのを防ぐ
+  (advice-add 'dashboard--image-animated-p :override
+              (lambda (path) (eq 'gif (image-type path))))
   ;; RET: バナー画像上 → ランダム切替 / それ以外 → evil標準動作
   (with-eval-after-load 'evil
     (evil-define-key 'normal dashboard-mode-map (kbd "RET")
