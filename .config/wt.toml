@@ -1,0 +1,6 @@
+# Project configuration for worktrunk
+# https://worktrunk.dev/config/#project-configuration
+
+# Dev server URL for `wt list` (dimmed when port not listening)
+[list]
+url = "http://localhost:{{ branch | hash_port }}"
