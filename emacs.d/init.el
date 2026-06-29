@@ -206,7 +206,7 @@
   :after text-mode calendar-mode
   :custom
   ((org-todo-keywords .
-		      '((sequence "TODO(t)" "PENDING(p)" "|" "DONE(d)" "CANCELED(c)")))
+		      '((sequence "TODO(t)" "NEXT(n)" "IN-PROGRESS(i)" "WAIT(w@/!)" "SOMEDAY(s)" "|" "DONE(d!)" "CANCELED(c@)")))
    (org-default-notes-file . "notes.org")
    `(org-directory . ,(expand-file-name "~/.ghq/github.com/Comamoca/org"))
    `(diary-file-path . ,(format-time-string "diary/%Y/%m-%d.org"))
@@ -719,15 +719,14 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
   (projectile-mode +1)
   (push ".git" projectile-project-root-files)
   (setq projectile-project-root-files-bottom-up
-	'("package.json" "Cargo.toml" "gleam.toml" "flake.nix"))
+	'("Cargo.toml" "gleam.toml" "flake.nix"))
   ;; .gitignore を尊重するため git ls-files ベースの indexing を使用
   (setq projectile-indexing-method 'hybrid)
   ;; ghq の owner/repo レイアウトでは depth=2 で全リポジトリに到達する
   ;; それ以上深くするとリポジトリ内部 (node_modules/ 等) に入り込む
   (setq projectile-project-search-path
 	`(,(cons (expand-file-name "~/.ghq/github.com/") 2)))
-  ;; .opencode 等のサブディレクトリをプロジェクト検出から除外
-  (add-to-list 'projectile-globally-ignored-directories ".opencode")
+
   :bind ((:projectile-mode-map
           ("C-c p" . projectile-command-map))))
 
