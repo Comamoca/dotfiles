@@ -398,14 +398,33 @@
   (expand-file-name "project" org-directory)
   "Directory for per-project org note files.")
 
+(defun my/worktree-main-repo-name (root)
+  "If ROOT is a git worktree, return the main repo's directory name.
+Otherwise return nil."
+  (when-let* ((git-file (expand-file-name ".git" root))
+              ((file-regular-p git-file)))
+    (with-temp-buffer
+      (insert-file-contents git-file)
+      (goto-char (point-min))
+      (when (looking-at "gitdir: \\(.+\\)$")
+        (let* ((gitdir-path (match-string-no-properties 1))
+               (main-repo (file-name-directory
+                            (directory-file-name
+                              (file-name-directory
+                                (directory-file-name
+                                  (file-name-directory gitdir-path)))))))
+          (file-name-nondirectory (directory-file-name main-repo)))))))
+
 (defun my/project-notes-file ()
   "Return the org file path for the current projectile project.
 Uses author/repo.org format (e.g. Comamoca/dotfiles.org) to avoid
-collisions between forked repositories."
+collisions between forked repositories.
+Git worktrees resolve to the main repo's org file."
   (when-let* ((root (projectile-project-root))
               (dir (directory-file-name root))
               (components (split-string dir "/" t))
-              (repo (car (last components)))
+              (repo (or (my/worktree-main-repo-name root)
+                        (car (last components))))
               (author (car (last components 2))))
     (if (and author repo)
         (let ((dir-path (expand-file-name author my/project-notes-dir)))
@@ -509,7 +528,22 @@ Creates the file with default headings if it doesn't exist."
            (flycheck-indication-mode . 'left-margin))
   :config
   (add-hook 'flycheck-mode-hook #'flycheck-set-indication-mode)
-  (global-flycheck-mode 1))
+  ;; *scratch* バッファでは flycheck を無効化
+  ;; flycheck-global-modes の '(not ...) は after-change-major-mode-hook
+  ;; 経由の新規バッファには効くが、global-flycheck-mode 有効化時点で
+  ;; 既存の *scratch* には適用されない。明示的に無効化する。
+  (setq flycheck-global-modes '(not lisp-interaction-mode))
+  (defun my/flycheck-disable-in-scratch (&rest _)
+    "Disable flycheck in *scratch* buffer if it exists."
+    (let ((buf (get-buffer "*scratch*")))
+      (when buf
+        (with-current-buffer buf
+          (flycheck-mode -1)))))
+  ;; デーモン接続時（emacsclient -c）に *scratch* が表示されたら無効化
+  (add-hook 'server-after-make-frame-hook #'my/flycheck-disable-in-scratch)
+  ;; global-flycheck-mode 有効化直後の既存 *scratch* も無効化
+  (global-flycheck-mode 1)
+  (my/flycheck-disable-in-scratch))
 
 (leaf flycheck-posframe
   :after flycheck
@@ -743,8 +777,21 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
 ;; Perspective x Projectile bridge
 (leaf persp-projectile
   :after (perspective projectile)
+  :custom
+  ((persp-projectile-project-persp-creator . 'my/persp-projectile-creator))
   :bind ((:projectile-mode-map
           ("C-c p p" . projectile-persp-switch-project))))
+
+;; Git worktree をメインリポジトリと同じ perspective で扱う
+;; worktrunk が作成した worktree (e.g. dotfiles.test-feature) も
+;; "dotfiles" perspective に統合される
+(defun my/persp-projectile-creator (project)
+  "Return perspective name for PROJECT.
+For git worktrees, use the main repository's directory name
+so they share the same perspective as the main repo."
+  (let ((root (if (listp project) (car project) project)))
+    (or (my/worktree-main-repo-name root)
+        (projectile-project-name project))))
 
 (leaf treemacs-projectile
   :after (treemacs projectile)
