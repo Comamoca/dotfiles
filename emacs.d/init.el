@@ -296,16 +296,16 @@
    `(org-roam-db-location . ,(expand-file-name "~/.emacs.d/org-roam/database.db"))
    `(org-roam-index-file . ,(expand-file-name "index.org" org-roam-directory))
    (org-roam-capture-templates .
-    '(("d" "default" plain
-       "%?"
-       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-                          "#+title: ${title}\n")
-       :unnarrowed t)
-      ("r" "reference" plain
-       "%?"
-       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
-                          "#+title: ${title}\n#+filetags: :reference:\n")
-       :unnarrowed t))))
+			       '(("d" "default" plain
+				  "%?"
+				  :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+						     "#+title: ${title}\n")
+				  :unnarrowed t)
+				 ("r" "reference" plain
+				  "%?"
+				  :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+						     "#+title: ${title}\n#+filetags: :reference:\n")
+				  :unnarrowed t))))
   :config
   (org-roam-db-autosync-mode))
 
@@ -409,10 +409,10 @@ Otherwise return nil."
       (when (looking-at "gitdir: \\(.+\\)$")
         (let* ((gitdir-path (match-string-no-properties 1))
                (main-repo (file-name-directory
-                            (directory-file-name
-                              (file-name-directory
-                                (directory-file-name
-                                  (file-name-directory gitdir-path)))))))
+                           (directory-file-name
+                            (file-name-directory
+                             (directory-file-name
+                              (file-name-directory gitdir-path)))))))
           (file-name-nondirectory (directory-file-name main-repo)))))))
 
 (defun my/project-notes-file ()
@@ -1577,6 +1577,21 @@ When ALBUM is \"OTHER\" or \"アニメ\", extract the song name instead."
                        (t prefix))))
     (replace-regexp-in-string "_" " " name)))
 
+(setq my/dashboard-welcome-messages
+      '("Hello, World!"
+        "Welcome back!"
+        "Happy Hacking!"))
+
+(defun my/dashboard-reload-welcome ()
+  "Reload `dashboard-footer-messages' from `my/dashboard-welcome-messages' and refresh."
+  (interactive)
+  (setq dashboard-footer-messages my/dashboard-welcome-messages)
+  (when-let ((buf (get-buffer dashboard-buffer-name)))
+    (with-current-buffer buf
+      (let ((inhibit-read-only t))
+        (dashboard-refresh-buffer))))
+  (message "Welcome messages reloaded"))
+
 (defun my/dashboard-update-banner-title ()
   "Set `dashboard-banner-logo-title' based on the current banner image."
   (setq dashboard-banner-logo-title (or (my/dashboard-album-name) "SHINY COLORS")))
@@ -1587,6 +1602,8 @@ When ALBUM is \"OTHER\" or \"アニメ\", extract the song name instead."
   (setq dashboard-startup-banner (or (my/dashboard-random-image)
                                      (expand-file-name "~/Pictures/shinycolors-jacket/BRILLI@NT_WING__BRILLI@NT_WING_04_夢咲きAfter_school.jpg")))
   (my/dashboard-update-banner-title)
+  ;; ウェルカムメッセージ（フッター）
+  (setq dashboard-footer-messages my/dashboard-welcome-messages)
   ;; 全ジャケットを幅300pxに統一（高さはアスペクト比で自動計算）
   (setq dashboard-image-banner-max-width 0)
   (setq dashboard-image-banner-max-height 0)
@@ -1594,14 +1611,24 @@ When ALBUM is \"OTHER\" or \"アニメ\", extract the song name instead."
   ;; webp がアニメーション扱いでサイズ指定を無視されるのを防ぐ
   (advice-add 'dashboard--image-animated-p :override
               (lambda (path) (eq 'gif (image-type path))))
-  ;; RET: バナー画像上 → ランダム切替 / それ以外 → evil標準動作
+  ;; RET: バナー画像上 → ランダム切替 / agenda項目 → ファイルを開く / それ以外 → evil標準動作
   (with-eval-after-load 'evil
     (evil-define-key 'normal dashboard-mode-map (kbd "RET")
       (lambda ()
         (interactive)
-        (if (my/dashboard-on-banner-p)
-            (my/dashboard-randomize-banner)
-          (call-interactively #'evil-ret))))))
+        (cond
+         ((my/dashboard-on-banner-p)
+          (my/dashboard-randomize-banner))
+         ((get-text-property (point) 'dashboard-agenda-file)
+          (let ((file (get-text-property (point) 'dashboard-agenda-file))
+                (loc (get-text-property (point) 'dashboard-agenda-loc)))
+            (when (and file (numberp loc))
+              (let ((buffer (find-file-other-window file)))
+                (with-current-buffer buffer
+                  (goto-char loc)
+                  (recenter-top-bottom))))))
+         (t
+          (call-interactively #'evil-ret)))))))
 
 (leaf minimal-dashboard
   :require t
