@@ -970,9 +970,45 @@ fetch.url = "https://shinycolors.lantis.jp/X9pa5jNY/wp-content/uploads/2025/10/L
 src.manual = "latest"
 fetch.url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/data/img/special/wallpaper/1/wp_3840x2160_41200follower_imassc_prism.png"
 
+[release_imassc_prism]
+src.manual = "latest"
+fetch.url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/data/img/special/wallpaper/4/wp_3840x2160_release_imassc_prism.png"
+
 [hokura_thumb]
 src.manual = "latest"
 fetch.url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/hok/thumb.png"
+
+[illumination_stars_thumb]
+src.manual = "latest"
+fetch.url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/ill/thumb.png"
+
+[antica_thumb]
+src.manual = "latest"
+fetch.url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/ant/thumb.png"
+
+[alstroemeria_thumb]
+src.manual = "latest"
+fetch.url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/als/thumb.png"
+
+[straylight_thumb]
+src.manual = "latest"
+fetch.url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/str/thumb.png"
+
+[noctchill_thumb]
+src.manual = "latest"
+fetch.url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/noc/thumb.png"
+
+[shhis_thumb]
+src.manual = "latest"
+fetch.url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/shh/thumb.png"
+
+[cometik_thumb]
+src.manual = "latest"
+fetch.url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/com/thumb.png"
+
+[card_thumb]
+src.manual = "latest"
+fetch.url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/footer/card/card.png"
 
 [php-ts-mode]
 src.git= "https://github.com/emacs-php/php-ts-mode"

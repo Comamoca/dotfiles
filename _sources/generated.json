@@ -22,7 +22,7 @@
     },
     "agent-shell": {
         "cargoLock": null,
-        "date": "2026-06-27",
+        "date": "2026-07-01",
         "extract": null,
         "name": "agent-shell",
         "passthru": null,
@@ -34,12 +34,12 @@
             "name": null,
             "owner": "xenodium",
             "repo": "agent-shell",
-            "rev": "96343cf9a321f707e3007fb9a1543871d07f9937",
-            "sha256": "sha256-ncA3V2ZXGYG3jdkOMVvbY8iwouPu9ghmZKqwTJs/rzU=",
+            "rev": "1a2e0d8af6931951df0f665052c6be3bc23ff556",
+            "sha256": "sha256-0qAH9Sd27l2tJ4+Ev9FezPcofrZzLPypqqGvGH03I1I=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "96343cf9a321f707e3007fb9a1543871d07f9937"
+        "version": "1a2e0d8af6931951df0f665052c6be3bc23ff556"
     },
     "agent-shell-manager": {
         "cargoLock": null,
@@ -82,6 +82,36 @@
         },
         "version": "ac10526c5cfcc2f4288d3539853ff23f4ee7f915"
     },
+    "alstroemeria_thumb": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "alstroemeria_thumb",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-dB1QHci7DzF7dteeJ848QP72/fssUY++H2Zm2iZuhVA=",
+            "type": "url",
+            "url": "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/als/thumb.png"
+        },
+        "version": "latest"
+    },
+    "antica_thumb": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "antica_thumb",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-t7+csFcwMu0U0jazScYldp9p2w62bThKEFVauUh0zTc=",
+            "type": "url",
+            "url": "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/ant/thumb.png"
+        },
+        "version": "latest"
+    },
     "autoclaude": {
         "cargoLock": null,
         "date": "2026-01-15",
@@ -101,6 +131,21 @@
             "url": "https://github.com/henryaj/autoclaude"
         },
         "version": "39ad5ef1818a9c71241bea463da3af33f1dccf69"
+    },
+    "card_thumb": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "card_thumb",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-Pn2H8t6J4tM/3ITw/iIbxwjwfqupMoQ1plilD5fQ4iE=",
+            "type": "url",
+            "url": "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/footer/card/card.png"
+        },
+        "version": "latest"
     },
     "claude-code": {
         "cargoLock": null,
@@ -165,9 +210,24 @@
         },
         "version": "c3a42d7843b6644487f810878d81214a0c66a088"
     },
+    "cometik_thumb": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "cometik_thumb",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-9N4mVgzLKmJQnGNsUL/rzjvIkKtAxbr+IvD/i1gNCss=",
+            "type": "url",
+            "url": "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/com/thumb.png"
+        },
+        "version": "latest"
+    },
     "copilot": {
         "cargoLock": null,
-        "date": "2026-06-26",
+        "date": "2026-06-30",
         "extract": null,
         "name": "copilot",
         "passthru": null,
@@ -179,12 +239,12 @@
             "name": null,
             "owner": "copilot-emacs",
             "repo": "copilot.el",
-            "rev": "16664ca0b59c045c7209bdcd590fdc7831812dac",
-            "sha256": "sha256-vkmWLhL/CXD73VFs/EoA96oiXcqH6qtLixA3wk/GmG4=",
+            "rev": "4a558d12ca73aef6731fe87099a5838a774fd341",
+            "sha256": "sha256-Sa44SN0cKLKkUXhS4fhcu91ExdMUdXXVUygulJvVyvs=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "16664ca0b59c045c7209bdcd590fdc7831812dac"
+        "version": "4a558d12ca73aef6731fe87099a5838a774fd341"
     },
     "digs": {
         "cargoLock": null,
@@ -209,7 +269,7 @@
     },
     "eca": {
         "cargoLock": null,
-        "date": "2026-06-22",
+        "date": "2026-06-30",
         "extract": null,
         "name": "eca",
         "passthru": null,
@@ -219,17 +279,17 @@
             "fetchSubmodules": false,
             "leaveDotGit": false,
             "name": null,
-            "rev": "f91296cd8ddd1477700cc81c3edda0a45b1a6cd1",
-            "sha256": "sha256-56dYFdvg+8w83ECAPUQVFceiCeVVsHZznCxvkvb+MXc=",
+            "rev": "de940cc5203b79f1bd9c8581fa91b5fdfafdc86f",
+            "sha256": "sha256-BkFiIFgFf4Wpg2MQ1erfdtjpI2aG/EekvmNmwOTYue8=",
             "sparseCheckout": [],
             "type": "git",
             "url": "https://github.com/editor-code-assistant/eca-emacs"
         },
-        "version": "f91296cd8ddd1477700cc81c3edda0a45b1a6cd1"
+        "version": "de940cc5203b79f1bd9c8581fa91b5fdfafdc86f"
     },
     "eglot-booster": {
         "cargoLock": null,
-        "date": "2025-07-16",
+        "date": "2026-06-30",
         "extract": null,
         "name": "eglot-booster",
         "passthru": null,
@@ -241,12 +301,32 @@
             "name": null,
             "owner": "jdtsmith",
             "repo": "eglot-booster",
-            "rev": "cab7803c4f0adc7fff9da6680f90110674bb7a22",
-            "sha256": "sha256-xUBQrQpw+JZxcqT1fy/8C2tjKwa7sLFHXamBm45Fa4Y=",
+            "rev": "510f579409627c333ef0e9157db713b1004da842",
+            "sha256": "sha256-HhWR40j/WFcorp8QttXtOz5yxL1B4JUXL+9IuNpoND0=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "cab7803c4f0adc7fff9da6680f90110674bb7a22"
+        "version": "510f579409627c333ef0e9157db713b1004da842"
+    },
+    "emacs-taskrunner": {
+        "cargoLock": null,
+        "date": "2019-09-16",
+        "extract": null,
+        "name": "emacs-taskrunner",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "rev": "716323aff410b4d864d137c9ebe4bbb5b8587f5e",
+            "sha256": "sha256-Vs9IPFGkHHxwdLakGJonYg7UKJx/4SOSWqw8mYCslA4=",
+            "sparseCheckout": [],
+            "type": "git",
+            "url": "https://github.com/emacs-taskrunner/emacs-taskrunner"
+        },
+        "version": "716323aff410b4d864d137c9ebe4bbb5b8587f5e"
     },
     "emacs_fancy_logos": {
         "cargoLock": null,
@@ -398,6 +478,21 @@
         },
         "version": "142a04dd588af6c725e331863c3ca7bd5dda13ec"
     },
+    "illumination_stars_thumb": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "illumination_stars_thumb",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-CJb/z5mL3Qdv6OXZ4DP/WPompSvwOVysy/eLd5D2ZCE=",
+            "type": "url",
+            "url": "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/ill/thumb.png"
+        },
+        "version": "latest"
+    },
     "kdl-ts-mode": {
         "cargoLock": null,
         "date": "2024-01-05",
@@ -515,6 +610,21 @@
             "type": "github"
         },
         "version": "2.1"
+    },
+    "noctchill_thumb": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "noctchill_thumb",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-aLobGb8K1pBgCAiFkX8kHMNmZ3W+Ens9MhU0Ul7cz9E=",
+            "type": "url",
+            "url": "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/noc/thumb.png"
+        },
+        "version": "latest"
     },
     "nskk": {
         "cargoLock": null,
@@ -676,7 +786,7 @@
     },
     "picoclaw": {
         "cargoLock": null,
-        "date": "2026-06-26",
+        "date": "2026-06-30",
         "extract": null,
         "name": "picoclaw",
         "passthru": null,
@@ -686,13 +796,13 @@
             "fetchSubmodules": false,
             "leaveDotGit": false,
             "name": null,
-            "rev": "52320f48755852e53b8b6b10b1414a32c3f0a8a8",
-            "sha256": "sha256-pdI6SS05aPiuqAflJW7kVk49ljDA+CXuo9syoyRBBTw=",
+            "rev": "2cf030d2fd3b871d7ec17e3be34c24688aac76da",
+            "sha256": "sha256-QYfHXIHJjeZJdkhGNNhdO91Q8EFgSP+ubqGJ8VgTEtc=",
             "sparseCheckout": [],
             "type": "git",
             "url": "https://github.com/sipeed/picoclaw"
         },
-        "version": "52320f48755852e53b8b6b10b1414a32c3f0a8a8"
+        "version": "2cf030d2fd3b871d7ec17e3be34c24688aac76da"
     },
     "python-mode": {
         "cargoLock": null,
@@ -756,6 +866,21 @@
             "type": "github"
         },
         "version": "f40ece58df8b2f0fb6c8576b527755a552a5e763"
+    },
+    "release_imassc_prism": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "release_imassc_prism",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-MkcqNSZEPoX2C4xc0+RgZpm1C+1u0q60xRgbFNVSpgI=",
+            "type": "url",
+            "url": "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/data/img/special/wallpaper/4/wp_3840x2160_release_imassc_prism.png"
+        },
+        "version": "latest"
     },
     "ruby-ts-mode": {
         "cargoLock": null,
@@ -3680,7 +3805,7 @@
     },
     "shell-maker": {
         "cargoLock": null,
-        "date": "2026-06-27",
+        "date": "2026-06-29",
         "extract": null,
         "name": "shell-maker",
         "passthru": null,
@@ -3692,12 +3817,27 @@
             "name": null,
             "owner": "xenodium",
             "repo": "shell-maker",
-            "rev": "55c383ca542efbb79abd9cb3d6bbd3ab0d92f5d9",
-            "sha256": "sha256-+fpxzcQqyp5crTCmqlH2nB7ijXQbQml8SaZxHSc5Tzc=",
+            "rev": "4e125a851f61b119dad1e1e909178619947be894",
+            "sha256": "sha256-3nbEFAqh8cKiiNQcZkSyKBDO7muY3FLdXhFZdFcWtCs=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "55c383ca542efbb79abd9cb3d6bbd3ab0d92f5d9"
+        "version": "4e125a851f61b119dad1e1e909178619947be894"
+    },
+    "shhis_thumb": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "shhis_thumb",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-4lK1fdGLVM2nTtW0b5WnOEgZ8U0eZ6TZi+5fEt8Y5lo=",
+            "type": "url",
+            "url": "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/shh/thumb.png"
+        },
+        "version": "latest"
     },
     "skk-capf": {
         "cargoLock": null,
@@ -3777,9 +3917,24 @@
         },
         "version": "c90db830e84e34ac5724f57eda2f1112a589df5c"
     },
+    "straylight_thumb": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "straylight_thumb",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-fbmrwb2MINxBdYpiLILPtGMmPzrrTRUYOT13eh1QHYg=",
+            "type": "url",
+            "url": "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/str/thumb.png"
+        },
+        "version": "latest"
+    },
     "takt": {
         "cargoLock": null,
-        "date": "2026-06-28",
+        "date": "2026-07-01",
         "extract": null,
         "name": "takt",
         "passthru": null,
@@ -3791,12 +3946,12 @@
             "name": null,
             "owner": "nrslib",
             "repo": "takt",
-            "rev": "83caba0f7083fa9a33ac37ae85375870e326f6f0",
-            "sha256": "sha256-PTgUXNtOMhCDxbLsy7ehhWSVPAWoLsQ7elsuh3chGc0=",
+            "rev": "089737688f00017d40a5411fdc18988e839f0ac8",
+            "sha256": "sha256-EPTvg3kZ7fzx6cO8VnAiE9pguckEtwsc1rVZY2WXpuQ=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "83caba0f7083fa9a33ac37ae85375870e326f6f0"
+        "version": "089737688f00017d40a5411fdc18988e839f0ac8"
     },
     "tramps3": {
         "cargoLock": null,

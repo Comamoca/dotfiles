@@ -467,7 +467,16 @@ rec {
             (pkgs.runCommand "shinycolors-wallpapers" { } ''
               mkdir -p $out/shinycolors
               ln -s ${sources.follower_imassc_prism.src} $out/shinycolors/wp_3840x2160_41200follower_imassc_prism.png
+              ln -s ${sources.release_imassc_prism.src} $out/shinycolors/wp_3840x2160_release_imassc_prism.png
+              ln -s ${sources.illumination_stars_thumb.src} $out/shinycolors/illumination_stars_thumb.png
+              ln -s ${sources.antica_thumb.src} $out/shinycolors/antica_thumb.png
               ln -s ${sources.hokura_thumb.src} $out/shinycolors/hokura_thumb.png
+              ln -s ${sources.alstroemeria_thumb.src} $out/shinycolors/alstroemeria_thumb.png
+              ln -s ${sources.straylight_thumb.src} $out/shinycolors/straylight_thumb.png
+              ln -s ${sources.noctchill_thumb.src} $out/shinycolors/noctchill_thumb.png
+              ln -s ${sources.shhis_thumb.src} $out/shinycolors/shhis_thumb.png
+              ln -s ${sources.cometik_thumb.src} $out/shinycolors/cometik_thumb.png
+              ln -s ${sources.card_thumb.src} $out/shinycolors/card_thumb.png
             '')
           ];
         };
