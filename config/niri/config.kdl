@@ -378,6 +378,7 @@ binds {
     Mod+Return { spawn "alacritty"; }
     Mod+D { spawn "rofi" "-show" "combi"; }
     Mod+Space { spawn "rofi" "-show" "drun"; }
+    Mod+E { spawn "emacsclient" "-c"; }
     Mod+B { spawn "bash" "-c" "/home/coma/.ghq/github.com/Comamoca/dotfiles/bin/scripts/browser-focus-niri.sh"; }
     // Scratchpad: alacritty 端末をトグル (niri-scratchpad)
     Mod+T { spawn "niri-scratchpad" "target" "--spawn" "alacritty --class foot-scratch" "appid" "foot-scratch"; }
