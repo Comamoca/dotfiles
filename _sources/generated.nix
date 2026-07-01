@@ -20,15 +20,15 @@
   };
   agent-shell = {
     pname = "agent-shell";
-    version = "96343cf9a321f707e3007fb9a1543871d07f9937";
+    version = "1a2e0d8af6931951df0f665052c6be3bc23ff556";
     src = fetchFromGitHub {
       owner = "xenodium";
       repo = "agent-shell";
-      rev = "96343cf9a321f707e3007fb9a1543871d07f9937";
+      rev = "1a2e0d8af6931951df0f665052c6be3bc23ff556";
       fetchSubmodules = false;
-      sha256 = "sha256-ncA3V2ZXGYG3jdkOMVvbY8iwouPu9ghmZKqwTJs/rzU=";
+      sha256 = "sha256-0qAH9Sd27l2tJ4+Ev9FezPcofrZzLPypqqGvGH03I1I=";
     };
-    date = "2026-06-27";
+    date = "2026-07-01";
   };
   agent-shell-manager = {
     pname = "agent-shell-manager";
@@ -56,6 +56,22 @@
     };
     date = "2026-01-10";
   };
+  alstroemeria_thumb = {
+    pname = "alstroemeria_thumb";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/als/thumb.png";
+      sha256 = "sha256-dB1QHci7DzF7dteeJ848QP72/fssUY++H2Zm2iZuhVA=";
+    };
+  };
+  antica_thumb = {
+    pname = "antica_thumb";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/ant/thumb.png";
+      sha256 = "sha256-t7+csFcwMu0U0jazScYldp9p2w62bThKEFVauUh0zTc=";
+    };
+  };
   autoclaude = {
     pname = "autoclaude";
     version = "39ad5ef1818a9c71241bea463da3af33f1dccf69";
@@ -69,6 +85,14 @@
       sha256 = "sha256-+EEeijp1FfHK/ScpegdTaIYfaM9JM89NizvpGh2ezFM=";
     };
     date = "2026-01-15";
+  };
+  card_thumb = {
+    pname = "card_thumb";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/footer/card/card.png";
+      sha256 = "sha256-Pn2H8t6J4tM/3ITw/iIbxwjwfqupMoQ1plilD5fQ4iE=";
+    };
   };
   claude-code = {
     pname = "claude-code";
@@ -106,17 +130,25 @@
     };
     date = "2026-04-15";
   };
+  cometik_thumb = {
+    pname = "cometik_thumb";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/com/thumb.png";
+      sha256 = "sha256-9N4mVgzLKmJQnGNsUL/rzjvIkKtAxbr+IvD/i1gNCss=";
+    };
+  };
   copilot = {
     pname = "copilot";
-    version = "16664ca0b59c045c7209bdcd590fdc7831812dac";
+    version = "4a558d12ca73aef6731fe87099a5838a774fd341";
     src = fetchFromGitHub {
       owner = "copilot-emacs";
       repo = "copilot.el";
-      rev = "16664ca0b59c045c7209bdcd590fdc7831812dac";
+      rev = "4a558d12ca73aef6731fe87099a5838a774fd341";
       fetchSubmodules = false;
-      sha256 = "sha256-vkmWLhL/CXD73VFs/EoA96oiXcqH6qtLixA3wk/GmG4=";
+      sha256 = "sha256-Sa44SN0cKLKkUXhS4fhcu91ExdMUdXXVUygulJvVyvs=";
     };
-    date = "2026-06-26";
+    date = "2026-06-30";
   };
   digs = {
     pname = "digs";
@@ -132,29 +164,43 @@
   };
   eca = {
     pname = "eca";
-    version = "f91296cd8ddd1477700cc81c3edda0a45b1a6cd1";
+    version = "de940cc5203b79f1bd9c8581fa91b5fdfafdc86f";
     src = fetchgit {
       url = "https://github.com/editor-code-assistant/eca-emacs";
-      rev = "f91296cd8ddd1477700cc81c3edda0a45b1a6cd1";
+      rev = "de940cc5203b79f1bd9c8581fa91b5fdfafdc86f";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
       sparseCheckout = [ ];
-      sha256 = "sha256-56dYFdvg+8w83ECAPUQVFceiCeVVsHZznCxvkvb+MXc=";
+      sha256 = "sha256-BkFiIFgFf4Wpg2MQ1erfdtjpI2aG/EekvmNmwOTYue8=";
     };
-    date = "2026-06-22";
+    date = "2026-06-30";
   };
   eglot-booster = {
     pname = "eglot-booster";
-    version = "cab7803c4f0adc7fff9da6680f90110674bb7a22";
+    version = "510f579409627c333ef0e9157db713b1004da842";
     src = fetchFromGitHub {
       owner = "jdtsmith";
       repo = "eglot-booster";
-      rev = "cab7803c4f0adc7fff9da6680f90110674bb7a22";
+      rev = "510f579409627c333ef0e9157db713b1004da842";
       fetchSubmodules = false;
-      sha256 = "sha256-xUBQrQpw+JZxcqT1fy/8C2tjKwa7sLFHXamBm45Fa4Y=";
+      sha256 = "sha256-HhWR40j/WFcorp8QttXtOz5yxL1B4JUXL+9IuNpoND0=";
     };
-    date = "2025-07-16";
+    date = "2026-06-30";
+  };
+  emacs-taskrunner = {
+    pname = "emacs-taskrunner";
+    version = "716323aff410b4d864d137c9ebe4bbb5b8587f5e";
+    src = fetchgit {
+      url = "https://github.com/emacs-taskrunner/emacs-taskrunner";
+      rev = "716323aff410b4d864d137c9ebe4bbb5b8587f5e";
+      fetchSubmodules = false;
+      deepClone = false;
+      leaveDotGit = false;
+      sparseCheckout = [ ];
+      sha256 = "sha256-Vs9IPFGkHHxwdLakGJonYg7UKJx/4SOSWqw8mYCslA4=";
+    };
+    date = "2019-09-16";
   };
   emacs_fancy_logos = {
     pname = "emacs_fancy_logos";
@@ -240,6 +286,14 @@
     };
     date = "2023-07-17";
   };
+  illumination_stars_thumb = {
+    pname = "illumination_stars_thumb";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/ill/thumb.png";
+      sha256 = "sha256-CJb/z5mL3Qdv6OXZ4DP/WPompSvwOVysy/eLd5D2ZCE=";
+    };
+  };
   kdl-ts-mode = {
     pname = "kdl-ts-mode";
     version = "3dbf116cd19261d8d70f456ae3385e1d20208452";
@@ -310,6 +364,14 @@
       rev = "2.1";
       fetchSubmodules = false;
       sha256 = "sha256-GbyUJKotb1Ig56laVUYUeEtTnBE7cSx/Mcdr4K7oJkk=";
+    };
+  };
+  noctchill_thumb = {
+    pname = "noctchill_thumb";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/noc/thumb.png";
+      sha256 = "sha256-aLobGb8K1pBgCAiFkX8kHMNmZ3W+Ens9MhU0Ul7cz9E=";
     };
   };
   nskk = {
@@ -414,17 +476,17 @@
   };
   picoclaw = {
     pname = "picoclaw";
-    version = "52320f48755852e53b8b6b10b1414a32c3f0a8a8";
+    version = "2cf030d2fd3b871d7ec17e3be34c24688aac76da";
     src = fetchgit {
       url = "https://github.com/sipeed/picoclaw";
-      rev = "52320f48755852e53b8b6b10b1414a32c3f0a8a8";
+      rev = "2cf030d2fd3b871d7ec17e3be34c24688aac76da";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
       sparseCheckout = [ ];
-      sha256 = "sha256-pdI6SS05aPiuqAflJW7kVk49ljDA+CXuo9syoyRBBTw=";
+      sha256 = "sha256-QYfHXIHJjeZJdkhGNNhdO91Q8EFgSP+ubqGJ8VgTEtc=";
     };
-    date = "2026-06-26";
+    date = "2026-06-30";
   };
   python-mode = {
     pname = "python-mode";
@@ -461,6 +523,14 @@
       sha256 = "sha256-JcNRW0+L65NtOBronwyT7SHP9QsNa3ysj4cHv88yfoI=";
     };
     date = "2023-08-30";
+  };
+  release_imassc_prism = {
+    pname = "release_imassc_prism";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/data/img/special/wallpaper/4/wp_3840x2160_release_imassc_prism.png";
+      sha256 = "sha256-MkcqNSZEPoX2C4xc0+RgZpm1C+1u0q60xRgbFNVSpgI=";
+    };
   };
   ruby-ts-mode = {
     pname = "ruby-ts-mode";
@@ -2026,15 +2096,23 @@
   };
   shell-maker = {
     pname = "shell-maker";
-    version = "55c383ca542efbb79abd9cb3d6bbd3ab0d92f5d9";
+    version = "4e125a851f61b119dad1e1e909178619947be894";
     src = fetchFromGitHub {
       owner = "xenodium";
       repo = "shell-maker";
-      rev = "55c383ca542efbb79abd9cb3d6bbd3ab0d92f5d9";
+      rev = "4e125a851f61b119dad1e1e909178619947be894";
       fetchSubmodules = false;
-      sha256 = "sha256-+fpxzcQqyp5crTCmqlH2nB7ijXQbQml8SaZxHSc5Tzc=";
+      sha256 = "sha256-3nbEFAqh8cKiiNQcZkSyKBDO7muY3FLdXhFZdFcWtCs=";
     };
-    date = "2026-06-27";
+    date = "2026-06-29";
+  };
+  shhis_thumb = {
+    pname = "shhis_thumb";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/shh/thumb.png";
+      sha256 = "sha256-4lK1fdGLVM2nTtW0b5WnOEgZ8U0eZ6TZi+5fEt8Y5lo=";
+    };
   };
   skk-capf = {
     pname = "skk-capf";
@@ -2081,17 +2159,25 @@
     };
     date = "2026-02-02";
   };
+  straylight_thumb = {
+    pname = "straylight_thumb";
+    version = "latest";
+    src = fetchurl {
+      url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/idol/str/thumb.png";
+      sha256 = "sha256-fbmrwb2MINxBdYpiLILPtGMmPzrrTRUYOT13eh1QHYg=";
+    };
+  };
   takt = {
     pname = "takt";
-    version = "83caba0f7083fa9a33ac37ae85375870e326f6f0";
+    version = "089737688f00017d40a5411fdc18988e839f0ac8";
     src = fetchFromGitHub {
       owner = "nrslib";
       repo = "takt";
-      rev = "83caba0f7083fa9a33ac37ae85375870e326f6f0";
+      rev = "089737688f00017d40a5411fdc18988e839f0ac8";
       fetchSubmodules = false;
-      sha256 = "sha256-PTgUXNtOMhCDxbLsy7ehhWSVPAWoLsQ7elsuh3chGc0=";
+      sha256 = "sha256-EPTvg3kZ7fzx6cO8VnAiE9pguckEtwsc1rVZY2WXpuQ=";
     };
-    date = "2026-06-28";
+    date = "2026-07-01";
   };
   tramps3 = {
     pname = "tramps3";
