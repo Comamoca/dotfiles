@@ -14,6 +14,16 @@ let
       ;
   };
 
+  emacs-taskrunner = epkgs.trivialBuild {
+    pname = "emacs-taskrunner";
+    version = "main";
+    src = sources.emacs-taskrunner.src;
+    buildInputs = with epkgs; [
+      projectile
+      async
+    ];
+  };
+
   ruby-ts-mode = pkgs.emacsPackages.trivialBuild {
     pname = "ruby-ts-mode";
     version = "main";
@@ -394,6 +404,7 @@ in
     vterm-toggle
 
     catppuccin-theme
+    doom-modeline
     vertico
     vertico-posframe
     orderless
@@ -491,6 +502,7 @@ in
     persp-projectile
     migemo
     nyan-mode
+    parrot
 
     yasnippet
     yatemplate
@@ -680,6 +692,6 @@ in
     dashboard
     howm
 
-    justl
+    emacs-taskrunner
   ];
 }
