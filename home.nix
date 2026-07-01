@@ -94,13 +94,23 @@ let
 
   emacs' = (pkgs.emacsPackagesFor pkgs.emacs-git-pgtk).emacsWithPackages (
     epkgs: let
-      # projectile 20260627+ requires consult at compile-time but the MELPA
-      # recipe only declares (emacs compat). Override at the scope level so
-      # all dependents (persp-projectile, treemacs-projectile, etc.) use it.
+      # projectile 20260627+ ships projectile-consult.el which hard-requires
+      # consult at compile time, but the MELPA recipe only declares (emacs compat).
+      # Override at the scope level so all dependents benefit.
       epkgs' = epkgs.overrideScope (eself: esuper: {
         projectile = esuper.projectile.overrideAttrs (old: {
           nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ eself.consult ];
           propagatedBuildInputs = (old.propagatedBuildInputs or []) ++ [ eself.consult ];
+          # projectile-consult.el does (require 'consult) at top-level, which
+          # fails during elpa2nix byte-compilation because the elpa directory
+          # isn't populated yet. Patch it to handle the missing dependency
+          # gracefully — consult is still picked up at runtime via
+          # propagatedBuildInputs.
+          postPatch = (old.postPatch or "") + ''
+            if [ -f "projectile-consult.el" ]; then
+              sed -i "s/(require 'consult)/(condition-case nil (require 'consult) (error nil))/" projectile-consult.el
+            fi
+          '';
         });
       });
     in (import ./emacs.nix { inherit pkgs; epkgs = epkgs'; inherit nurpkgs; }).epkgs

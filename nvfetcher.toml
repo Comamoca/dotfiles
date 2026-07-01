@@ -1017,3 +1017,7 @@ fetch.git= "https://github.com/emacs-php/php-ts-mode"
 [ruby-ts-mode]
 src.git= "https://github.com/pedz/ruby-ts-mode"
 fetch.git= "https://github.com/pedz/ruby-ts-mode"
+
+[emacs-taskrunner]
+src.git= "https://github.com/emacs-taskrunner/emacs-taskrunner"
+fetch.git= "https://github.com/emacs-taskrunner/emacs-taskrunner"
