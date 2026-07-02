@@ -703,11 +703,108 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
   :init
   ;; For hydra
   (define-key evil-normal-state-map (kbd "SPC w") #'manage-window-hydra/body)
+  (define-key evil-normal-state-map (kbd "SPC s") #'hydra-spotify/body))
 
   :hook
   (add-hook 'after-init-hook 'hydra-posframe-mode))
 
 (leaf major-mode-hydra)
+
+;; A hydra for controlling spotify.
+(defun smudge-vertico--fetch-all-playlist-tracks (playlist page callback &optional accumulated)
+  "Fetch all tracks from PLAYLIST across all pages, then call CALLBACK with all tracks.
+Starts from PAGE and accumulates into ACCUMULATED list."
+  (smudge-api-playlist-tracks
+   playlist
+   page
+   (lambda (json)
+     (let* ((tracks (smudge-api-get-playlist-tracks json))
+            (total (gethash "total" json))
+            (all (append (or accumulated nil) (or tracks nil)))
+            (fetched-count (length all)))
+       (if (or (null tracks)
+               (not total)
+               (>= fetched-count total))
+           (funcall callback all)
+         (smudge-vertico--fetch-all-playlist-tracks playlist (1+ page) callback all))))))
+
+(defun smudge-vertico--fetch-all-my-playlists (user-id page callback &optional accumulated)
+  "Fetch all playlists for USER-ID across all pages, then call CALLBACK.
+Starts from PAGE and accumulates into ACCUMULATED list."
+  (smudge-api-user-playlists
+   user-id
+   page
+   (lambda (json)
+     (let* ((items (smudge-api-get-items json))
+            (total (gethash "total" json))
+            (all (append (or accumulated nil) (or items nil)))
+            (fetched-count (length all)))
+       (if (or (null items)
+               (not total)
+               (>= fetched-count total))
+           (funcall callback all)
+         (smudge-vertico--fetch-all-my-playlists user-id (1+ page) callback all))))))
+
+(defun smudge-vertico-search-playlist-track ()
+  "Show my playlists via vertico, select one, show all its tracks, then play."
+  (interactive)
+  (smudge-api-current-user
+   (lambda (user)
+     (smudge-vertico--fetch-all-my-playlists
+      (smudge-api-get-item-id user)
+      1
+      (lambda (playlists)
+        (if-let* ((choices (mapcar (lambda (p)
+                                     (cons (smudge-api-get-item-name p) p))
+                                   playlists))
+                  (selected-name (completing-read "Playlist: " choices nil t))
+                  (selected (cdr (assoc selected-name choices))))
+            (smudge-vertico--fetch-all-playlist-tracks
+             selected
+             1
+             (lambda (tracks)
+               (if-let* ((track-choices
+                          (mapcar (lambda (trk)
+                                    (cons (format "%s - %s"
+                                                  (smudge-api-get-item-name trk)
+                                                  (smudge-api-get-track-artist-name trk))
+                                          trk))
+                                  tracks))
+                         (selected-track-name
+                          (completing-read "Track: " track-choices nil t))
+                         (selected-track
+                          (cdr (assoc selected-track-name track-choices))))
+                   (progn
+                     (smudge-controller-play-track selected-track selected)
+                     (message "Now playing: %s - %s"
+                              (smudge-api-get-item-name selected-track)
+                              (smudge-api-get-track-artist-name selected-track)))
+                 (message "No tracks found in this playlist."))))
+          (message "No playlists found.")))))))
+
+(defhydra hydra-spotify (:hint nil)
+  "
+^Search^                  ^Control^               ^Manage^
+^^^^^^^^-----------------------------------------------------------------
+_t_: Track               _SPC_: Play/Pause        _+_: Volume up
+_m_: My Playlists        _n_  : Next Track        _-_: Volume down
+_u_: User Playlists      _r_  : Repeat            _d_: Device
+_/_: Playlist Search     _s_  : Shuffle           _q_: Quit
+"
+  ("/" smudge-vertico-search-playlist-track :exit nil)
+  ("t" smudge-track-search :exit t)
+  ("m" smudge-my-playlists :exit t)
+  ("u" smudge-user-playlists :exit t)
+  ("SPC" smudge-controller-toggle-play :exit nil)
+  ("n" smudge-controller-next-track :exit nil)
+  ("p" smudge-controller-previous-track :exit nil)
+  ("r" smudge-controller-toggle-repeat :exit nil)
+  ("s" smudge-controller-toggle-shuffle :exit nil)
+  ("+" smudge-controller-volume-up :exit nil)
+  ("-" smudge-controller-volume-down :exit nil)
+  ("x" smudge-controller-volume-mute-unmute :exit nil)
+  ("d" smudge-select-device :exit nil)
+  ("q" quit-window "quit" :color blue))
 
 ;; For Nix
 (pretty-hydra-define nix-flake-hydra
