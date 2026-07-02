@@ -695,18 +695,19 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
   (setq-default neo-theme (if (display-graphic-p) 'icons 'arrow)))
 
 ;; Hydra
-(leaf hydra)
-(leaf hydra-posframe
-  ;; :require t
-  ;; :vc (:url "https://github.com/Ladicle/hydra-posframe")
-
+(leaf hydra
   :init
   ;; For hydra
   (define-key evil-normal-state-map (kbd "SPC w") #'manage-window-hydra/body)
   (define-key evil-normal-state-map (kbd "SPC s") #'hydra-spotify/body))
 
+(leaf hydra-posframe
+  :after hydra
+  ;; :require t
+  ;; :vc (:url "https://github.com/Ladicle/hydra-posframe")
   :hook
-  (add-hook 'after-init-hook 'hydra-posframe-mode))
+  :config
+  (hydra-posframe-mode))
 
 (leaf major-mode-hydra)
 
@@ -890,33 +891,31 @@ so they share the same perspective as the main repo."
     (or (my/worktree-main-repo-name root)
         (projectile-project-name project))))
 
+;; treemacs-projectile: `treemacs-projectile-mode` was removed in newer versions.
+;; Projectile integration is now built into treemacs core via
+;; `treemacs-project-follow-mode` (enabled below).
 (leaf treemacs-projectile
-  :after (treemacs projectile)
-  :config
-  (treemacs-projectile-mode t))
+  :after treemacs)
 
 ;; Tree file explorer (Treemacs)
-(leaf treemacs
-  :require
-  :custom
-  (treemacs-width . 35)
-  (treemacs-is-never-other-window . nil)
-  :config
-  (treemacs-follow-mode t)
-  ;; 無効化: treemacs--process-file-events のバグで
-  ;; (wrong-type-argument integer-or-marker-p nil) が頻発しCPUを消費する
-  ;; (treemacs-filewatch-mode t)
-  (treemacs-git-mode 'extended)
-  (treemacs-hide-gitignored-mode t)
-  (treemacs-fringe-indicator-mode t)
-  (treemacs-project-follow-mode t)
-  ;; M-g でのプロジェクト切り替え時にも treemacs を追従させる
-  (add-hook 'projectile-after-switch-project-hook
-            #'treemacs-add-and-display-current-project-exclusively))
+(defun my/treemacs-show-project ()
+  "Open treemacs at current projectile project root.
+Forces re-root even if treemacs was already open on a different project."
+  (interactive)
+  (if (projectile-project-root)
+      (treemacs-add-and-display-current-project-exclusively)
+    (treemacs)))
 
-;; Treemacs x Evil integration
-(leaf treemacs-evil
-  :after treemacs evil
+;; SPC f で treemacs を起動 (leaf の :bind は eval-after-load でラップされるため
+;; treemacs 未ロード時にキーが無効になる → 直接 define-key する)
+(evil-define-key 'normal 'global (kbd "SPC f") #'my/treemacs-show-project)
+
+(leaf treemacs
+  :config
+  (treemacs-project-follow-mode 1)
+  (evil-define-key 'normal 'treemacs-mode-map (kbd "SPC f") #'treemacs))
+
+(leaf treemacs-evil 
   :config
   ;; Neotree 時代のキーバインドを再現
   (define-key evil-treemacs-state-map (kbd "q") #'treemacs-quit)
@@ -926,12 +925,7 @@ so they share the same perspective as the main repo."
   (define-key evil-treemacs-state-map (kbd "K") #'treemacs-create-dir)
   (define-key evil-treemacs-state-map (kbd "D") #'treemacs-delete)
   (define-key evil-treemacs-state-map (kbd "M") #'treemacs-rename)
-  (define-key evil-treemacs-state-map (kbd "H") #'treemacs-toggle-hidden-files)
-  ;; treemacs buffer 内でも SPC f で閉じれるように
-  (define-key evil-treemacs-state-map (kbd "SPC f") #'treemacs))
-
-;; SPC f で Treemacs を toggle
-(define-key evil-normal-state-map (kbd "SPC f") #'treemacs-add-and-display-current-project-exclusively)
+  (define-key evil-treemacs-state-map (kbd "H") #'treemacs-toggle-hidden-files))
 
 ;; Treemacs x Perspective integration
 ;; 使うときは (treemacs-perspective-mode 1) を明示的に有効化
@@ -1059,7 +1053,7 @@ so they share the same perspective as the main repo."
   :config
   (add-hook 'server-after-make-frame-hook
             (lambda ()
-              (when (display-graphic-p)
+	      (when (display-graphic-p)
                 (nyan-mode 1)))))
 
 ;; Snippets
@@ -1206,7 +1200,7 @@ so they share the same perspective as the main repo."
             (call-process "gpg" nil t nil "--decrypt" "--quiet" "--batch" auth-file)
             (goto-char (point-min))
             (when (re-search-forward (format "machine[ \t]+%s[ \t]+login[ \t]+\\([^ \t\n]+\\)[ \t]+password[ \t]+\\([^ \t\n]+\\)" (regexp-quote key)) nil t)
-              (match-string 2)))))
+	      (match-string 2)))))
     (error nil)))
 
 ;; ECA
@@ -1635,7 +1629,7 @@ Rebuilds cache when nil or invalid (e.g. stale non-list value)."
   "Return a random image path from `my/dashboard-image-dir'.
 Returns nil when directory is empty or missing."
   (when-let* ((files (my/dashboard-image-list))
-              (_ (not (null files))))
+	      (_ (not (null files))))
     (nth (random (length files)) files)))
 
 (defun my/dashboard-on-banner-p ()
@@ -1660,18 +1654,18 @@ Scans up to 10 characters around point to find an image display property."
 Format: ALBUM__TRACK.jpg → \"ALBUM\" (underscores replaced with spaces).
 When ALBUM is \"OTHER\" or \"アニメ\", extract the song name instead."
   (when-let* ((banner dashboard-startup-banner)
-              (fname (file-name-base banner))
-              (sep-pos (string-match "__" fname))
-              (prefix (substring fname 0 sep-pos))
-              (track  (substring fname (+ sep-pos 2)))
-              (name   (cond
-                       ((string= prefix "アニメ")
+	      (fname (file-name-base banner))
+	      (sep-pos (string-match "__" fname))
+	      (prefix (substring fname 0 sep-pos))
+	      (track  (substring fname (+ sep-pos 2)))
+	      (name   (cond
+		       ((string= prefix "アニメ")
                         ;; 最後の[...]内の曲名を抽出
                         (if (string-match "\\[\\([^]]*\\)\\][^]]*$" track)
                             (match-string 1 track)
                           track))
-                       ((string= prefix "OTHER") track)
-                       (t prefix))))
+		       ((string= prefix "OTHER") track)
+		       (t prefix))))
     (replace-regexp-in-string "_" " " name)))
 
 (setq my/dashboard-welcome-messages
@@ -1707,7 +1701,7 @@ When ALBUM is \"OTHER\" or \"アニメ\", extract the song name instead."
   (setq dashboard-image-extra-props '(:width 300))
   ;; webp がアニメーション扱いでサイズ指定を無視されるのを防ぐ
   (advice-add 'dashboard--image-animated-p :override
-              (lambda (path) (eq 'gif (image-type path))))
+	      (lambda (path) (eq 'gif (image-type path))))
   ;; RET: バナー画像上 → ランダム切替 / agenda項目 → ファイルを開く / それ以外 → evil標準動作
   (with-eval-after-load 'evil
     (evil-define-key 'normal dashboard-mode-map (kbd "RET")
@@ -1720,7 +1714,7 @@ When ALBUM is \"OTHER\" or \"アニメ\", extract the song name instead."
           (let ((file (get-text-property (point) 'dashboard-agenda-file))
                 (loc (get-text-property (point) 'dashboard-agenda-loc)))
             (when (and file (numberp loc))
-              (let ((buffer (find-file-other-window file)))
+	      (let ((buffer (find-file-other-window file)))
                 (with-current-buffer buffer
                   (goto-char loc)
                   (recenter-top-bottom))))))
