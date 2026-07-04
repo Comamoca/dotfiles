@@ -436,12 +436,22 @@ Git worktrees resolve to the main repo's org file."
 
 (defun my/open-project-notes ()
   "Open the org file for the current projectile project.
-Creates the file with default headings if it doesn't exist."
+Creates the file with default headings if it doesn't exist.
+Sets `default-directory' to the projectile project root so that
+subsequent operations (e.g. org-capture, compile) run in the
+project context."
   (interactive)
-  (let ((file-path (my/project-notes-file)))
+  (let* ((file-path (my/project-notes-file))
+         ;; Capture the project root BEFORE find-file changes the buffer context.
+         ;; After find-file, projectile-project-root returns nil because
+         ;; the notes file is outside any projectile project.
+         (project-root (and file-path (projectile-project-root))))
     (if file-path
         (progn
           (find-file file-path)
+          ;; bind current directory to projectile project root
+          (when project-root
+            (setq default-directory (file-name-as-directory project-root)))
           (when (= (buffer-size) 0)
             (insert (format "#+title: %s\n\n* Tasks\n\n* Notes\n\n"
                             (file-name-base (buffer-file-name))))))
