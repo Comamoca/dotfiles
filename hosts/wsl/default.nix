@@ -54,6 +54,17 @@ in
   };
 
   nix = {
+    distributedBuilds = true;
+    buildMachines = [
+      {
+        hostName = "eu.nixbuild.net";
+        sshUser = "coma";
+        sshKey = "/home/coma/.ssh/my-nixbuild-key";
+        systems = [ "x86_64-linux" "aarch64-linux" ];
+        maxJobs = 100;
+        supportedFeatures = [ "benchmark" "big-parallel" "nixos-test" ];
+      }
+    ];
     settings = {
       auto-optimise-store = true;
       experimental-features = [

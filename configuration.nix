@@ -447,11 +447,11 @@ in
     xwayland-satellite
 
     # Discord wrapper: --disable-gpu avoids SIGSEGV (kernel 6.12+ DRM regression),
-    # --ozone-platform=x11 avoids the Wayland compatibility hang.
+    # --ozone-platform=wayland enables PipeWire screen sharing via the portal.
     (pkgs.writeShellApplication {
       name = "discord";
       text = ''
-        exec ${pkgs.discord}/bin/discord --disable-gpu --ozone-platform=x11 "$@"
+        exec ${pkgs.discord}/bin/discord --disable-gpu --enable-features=UseOzonePlatform --ozone-platform=wayland "$@"
       '';
     })
 
