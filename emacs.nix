@@ -398,7 +398,7 @@ let
   };
 in
 {
-  epkgs = with epkgs; [
+  packages = with epkgs; [
     vterm
     multi-vterm
     vterm-toggle
@@ -543,6 +543,8 @@ in
     flycheck-inline
 
     nano-theme
+    nano-modeline
+    minions
     nurpkgs.nano-tools.box
     nurpkgs.nano-tools.read
     nurpkgs.nano-tools.modeline

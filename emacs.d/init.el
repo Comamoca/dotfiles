@@ -1647,6 +1647,10 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 (leaf consult-ghq
   :require t)
 
+(leaf minions
+  :custom ((minions-mode-line-lighter . "[+]"))
+  :config (minions-mode 1))
+
 ;; Dashboard: ランダム画像表示のためのヘルパー関数
 (defvar my/dashboard-image-dir (expand-file-name "~/Pictures/shinycolors-jacket")
   "Directory containing dashboard banner images.")
@@ -1954,6 +1958,7 @@ Picks a random banner image each time."
   (setq-default mode-line-format
                 (append (default-value 'mode-line-format)
                         '((:eval (update-buffer-char-count))
+                          (:eval smudge-controller-player-status)
                           (:eval (mode-line-time))))))
 
 ;; For diary
@@ -2239,6 +2244,7 @@ Picks a random banner image each time."
 
 ;; Custom modeline
 (mode-line-format-update)
+(smudge-controller-start-player-status-timer)
 
 ;; When org-mode
 (add-hook 'org-mode-hook
