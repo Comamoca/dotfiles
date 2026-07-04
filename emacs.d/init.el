@@ -713,11 +713,12 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
 
 (leaf hydra-posframe
   :after hydra
-  ;; :require t
-  ;; :vc (:url "https://github.com/Ladicle/hydra-posframe")
-  :hook
   :config
-  (hydra-posframe-mode))
+  (setq hydra-posframe-parameters
+        '((internal-border-width . 10)
+          (no-accept-focus . t)))
+  :init
+  (hydra-posframe-mode 1))
 
 (leaf major-mode-hydra)
 
@@ -1201,17 +1202,46 @@ Forces re-root even if treemacs was already open on a different project."
 (defvar openrouter-apikey nil "OpenRouter API key.")
 (defvar figma-apikey nil "Figma API key.")
 
+;; authinfo.gpg の復号に Emacs 組み込みの auth-source を使用。
+;; gpg-agent のキャッシュと連携し、キャッシュがない時はミニバッファで
+;; パスワード入力を求める。一度入力すれば gpg-agent がキャッシュする。
+;; loopback モードにより pinentry-qt ではなく Emacs minibuffer を使用。
+(setq epg-pinentry-mode 'loopback)
+
+(defvar my/auth-source-cache nil
+  "Alist of (machine . password) parsed from authinfo.gpg.")
+
+(defun my/authinfo-parse ()
+  "Parse ~/.authinfo.gpg into my/auth-source-cache.
+Uses Emacs built-in auth-source which integrates with EPA for GPG decryption.
+Returns t on success, nil on failure (e.g. user cancelled passphrase prompt)."
+  (condition-case err
+      (progn
+        ;; authinfo.gpg を auth-sources に一時設定して復号
+        (let ((auth-sources '("~/.authinfo.gpg"))
+              (auth-source-do-cache nil))
+          (setq my/auth-source-cache
+                (mapcar
+                 (lambda (entry)
+                   (let* ((mach (plist-get entry :host))
+                          (secret (plist-get entry :secret))
+                          (pass (if (functionp secret)
+                                    (funcall secret)
+                                  secret)))
+                     (cons mach pass)))
+                 (auth-source-search :max 100 :require '(:secret))))
+          t))
+    (quit (message "authinfo.gpg の復号がキャンセルされました")
+          nil)
+    (error (message "authinfo.gpg の復号に失敗: %s" (error-message-string err))
+           nil)))
+
 (defun get-secret (key)
-  "Retrieve secret for KEY from authinfo.gpg using gpg command. Returns nil on failure."
-  (condition-case nil
-      (let ((auth-file (expand-file-name "~/.authinfo.gpg")))
-        (when (file-exists-p auth-file)
-          (with-temp-buffer
-            (call-process "gpg" nil t nil "--decrypt" "--quiet" "--batch" auth-file)
-            (goto-char (point-min))
-            (when (re-search-forward (format "machine[ \t]+%s[ \t]+login[ \t]+\\([^ \t\n]+\\)[ \t]+password[ \t]+\\([^ \t\n]+\\)" (regexp-quote key)) nil t)
-	      (match-string 2)))))
-    (error nil)))
+  "Retrieve secret for KEY from cached authinfo.
+On first call, parses ~/.authinfo.gpg (may prompt for GPG passphrase)."
+  (unless my/auth-source-cache
+    (my/authinfo-parse))
+  (cdr (assoc key my/auth-source-cache)))
 
 ;; ECA
 (leaf eca
