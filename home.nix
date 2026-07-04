@@ -113,7 +113,7 @@ let
           '';
         });
       });
-    in (import ./emacs.nix { inherit pkgs; epkgs = epkgs'; inherit nurpkgs; }).epkgs
+    in (import ./emacs.nix { inherit pkgs; epkgs = epkgs'; inherit nurpkgs; }).packages
   );
 
   sbcl' = pkgs.sbcl.withPackages (

@@ -810,18 +810,22 @@ rec {
     enable = true;
   };
 
-  services.emacs = {
-    enable = true;
-    # package = pkgs.emacs-git;
-    package = emacs;
-    # package = (
-    #   with pkgs;
-    #   # ((emacsPackagesFor emacs').emacsWithPackages (
-    #   ((emacsPackagesFor emacs-git).emacsWithPackages (
-    #     epkgs: (import ./emacs.nix { inherit pkgs epkgs; }).epkgs
-    #   ))
-    # );
-    # extraOptions = [ "--with-xwidgets" ];
+  # home-manager's services.emacs uses a broken wrapper that loads init.el
+  # via with-temp-buffer+eval-buffer, causing hangs. Use our own service.
+  systemd.user.services.emacs = {
+    Unit = {
+      Description = "Emacs text editor";
+      Documentation = [ "info:emacs" "man:emacs(1)" "https://gnu.org/software/emacs/" ];
+      X-RestartIfChanged = false;
+    };
+    Service = {
+      ExecStart = "${emacs}/bin/emacs --fg-daemon";
+      Restart = "on-failure";
+      SuccessExitStatus = 15;
+    };
+    Install = {
+      WantedBy = [ "default.target" ];
+    };
   };
 
   catppuccin = {
