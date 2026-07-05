@@ -408,20 +408,23 @@ in
   xdg.portal = {
     enable = true;
     xdgOpenUsePortal = true;
-    wlr.enable = true;
+    # wlr.enable = true — DISABLED: Niri は wlroots ベースではないため競合する。
+    #   Sway を使う場合は再有効化を検討。
+    wlr.enable = false;
     extraPortals = with pkgs; [
       xdg-desktop-portal-gtk
       xdg-desktop-portal-gnome
-      # xdg-desktop-portal-wlr
-      xdg-desktop-portal-hyprland
+      # xdg-desktop-portal-wlr — Niri では使わない（wlroots ベースではない）
+      # xdg-desktop-portal-hyprland — REMOVED: Hyprland 用。Niri には不要。
     ];
     config = {
       hyprland.default = [
         "hyprland"
         "gtk"
       ];
-      sway.default = pkgs.lib.mkForce [
-        "wlr"
+      # Sway: wlr.enable = false のため、gtk にフォールバック。
+      # Sway で画面共有が必要な場合は wlr.enable = true に戻すこと。
+      sway.default = [
         "gtk"
       ];
       niri.default = [
@@ -438,7 +441,8 @@ in
     # XDG Desktop Portal
     xdg-desktop-portal
     xdg-desktop-portal-gtk
-    xdg-desktop-portal-wlr
+    # xdg-desktop-portal-wlr — REMOVED: Niri は wlroots ベースではないため競合する。
+    #   Niri のスクリーンキャストは GNOME ポータル (org.gnome.Mutter.ScreenCast) を使う。
     xdg-desktop-portal-gnome
 
     # xwayland-satellite — provides X11 support on pure Wayland compositors (niri).
@@ -446,12 +450,18 @@ in
     # as Wayland native clients. Without XWayland, they hang on startup.
     xwayland-satellite
 
-    # Discord wrapper: --disable-gpu avoids SIGSEGV (kernel 6.12+ DRM regression),
-    # --ozone-platform=wayland enables PipeWire screen sharing via the portal.
+    # Discord wrapper:
+    #   --disable-gpu: SIGSEGV 回避 (kernel 6.12+ DRM regression)
+    #   --ozone-platform=wayland: Wayland ネイティブで起動
+    #   --enable-features=WebRTCPipeWireCapturer: PipeWire 経由の画面共有を有効化
+    #   NOTE: UseOzonePlatform は Electron 38+ でデフォルト有効のため削除。
+    #   NOTE: 2026年3月以降の Discord は Vulkan encode を使うため、
+    #         Niri の dma-buf フォーマットと合わない場合がある。
+    #         共有できない場合は Vesktop またはブラウザ版 Discord を試す。
     (pkgs.writeShellApplication {
       name = "discord";
       text = ''
-        exec ${pkgs.discord}/bin/discord --disable-gpu --enable-features=UseOzonePlatform --ozone-platform=wayland "$@"
+        exec ${pkgs.discord}/bin/discord --disable-gpu --enable-features=WebRTCPipeWireCapturer --ozone-platform=wayland "$@"
       '';
     })
 
