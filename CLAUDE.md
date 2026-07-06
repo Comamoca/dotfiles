@@ -43,3 +43,18 @@ Kiro-style Spec Driven Development implementation on AI-DLC (AI Development Life
 - Load entire `.kiro/steering/` as project memory
 - Default files: `product.md`, `tech.md`, `structure.md`
 - Custom files are supported (managed via `/kiro:steering-custom`)
+
+## Project-Specific Tooling Rules
+
+### Emacs Lisp Evaluation
+
+This dotfiles setup runs Emacs as a daemon (`emacs --daemon`). When modifying Emacs configuration (`init.el`, `emacs.d/lisp/`, etc.), configuration changes must be applied through the running daemon.
+
+- **Always use `emacsclient`** to evaluate or load elisp:
+  - `emacsclient -e '(load-file "~/.emacs.d/init.el")'`
+  - `emacsclient -e '(progn <expr> t)'`
+- Do **not** start a standalone `emacs` process for evaluation.
+- Do **not** leave application of changes to the user; apply them via `emacsclient` and verify the result.
+- After changing `emacs.nix` or Nix-related Emacs package definitions, remind the user to run `home-manager switch --flake .#Home --impure` (or the equivalent NixOS rebuild) so the daemon's package set is rebuilt.
+
+See the `emacsclient-driven-elisp` skill for detailed commands and verification steps.
