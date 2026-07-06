@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 (setq skk-use-azik t)
 (setq skk-sticky-key ";")
 
