@@ -402,6 +402,7 @@ in
     vterm
     multi-vterm
     vterm-toggle
+    ghostel
 
     catppuccin-theme
     doom-modeline
