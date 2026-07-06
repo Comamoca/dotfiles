@@ -21,7 +21,9 @@
 ;;       既知の問題がある（bug#80584 は Emacs 31+ で修正済み）。
 (push '(background-color . "#1e1e2e") default-frame-alist)
 (push '(foreground-color . "#cdd6f4") default-frame-alist)
-(push '(visibility . nil) default-frame-alist)
+;; Emacs 32.0.50 (PGTK) では背景色バグ (bug#80584) が修正済みのため
+;; visibility . nil は不要。むしろ emacsclient のフレームが表示されなくなる。
+;; (push '(visibility . nil) default-frame-alist)
 
 ;; 起動時のGC閾値を高めに設定
 (setq gc-cons-threshold (* 128 1024 1024))
