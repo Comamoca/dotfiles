@@ -42,9 +42,17 @@ pkgs.writers.writePython3Bin "rclone-sync" {
               continue
 
       process.wait()
+      rc = process.returncode
+
+      notify = "${pkgs.libnotify}/bin/notify-send"
+
+      if rc != 0:
+          subprocess.run([notify, "Memo Sync", "Error: rclone exited with code " + str(rc)])
+          sys.exit(rc)
 
       if not last_stats:
-          sys.exit(0)
+          subprocess.run([notify, "Memo Sync", "Error: no stats from rclone"])
+          sys.exit(1)
 
       changes = (
           last_stats["transfers"]
@@ -54,9 +62,9 @@ pkgs.writers.writePython3Bin "rclone-sync" {
 
       errors = last_stats["errors"]
 
-      notify = "${pkgs.libnotify}/bin/notify-send"
       if errors != 0:
           subprocess.run([notify, "Memo Sync", "Error occurred"])
+          sys.exit(1)
       elif changes > 0:
           msg = str(changes) + " changes applied"
           subprocess.run([notify, "Memo Sync", msg])
