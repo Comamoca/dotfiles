@@ -201,7 +201,8 @@ rec {
       # (import ./pkgs/lspx { inherit pkgs; })
       rclone-sync
       rclone-resync
-    ]);
+    ])
+    ++ [ emacs' ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
@@ -698,14 +699,46 @@ rec {
     };
   };
 
-  # Emacs daemon managed by niri (spawn-at-startup) instead of systemd.
-  # PGTK Emacs requires a display connection to start --daemon.
-  # systemd services start before the compositor creates the Wayland display,
-  # causing the daemon to fail with "display connection is closed".
-  services.emacs = {
-    enable = false;
-    package = emacs';
+  # Emacs daemon via systemd, starts after graphical-session.target.
+  # Uses a clean init directory + explicit init.el loading to avoid a
+  # PGTK Emacs bug where init.el as user-init-file causes server failure.
+  systemd.user.services.emacs = let
+    emacs-daemon-script = pkgs.writeShellScript "emacs-daemon" ''
+      mkdir -p /tmp/emacsd
+      exec ${emacs'}/bin/emacs --fg-daemon --init-directory /tmp/emacsd --eval "(load \"${home.homeDirectory}/.emacs.d/init.el\")"
+    '';
+  in {
+    Unit = {
+      Description = "Emacs text editor";
+      Documentation = [ "info:emacs" "man:emacs(1)" "https://gnu.org/software/emacs/" ];
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${emacs-daemon-script}";
+      Restart = "on-failure";
+      RestartSec = 5;
+      SuccessExitStatus = 15;
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
   };
+
+  # Byte-compile early-init.el on every home-manager switch.
+  # init.el は外部パッケージ（leaf, hydra, reformatter 等）のマクロに
+  # 依存しているため、emacs -Q では正しくコンパイルできない。
+  # init.el の高速化は runtime native-compile（early-init.el 参照）に任せる。
+  home.activation.byteCompileEmacsInit = lib.hm.dag.entryAfter ["linkGeneration"] ''
+    echo "Byte-compiling Emacs init files..."
+    ${emacs'}/bin/emacs -Q --batch \
+      --eval '(defalias (quote treesit-ready-p) (lambda (&rest _) nil))' \
+      -f batch-byte-compile \
+      ${home.homeDirectory}/.emacs.d/early-init.el \
+      && echo "  ✓ early-init.el → early-init.elc" \
+      || echo "  ⚠ byte-compile failed (non-fatal)"
+  '';
 
   # tree-sitter-astro grammar doesn't ship with astro-ts-mode in emacs-packages-deps,
   # so we symlink it from nixpkgs into Emacs' tree-sitter directory directly.

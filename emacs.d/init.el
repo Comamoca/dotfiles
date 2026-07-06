@@ -1,25 +1,22 @@
 ;; -*- lexical-binding: t -*-
 
-;; <leaf-install-code>
-(eval-and-compile
-  ;; このEmacsビルドは tree-sitter 非対応
-  ;; astro-ts-mode の autoload が (treesit-ready-p 'astro) を呼ぶので事前に定義
-  (unless (fboundp 'treesit-ready-p)
-    (defalias 'treesit-ready-p (lambda (&rest _) nil)))
-  (customize-set-variable
-   'package-archives '(("org" . "https://orgmode.org/elpa/")
-                       ("melpa" . "https://melpa.org/packages/")
-                       ("gnu" . "https://elpa.gnu.org/packages/")))
-  (package-initialize)
-  (unless (package-installed-p 'leaf)
-    (package-refresh-contents)
-    (package-install 'leaf))
+;; Nix の emacsWithPackages が全パッケージの load-path を管理しているが、
+;; autoload / theme-path の設定には package-initialize が必須。
+;; leaf のインストールチェックは Nix 管理のため不要（emacs.nix L517 に含まれる）。
+;; treesit-ready-p の事前定義は autoload のエラー防止に必要（Emacs tree-sitter 非対応ビルド用）。
+(unless (fboundp 'treesit-ready-p)
+  (defalias 'treesit-ready-p (lambda (&rest _) nil)))
 
-  (leaf leaf-keywords
-    :init
-    :config
-    (leaf-keywords-init)))
-;; </leaf-install-code>
+(customize-set-variable
+ 'package-archives '(("org" . "https://orgmode.org/elpa/")
+                     ("melpa" . "https://melpa.org/packages/")
+                     ("gnu" . "https://elpa.gnu.org/packages/")))
+(package-initialize)
+
+(leaf leaf-keywords
+  :init
+  :config
+  (leaf-keywords-init))
 
 ;; ================================================
 ;; 起動時間計測
@@ -377,7 +374,7 @@
 (leaf org-nix-shell)
 
 (leaf om-dash
-  :require t)
+  :after org)
 
 ;; howm
 
@@ -395,7 +392,7 @@
 ;; ================================================
 
 (defvar my/project-notes-dir
-  (expand-file-name "project" org-directory)
+  (expand-file-name "project" (expand-file-name "~/.ghq/github.com/Comamoca/org"))
   "Directory for per-project org note files.")
 
 (defun my/worktree-main-repo-name (root)
@@ -507,9 +504,12 @@ project context."
         (expand-file-name "libkuro_core.so"
                           (file-name-directory (locate-library "kuro")))))
 
+(leaf ghostel)
+
 (leaf vterm
   :config
-  (evil-define-key 'insert vterm-mode-map (kbd "C-l") 'vterm-clear))
+  (with-eval-after-load 'vterm
+    (evil-define-key 'insert vterm-mode-map (kbd "C-l") 'vterm-clear)))
 
 ;; Common Lisp
 (leaf slime
@@ -559,17 +559,20 @@ project context."
   :after flycheck
   :config (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode))
 
-;; for textlint
-(flycheck-define-checker textlint
-  "A linter for prose."
-  :command ("textlint" "--format" "unix" source-inplace)
-  :error-patterns
-  ((warning line-start (file-name) ":" line ":" column ": "
-            (id (one-or-more (not (any " "))))
-            (message (one-or-more not-newline)
-		     (zero-or-more "\n" (any " ") (one-or-more not-newline)))
-            line-end))
-  :modes (text-mode markdown-mode gfm-mode org-mode web-mode))
+;; for textlint — flycheck-define-checker はマクロのため、
+;; byte-compile 時には flycheck がロードされていないと正しく展開できない。
+;; with-eval-after-load で実行時まで遅延させる。
+(with-eval-after-load 'flycheck
+  (flycheck-define-checker textlint
+    "A linter for prose."
+    :command ("textlint" "--format" "unix" source-inplace)
+    :error-patterns
+    ((warning line-start (file-name) ":" line ":" column ": "
+              (id (one-or-more (not (any " "))))
+              (message (one-or-more not-newline)
+                       (zero-or-more "\n" (any " ") (one-or-more not-newline)))
+              line-end))
+    :modes (text-mode markdown-mode gfm-mode org-mode web-mode)))
 
 ;; Copilot
 (leaf copilot
@@ -645,8 +648,9 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
 
 (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 
-;; Auto Formatting
+;; Auto Formatting — reformatter-define はマクロのため :require t 必須
 (leaf reformatter
+  :require t
   :config 
   (reformatter-define dprint
     :program "dprint" :args `("fmt" "--stdin" ,buffer-file-name))
@@ -704,8 +708,9 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
   :init
   (setq-default neo-theme (if (display-graphic-p) 'icons 'arrow)))
 
-;; Hydra
+;; Hydra — defhydra / pretty-hydra-define はマクロのため :require t 必須
 (leaf hydra
+  :require t
   :init
   ;; For hydra
   (define-key evil-normal-state-map (kbd "SPC w") #'manage-window-hydra/body)
@@ -717,8 +722,8 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
   (setq hydra-posframe-parameters
         '((internal-border-width . 10)
           (no-accept-focus . t)))
-  :init
-  (hydra-posframe-mode 1))
+  (with-eval-after-load 'hydra-posframe
+    (hydra-posframe-mode 1)))
 
 (leaf major-mode-hydra)
 
@@ -926,17 +931,19 @@ Forces re-root even if treemacs was already open on a different project."
   (treemacs-project-follow-mode 1)
   (evil-define-key 'normal 'treemacs-mode-map (kbd "SPC f") #'treemacs))
 
-(leaf treemacs-evil 
+(leaf treemacs-evil
+  :after treemacs
   :config
-  ;; Neotree 時代のキーバインドを再現
-  (define-key evil-treemacs-state-map (kbd "q") #'treemacs-quit)
-  (define-key evil-treemacs-state-map (kbd "g") #'treemacs-refresh)
-  (define-key evil-treemacs-state-map (kbd "l") #'treemacs-RET-action)
-  (define-key evil-treemacs-state-map (kbd "N") #'treemacs-create-file)
-  (define-key evil-treemacs-state-map (kbd "K") #'treemacs-create-dir)
-  (define-key evil-treemacs-state-map (kbd "D") #'treemacs-delete)
-  (define-key evil-treemacs-state-map (kbd "M") #'treemacs-rename)
-  (define-key evil-treemacs-state-map (kbd "H") #'treemacs-toggle-hidden-files))
+  (with-eval-after-load 'treemacs-evil
+    ;; Neotree 時代のキーバインドを再現
+    (define-key evil-treemacs-state-map (kbd "q") #'treemacs-quit)
+    (define-key evil-treemacs-state-map (kbd "g") #'treemacs-refresh)
+    (define-key evil-treemacs-state-map (kbd "l") #'treemacs-RET-action)
+    (define-key evil-treemacs-state-map (kbd "N") #'treemacs-create-file)
+    (define-key evil-treemacs-state-map (kbd "K") #'treemacs-create-dir)
+    (define-key evil-treemacs-state-map (kbd "D") #'treemacs-delete)
+    (define-key evil-treemacs-state-map (kbd "M") #'treemacs-rename)
+    (define-key evil-treemacs-state-map (kbd "H") #'treemacs-toggle-hidden-files)))
 
 ;; Treemacs x Perspective integration
 ;; 使うときは (treemacs-perspective-mode 1) を明示的に有効化
@@ -945,16 +952,17 @@ Forces re-root even if treemacs was already open on a different project."
 
 ;; Translate
 (leaf google-translate
-  :require t
   :custom
   (google-translate-translation-directions-alist . '(("en" . "ja")
                                                      ("ja" . "en"))))
-;; Wakatime
+;; wakatime: 起動時には不要（analytics 目的）なため idle timer で遅延起動
 (leaf wakatime-mode
-  :config
-  (setq wakatime-cli-path (string-trim (shell-command-to-string "which wakatime-cli")))
   :init
-  (global-wakatime-mode))
+  (run-with-idle-timer 5 nil
+		       (lambda ()
+			 (require 'wakatime-mode)
+			 (setq wakatime-cli-path (string-trim (shell-command-to-string "which wakatime-cli")))
+			 (global-wakatime-mode 1))))
 
 ;; Typst
 (leaf typst-ts-mode
@@ -1174,8 +1182,7 @@ Forces re-root even if treemacs was already open on a different project."
 (leaf iscroll)
 
 (leaf folding-mode
-  :if (locate-library "folding-mode")
-  :require t)
+  :if (locate-library "folding-mode"))
 
 (leaf rg)
 
@@ -1245,7 +1252,6 @@ On first call, parses ~/.authinfo.gpg (may prompt for GPG passphrase)."
 
 ;; ECA
 (leaf eca
-  :require t
   :config
   (setq eca-custom-command '("~/.bin/eca")))
 
@@ -1282,6 +1288,8 @@ Must be called after `opencode-go-apikey' is set."
 
 ;; デーモン起動時に1回だけ全APIキーを読み込む（フレーム生成のたびに
 ;; gpg --decrypt が走るのを防ぐ）
+;; デーモン時は GPG パスフレーズプロンプトが init をブロックするため
+;; 遅延読み込み（get-secret 初回呼び出し時）。非デーモン時は即時読み込み。
 (defun my/load-secrets ()
   "Load all API keys from authinfo.gpg once at daemon startup."
   (setenv "GEMINI_API_KEY" (get-secret "gemini.google.com"))
@@ -1296,7 +1304,8 @@ Must be called after `opencode-go-apikey' is set."
   (setq smudge-oauth2-client-secret (get-secret "spotify-secret"))
   (setq smudge-oauth2-client-id (get-secret "spotify-id"))
   (my/gptel-setup-opencode-backend))
-(my/load-secrets)
+(unless (daemonp)
+  (my/load-secrets))
 
 (leaf gptel
   :config
@@ -1304,34 +1313,35 @@ Must be called after `opencode-go-apikey' is set."
   ;; 初回読み込み時に既に API key が設定済みなら即座にbackendを構成
   (my/gptel-setup-opencode-backend)
 
-  (gptel-make-tool
-   :function (lambda (filepath)
-	       (with-temp-buffer
-                 (insert-file-contents (expand-file-name filepath))
-                 (buffer-string)))
-   :name "read_file"
-   :description "Read and display the contents of a file"
-   :args (list '(:name "filepath"
-		       :type string
-		       :description "Path to the file to read. Supports relative paths and ~."))
-   :category "filesystem")
+  (with-eval-after-load 'gptel
+    (gptel-make-tool
+     :function (lambda (filepath)
+		 (with-temp-buffer
+                   (insert-file-contents (expand-file-name filepath))
+                   (buffer-string)))
+     :name "read_file"
+     :description "Read and display the contents of a file"
+     :args (list '(:name "filepath"
+			 :type string
+			 :description "Path to the file to read. Supports relative paths and ~."))
+     :category "filesystem")
 
-  (gptel-make-tool
-   :function (lambda (url)
-	       (with-current-buffer (url-retrieve-synchronously url)
-                 (goto-char (point-min))
-                 (forward-paragraph)
-                 (let ((dom (libxml-parse-html-region (point) (point-max))))
-                   (run-at-time 0 nil #'kill-buffer (current-buffer))
-                   (with-temp-buffer
-                     (shr-insert-document dom)
-                     (buffer-substring-no-properties (point-min) (point-max))))))
-   :name "read_url"
-   :description "Fetch and read the contents of a URL"
-   :args (list '(:name "url"
-		       :type string
-		       :description "The URL to read"))
-   :category "web")
+    (gptel-make-tool
+     :function (lambda (url)
+		 (with-current-buffer (url-retrieve-synchronously url)
+                   (goto-char (point-min))
+                   (forward-paragraph)
+                   (let ((dom (libxml-parse-html-region (point) (point-max))))
+                     (run-at-time 0 nil #'kill-buffer (current-buffer))
+                     (with-temp-buffer
+                       (shr-insert-document dom)
+                       (buffer-substring-no-properties (point-min) (point-max))))))
+     :name "read_url"
+     :description "Fetch and read the contents of a URL"
+     :args (list '(:name "url"
+			 :type string
+			 :description "The URL to read"))
+     :category "web"))
 
   )
 
@@ -1342,12 +1352,10 @@ Must be called after `opencode-go-apikey' is set."
 
 ;; AI codeing
 (leaf aider
-  :require t
   :custom
   ((aider-args . '("--watch-files" "--model" "zai/glm-4.5"))))
 
 (leaf aidermacs
-  :require t
   :custom
   ((aidermacs-default-model . "zai/glm-4.5")
    (aidermacs-watch-files . t))
@@ -1360,7 +1368,6 @@ Must be called after `opencode-go-apikey' is set."
 
 
 (leaf mcp-hub
-  :require t
   :config
   (let ((figma-api-key (concat "--figma-api-key=" figma-apikey))
         (home (getenv "HOME")))
@@ -1391,7 +1398,7 @@ Must be called after `opencode-go-apikey' is set."
 
 (leaf ox-zenn
   :after org
-  :require t ox-publish
+  :require ox-publish
   :defun zenn/f-parent org-publish
   :defvar org-publish-project-alist
   :preface
@@ -1554,7 +1561,7 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 (define-key evil-normal-state-map (kbd "SPC z") #'zenn-cli-hydra/body)
 
 (leaf verb
-  :require t)
+  :after org)
 
 (leaf quickrun
   :require t
@@ -1572,7 +1579,11 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 	      (smartchr '( ">" "-> " "|>" "<>" "<-"))))
 
 (leaf smudge
-  :require t)
+  )
+
+;; smudge OAuth 認証時に Firefox で認証画面を開く
+(add-to-list 'load-path "~/.emacs.d/lisp")
+(require 'smudge-oauth-browser)
 
 (leaf ox-typst
   :after org-mode)
@@ -1611,8 +1622,7 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
   :hook
   ((claude-code--start . sm-setup-claude-faces)))
 
-(leaf claude-shell
-  :require t)
+(leaf claude-shell)
 
 (leaf dirvish)
 
@@ -1622,10 +1632,17 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
   :bind ((:evil-normal-state-map
           ("SPC c" . claudemacs-transient-menu))))
 
+;; exec-path-from-shell: 外部シェル起動 (~0.3s) を伴うため、
+;; 起動時ではなく最初のフレーム作成時（server-after-make-frame-hook）まで遅延。
+;; exec-path-from-shell-initialize は一度だけ実行すればよい。
 (leaf exec-path-from-shell
-  :require t
   :init
-  (exec-path-from-shell-initialize)) 
+  (defun my/exec-path-from-shell-init-once ()
+    "Initialize exec-path-from-shell on first frame, then remove self from hook."
+    (require 'exec-path-from-shell)
+    (exec-path-from-shell-initialize)
+    (remove-hook 'server-after-make-frame-hook #'my/exec-path-from-shell-init-once))
+  (add-hook 'server-after-make-frame-hook #'my/exec-path-from-shell-init-once))
 
 (leaf emmet-mode
   :config
@@ -1641,11 +1658,9 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 (leaf gerbil-mode
   :hook ((inferior-scheme-mode-hook . gambit-inferior-mode)))
 
-(leaf tramps3
-  :require t)
+(leaf tramps3)
 
-(leaf consult-ghq
-  :require t)
+(leaf consult-ghq)
 
 (leaf minions
   :custom ((minions-mode-line-lighter . "[+]"))
@@ -1731,8 +1746,8 @@ When ALBUM is \"OTHER\" or \"アニメ\", extract the song name instead."
   "Set `dashboard-banner-logo-title' based on the current banner image."
   (setq dashboard-banner-logo-title (or (my/dashboard-album-name) "SHINY COLORS")))
 
+;; dashboard: フレーム作成時に初めてロード・表示するため :require t は不要
 (leaf dashboard
-  :require t
   :config
   (setq dashboard-startup-banner (or (my/dashboard-random-image)
                                      (expand-file-name "~/Pictures/shinycolors-jacket/BRILLI@NT_WING__BRILLI@NT_WING_04_夢咲きAfter_school.jpg")))
@@ -1766,7 +1781,6 @@ When ALBUM is \"OTHER\" or \"アニメ\", extract the song name instead."
           (call-interactively #'evil-ret)))))))
 
 (leaf minimal-dashboard
-  :require t
   :config
   (setq minimal-dashboard-buffer-name "Dashboard")
   (setq minimal-dashboard-image-path "~/Pictures/image/hokura.jpg")
@@ -1794,9 +1808,15 @@ Picks a random banner image each time."
         (my/dashboard-update-banner-title)
         (dashboard-refresh-buffer)))))
 
-;; フレーム生成時に dashboard を表示（alpha-background の可視化より先に
-;; コンテンツを準備するため、prepend で先頭に追加）
-(add-hook 'server-after-make-frame-hook #'my/after-make-frame-show-dashboard)
+;; GUIフレーム生成時に dashboard を表示（TTY の場合は scratch バッファ）
+(add-hook 'server-after-make-frame-hook
+          (lambda (&optional frame)
+            (let ((f (or frame (selected-frame))))
+              (unless (string= (frame-parameter f 'name) "emacs-scratch")
+                (with-selected-frame f
+                  (if (display-graphic-p)
+		      (my/dashboard-random-image)
+                    (switch-to-buffer "*scratch*")))))))
 
 ;; ================ my extentions ================
 
@@ -1933,8 +1953,10 @@ Picks a random banner image each time."
     (setq gitmoji--codes (setup-gitmoji-data)))
   gitmoji--codes)
 
-(setup-gitmoji)
+;; gitmoji データのロードは init 中でなく、最初の git-commit-mode で遅延実行
 (defun gitmoji-completion ()
+  (unless (boundp 'gitmoji--codes)
+    (setq gitmoji--codes (setup-gitmoji-data)))
   (let ((beg (save-excursion (skip-chars-backward "a-zA-Z") (point)))
         (end (point))
         (candidates gitmoji--codes))
@@ -2123,10 +2145,13 @@ Picks a random banner image each time."
 (leaf server
   :require t
   :init
-  (unless (server-running-p)
-    (server-start)))
+  (unless (daemonp)
+    (unless (server-running-p)
+      (server-start))))
 
 (setq browse-url-browser-function 'browse-url-firefox)
+;; Firefox on Wayland + Niri: --new-window が確実
+(setq browse-url-firefox-arguments '("--new-window"))
 
 ;; Enable auto revert（全体ではなく必要なモードのみ個別有効化）
 ;; (global-auto-revert-mode 1)  ;; 全バッファ監視は負荷が高い
@@ -2242,9 +2267,10 @@ Picks a random banner image each time."
 ;; Enable debug
 (setq debug-on-error nil)
 
-;; Custom modeline
+;; Custom modeline — smudge (Spotify) は遅延ロードのため、初回ロード時に有効化
 (mode-line-format-update)
-(smudge-controller-start-player-status-timer)
+(eval-after-load 'smudge
+  '(smudge-controller-start-player-status-timer))
 
 ;; When org-mode
 (add-hook 'org-mode-hook
@@ -2310,25 +2336,20 @@ Picks a random banner image each time."
 ;; なく server-after-make-frame-functions でクライアント接続後に設定する）
 ;; また、visibility . nil でフレームを不可視にしてから表示することで、
 ;; 背景色が正しく適用される前にフレームが表示されるのを防ぐ（Emacs 30.2 PGTK の既知の問題）
+;; early-init.el が --init-directory により読み込まれないため、
+;; ここでフレーム設定を直接適用する。
+(push '(menu-bar-lines . 0) default-frame-alist)
+(push '(tool-bar-lines . 0) default-frame-alist)
+(push '(vertical-scroll-bars . nil) default-frame-alist)
+(push '(background-color . "#1e1e2e") default-frame-alist)
+(push '(foreground-color . "#cdd6f4") default-frame-alist)
+
 (defun my/apply-alpha-background (&optional frame)
-  "Apply alpha-background 85 to FRAME after client connects and buffer is ready."
+  "Apply alpha-background 85 to FRAME after client connects."
   (let ((f (or frame (selected-frame))))
-    ;; まずフレームを不可視にする
-    (set-frame-parameter f 'visibility nil)
-    ;; 短い遅延を入れてバッファの準備を待つ
-    (run-with-idle-timer 0.05 nil
-			 (lambda ()
-			   (when (frame-live-p f)
-			     (with-selected-frame f
-			       ;; 初期バッファを確保（scratch バッファなど）
-			       (unless (buffer-name (current-buffer))
-				 (switch-to-buffer "*scratch*"))
-			       ;; 再描画を強制
-			       (redisplay)
-			       ;; フレームを可視化
-			       (make-frame-visible f)
-			       ;; 透過を適用
-			       (set-frame-parameter f 'alpha-background 85)))))))
+    ;; Emacs 32 (PGTK) では背景色バグが修正済みのため、
+    ;; 単純に alpha を設定するだけでよい。
+    (set-frame-parameter f 'alpha-background 85)))
 
 ;; server-after-make-frame-hook に登録（emacsclient接続時のみ）
 (add-hook 'server-after-make-frame-hook #'my/apply-alpha-background)
