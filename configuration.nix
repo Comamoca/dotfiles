@@ -408,9 +408,7 @@ in
   xdg.portal = {
     enable = true;
     xdgOpenUsePortal = true;
-    # wlr.enable = true — DISABLED: Niri は wlroots ベースではないため競合する。
-    #   Sway を使う場合は再有効化を検討。
-    wlr.enable = false;
+    wlr.enable = true;
     extraPortals = with pkgs; [
       xdg-desktop-portal-gtk
       xdg-desktop-portal-gnome
@@ -422,9 +420,8 @@ in
         "hyprland"
         "gtk"
       ];
-      # Sway: wlr.enable = false のため、gtk にフォールバック。
-      # Sway で画面共有が必要な場合は wlr.enable = true に戻すこと。
-      sway.default = [
+      sway.default = pkgs.lib.mkForce [
+        "wlr"
         "gtk"
       ];
       niri.default = [
