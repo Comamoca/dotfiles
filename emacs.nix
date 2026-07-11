@@ -479,7 +479,10 @@ in
 
     kind-icon
     all-the-icons
+
     transient-dwim
+    transient-posframe
+
     google-translate
     wakatime-mode
 
@@ -696,5 +699,10 @@ in
     howm
 
     emacs-taskrunner
+
+    age
+
+    pdf-tools
+    minimail
   ];
 }

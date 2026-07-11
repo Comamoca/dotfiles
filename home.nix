@@ -130,6 +130,20 @@ let
   # eqsh (一時的に無効化)
   # eqsh-src = inputs.eqsh;
 
+  # Combined derivation of all tree-sitter grammars from nixpkgs.
+  # Each grammar is symlinked as libtree-sitter-{name}.so so emacs can find it.
+  emacs-ts-grammars = pkgs.runCommand "emacs-tree-sitter-grammars" { } (
+    let
+      grammars = lib.filterAttrs (n: v: n != "recurseForDerivations") pkgs.tree-sitter-grammars;
+      links = lib.mapAttrsToList (name: grammar:
+        "ln -s ${grammar}/parser \"$out/libtree-sitter-${name}.so\""
+      ) grammars;
+    in ''
+      mkdir -p $out
+      ${lib.concatStringsSep "\n" links}
+    ''
+  );
+
 in
 rec {
   nixpkgs.config = {
@@ -705,7 +719,7 @@ rec {
   systemd.user.services.emacs = let
     emacs-daemon-script = pkgs.writeShellScript "emacs-daemon" ''
       mkdir -p /tmp/emacsd
-      exec ${emacs'}/bin/emacs --fg-daemon --init-directory /tmp/emacsd --eval "(load \"${home.homeDirectory}/.emacs.d/init.el\")"
+      exec ${emacs'}/bin/emacs --fg-daemon --init-directory /tmp/emacsd --eval "(load \"${home.homeDirectory}/.emacs.d/init-loader.el\")"
     '';
   in {
     Unit = {
@@ -740,12 +754,17 @@ rec {
       || echo "  ⚠ byte-compile failed (non-fatal)"
   '';
 
-  # tree-sitter-astro grammar doesn't ship with astro-ts-mode in emacs-packages-deps,
-  # so we symlink it from nixpkgs into Emacs' tree-sitter directory directly.
-  # This runs on every home-manager activation to stay in sync with nix store updates.
-  home.activation.createTreeSitterAstro = lib.hm.dag.entryAfter ["linkGeneration"] ''
+  # Symlink all tree-sitter grammars from nixpkgs into Emacs' tree-sitter directory.
+  # Replaces old committed/compiled grammar files with Nix-managed symlinks.
+  # Runs on every home-manager activation to stay in sync with nix store updates.
+  home.activation.createTreeSitterGrammars = lib.hm.dag.entryAfter ["linkGeneration"] ''
     mkdir -p ~/.emacs.d/tree-sitter
-    ln -sf ${pkgs.tree-sitter-grammars.tree-sitter-astro}/parser ~/.emacs.d/tree-sitter/libtree-sitter-astro.so
+    # Remove old non-Nix grammar files (committed .so files)
+    find ~/.emacs.d/tree-sitter -maxdepth 1 -name '*.so' -not -type l -delete 2>/dev/null || true
+    # Clean up broken symlinks
+    find ~/.emacs.d/tree-sitter -maxdepth 1 -type l ! -xtype l -delete 2>/dev/null || true
+    # Symlink all grammars from Nix
+    ln -sf ${emacs-ts-grammars}/* ~/.emacs.d/tree-sitter/
   '';
 
   systemd.user.services.niri-scratchpad-daemon = {
