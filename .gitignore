@@ -64,3 +64,4 @@ emacs.d/*.eln
 .pre-commit-config.yaml
 .env
 /.agent-shell/
+.sdd/runtime/
