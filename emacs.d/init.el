@@ -82,17 +82,30 @@
   (vertico-posframe-mode 1)
 
   ;; posframe が surrogate minibuffer frame を作成する関係で、
-  ;; delete-window → delete-frame 時に "Attempt to delete a surrogate minibuffer frame"
-  ;; エラーが発生してウィンドウが閉じれなくなるのを防ぐ
+  ;; delete-frame 時に "Attempt to delete a surrogate minibuffer frame"
+  ;; エラーが発生するのを防ぐ。
+  ;; 対象フレームに依存する posframe 子フレームを先に削除してからリトライする。
   (advice-add 'delete-frame :around
               (lambda (orig-fun frame &optional force)
-                "Suppress 'Attempt to delete a surrogate minibuffer frame' error."
+                "Delete dependent posframes before deleting a surrogate minibuffer frame."
                 (condition-case err
                     (funcall orig-fun frame force)
                   (error
                    (if (string-match-p "Attempt to delete a surrogate minibuffer frame"
                                        (error-message-string err))
-                       (message "Surrogate minibuffer frame: 削除をスキップしました")
+                       (progn
+                         ;; posframe の子フレームを先に削除
+                         (dolist (f (frame-list))
+                           (when (and (frame-parameter f 'posframe-buffer)
+                                      (eq (frame-parent f) frame))
+                             (let ((delete-frame-functions nil))
+                               (delete-frame f))))
+                         ;; リトライ
+                         (condition-case retry-err
+                             (funcall orig-fun frame force)
+                           (error
+                            (message "Surrogate minibuffer frame: 削除をスキップしました (%s)"
+                                     (error-message-string retry-err)))))
                      (signal (car err) (cdr err))))))))
 
 ;; Completion Styles
@@ -132,7 +145,7 @@
 (leaf evil
   :require t
   :bind ((:evil-normal-state-map
-          ("C-k" . evil-scroll-up)
+          ("C-k" . evil-scroll-up) 
           ("C-j" . evil-scroll-down))
          (:evil-insert-state-map
 	  ;; ("C-j" . newline-and-indent)
@@ -141,11 +154,16 @@
   (setq evil-backspace-join-lines t)
   (evil-mode 1))
 
+(leaf ace-window
+  :bind ((:evil-normal-state-map
+          ("C-w C-w" . ace-window)))
+  :config
+  (setq aw-keys '(?a ?s ?d ?f ?h ?j ?k ?l)))
+
 ;; Structured editing 
 (leaf puni
-  :config
-  (global-set-key (kbd "C--") 'puni-expand-region)
-  :bind ((:evil-insert-state-map
+  :bind (("C--" . puni-expand-region)
+         (:evil-insert-state-map
           ("s" . nil)
 	  ;; ("sd" . puni-splice)
           ("C-l" . puni-mark-sexp-at-point)
@@ -184,7 +202,7 @@
 (leaf treesit-auto
   :require t
   :custom
-  ((treesit-auto-install . t)
+  ((treesit-auto-install . nil)
    (treesit-extra-load-path . `(,(expand-file-name "~/.cache/dpp/_generated/nvim-treesitter/parser"))))
   :config  
   (global-treesit-auto-mode)
@@ -303,6 +321,7 @@
 				  :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
 						     "#+title: ${title}\n#+filetags: :reference:\n")
 				  :unnarrowed t))))
+  :bind (("C-c n r" . org-roam-node-find))
   :config
   (org-roam-db-autosync-mode))
 
@@ -312,7 +331,8 @@
   :after org-roam-mode
   :custom
   ((deft-extensions . '("txt" "tex" "org"))
-   `(deft-directory . ,(expand-file-name "roam" org-directory))))
+   `(deft-directory . ,(expand-file-name "roam" org-directory)))
+  :bind ("C-c n d" . deft))
 
 (leaf org-roam-ui)
 
@@ -599,7 +619,7 @@ project context."
   (scala-mode . lsp-deferred)
   (lua-mode . lsp-deferred)
   :custom
-  ((lsp-completion-provider . :capf))   ;; :none → :capf (corfuと併用する標準設定)
+  ((lsp-completion-provider . :none))   ;; :none で company 自動有効化を抑制（capf 経由で corfu が補完を表示）
   :config
   ;; gc-cons-threshold はグローバルGC管理(my/gc-*)に委譲
   (setq read-process-output-max (* 1024 1024))
@@ -865,9 +885,8 @@ _/_: Playlist Search     _s_  : Shuffle           _q_: Quit
   :require t
   :config
   (projectile-mode +1)
-  (push ".git" projectile-project-root-files)
-  (setq projectile-project-root-files-bottom-up
-	'("Cargo.toml" "gleam.toml" "flake.nix"))
+  (dolist (f '("Cargo.toml" "gleam.toml" "flake.nix"))
+    (add-to-list 'projectile-project-root-files-bottom-up f))
   ;; .gitignore を尊重するため git ls-files ベースの indexing を使用
   (setq projectile-indexing-method 'hybrid)
   ;; ghq の owner/repo レイアウトでは depth=2 で全リポジトリに到達する
@@ -893,7 +912,8 @@ _/_: Playlist Search     _s_  : Shuffle           _q_: Quit
   :after (perspective projectile)
   :custom
   ((persp-projectile-project-persp-creator . 'my/persp-projectile-creator))
-  :bind ((:projectile-mode-map
+  :bind (("M-g" . projectile-persp-switch-project)
+         (:projectile-mode-map
           ("C-c p p" . projectile-persp-switch-project))))
 
 ;; Git worktree をメインリポジトリと同じ perspective で扱う
@@ -1088,6 +1108,10 @@ Forces re-root even if treemacs was already open on a different project."
   (add-hook 'conf-mode-hook 'tempel-setup-capf)
   (add-hook 'prog-mode-hook 'tempel-setup-capf)
   (add-hook 'text-mode-hook 'tempel-setup-capf)
+
+  ;; org-mode は独自に completion-at-point-functions を設定するため
+  ;; org-mode-hook で確実に tempel を先頭に追加する
+  (add-hook 'org-mode-hook #'tempel-setup-capf)
 
   (add-hook 'markdown-mode-hook (lambda ()
                                   (setq-local completion-at-point-functions
@@ -1589,6 +1613,7 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
   :after org-mode)
 
 (leaf agent-shell
+  :require t
   :init
   ;; テキストバッファ（ファイル）を初めて開いた時に agent-shell をロード
   (defun my/load-agent-shell-once ()
@@ -1746,8 +1771,10 @@ When ALBUM is \"OTHER\" or \"アニメ\", extract the song name instead."
   "Set `dashboard-banner-logo-title' based on the current banner image."
   (setq dashboard-banner-logo-title (or (my/dashboard-album-name) "SHINY COLORS")))
 
-;; dashboard: フレーム作成時に初めてロード・表示するため :require t は不要
+;; dashboard: server-after-make-frame-hook から dashboard-refresh-buffer を
+;; 呼ぶため、事前にロードが必要
 (leaf dashboard
+  :require t
   :config
   (setq dashboard-startup-banner (or (my/dashboard-random-image)
                                      (expand-file-name "~/Pictures/shinycolors-jacket/BRILLI@NT_WING__BRILLI@NT_WING_04_夢咲きAfter_school.jpg")))
@@ -1809,14 +1836,7 @@ Picks a random banner image each time."
         (dashboard-refresh-buffer)))))
 
 ;; GUIフレーム生成時に dashboard を表示（TTY の場合は scratch バッファ）
-(add-hook 'server-after-make-frame-hook
-          (lambda (&optional frame)
-            (let ((f (or frame (selected-frame))))
-              (unless (string= (frame-parameter f 'name) "emacs-scratch")
-                (with-selected-frame f
-                  (if (display-graphic-p)
-		      (my/dashboard-random-image)
-                    (switch-to-buffer "*scratch*")))))))
+(add-hook 'server-after-make-frame-hook #'my/after-make-frame-show-dashboard)
 
 ;; ================ my extentions ================
 
@@ -2129,8 +2149,9 @@ Picks a random banner image each time."
 ;; initel function that behaves like `:e $MYVIMRC`
 (defun initel ()
   (interactive)
-  (find-file (or user-init-file
-                 (expand-file-name "init.el" user-emacs-directory))))
+  (find-file (if (file-exists-p user-init-file)
+                 user-init-file
+               (expand-file-name "init.el" "~/.emacs.d"))))
 
 (defun toggle-truncate-lines ()
   "折り返し表示をトグル動作します."
@@ -2139,6 +2160,16 @@ Picks a random banner image each time."
       (setq truncate-lines nil)
     (setq truncate-lines t))
   (recenter))
+
+(leaf minimail
+  :config
+  (setq minimail-accounts
+	'((gmail ;; This can be any symbol you like to identify the account
+           :mail-address "comamoca.dev@gmail.com"
+           :incoming-url "imaps://imap.gmail.com"))
+	mail-user-agent 'minimail
+	message-server-alist
+	'()))
 
 ;; ================ My configuratons ================ 
 
@@ -2248,7 +2279,6 @@ Picks a random banner image each time."
 
 (global-set-key (kbd "C-c C-r") 'window-resizer)
 
-(define-key global-map (kbd "M-g") 'projectile-persp-switch-project)
 (define-key global-map (kbd "C-x s") 'blackening-region)
 (define-key global-map (kbd "C-;") 'comment-dwim)
 (define-key evil-insert-state-map (kbd "C-h") #'my/minibuffer-backspace)
