@@ -289,6 +289,9 @@ rec {
       ".bin/scripts/browser-focus-niri.sh" = {
         source = (symlink /${dotfiles}/bin/scripts/browser-focus-niri.sh);
       };
+      ".bin/scripts/niri-window-switch.sh" = {
+        source = (symlink /${dotfiles}/bin/scripts/niri-window-switch.sh);
+      };
 
       # Vim configs.
       # ".vimrc".source = (symlink /${dotfiles}/vimrc);

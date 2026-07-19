@@ -380,6 +380,8 @@ binds {
     Mod+Space { spawn "rofi" "-show" "drun"; }
     Mod+E { spawn "emacsclient" "-c"; }
     Mod+B { spawn "bash" "-c" "/home/coma/.ghq/github.com/Comamoca/dotfiles/bin/scripts/browser-focus-niri.sh"; }
+    // Window switcher: rofi検索→フォーカス
+    Mod+W { spawn "bash" "-c" "/home/coma/.ghq/github.com/Comamoca/dotfiles/bin/scripts/niri-window-switch.sh"; }
     // Scratchpad: alacritty 端末をトグル (niri-scratchpad)
     Mod+T { spawn "niri-scratchpad" "target" "--spawn" "alacritty --class foot-scratch" "appid" "foot-scratch"; }
     // Scratchpad: Emacs をトグル (niri-scratchpad) - デフォルトデーモンに接続、タイトルで識別
