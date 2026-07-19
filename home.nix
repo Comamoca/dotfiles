@@ -425,11 +425,6 @@ rec {
         source = (symlink /${dotfiles}/config/niri);
         recursive = true;
       };
-      ".config/kanshi" = {
-        source = (symlink /${dotfiles}/config/kanshi);
-        recursive = true;
-      };
-
       # eqsh (一時的に無効化)
       # ".local/share/equora" = {
       #   source = "${eqsh-src}";

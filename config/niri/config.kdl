@@ -245,11 +245,6 @@ spawn-at-startup "xwayland-satellite"
 // ワークスペース自動レイアウト: モニター構成に応じて名前付きワークスペースを配置
 spawn-at-startup "bash" "-c" "sleep 2 && ~/.bin/scripts/niri-workspace-layout.sh"
 
-// kanshi: モニターホットプラグ検出とプロファイル切り替え
-// デュアルモニター使用時は config/kanshi/config のコメントを解除し、
-// コネクタ名を実際の出力に合わせて調整すること。
-spawn-at-startup "kanshi"
-
 // Uncomment this line to ask the clients to omit their client-side decorations if possible.
 // If the client will specifically ask for CSD, the request will be honored.
 // Additionally, clients will be informed that they are tiled, removing some client-side rounded corners.
