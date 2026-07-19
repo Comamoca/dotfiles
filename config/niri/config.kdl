@@ -246,9 +246,9 @@ spawn-at-startup "xwayland-satellite"
 spawn-at-startup "bash" "-c" "sleep 2 && ~/.bin/scripts/niri-workspace-layout.sh"
 
 // kanshi: モニターホットプラグ検出とプロファイル切り替え
-// 使用するには config/kanshi/config でデュアルプロファイルのコメントアウトを解除し、
+// デュアルモニター使用時は config/kanshi/config のコメントを解除し、
 // コネクタ名を実際の出力に合わせて調整すること。
-// spawn-at-startup "kanshi"
+spawn-at-startup "kanshi"
 
 // Uncomment this line to ask the clients to omit their client-side decorations if possible.
 // If the client will specifically ask for CSD, the request will be honored.
