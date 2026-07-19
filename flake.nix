@@ -190,32 +190,8 @@
         };
       };
 
-      homeConfigurations = {
-        WSL = inputs.home-manager.lib.homeManagerConfiguration rec {
-          pkgs = import inputs.nixpkgs {
-            system = "x86_64-linux";
-            config.allowUnfree = true;
-          };
-          extraSpecialArgs = {
-            inherit inputs;
-          };
-          modules = [
-            # ./home.nix
-            ./home-manager/wsl
-            inputs.catppuccin.homeModules.catppuccin
-            inputs.sops-nix.homeManagerModules.sops
-            inputs.nix-index-database.homeModules.default
-            {
-              nixpkgs.overlays = overlays ++ [
-                (final: prev: {
-                  xremap = inputs.xremap.packages.${pkgs.stdenv.hostPlatform.system}.default;
-                })
-              ];
-            }
-          ];
-        };
-
-        Home = inputs.home-manager.lib.homeManagerConfiguration rec {
+      homeConfigurations = let
+        homeConfigHome = inputs.home-manager.lib.homeManagerConfiguration rec {
           pkgs = import inputs.nixpkgs {
             system = "x86_64-linux";
             config.allowUnfree = true;
@@ -243,6 +219,37 @@
             }
           ];
         };
+
+        homeConfigWSL = inputs.home-manager.lib.homeManagerConfiguration rec {
+          pkgs = import inputs.nixpkgs {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+          };
+          extraSpecialArgs = {
+            inherit inputs;
+          };
+          modules = [
+            # ./home.nix
+            ./home-manager/wsl
+            inputs.catppuccin.homeModules.catppuccin
+            inputs.sops-nix.homeManagerModules.sops
+            inputs.nix-index-database.homeModules.default
+            {
+              nixpkgs.overlays = overlays ++ [
+                (final: prev: {
+                  xremap = inputs.xremap.packages.${pkgs.stdenv.hostPlatform.system}.default;
+                })
+              ];
+            }
+          ];
+        };
+      in {
+        inherit homeConfigHome homeConfigWSL;
+        Home = homeConfigHome;
+        WSL = homeConfigWSL;
+        # nh home switch の自動検出用 (username = coma, hostname = comabook)
+        coma = homeConfigHome;
+        "coma@comabook" = homeConfigHome;
       };
 
       deploy.nodes.raspi = {

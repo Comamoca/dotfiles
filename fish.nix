@@ -103,7 +103,10 @@
     # fish_add_path $HOME/local/
 
     alias nixos-rebuild="/run/current-system/sw/bin/nixos-rebuild"
-    alias magit="emacsclient -c --eval '(magit)'"
+    alias magit="emacsclient -s main -c --eval '(magit)'"
+    alias emain="emacsclient -s main"
+    alias etest="emacsclient -s test"
+    alias ecoding="emacsclient -s coding"
     alias register-asdf="ln -s (pwd) '$HOME/common-lisp/$(basename $(pwd))'"
     alias supa "bunx supabase"
 
@@ -174,7 +177,7 @@
     export GOPATH=$HOME/go
 
     abbr --add e $EDITOR
-    abbr --add a emacsclient -c
+    abbr --add a emacsclient -s main -c
     abbr --add oc opencode
 
     set -x ELIXIR_ERL_OPTIONS "+fnu"
@@ -262,5 +265,16 @@
     # opam configuration
 
     function claude; set -x CLAUDE_AUTO_RETRY_ACTIVE 1; node "/home/coma/.bun/install/global/node_modules/claude-auto-retry/src/launcher.js" $argv; set -e CLAUDE_AUTO_RETRY_ACTIVE; end
+
+    # nh: nh home switch に --impure -b backup を自動付与
+    set -gx NH_HOME_FLAKE (ghq root)/github.com/Comamoca/dotfiles
+    function nh --wraps nh
+      switch "$argv[1] $argv[2]"
+        case "home switch"
+          command nh home switch --impure --backup-extension backup $argv[3..]
+        case '*'
+          command nh $argv
+      end
+    end
   '';
 }

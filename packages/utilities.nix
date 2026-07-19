@@ -60,4 +60,5 @@ with pkgs;
   telegram-desktop
   wlr-randr
   deploy-rs.deploy-rs
+  nh
 ]
