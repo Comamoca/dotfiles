@@ -224,22 +224,31 @@ layout {
 // See the binds section below for more spawn examples.
 // spawn-at-startup "alacritty" "-e" "fish"
 
-// Emacs (PGTK) requires a Wayland display for --daemon; start via compositor
-// (not systemd) to guarantee the display connection is available.
-spawn-at-startup "emacs" "--daemon"
+// Emacs daemon is now managed by systemd (emacs@main.service).
+// The named daemon socket is at /run/user/1000/emacs/main.
+// Use emacsclient -s main to connect.
+// spawn-at-startup "emacs" "--daemon"
 
 // Startup applications from sway config
 spawn-at-startup "nm-applet"
 spawn-at-startup "dms" "run"
 // spawn-at-startup "au" "run"
-// stash ワークスペース（idx=1）を回避して通常作業用のワークスペースへ移動
-spawn-at-startup "bash" "-c" "sleep 0.5 && niri msg action focus-workspace 2"
+// 初期フォーカスを term ワークスペースに設定
+spawn-at-startup "bash" "-c" "sleep 0.5 && niri msg action focus-workspace 'term'"
 spawn-at-startup "fcitx5"
 spawn-at-startup "sandsmark-notificationd"
 spawn-at-startup "swaync"
 spawn-at-startup "wlsunset" "-t" "5500"
 // xwayland-satellite — DiscordなどのElectronアプリがX11を必要とするため
 spawn-at-startup "xwayland-satellite"
+
+// ワークスペース自動レイアウト: モニター構成に応じて名前付きワークスペースを配置
+spawn-at-startup "bash" "-c" "sleep 2 && ~/.bin/scripts/niri-workspace-layout.sh"
+
+// kanshi: モニターホットプラグ検出とプロファイル切り替え
+// 使用するには config/kanshi/config でデュアルプロファイルのコメントアウトを解除し、
+// コネクタ名を実際の出力に合わせて調整すること。
+// spawn-at-startup "kanshi"
 
 // Uncomment this line to ask the clients to omit their client-side decorations if possible.
 // If the client will specifically ask for CSD, the request will be honored.
@@ -269,6 +278,25 @@ animations {
 
 // niri-scratchpad で使用する stash ワークスペース
 workspace "stash" { }
+
+// 名前付きワークスペース設定
+// 全ワークスペースを eDP-1（内蔵ディスプレイ）起点とし、
+// 外部モニター接続時はスクリプト(niri-workspace-layout)が動的に再配置する。
+// open-on-output により、切断→再接続時に自動的に元のモニターへ戻る。
+
+// 内蔵ディスプレイ常駐ワークスペース
+workspace "term"    { open-on-output "eDP-1"; }
+workspace "web"     { open-on-output "eDP-1"; }
+workspace "chat"    { open-on-output "eDP-1"; }
+workspace "edit"    { open-on-output "eDP-1"; }
+
+// 外部モニター優先ワークスペース（初期は内蔵、接続時にスクリプトが移動）
+workspace "browser" { open-on-output "eDP-1"; }
+workspace "code"    { open-on-output "eDP-1"; }
+workspace "mon"     { open-on-output "eDP-1"; }
+
+// 汎用ワークスペース
+workspace "misc"    { open-on-output "eDP-1"; }
 
 // Window rules let you adjust behavior for individual windows.
 // Find more information on the wiki:
@@ -378,14 +406,14 @@ binds {
     Mod+Return { spawn "alacritty"; }
     Mod+D { spawn "rofi" "-show" "combi"; }
     Mod+Space { spawn "rofi" "-show" "drun"; }
-    Mod+E { spawn "emacsclient" "-c"; }
+    Mod+E { spawn "emacsclient" "-s" "main" "-c"; }
     Mod+B { spawn "bash" "-c" "/home/coma/.ghq/github.com/Comamoca/dotfiles/bin/scripts/browser-focus-niri.sh"; }
     // Window switcher: rofi検索→フォーカス
     Mod+W { spawn "bash" "-c" "/home/coma/.ghq/github.com/Comamoca/dotfiles/bin/scripts/niri-window-switch.sh"; }
     // Scratchpad: alacritty 端末をトグル (niri-scratchpad)
     Mod+T { spawn "niri-scratchpad" "target" "--spawn" "alacritty --class foot-scratch" "appid" "foot-scratch"; }
-    // Scratchpad: Emacs をトグル (niri-scratchpad) - デフォルトデーモンに接続、タイトルで識別
-    Mod+O { spawn "niri-scratchpad" "target" "--spawn" "emacsclient -c -F '((name . \"emacs-scratch\"))'" "title" "emacs-scratch"; }
+    // Scratchpad: Emacs をトグル (niri-scratchpad) - 名前付きデーモン(main)に接続、タイトルで識別
+    Mod+O { spawn "niri-scratchpad" "target" "--spawn" "emacsclient -s main -c -F '((name . \"emacs-scratch\"))'" "title" "emacs-scratch"; }
 
     // You can also use a shell. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument in the end.

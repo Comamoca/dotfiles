@@ -116,6 +116,21 @@ let
     in (import ./emacs.nix { inherit pkgs; epkgs = epkgs'; inherit nurpkgs; }).packages
   );
 
+  # 名前付き Emacs daemon 用の起動スクリプト
+  # systemd テンプレートユニットから %I でインスタンス名を受け取り、
+  # 対応する名前付きデーモンを起動する。
+  # Usage: emacs-daemon <name>
+  #   ソケット: /run/user/1000/emacs/server_{name}
+  #   init directory: /tmp/emacsd-{name}
+  emacs-daemon-script = pkgs.writeShellScript "emacs-daemon" ''
+    NAME="''${1:-main}"
+    INIT_DIR="/tmp/emacsd-''${NAME}"
+    mkdir -p "$INIT_DIR"
+    exec ${emacs'}/bin/emacs --fg-daemon="''${NAME}" \
+      --init-directory="$INIT_DIR" \
+      --eval "(load \"$HOME/.emacs.d/init-loader.el\")"
+  '';
+
   sbcl' = pkgs.sbcl.withPackages (
     ps: with ps; [
       slite
@@ -132,12 +147,16 @@ let
 
   # Combined derivation of all tree-sitter grammars from nixpkgs.
   # Each grammar is symlinked as libtree-sitter-{name}.so so emacs can find it.
+  # Some grammars are lists of derivations, handle both cases.
   emacs-ts-grammars = pkgs.runCommand "emacs-tree-sitter-grammars" { } (
     let
       grammars = lib.filterAttrs (n: v: n != "recurseForDerivations") pkgs.tree-sitter-grammars;
-      links = lib.mapAttrsToList (name: grammar:
-        "ln -s ${grammar}/parser \"$out/libtree-sitter-${name}.so\""
-      ) grammars;
+      mkLink = name: grammar:
+        if builtins.isList grammar then
+          lib.imap0 (i: g: "ln -s ${g}/parser \"$out/libtree-sitter-${name}-${toString i}.so\"") grammar
+        else
+          [ "ln -s ${grammar}/parser \"$out/libtree-sitter-${name}.so\"" ];
+      links = lib.concatLists (lib.mapAttrsToList mkLink grammars);
     in ''
       mkdir -p $out
       ${lib.concatStringsSep "\n" links}
@@ -292,6 +311,12 @@ rec {
       ".bin/scripts/niri-window-switch.sh" = {
         source = (symlink /${dotfiles}/bin/scripts/niri-window-switch.sh);
       };
+      ".bin/scripts/niri-workspace-layout.sh" = {
+        source = (symlink /${dotfiles}/bin/scripts/niri-workspace-layout.sh);
+      };
+      ".bin/scripts/flake-lock-save" = {
+        source = (symlink /${dotfiles}/bin/scripts/flake-lock-save);
+      };
 
       # Vim configs.
       # ".vimrc".source = (symlink /${dotfiles}/vimrc);
@@ -398,6 +423,10 @@ rec {
 
       ".config/niri" = {
         source = (symlink /${dotfiles}/config/niri);
+        recursive = true;
+      };
+      ".config/kanshi" = {
+        source = (symlink /${dotfiles}/config/kanshi);
         recursive = true;
       };
 
@@ -573,6 +602,7 @@ rec {
     "$HOME/.bin/scripts/life"
     "$HOME/.bin/scripts/ime"
     "$HOME/.bin/scripts/ghq-attach"
+    "$HOME/.bin/scripts"
     "$HOME/.npm-global/bin"
     "$HOME/go/bin"
     "$HOME/.local/bin"
@@ -716,24 +746,42 @@ rec {
     };
   };
 
-  # Emacs daemon via systemd, starts after graphical-session.target.
-  # Uses a clean init directory + explicit init.el loading to avoid a
-  # PGTK Emacs bug where init.el as user-init-file causes server failure.
-  systemd.user.services.emacs = let
-    emacs-daemon-script = pkgs.writeShellScript "emacs-daemon" ''
-      mkdir -p /tmp/emacsd
-      exec ${emacs'}/bin/emacs --fg-daemon --init-directory /tmp/emacsd --eval "(load \"${home.homeDirectory}/.emacs.d/init-loader.el\")"
-    '';
-  in {
+  # Emacs daemon テンプレートユニット。
+  # 名前付きデーモン機能により main/test/coding 等のインスタンスを分離。
+  # %I にインスタンス名が入り、emacs-daemon-script に引数として渡される。
+  # 使用例: systemctl --user start emacs@test
+  # Install セクションは持たない（テンプレート自体は起動不可）。
+  systemd.user.services."emacs@" = {
     Unit = {
-      Description = "Emacs text editor";
+      Description = "Emacs text editor (%I)";
       Documentation = [ "info:emacs" "man:emacs(1)" "https://gnu.org/software/emacs/" ];
       After = [ "graphical-session.target" ];
       PartOf = [ "graphical-session.target" ];
     };
     Service = {
       Type = "simple";
-      ExecStart = "${emacs-daemon-script}";
+      ExecStart = "${emacs-daemon-script} %I";
+      Restart = "on-failure";
+      RestartSec = 5;
+      SuccessExitStatus = 15;
+    };
+  };
+
+  # メインの Emacs daemon インスタンス。
+  # 明示的に定義することで、home-manager による自動再起動を制御しやすくする。
+  # restartIfChanged は home-manager の systemd 拡張属性だが、
+  # テンプレートユニットと共存する場合の型制約によりここでは設定しない。
+  # 代わりに、systemctl --user stop emacs@main && systemctl --user start emacs@main
+  # で手動再起動する運用（Blue-Green デプロイ）を推奨する。
+  systemd.user.services."emacs@main" = {
+    Unit = {
+      Description = "Emacs text editor (main)";
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${emacs-daemon-script} main";
       Restart = "on-failure";
       RestartSec = 5;
       SuccessExitStatus = 15;

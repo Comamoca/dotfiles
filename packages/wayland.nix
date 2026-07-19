@@ -12,6 +12,9 @@ with pkgs;
   # Audio
   # sonic-pi
 
+  # モニターホットプラグ検出とプロファイル切り替え（niri）
+  kanshi
+
   # quickshellはdmsバンドル版を使用するため追加不要
   # quickshell
   # qt6.qtmultimedia
