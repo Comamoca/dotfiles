@@ -115,10 +115,13 @@
 
 ;; Completing read functions
 (leaf consult
-  :after evil
-  :bind ((:evil-normal-state-map
-          ("C-l" . consult-line)
-	  ("SPC i" . consult-buffer)))
+  :require t
+  :init
+  ;; consult-buffer 等は consult ロード済みを前提とするため、
+  ;; evil のキーマップが存在してからバインドする（:after evil 相当）
+  (with-eval-after-load 'evil
+    (define-key evil-normal-state-map (kbd "C-l") #'consult-line)
+    (define-key evil-normal-state-map (kbd "SPC i") #'consult-buffer))
   :bind* (("C-." . embark-act)))
 
 (leaf consult-dir)
@@ -950,6 +953,17 @@ Forces re-root even if treemacs was already open on a different project."
   :config
   (treemacs-project-follow-mode 1)
   (evil-define-key 'normal 'treemacs-mode-map (kbd "SPC f") #'treemacs))
+
+;; projectile でのプロジェクト切替後に treemacs を追従させる
+;; treemacs-project-follow-mode は default-directory の変更に反応するが、
+;; projectile-persp-switch-project 経由の切替では確実に発火しないため、
+;; projectile の公式フックを使って強制的に再ルートする。
+(add-hook 'projectile-after-switch-project-hook
+          (defun my/treemacs-follow-project ()
+            "After switching project via Projectile, re-root treemacs to the new project."
+            (when (and (fboundp 'treemacs-add-and-display-current-project-exclusively)
+                       (projectile-project-root))
+              (treemacs-add-and-display-current-project-exclusively))))
 
 (leaf treemacs-evil
   :after treemacs

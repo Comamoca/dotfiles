@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# =============================================================================
+# flake-lock-save
+#
+# Commit current flake.lock (and flake.nix if changed) so you can safely run
+# `nix flake lock --update-input <input>` and easily revert with `git revert HEAD`.
+#
+# Usage:
+#   flake-lock-save [MESSAGE]
+#
+# If MESSAGE is omitted, a default message is used.
+# =============================================================================
+
+set -euo pipefail
+
+cd "$(git rev-parse --show-toplevel)"
+
+FLAKE_FILES=(flake.lock flake.nix)
+HAS_CHANGES=0
+FILES_TO_ADD=()
+
+for f in "${FLAKE_FILES[@]}"; do
+    if ! git diff --quiet -- "$f" 2>/dev/null; then
+        HAS_CHANGES=1
+        FILES_TO_ADD+=("$f")
+    fi
+done
+
+if [ "$HAS_CHANGES" -eq 0 ]; then
+    echo "✓ flake.lock (and flake.nix) have no uncommitted changes — nothing to save."
+    exit 0
+fi
+
+# Check for other dirty files (outside flake.lock / flake.nix) that would be
+# pulled into the commit if we let `git commit` run without care.
+DIRTY_COUNT=$(git status --porcelain | grep -c . || true)
+OUR_COUNT=${#FILES_TO_ADD[@]}
+
+if [ "$DIRTY_COUNT" -gt "$OUR_COUNT" ]; then
+    echo "⚠ You have other uncommitted changes besides flake files."
+    echo "  Only flake files will be staged and committed. Other changes stay untouched."
+    echo ""
+fi
+
+# Build commit message
+DEFAULT_MSG="chore: save flake.lock before update"
+MSG="${1:-$DEFAULT_MSG}"
+
+# Stage and commit
+git add "${FILES_TO_ADD[@]}"
+git commit -m "$MSG"
+
+COMMIT_HASH=$(git rev-parse --short HEAD)
+echo ""
+echo "✓ Saved flake.lock in commit ${COMMIT_HASH}"
+echo "  To revert after running 'nix flake lock --update-input ...':"
+echo "    git revert --no-edit ${COMMIT_HASH}"
+echo "  Or to discard the update entirely:"
+echo "    git reset --hard HEAD~1"

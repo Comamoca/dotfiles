@@ -2,10 +2,10 @@
 
 set -euo pipefail
 
-# 依存コマンドの存在確認
+# ── Dependency check ─────────────────────────────────
 check_dependencies() {
     local missing=()
-    for cmd in ghq fzf tmux; do
+    for cmd in ghq fzf herdr jq; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
             missing+=("$cmd")
         fi
@@ -17,7 +17,89 @@ check_dependencies() {
     fi
 }
 
-# リポジトリをfzfで選択
+# ── Ensure herdr server is running ─────────────────
+ensure_herdr_server() {
+    if herdr status server >/dev/null 2>&1; then
+        return 0
+    fi
+
+    # Start headless server in background
+    herdr server >/dev/null 2>&1 &
+    local pid=$!
+
+    # Wait up to 5s for server to become ready
+    for i in 1 2 3 4 5; do
+        sleep 0.5
+        if herdr status server >/dev/null 2>&1; then
+            return 0
+        fi
+    done
+
+    echo "Error: herdr server failed to start (pid=$pid)" >&2
+    kill "$pid" 2>/dev/null || true
+    exit 1
+}
+
+# ── List and select existing herdr workspace ────────
+select_workspace() {
+    local workspaces
+    workspaces=$(herdr workspace list | jq -r '.result.workspaces[] | [.workspace_id, .label, (.tab_count | tostring)] | @tsv' 2>/dev/null) || return 1
+
+    if [ -z "$workspaces" ]; then
+        return 1
+    fi
+
+    # Build picker: existing workspaces + special "create new" entry.
+    # Tab-separated: workspace_id \t label \t info
+    # Label is displayed in fzf; workspace_id is extracted after selection.
+    local header
+    header=$'ID\tLABEL\tTABS'
+    local create_entry
+    create_entry=$'__CREATE__\t>> Create new workspace from ghq repo...\t'
+
+    local choice
+    choice=$(
+        {
+            echo "$create_entry"
+            echo "$workspaces"
+        } | fzf \
+            --with-nth=2,3 \
+            --preview 'herdr tab list --workspace {1} 2>/dev/null | jq -r ".result.tabs[] | \"  \(.tab_id): \(.label // \"untitled\")\""' \
+            --preview-window=right:40% \
+            --height=100% \
+            --border \
+            --header='Select workspace (or create new):' \
+            --prompt='Switch workspace: '
+    ) || true
+
+    if [ -z "$choice" ]; then
+        exit 0
+    fi
+
+    # Extract workspace_id (first tab-separated field)
+    local workspace_id
+    workspace_id=$(echo "$choice" | cut -d$'\t' -f1)
+
+    if [ "$workspace_id" = "__CREATE__" ]; then
+        # Fall through to ghq-based creation
+        return 1
+    fi
+
+    # Focus the selected workspace
+    herdr workspace focus "$workspace_id" >/dev/null 2>&1 || true
+
+    echo "Switched to workspace: $(echo "$choice" | cut -d$'\t' -f2)"
+
+    # If inside tmux, just switch and stay
+    if [ -n "${TMUX:-}" ]; then
+        return 0
+    fi
+
+    # Attach to herdr (replaces current shell process)
+    exec herdr
+}
+
+# ── Repository selection ────────────────────────────
 select_repository() {
     local ghq_root
     ghq_root=$(ghq root 2>/dev/null)
@@ -27,90 +109,60 @@ select_repository() {
         exit 1
     fi
 
-    local selected
-    selected=$(ghq list | fzf \
+    ghq list | fzf \
         --preview "bat --color=always --style=header,grid --line-range :80 ${ghq_root}/{}/README.* 2>/dev/null || echo 'No README found'" \
         --preview-window=right:60% \
         --height=100% \
         --border \
-        --prompt='Select repository: ')
-
-    echo "$selected"
+        --prompt='Select repository: '
 }
 
-# セッション名を生成（サニタイズ込み）
-generate_session_name() {
-    local repo_path="$1"
-    # ghqパス全体 (github.com/owner/repo) からユニークなセッション名を生成
-    # 例: github.com/Comamoca/hoge → github.com_Comamoca_hoge
-    # 例: github.com/owner/hoge     → github.com_owner_hoge
-    # これでfork元とfork先が区別できる
-    local session_name
-    session_name=$(echo "$repo_path" | tr './' '__')
-    echo "$session_name"
-}
-
-# セッションの存在確認
-session_exists() {
-    local session_name="$1"
-    tmux has-session -t "$session_name" 2>/dev/null
-}
-
-# セッションを作成
-create_session() {
-    local session_name="$1"
-    local project_path="$2"
-
-    if [ ! -d "$project_path" ]; then
-        echo "Error: Project directory not found: $project_path" >&2
-        exit 1
-    fi
-
-    tmux new-session -d -s "$session_name" -c "$project_path"
-}
-
-# セッションにアタッチまたはスイッチ
-attach_session() {
-    local session_name="$1"
-
-    if [ -n "${TMUX:-}" ]; then
-        # tmux内から実行: セッションを切り替え
-        tmux switch-client -t "$session_name"
-    else
-        # tmux外から実行: セッションにアタッチ
-        tmux attach-session -t "$session_name"
-    fi
-}
-
-main() {
-    # 依存チェック
-    check_dependencies
-
-    # リポジトリ選択
+# ── Create workspace from ghq repo ─────────────────
+create_from_ghq() {
     local selected_repo
     selected_repo=$(select_repository)
 
-    # キャンセルされた場合は終了
     if [ -z "$selected_repo" ]; then
         exit 0
     fi
 
-    # プロジェクトパス取得
-    local ghq_root
+    local ghq_root project_path
     ghq_root=$(ghq root)
-    local project_path="${ghq_root}/${selected_repo}"
+    project_path="${ghq_root}/${selected_repo}"
 
-    # セッション名生成
-    local session_name
-    session_name=$(generate_session_name "$selected_repo")
+    # Derive workspace name from last two path components
+    local workspace_name
+    workspace_name=$(echo "$selected_repo" | grep -oP '[^/]+/[^/]+$' || basename "$selected_repo")
 
-    # セッション作成（存在しない場合のみ）
-    if ! session_exists "$session_name"; then
-        create_session "$session_name" "$project_path"
+    # Create workspace (idempotent: if exists, --focus still works)
+    herdr workspace create \
+        --cwd "$project_path" \
+        --label "$workspace_name" \
+        --focus \
+        2>/dev/null || true
+
+    echo "Workspace '$workspace_name' created."
+
+    # If inside tmux, just create the workspace and stay
+    if [ -n "${TMUX:-}" ]; then
+        echo "Run 'herdr' to attach."
+        return 0
     fi
 
-    # セッションにアタッチ
-    attach_session "$session_name"
+    # Attach to herdr (replaces current shell process)
+    exec herdr
+}
+
+# ── Main ────────────────────────────────────────────
+main() {
+    check_dependencies
+    ensure_herdr_server
+
+    # Phase 1: try switching to existing workspace
+    select_workspace && return 0
+
+    # Phase 2: no selection → create new from ghq
+    create_from_ghq
 }
 
 main "$@"

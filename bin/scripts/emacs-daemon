@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# 名前付き Emacs daemon 起動スクリプト
+#
+# Usage:
+#   emacs-daemon [name]
+#
+#   name: daemon 名 (default: main)
+#   ソケット: /run/user/1000/emacs/server_{name}
+#   init directory: /tmp/emacsd-{name}
+#
+# このスクリプトは Nix の home.nix から呼ばれることを前提としている。
+# emacs バイナリのパスは Nix 側で置換すること。
+set -euo pipefail
+
+NAME="${1:-main}"
+INIT_DIR="/tmp/emacsd-${NAME}"
+
+mkdir -p "$INIT_DIR"
+exec @emacs@/bin/emacs --fg-daemon="$NAME" \
+    --init-directory="$INIT_DIR" \
+    --eval "(load \"$HOME/.emacs.d/init-loader.el\")"

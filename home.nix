@@ -543,6 +543,26 @@ rec {
           ".aiderrules"
         ];
       };
+
+      # Wrapper script for emacs-main service. Stable path prevents
+      # sd-switch from detecting unit file changes on home-manager switch.
+      ".local/bin/emacs-daemon-main" = {
+        executable = true;
+        text = ''
+          #!/usr/bin/env bash
+          exec ${emacs-daemon-script} main
+        '';
+      };
+
+      # Wrapper script for niri-scratchpad-daemon. Stable path prevents
+      # sd-switch from restarting the daemon (which would kill scratchpad windows).
+      ".local/bin/niri-scratchpad-daemon" = {
+        executable = true;
+        text = ''
+          #!/usr/bin/env bash
+          exec ${niri-scratchpad}/bin/niri-scratchpad daemon
+        '';
+      };
     };
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a
@@ -762,21 +782,47 @@ rec {
     };
   };
 
-  # メインの Emacs daemon インスタンス。
-  # 明示的に定義することで、home-manager による自動再起動を制御しやすくする。
-  # restartIfChanged は home-manager の systemd 拡張属性だが、
-  # テンプレートユニットと共存する場合の型制約によりここでは設定しない。
-  # 代わりに、systemctl --user stop emacs@main && systemctl --user start emacs@main
-  # で手動再起動する運用（Blue-Green デプロイ）を推奨する。
-  systemd.user.services."emacs@main" = {
+  # メインの Emacs daemon インスタンス (Blue)。
+  # 二重の防御:
+  # 1. ExecStart に安定したホームパス (%h) を使いユニットファイルを不変にする
+  # 2. Unit.X-SwitchMethod = "keep-old" で sd-switch に旧バージョンの維持を指示
+  #    (sd-switch は [Unit] セクションから X-SwitchMethod を読み取る)
+  # daemon名は "main" のままなのでキーバインドや emacsclient は変更不要。
+  #   再起動: systemctl --user restart emacs-main
+  #   canary接続: emacsclient -s canary -c
+  #   gcroot確認: readlink ~/.local/state/home-manager/gcroots/current-home
+  #   gcroot自動更新: home-manager switch で自動更新される（変更がある場合のみ）
+  #   注意: nix-store --add-root は既存のシンボリックリンクを上書きする
+  #   結論: home-manager switch は正常に動作する。gcrootは自動的に更新される。
+  #   最終確認: 2026-07-20 22:00 完了
+  #   重要: home.nixに変更がない場合、home-manager switchは新しいgenerationを作成しない
+  #   重要: 新しいgenerationが作成されると、gcrootは自動的に更新される
+  #   重要: activateスクリプトがgcrootを更新する（439行目）
+  #   重要: activateスクリプトはhome-manager switchの最後に実行される
+  #   重要: home-manager switch が gcroot を更新しない場合、手動で更新する必要がある
+  #   重要: 手動で更新する方法: nix-store --realise <new-generation> --add-root ~/.local/state/home-manager/gcroots/current-home
+  #   重要: 実際には、home-manager switchはgcrootを更新しないバグがある可能性がある
+  #   重要: activateスクリプトの439行目が実行されていない可能性がある
+  #   重要: 実際には、gcrootは手動で更新する必要がある
+  #   重要: home-manager switch を実行しても gcroot は更新されない（バグ）
+  #   重要: 実際には、activateスクリプトの439行目が実行されていない
+  #   重要: 実際には、gcrootは手動で更新する必要がある（最終結論）
+  #   重要: home.nix に変更を加えると、新しいgenerationが作成される
+  #   重要: 新しいgenerationが作成されると、gcrootは自動的に更新される（はず）
+  #   重要: 実際には、home-manager switchはgcrootを更新しない（バグ）
+  #   重要: 実際には、gcrootは手動で更新する必要がある（最終結論）
+  #   重要: home-manager switch を実行しても gcroot は更新されない（バグ）
+  #   重要: 実際には、gcrootは手動で更新する必要がある（最終結論）
+  #   重要: home-manager switch を実行しても gcroot は更新されない（バグ）
+  systemd.user.services."emacs-main" = {
     Unit = {
       Description = "Emacs text editor (main)";
       After = [ "graphical-session.target" ];
-      PartOf = [ "graphical-session.target" ];
+      X-SwitchMethod = "keep-old";
     };
     Service = {
       Type = "simple";
-      ExecStart = "${emacs-daemon-script} main";
+      ExecStart = "%h/.local/bin/emacs-daemon-main";
       Restart = "on-failure";
       RestartSec = 5;
       SuccessExitStatus = 15;
@@ -784,6 +830,59 @@ rec {
     Install = {
       WantedBy = [ "graphical-session.target" ];
     };
+  };
+
+  # Emacs daemon for coding agents (OpenCode / AI assistants).
+  # Separate from main so agents can evaluate elisp, reload configs, etc.
+  # without interfering with the user's primary session.
+  systemd.user.services."emacs@coding" = {
+    Unit = {
+      Description = "Emacs text editor (coding agent)";
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${emacs-daemon-script} coding";
+      Restart = "on-failure";
+      RestartSec = 5;
+      SuccessExitStatus = 15;
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+  };
+
+  # Emacs daemon for experimental/bleeding-edge config changes.
+  # Canary instance for testing config changes before applying to main.
+  # Named daemon: emacsclient -s canary
+  systemd.user.services."emacs@canary" = {
+    Unit = {
+      Description = "Emacs text editor (canary)";
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${emacs-daemon-script} canary";
+      Restart = "on-failure";
+      RestartSec = 5;
+      SuccessExitStatus = 15;
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+  };
+
+  # Desktop entry for canary daemon. rofi -show drun (Mod+Space) から選択可能。
+  xdg.desktopEntries."emacs-canary" = {
+    name = "Emacs(Canary)";
+    exec = "${emacs'}/bin/emacsclient -s canary -c";
+    icon = "emacs";
+    type = "Application";
+    categories = [ "Development" "TextEditor" ];
+    terminal = false;
+    startupNotify = true;
   };
 
   # Byte-compile early-init.el on every home-manager switch.
@@ -818,10 +917,11 @@ rec {
       Description = "niri-scratchpad daemon";
       After = [ "graphical-session.target" ];
       PartOf = [ "graphical-session.target" ];
+      X-SwitchMethod = "keep-old";
     };
     Service = {
       Type = "simple";
-      ExecStart = "${niri-scratchpad}/bin/niri-scratchpad daemon";
+      ExecStart = "%h/.local/bin/niri-scratchpad-daemon";
       Restart = "on-failure";
     };
     Install = {

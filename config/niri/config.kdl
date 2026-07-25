@@ -224,7 +224,7 @@ layout {
 // See the binds section below for more spawn examples.
 // spawn-at-startup "alacritty" "-e" "fish"
 
-// Emacs daemon is now managed by systemd (emacs@main.service).
+// Emacs daemon is now managed by systemd (emacs-main.service).
 // The named daemon socket is at /run/user/1000/emacs/main.
 // Use emacsclient -s main to connect.
 // spawn-at-startup "emacs" "--daemon"
@@ -241,6 +241,8 @@ spawn-at-startup "swaync"
 spawn-at-startup "wlsunset" "-t" "5500"
 // xwayland-satellite — DiscordなどのElectronアプリがX11を必要とするため
 spawn-at-startup "xwayland-satellite"
+// ディスプレイレイアウト適用 (wlr-randr) — wdisplaysで設定した配置を永続化
+spawn-at-startup "bash" "-c" "sleep 1 && ~/.bin/scripts/niri-display-layout.sh"
 
 // ワークスペース自動レイアウト: モニター構成に応じて名前付きワークスペースを配置
 spawn-at-startup "bash" "-c" "sleep 2 && ~/.bin/scripts/niri-workspace-layout.sh"

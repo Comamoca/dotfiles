@@ -61,4 +61,5 @@ with pkgs;
   wlr-randr
   deploy-rs.deploy-rs
   nh
+  ast-grep
 ]

@@ -47,7 +47,10 @@
     };
     xremap.url = "github:xremap/nix-flake";
     sops-nix.url = "github:Mic92/sops-nix";
-    ghostty.url = "github:ghostty-org/ghostty";
+    ghostty = {
+      url = "github:ghostty-org/ghostty";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     lem.url = "github:lem-project/lem";
 
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
@@ -69,6 +72,16 @@
       flake = false;
     };
     worktrunk.url = "github:max-sixty/worktrunk";
+
+    herdr = {
+      url = "github:ogulcancelik/herdr";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hunk = {
+      url = "github:modem-dev/hunk";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   nixConfig = {
@@ -109,7 +122,7 @@
         inputs.mozilla-overlay.overlays.firefox
         inputs.niri.overlays.niri
         inputs.gleam-overlay.overlays.default
-        inputs.llm-agents.overlays.default
+        inputs.llm-agents.overlays.shared-nixpkgs
         inputs.go-overlay.overlays.default
         # inputs.quickshell.overlays.default  # dmsバンドル版と競合するため無効化
         # openldap のフラッキーなテストをスキップ (bottles の依存)
@@ -210,9 +223,11 @@
                 inputs.deploy-rs.overlays.default
                 (final: prev: {
                   # nak = inputs.nak.packages.x86_64-linux.default;
-                  ghostty = inputs.ghostty.packages.x86_64-linux.default;
+                  ghostty = inputs.ghostty.packages.${system}.default;
                   xremap = inputs.xremap.packages.${pkgs.stdenv.hostPlatform.system}.default;
-                  worktrunk = inputs.worktrunk.packages.x86_64-linux.default;
+                  worktrunk = inputs.worktrunk.packages.${system}.default;
+                  herdr = inputs.herdr.packages.${system}.default;
+                  hunk = inputs.hunk.packages.${system}.default;
                   shinycolors-jacket = import ./pkgs/shinycolors-jacket { pkgs = final; };
                 })
               ];

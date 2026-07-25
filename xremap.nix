@@ -10,8 +10,6 @@ rec {
             alone = "Enter";
           };
           KatakanaHiragana = "Ctrl_R";
-          Alt_L = "Super_L";
-          Super_L = "Alt_L";
         };
       }
     ];
