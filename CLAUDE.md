@@ -8,6 +8,11 @@ Kiro-style Spec Driven Development implementation on AI-DLC (AI Development Life
 - Steering: `.kiro/steering/`
 - Specs: `.kiro/specs/`
 
+### Current Environment
+- **Desktop**: [niri](https://github.com/YaLTeR/niri) (Wayland compositor)
+- The repository contains legacy Hyprland config files (`config/hypr/`, `hyprland.nix`, `hyprlock.nix`) for reference, but the active environment is niri.
+- Do not assume Hyprland is the current desktop environment based on the presence of these files.
+
 ### Steering vs Specification
 
 **Steering** (`.kiro/steering/`) - Guide AI with project-wide rules and context
