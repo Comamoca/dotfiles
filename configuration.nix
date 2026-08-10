@@ -365,7 +365,7 @@ in
       "kvm"
       "adbusers"
       "plugdev"
-      "inputs"
+      "input"
       "video"  # Fix: Add video group for DRM device access (niri display hotplug)
     ];
     packages = with pkgs; [
