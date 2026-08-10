@@ -1,0 +1,16 @@
+[
+  {
+    "input_combination": [
+      { "type": 1, "code": 331 }
+    ],
+    "target_uinput": "mouse",
+    "output_symbol": "BTN_RIGHT"
+  },
+  {
+    "input_combination": [
+      { "type": 1, "code": 332 }
+    ],
+    "target_uinput": "mouse",
+    "output_symbol": "BTN_MIDDLE"
+  }
+]
