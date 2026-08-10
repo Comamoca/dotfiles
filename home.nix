@@ -492,6 +492,9 @@ rec {
 
       ".config/xremap/config.yaml".source = (symlink xremap-config.xremap-config-yaml);
 
+      ".config/input-remapper-2/presets/_wacom-mouse-template/wacom-mouse.json".source =
+        ./config/input-remapper/wacom-mouse.json;
+
       ".czrc".source = (symlink /${dotfiles}/czrc);
       ".nirc".source = (symlink /${dotfiles}/nirc);
       ".zshrc".source = (symlink /${dotfiles}/zshrc);
@@ -911,6 +914,164 @@ rec {
     find ~/.emacs.d/tree-sitter -maxdepth 1 -type l ! -xtype l -delete 2>/dev/null || true
     # Symlink all grammars from Nix
     ln -sf ${emacs-ts-grammars}/* ~/.emacs.d/tree-sitter/
+  '';
+
+  home.activation.setupWacomInputRemapper = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    ${pkgs.python3}/bin/python3 - "${home.homeDirectory}" "${pkgs.input-remapper}/bin/input-remapper-control" <<'PY'
+
+import json
+import os
+import subprocess
+import sys
+import tempfile
+import unicodedata
+
+
+def atomic_write(path, content):
+    directory = os.path.dirname(path)
+    temporary_path = None
+    try:
+        file_descriptor, temporary_path = tempfile.mkstemp(
+            dir=directory, prefix=".input-remapper-", suffix=".tmp"
+        )
+        with os.fdopen(file_descriptor, "w", encoding="utf-8") as output:
+            output.write(content)
+            output.flush()
+            os.fsync(output.fileno())
+        os.replace(temporary_path, path)
+        temporary_path = None
+        return True
+    except OSError as error:
+        print(f"Warning: failed to write {path}: {error}")
+        return False
+    finally:
+        if temporary_path is not None:
+            try:
+                os.unlink(temporary_path)
+            except OSError:
+                pass
+
+
+def write_if_changed(path, content):
+    try:
+        with open(path, encoding="utf-8") as existing:
+            if existing.read() == content:
+                return True
+    except FileNotFoundError:
+        pass
+    except (OSError, UnicodeError) as error:
+        print(f"Warning: failed to read {path}: {error}")
+        return False
+
+    return atomic_write(path, content)
+
+
+def valid_device_name(device_name):
+    return bool(device_name) and not (
+        "/" in device_name
+        or "\\" in device_name
+        or device_name in {".", ".."}
+        or any(unicodedata.category(character) == "Cc" for character in device_name)
+    )
+
+
+def main():
+    home_dir = sys.argv[1]
+    input_remapper_control = sys.argv[2]
+    config_dir = os.path.join(home_dir, ".config", "input-remapper-2")
+    preset_src = os.path.join(
+        config_dir, "presets", "_wacom-mouse-template", "wacom-mouse.json"
+    )
+
+    try:
+        result = subprocess.run(
+            [input_remapper_control, "--list-devices"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        devices = [
+            line.strip()
+            for line in result.stdout.splitlines()
+            if "wacom" in line.lower()
+        ]
+    except Exception as error:
+        print(f"Failed to list input devices: {error}")
+        return 0
+
+    if not devices:
+        print("No Wacom device found for input-remapper preset.")
+        return 0
+
+    device_name = devices[0]
+    if not valid_device_name(device_name):
+        print(f"Invalid Wacom device name: {device_name}")
+        return 0
+
+    print(f"Setting up input-remapper preset for: {device_name}")
+
+    preset_dir = os.path.join(config_dir, "presets", device_name)
+    preset_base = os.path.realpath(os.path.join(config_dir, "presets"))
+    preset_dir_real = os.path.realpath(preset_dir)
+    if not preset_dir_real.startswith(preset_base + os.sep):
+        print(f"Invalid preset directory: {preset_dir}")
+        return 0
+
+    preset_dst = os.path.join(preset_dir, "wacom-mouse.json")
+    try:
+        os.makedirs(preset_dir, exist_ok=True)
+        with open(preset_src, encoding="utf-8") as source:
+            preset_json = json.dumps(json.load(source), indent=4) + "\n"
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        print(f"Warning: failed to read preset {preset_src}: {error}")
+        return 0
+
+    if not write_if_changed(preset_dst, preset_json):
+        return 0
+
+    config_path = os.path.join(config_dir, "config.json")
+    config_changed = False
+    try:
+        with open(config_path, encoding="utf-8") as source:
+            config = json.load(source)
+    except FileNotFoundError:
+        config = {}
+        config_changed = True
+    except json.JSONDecodeError:
+        print(f"Warning: {config_path} is invalid JSON, creating new config")
+        config = {}
+        config_changed = True
+    except (OSError, UnicodeError) as error:
+        print(f"Warning: failed to read {config_path}: {error}")
+        return 0
+
+    if not isinstance(config, dict):
+        print(f"Warning: {config_path} is not a JSON object, creating new config")
+        config = {}
+        config_changed = True
+
+    if "version" not in config:
+        config["version"] = "2.2.0"
+        config_changed = True
+    if not isinstance(config.get("autoload"), dict):
+        config["autoload"] = {}
+        config_changed = True
+    if config["autoload"].get(device_name) != "wacom-mouse":
+        config["autoload"][device_name] = "wacom-mouse"
+        config_changed = True
+
+    if config_changed:
+        config_json = json.dumps(config, indent=4) + "\n"
+        if not atomic_write(config_path, config_json):
+            print(f"Failed to update {config_path}")
+            return 0
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+PY
   '';
 
   systemd.user.services.niri-scratchpad-daemon = {
