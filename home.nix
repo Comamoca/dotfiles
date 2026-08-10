@@ -229,6 +229,7 @@ rec {
       nak
       vim-startuptime
       spotify
+      input-remapper # Wacom ペンボタンをマウス化
 
       # NOTE: 2025/06/22 hashまわりで壊れたので一旦無効化
       # (import ./pkgs/lspx { inherit pkgs; })
