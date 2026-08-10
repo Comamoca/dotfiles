@@ -181,6 +181,10 @@ in
 
   services.logind.settings.Login.HandlePowerKey = "ignore";
 
+  services.input-remapper = {
+    enable = true;
+  };
+
   # systemd sleep configuration for suspend/hibernate
   systemd.sleep.settings.Sleep = {
     SuspendState = "mem";
