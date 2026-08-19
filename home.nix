@@ -783,54 +783,16 @@ rec {
   };
 
   # メインの Emacs daemon インスタンス (Blue)。
-  # 二重の防御:
-  # 1. ExecStart に安定したホームパス (%h) を使いユニットファイルを不変にする
-  # 2. Unit.X-SwitchMethod = "keep-old" で sd-switch に旧バージョンの維持を指示
-  #    (sd-switch は [Unit] セクションから X-SwitchMethod を読み取る)
-  # daemon名は "main" のままなのでキーバインドや emacsclient は変更不要。
+  # ソケット名は "main"。ユニット名は emacs-main.service (手動配置、home-manager 管理外)。
+  # sd-switch は「emacs@」テンプレートユニットの内容が変わると、現在起動中の
+  # emacs@* という名前にマッチする全インスタンスをまとめて再起動する。
+  # 以前 emacs@main という名前で動かしていたところ、nh home switch のたびに
+  # emacs@coding / emacs@canary と一緒に main まで巻き込まれて再起動していた。
+  # emacs@ プレフィックスを共有しない emacs-main.service という名前に変更し、
+  # home-manager 管理下にも置かないことで、switch 時の巻き込み再起動を回避している。
   #   再起動: systemctl --user restart emacs-main
   #   canary接続: emacsclient -s canary -c
   #   gcroot確認: readlink ~/.local/state/home-manager/gcroots/current-home
-  #   gcroot自動更新: home-manager switch で自動更新される（変更がある場合のみ）
-  #   注意: nix-store --add-root は既存のシンボリックリンクを上書きする
-  #   結論: home-manager switch は正常に動作する。gcrootは自動的に更新される。
-  #   最終確認: 2026-07-20 22:00 完了
-  #   重要: home.nixに変更がない場合、home-manager switchは新しいgenerationを作成しない
-  #   重要: 新しいgenerationが作成されると、gcrootは自動的に更新される
-  #   重要: activateスクリプトがgcrootを更新する（439行目）
-  #   重要: activateスクリプトはhome-manager switchの最後に実行される
-  #   重要: home-manager switch が gcroot を更新しない場合、手動で更新する必要がある
-  #   重要: 手動で更新する方法: nix-store --realise <new-generation> --add-root ~/.local/state/home-manager/gcroots/current-home
-  #   重要: 実際には、home-manager switchはgcrootを更新しないバグがある可能性がある
-  #   重要: activateスクリプトの439行目が実行されていない可能性がある
-  #   重要: 実際には、gcrootは手動で更新する必要がある
-  #   重要: home-manager switch を実行しても gcroot は更新されない（バグ）
-  #   重要: 実際には、activateスクリプトの439行目が実行されていない
-  #   重要: 実際には、gcrootは手動で更新する必要がある（最終結論）
-  #   重要: home.nix に変更を加えると、新しいgenerationが作成される
-  #   重要: 新しいgenerationが作成されると、gcrootは自動的に更新される（はず）
-  #   重要: 実際には、home-manager switchはgcrootを更新しない（バグ）
-  #   重要: 実際には、gcrootは手動で更新する必要がある（最終結論）
-  #   重要: home-manager switch を実行しても gcroot は更新されない（バグ）
-  #   重要: 実際には、gcrootは手動で更新する必要がある（最終結論）
-  #   重要: home-manager switch を実行しても gcroot は更新されない（バグ）
-  systemd.user.services."emacs-main" = {
-    Unit = {
-      Description = "Emacs text editor (main)";
-      After = [ "graphical-session.target" ];
-      X-SwitchMethod = "keep-old";
-    };
-    Service = {
-      Type = "simple";
-      ExecStart = "%h/.local/bin/emacs-daemon-main";
-      Restart = "on-failure";
-      RestartSec = 5;
-      SuccessExitStatus = 15;
-    };
-    Install = {
-      WantedBy = [ "graphical-session.target" ];
-    };
-  };
 
   # Emacs daemon for coding agents (OpenCode / AI assistants).
   # Separate from main so agents can evaluate elisp, reload configs, etc.
