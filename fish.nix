@@ -102,6 +102,7 @@
     # fish_add_path $HOME/go/bin
     # fish_add_path $HOME/local/
 
+    alias claude-code-acp="CLAUDE_ACP_SKIP_PERMISSIONS=true claude-code-acp"
     alias nixos-rebuild="/run/current-system/sw/bin/nixos-rebuild"
     alias magit="emacsclient -s main -c --eval '(magit)'"
     alias emain="emacsclient -s main"
@@ -176,9 +177,11 @@
     # export PYTHONPATH=/home/coma/bundler/bundler/lib
     export GOPATH=$HOME/go
 
+    abbr --add cc claude
     abbr --add e $EDITOR
     abbr --add a emacsclient -s main -c
     abbr --add oc opencode
+    abbr --add cmd "cmd --yolo"
 
     set -x ELIXIR_ERL_OPTIONS "+fnu"
     set -x SSH_ASKPASS ${pkgs.kdePackages.ksshaskpass}
@@ -264,9 +267,16 @@
 
     # opam configuration
 
-    function claude; set -x CLAUDE_AUTO_RETRY_ACTIVE 1; node "/home/coma/.bun/install/global/node_modules/claude-auto-retry/src/launcher.js" $argv; set -e CLAUDE_AUTO_RETRY_ACTIVE; end
-
     # nh: nh home switch に --impure -b backup を自動付与
+    # aider: OpenCode Go (OpenAI API compatible) API keys from sops
+    # loaded into env vars (AIDER_OPENAI_API_KEY / AIDER_OPENAI_API_BASE)
+    if test -f /run/user/1000/aider-opencode-go.env
+        for line in (cat /run/user/1000/aider-opencode-go.env | string match -r '^[A-Z_]+=.*')
+            set -l kv (string split -m 1 '=' -- $line)
+            set -gx $kv[1] $kv[2]
+        end
+    end
+
     set -gx NH_HOME_FLAKE (ghq root)/github.com/Comamoca/dotfiles
     function nh --wraps nh
       switch "$argv[1] $argv[2]"
