@@ -11,6 +11,7 @@ let
   homeDirectory = "/home/${username}";
   system = "x86_64-linux";
   nurpkgs = inputs.nur-packages.legacyPackages.${system};
+  dotfiles = "/home/${username}/.ghq/github.com/Comamoca/dotfiles";
 
   generated = import ./_sources/generated.nix;
   sources = generated {
@@ -24,6 +25,18 @@ let
 
   xremap-config = import ./xremap.nix { inherit pkgs; };
 
+  # treefmt 本体と treefmt.nix で有効化している formatter 群。
+  # コミット済み treefmt.toml (flake.nix の packages.treefmt-toml で生成)
+  # がコマンド名で参照するので、PATH に揃えておく。
+  # deno は treefmt.nix と同じく 2.5.4 に固定 (オーバーレイ非適用時は素のパッケージ)。
+  treefmt-packages = [
+    pkgs.treefmt
+    pkgs.nixfmt
+    pkgs.taplo
+    pkgs.stylua
+    (pkgs.deno."2.5.4" or pkgs.deno)
+  ];
+
   programming-english = pkgs.fetchFromGitHub {
     owner = "MatsumotoDesuyo";
     repo = "programming-english";
@@ -34,10 +47,9 @@ let
   batch =
     pkgs.writers.writePython3Bin "convert_and_resize"
       {
-        libraries = with pkgs; [
-          python313FreeThreading
-          python313Packages.cairosvg
-          python313Packages.pillow
+        libraries = with pkgs.python3Packages; [
+          cairosvg
+          pillow
         ];
       }
       ''
@@ -93,27 +105,35 @@ let
   };
 
   emacs' = (pkgs.emacsPackagesFor pkgs.emacs-git-pgtk).emacsWithPackages (
-    epkgs: let
+    epkgs:
+    let
       # projectile 20260627+ ships projectile-consult.el which hard-requires
       # consult at compile time, but the MELPA recipe only declares (emacs compat).
       # Override at the scope level so all dependents benefit.
-      epkgs' = epkgs.overrideScope (eself: esuper: {
-        projectile = esuper.projectile.overrideAttrs (old: {
-          nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ eself.consult ];
-          propagatedBuildInputs = (old.propagatedBuildInputs or []) ++ [ eself.consult ];
-          # projectile-consult.el does (require 'consult) at top-level, which
-          # fails during elpa2nix byte-compilation because the elpa directory
-          # isn't populated yet. Patch it to handle the missing dependency
-          # gracefully — consult is still picked up at runtime via
-          # propagatedBuildInputs.
-          postPatch = (old.postPatch or "") + ''
-            if [ -f "projectile-consult.el" ]; then
-              sed -i "s/(require 'consult)/(condition-case nil (require 'consult) (error nil))/" projectile-consult.el
-            fi
-          '';
-        });
-      });
-    in (import ./emacs.nix { inherit pkgs; epkgs = epkgs'; inherit nurpkgs; }).packages
+      epkgs' = epkgs.overrideScope (
+        eself: esuper: {
+          projectile = esuper.projectile.overrideAttrs (old: {
+            nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ eself.consult ];
+            propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ [ eself.consult ];
+            # projectile-consult.el does (require 'consult) at top-level, which
+            # fails during elpa2nix byte-compilation because the elpa directory
+            # isn't populated yet. Patch it to handle the missing dependency
+            # gracefully — consult is still picked up at runtime via
+            # propagatedBuildInputs.
+            postPatch = (old.postPatch or "") + ''
+              if [ -f "projectile-consult.el" ]; then
+                sed -i "s/(require 'consult)/(condition-case nil (require 'consult) (error nil))/" projectile-consult.el
+              fi
+            '';
+          });
+        }
+      );
+    in
+    (import ./emacs.nix {
+      inherit pkgs;
+      epkgs = epkgs';
+      inherit nurpkgs;
+    }).packages
   );
 
   # 名前付き Emacs daemon 用の起動スクリプト
@@ -150,14 +170,22 @@ let
   # Some grammars are lists of derivations, handle both cases.
   emacs-ts-grammars = pkgs.runCommand "emacs-tree-sitter-grammars" { } (
     let
-      grammars = lib.filterAttrs (n: v: n != "recurseForDerivations") pkgs.tree-sitter-grammars;
-      mkLink = name: grammar:
+      # nixpkgs の tree-sitter-grammars は scope 化されており、
+      # callPackage / packages / allGrammars / derivations 等の非 grammar 属性が混在する。
+      # `tree-sitter-` プレフィックスを持つ属性だけが grammar derivation。
+      grammars = lib.filterAttrs (n: v: lib.hasPrefix "tree-sitter-" n) pkgs.tree-sitter-grammars;
+      mkLink =
+        name: grammar:
+        let
+          shortName = lib.removePrefix "tree-sitter-" name;
+        in
         if builtins.isList grammar then
-          lib.imap0 (i: g: "ln -s ${g}/parser \"$out/libtree-sitter-${name}-${toString i}.so\"") grammar
+          lib.imap0 (i: g: "ln -s ${g}/parser \"$out/libtree-sitter-${shortName}-${toString i}.so\"") grammar
         else
-          [ "ln -s ${grammar}/parser \"$out/libtree-sitter-${name}.so\"" ];
+          [ "ln -s ${grammar}/parser \"$out/libtree-sitter-${shortName}.so\"" ];
       links = lib.concatLists (lib.mapAttrsToList mkLink grammars);
-    in ''
+    in
+    ''
       mkdir -p $out
       ${lib.concatStringsSep "\n" links}
     ''
@@ -181,11 +209,21 @@ rec {
     defaultSopsFile = ./secrets/secrets.yaml;
     secrets = {
       "spotify-password" = {
-        path = "${home.homeDirectory}/.secrets/spotify-password";
+        path = "/run/user/1000/spotify-password";
       };
       "claude-code" = {
         sopsFile = ./secrets/claude-code.env;
-        path = "${home.homeDirectory}/.secrets/claude-code.env";
+        path = "/run/user/1000/claude-code.env";
+        format = "dotenv";
+      };
+      "opencode-failover" = {
+        sopsFile = ./secrets/opencode-failover.env;
+        path = "/run/user/1000/opencode-failover.env";
+        format = "dotenv";
+      };
+      "aider-opencode-go" = {
+        sopsFile = ./secrets/aider-opencode-go.env;
+        path = "/run/user/1000/aider-opencode-go.env";
         format = "dotenv";
       };
     };
@@ -229,13 +267,17 @@ rec {
       nak
       vim-startuptime
       spotify
+      input-remapper  # Wacom ペンタブの ExpressKeys を Krita 用キーに変換
 
       # NOTE: 2025/06/22 hashまわりで壊れたので一旦無効化
       # (import ./pkgs/lspx { inherit pkgs; })
       rclone-sync
       rclone-resync
     ])
-    ++ [ emacs' ];
+    ++ [
+      emacs'
+    ]
+    ++ treefmt-packages;
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
@@ -316,6 +358,10 @@ rec {
       };
       ".bin/scripts/flake-lock-save" = {
         source = (symlink /${dotfiles}/bin/scripts/flake-lock-save);
+      };
+
+      ".bin/scripts/verify-opencode-failover.fish" = {
+        source = (symlink /${dotfiles}/bin/scripts/verify-opencode-failover.fish);
       };
 
       # Vim configs.
@@ -484,10 +530,22 @@ rec {
 
       ".config/opencode/tui.json".source = (symlink /${dotfiles}/config/opencode/tui.json);
 
+      ".config/opencode/oh-my-opencode.json".source = (
+        symlink /${dotfiles}/config/opencode/oh-my-opencode.json
+      );
+
       ".config/opencode/themes" = {
         source = (symlink /${dotfiles}/config/opencode/themes);
         recursive = true;
       };
+
+      # input-remapper: Wacom ペンタブ ExpressKeys → Krita 用キー(F13-F16)変換
+      # デバイス別プリセットディレクトリは activation スクリプト(setupWacomInputRemapper)で
+      # デバイス名を検出して配置する。ここではテンプレートとして symlink を張る。
+      ".config/input-remapper-2/presets/_wacom-krita-template/wacom-krita.json".source =
+        (symlink /${dotfiles}/config/input-remapper/wacom-krita.json);
+
+      ".omo/omo.jsonc".source = (symlink /${dotfiles}/config/omo/omo.jsonc);
 
       ".config/xremap/config.yaml".source = (symlink xremap-config.xremap-config-yaml);
 
@@ -499,10 +557,6 @@ rec {
       ".gitconfig".source = (symlink /${dotfiles}/gitconfig);
       ".Xmodmap".source = (symlink /${dotfiles}/Xmodmap);
       ".tmux.conf".source = (symlink /${dotfiles}/tmux.conf);
-
-      ".secrets/.keep" = {
-        text = "";
-      };
 
       ".emacs.d" = {
         source = (symlink /${dotfiles}/emacs.d);
@@ -542,16 +596,10 @@ rec {
           "README.md"
           ".aiderrules"
         ];
-      };
-
-      # Wrapper script for emacs-main service. Stable path prevents
-      # sd-switch from detecting unit file changes on home-manager switch.
-      ".local/bin/emacs-daemon-main" = {
-        executable = true;
-        text = ''
-          #!/usr/bin/env bash
-          exec ${emacs-daemon-script} main
-        '';
+        # OpenCode Go (OpenAI API compatible) - API key comes from sops
+        # via AIDER_OPENAI_API_KEY (loaded in fish.nix)
+        model = "openai/deepseek-v4-pro";
+        openai-api-base = "https://opencode.ai/zen/go/v1";
       };
 
       # Wrapper script for niri-scratchpad-daemon. Stable path prevents
@@ -588,6 +636,9 @@ rec {
     # Enable native Wayland support for Electron/Chromium apps
     # Affects: Signal, Slack, Discord, Teams, Chrome, etc.
     NIXOS_OZONE_WL = "1";
+
+    # opencode-failover reads API keys from this file at startup
+    OPENCODE_FAILOVER_ENV_FILE = config.sops.secrets.opencode-failover.path;
   };
 
   # Systemd user session variables
@@ -604,6 +655,9 @@ rec {
 
     # GPG agent socket - required for GPG operations in Emacs daemon
     GPG_AGENT_INFO = "/run/user/1000/gnupg/S.gpg-agent";
+
+    # opencode-failover reads API keys from this file at startup
+    OPENCODE_FAILOVER_ENV_FILE = config.sops.secrets.opencode-failover.path;
   };
 
   # PATH management centralized here to avoid duplications
@@ -667,7 +721,7 @@ rec {
   #   ExecStart = "${pkgs.python3Packages.uv}/bin/uv run src/main.py";
   #   Restart = "on-failure";
   #   RestartSec = 10;
-  # EnvironmentFile ="${home.homeDirectory}/.secrets/claude-code.env";
+  # EnvironmentFile ="/run/user/1000/claude-code.env";
   # };
 
   # Install = {
@@ -748,10 +802,10 @@ rec {
     enable = true;
     enableFishIntegration = true;
   };
-  
+
   programs.nix-index-database = {
-    comma.enable = true; 
-  }; 
+    comma.enable = true;
+  };
 
   services.spotifyd = {
     enable = true;
@@ -769,7 +823,11 @@ rec {
   systemd.user.services."emacs@" = {
     Unit = {
       Description = "Emacs text editor (%I)";
-      Documentation = [ "info:emacs" "man:emacs(1)" "https://gnu.org/software/emacs/" ];
+      Documentation = [
+        "info:emacs"
+        "man:emacs(1)"
+        "https://gnu.org/software/emacs/"
+      ];
       After = [ "graphical-session.target" ];
       PartOf = [ "graphical-session.target" ];
     };
@@ -836,13 +894,36 @@ rec {
     };
   };
 
+  # Desktop entry for main daemon. rofi -show drun (Mod+Space) から選択可能。
+  # Nixpkgs 同梱の emacsclient.desktop はソケット名を指定しない
+  # (--alternate-editor= は空なのでフォールバックもない)。
+  # 名前付きソケット(main)の環境では接続できず起動に失敗するため、
+  # ここで emacsclient.desktop を上書きして明示的に -s main を指定する。
+  xdg.desktopEntries."emacsclient" = {
+    name = "Emacs (Client)";
+    genericName = "Text Editor";
+    comment = "Edit text";
+    exec = "${emacs'}/bin/emacsclient -s main -c";
+    icon = "emacs";
+    type = "Application";
+    categories = [
+      "Development"
+      "TextEditor"
+    ];
+    terminal = false;
+    startupNotify = true;
+  };
+
   # Desktop entry for canary daemon. rofi -show drun (Mod+Space) から選択可能。
   xdg.desktopEntries."emacs-canary" = {
     name = "Emacs(Canary)";
     exec = "${emacs'}/bin/emacsclient -s canary -c";
     icon = "emacs";
     type = "Application";
-    categories = [ "Development" "TextEditor" ];
+    categories = [
+      "Development"
+      "TextEditor"
+    ];
     terminal = false;
     startupNotify = true;
   };
@@ -851,7 +932,7 @@ rec {
   # init.el は外部パッケージ（leaf, hydra, reformatter 等）のマクロに
   # 依存しているため、emacs -Q では正しくコンパイルできない。
   # init.el の高速化は runtime native-compile（early-init.el 参照）に任せる。
-  home.activation.byteCompileEmacsInit = lib.hm.dag.entryAfter ["linkGeneration"] ''
+  home.activation.byteCompileEmacsInit = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
     echo "Byte-compiling Emacs init files..."
     ${emacs'}/bin/emacs -Q --batch \
       --eval '(defalias (quote treesit-ready-p) (lambda (&rest _) nil))' \
@@ -864,7 +945,7 @@ rec {
   # Symlink all tree-sitter grammars from nixpkgs into Emacs' tree-sitter directory.
   # Replaces old committed/compiled grammar files with Nix-managed symlinks.
   # Runs on every home-manager activation to stay in sync with nix store updates.
-  home.activation.createTreeSitterGrammars = lib.hm.dag.entryAfter ["linkGeneration"] ''
+  home.activation.createTreeSitterGrammars = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
     mkdir -p ~/.emacs.d/tree-sitter
     # Remove old non-Nix grammar files (committed .so files)
     find ~/.emacs.d/tree-sitter -maxdepth 1 -name '*.so' -not -type l -delete 2>/dev/null || true
@@ -872,6 +953,93 @@ rec {
     find ~/.emacs.d/tree-sitter -maxdepth 1 -type l ! -xtype l -delete 2>/dev/null || true
     # Symlink all grammars from Nix
     ln -sf ${emacs-ts-grammars}/* ~/.emacs.d/tree-sitter/
+  '';
+
+  # Wacom ペンタブの ExpressKeys を Krita 用キー(F13-F16)に変換する input-remapper プリセットを
+  # デバイス名に応じたディレクトリへ配置し、autoload を有効化する。
+  # デバイス名は実行時に input-remapper-control で検出するため、ハードウェア依存の値は Nix に持たない。
+  home.activation.setupWacomInputRemapper = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    PRESET_SRC="${home.homeDirectory}/.config/input-remapper-2/presets/_wacom-krita-template/wacom-krita.json"
+    CONFIG_DIR="${home.homeDirectory}/.config/input-remapper-2"
+
+    # Wacom Pad デバイス名を検出する (例: "Wacom Intuos S Pad")
+    DEVICE_NAME=$(${pkgs.input-remapper}/bin/input-remapper-control --list-devices 2>/dev/null | \
+      ${pkgs.gnugrep}/bin/grep -i "pad" | ${pkgs.gnugrep}/bin/grep -i wacom | \
+      ${pkgs.coreutils}/bin/head -n 1 | ${pkgs.coreutils}/bin/cut -d: -f2 | ${pkgs.findutils}/bin/xargs || true)
+
+    if [ -z "$DEVICE_NAME" ]; then
+      echo "No Wacom Pad device found for input-remapper preset."
+    else
+      echo "Setting up input-remapper preset for: $DEVICE_NAME"
+
+      # デバイス別 preset ディレクトリを作成し、テンプレートをコピーする
+      ${pkgs.coreutils}/bin/mkdir -p "$CONFIG_DIR/presets/$DEVICE_NAME"
+      ${pkgs.coreutils}/bin/cp -f "$PRESET_SRC" "$CONFIG_DIR/presets/$DEVICE_NAME/wacom-krita.json"
+
+      # autoload 設定を更新する（既存設定は保持）
+      ${pkgs.coreutils}/bin/mkdir -p "$CONFIG_DIR"
+      ${pkgs.python3}/bin/python3 - "$CONFIG_DIR/config.json" "$DEVICE_NAME" <<'PY'
+import json
+import sys
+
+config_path = sys.argv[1]
+device_name = sys.argv[2]
+
+try:
+    with open(config_path) as f:
+        config = json.load(f)
+except FileNotFoundError:
+    config = {}
+
+config.setdefault("version", "2.2.0")
+config.setdefault("autoload", {})
+config["autoload"][device_name] = "wacom-krita"
+
+with open(config_path, "w") as f:
+    json.dump(config, f, indent=4)
+    f.write("\n")
+PY
+    fi
+  '';
+
+  # Krita のショートカット設定に Wacom ペンタブ用の F13-F16 割当を追記する。
+  # kritashortcutsrc は Krita が起動/終了時に書き換えるため、全体を Nix store への
+  # symlink にはせず、[Shortcuts] セクション内に割当が無い場合のみ挿入する。
+  # Krita 側でショートカットを変更した場合はこの追記はスキップされ、Krita の設定が優先される。
+  home.activation.setupKritaShortcuts = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    SHORTCUTS_FILE="${home.homeDirectory}/.config/kritashortcutsrc"
+    ADDITIONS="${dotfiles}/config/krita/kritashortcutsrc"
+
+    if [ -f "$SHORTCUTS_FILE" ]; then
+      # 既に F13 割当があればスキップ (exit ではなく else で分岐。exit は activation 全体を止める)
+      if ! ${pkgs.gnugrep}/bin/grep -q "rotate_canvas_left=F13" "$SHORTCUTS_FILE" 2>/dev/null; then
+        echo "Adding Wacom tablet shortcuts to kritashortcutsrc..."
+        # [Shortcuts] セクションの直後に割当を挿入する
+        ${pkgs.python3}/bin/python3 - "$SHORTCUTS_FILE" "$ADDITIONS" <<'PY'
+import sys
+
+shortcuts_file = sys.argv[1]
+additions_file = sys.argv[2]
+
+with open(additions_file) as f:
+    additions = f.read()
+
+with open(shortcuts_file) as f:
+    content = f.read()
+
+marker = "[Shortcuts]"
+if marker in content:
+    content = content.replace(marker, marker + "\n" + additions.rstrip("\n"), 1)
+else:
+    content = content.rstrip("\n") + "\n\n" + marker + "\n" + additions.rstrip("\n") + "\n"
+
+with open(shortcuts_file, "w") as f:
+    f.write(content)
+PY
+      else
+        echo "Krita shortcuts already configured, skipping."
+      fi
+    fi
   '';
 
   systemd.user.services.niri-scratchpad-daemon = {
@@ -891,33 +1059,50 @@ rec {
     };
   };
 
+  systemd.user.services.wl-clip-persist = {
+    Unit = {
+      Description = "Wayland clipboard persistence daemon";
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+      X-SwitchMethod = "keep-old";
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.wl-clip-persist}/bin/wl-clip-persist --clipboard both";
+      Restart = "on-failure";
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+  };
+
   systemd.user.services.rclone-sync = {
-      Unit = {
-        Description = "Rclone bisync for memo directory";
-        After = [ "network-online.target" ];
-        Wants = [ "network-online.target" ];
-      };
-
-      Service = {
-        Type = "oneshot";
-        ExecStart = "${rclone-sync}/bin/rclone-sync";
-      };
+    Unit = {
+      Description = "Rclone bisync for memo directory";
+      After = [ "network-online.target" ];
+      Wants = [ "network-online.target" ];
     };
 
-    systemd.user.timers.rclone-sync = {
-      Unit = {
-        Description = "Timer for rclone-sync";
-      };
-
-      Timer = {
-        OnCalendar = "*:0/5";
-        Unit = "rclone-sync.service";
-      };
-
-      Install = {
-        WantedBy = [ "timers.target" ];
-      };
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${rclone-sync}/bin/rclone-sync";
     };
+  };
+
+  systemd.user.timers.rclone-sync = {
+    Unit = {
+      Description = "Timer for rclone-sync";
+    };
+
+    Timer = {
+      OnCalendar = "*:0/5";
+      Unit = "rclone-sync.service";
+    };
+
+    Install = {
+      WantedBy = [ "timers.target" ];
+    };
+  };
 
   catppuccin = {
     enable = true;
