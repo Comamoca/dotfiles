@@ -1,0 +1,53 @@
+excludes = [
+  "*.lock",
+  "*.patch",
+  "package-lock.json",
+  "go.mod",
+  "go.sum",
+  ".gitattributes",
+  ".gitignore",
+  ".gitmodules",
+  ".hgignore",
+  ".svnignore",
+  "LICENSE",
+]
+
+[formatter.deno]
+command = "deno"
+excludes = []
+includes = [
+  "*.css",
+  "*.html",
+  "*.js",
+  "*.json",
+  "*.jsonc",
+  "*.jsx",
+  "*.less",
+  "*.markdown",
+  "*.md",
+  "*.sass",
+  "*.scss",
+  "*.ts",
+  "*.tsx",
+  "*.yaml",
+  "*.yml",
+]
+options = ["fmt"]
+
+[formatter.nixfmt]
+command = "nixfmt"
+excludes = []
+includes = ["*.nix"]
+options = []
+
+[formatter.stylua]
+command = "stylua"
+excludes = []
+includes = ["*.lua"]
+options = ["--indent-type", "Spaces", "--indent-width", "2"]
+
+[formatter.taplo]
+command = "taplo"
+excludes = []
+includes = ["*.toml"]
+options = ["format"]
