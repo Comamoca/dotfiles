@@ -187,16 +187,16 @@ src.git = "https://github.com/sipeed/picoclaw"
 fetch.git = "https://github.com/sipeed/picoclaw"
 
 [agent-shell-manager]
-src.git= "https://github.com/jethrokuan/agent-shell-manager"
-fetch.git= "https://github.com/jethrokuan/agent-shell-manager"
+src.git = "https://github.com/jethrokuan/agent-shell-manager"
+fetch.git = "https://github.com/jethrokuan/agent-shell-manager"
 
 [minimal-dashboard]
-src.git= "https://github.com/dheerajshenoy/minimal-dashboard.el"
-fetch.git= "https://github.com/dheerajshenoy/minimal-dashboard.el"
+src.git = "https://github.com/dheerajshenoy/minimal-dashboard.el"
+fetch.git = "https://github.com/dheerajshenoy/minimal-dashboard.el"
 
 [om-dash]
-src.git= "https://github.com/gavv/om-dash"
-fetch.git= "https://github.com/gavv/om-dash"
+src.git = "https://github.com/gavv/om-dash"
+fetch.git = "https://github.com/gavv/om-dash"
 
 [sc_BRILLI_NT_WING_BRILLI_NT_WING_01_Spread_the_Wings]
 src.manual = "latest"
@@ -1011,13 +1011,13 @@ src.manual = "latest"
 fetch.url = "https://shinycolors-song-for-prism.idolmaster-official.jp/assets/img/footer/card/card.png"
 
 [php-ts-mode]
-src.git= "https://github.com/emacs-php/php-ts-mode"
-fetch.git= "https://github.com/emacs-php/php-ts-mode"
+src.git = "https://github.com/emacs-php/php-ts-mode"
+fetch.git = "https://github.com/emacs-php/php-ts-mode"
 
 [ruby-ts-mode]
-src.git= "https://github.com/pedz/ruby-ts-mode"
-fetch.git= "https://github.com/pedz/ruby-ts-mode"
+src.git = "https://github.com/pedz/ruby-ts-mode"
+fetch.git = "https://github.com/pedz/ruby-ts-mode"
 
 [emacs-taskrunner]
-src.git= "https://github.com/emacs-taskrunner/emacs-taskrunner"
-fetch.git= "https://github.com/emacs-taskrunner/emacs-taskrunner"
+src.git = "https://github.com/emacs-taskrunner/emacs-taskrunner"
+fetch.git = "https://github.com/emacs-taskrunner/emacs-taskrunner"

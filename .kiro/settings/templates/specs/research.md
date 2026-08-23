@@ -10,17 +10,22 @@
 ---
 
 ## Summary
+
 - **Feature**: `<feature-name>`
-- **Discovery Scope**: New Feature / Extension / Simple Addition / Complex Integration
+- **Discovery Scope**: New Feature / Extension / Simple Addition / Complex
+  Integration
 - **Key Findings**:
   - Finding 1
   - Finding 2
   - Finding 3
 
 ## Research Log
-Document notable investigation steps and their outcomes. Group entries by topic for readability.
+
+Document notable investigation steps and their outcomes. Group entries by topic
+for readability.
 
 ### [Topic or Question]
+
 - **Context**: What triggered this investigation?
 - **Sources Consulted**: Links, documentation, API references, benchmarks
 - **Findings**: Concise bullet points summarizing the insights
@@ -29,16 +34,21 @@ Document notable investigation steps and their outcomes. Group entries by topic 
 _Repeat the subsection for each major topic._
 
 ## Architecture Pattern Evaluation
-List candidate patterns or approaches that were considered. Use the table format where helpful.
 
-| Option | Description | Strengths | Risks / Limitations | Notes |
-|--------|-------------|-----------|---------------------|-------|
+List candidate patterns or approaches that were considered. Use the table format
+where helpful.
+
+| Option    | Description                                     | Strengths                       | Risks / Limitations              | Notes                                     |
+| --------- | ----------------------------------------------- | ------------------------------- | -------------------------------- | ----------------------------------------- |
 | Hexagonal | Ports & adapters abstraction around core domain | Clear boundaries, testable core | Requires adapter layer build-out | Aligns with existing steering principle X |
 
 ## Design Decisions
-Record major decisions that influence `design.md`. Focus on choices with significant trade-offs.
+
+Record major decisions that influence `design.md`. Focus on choices with
+significant trade-offs.
 
 ### Decision: `<Title>`
+
 - **Context**: Problem or requirement driving the decision
 - **Alternatives Considered**:
   1. Option A — short description
@@ -51,11 +61,15 @@ Record major decisions that influence `design.md`. Focus on choices with signifi
 _Repeat the subsection for each decision._
 
 ## Risks & Mitigations
+
 - Risk 1 — Proposed mitigation
 - Risk 2 — Proposed mitigation
 - Risk 3 — Proposed mitigation
 
 ## References
-Provide canonical links and citations (official docs, standards, ADRs, internal guidelines).
+
+Provide canonical links and citations (official docs, standards, ADRs, internal
+guidelines).
+
 - [Title](https://example.com) — brief note on relevance
 - ...

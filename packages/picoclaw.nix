@@ -1,2 +1,5 @@
 { pkgs }:
-import ../pkgs/picoclaw { inherit pkgs; lib = pkgs.lib; }
+import ../pkgs/picoclaw {
+  inherit pkgs;
+  lib = pkgs.lib;
+}

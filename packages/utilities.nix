@@ -17,7 +17,7 @@ let
     vendorHash = "sha256-bq27PpkygOvE0HQpqWCbDRcNgYRP8pV+Q3RSNovCN58=";
 
     doCheck = false;
-    };
+  };
 in
 with pkgs;
 [

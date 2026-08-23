@@ -5,26 +5,29 @@ allowed-tools: Bash, Read, Write, Edit, MultiEdit, Glob, Grep, LS
 
 # Kiro Steering Management
 
-<background_information>
-**Role**: Maintain `.kiro/steering/` as persistent project memory.
+<background_information> **Role**: Maintain `.kiro/steering/` as persistent
+project memory.
 
 **Mission**:
+
 - Bootstrap: Generate core steering from codebase (first-time)
 - Sync: Keep steering and codebase aligned (maintenance)
 - Preserve: User customizations are sacred, updates are additive
 
 **Success Criteria**:
+
 - Steering captures patterns and principles, not exhaustive lists
 - Code drift detected and reported
 - All `.kiro/steering/*.md` treated equally (core + custom)
-</background_information>
+  </background_information>
 
 <instructions>
 ## Scenario Detection
 
 Check `.kiro/steering/` status:
 
-**Bootstrap Mode**: Empty OR missing core files (product.md, tech.md, structure.md)  
+**Bootstrap Mode**: Empty OR missing core files (product.md, tech.md,
+structure.md)\
 **Sync Mode**: All core files exist
 
 ---
@@ -71,7 +74,7 @@ From `.kiro/settings/rules/steering-principles.md`:
 
 Document patterns and principles, not exhaustive lists.
 
-**Bad**: List every file in directory tree  
+**Bad**: List every file in directory tree\
 **Good**: Describe organization pattern with examples
 
 </instructions>
@@ -90,6 +93,7 @@ Document patterns and principles, not exhaustive lists.
 Chat summary only (files updated directly).
 
 ### Bootstrap:
+
 ```
 ✅ Steering Created
 
@@ -102,6 +106,7 @@ Review and approve as Source of Truth.
 ```
 
 ### Sync:
+
 ```
 ✅ Steering Updated
 
@@ -119,12 +124,16 @@ Review and approve as Source of Truth.
 ## Examples
 
 ### Bootstrap
-**Input**: Empty steering, React TypeScript project  
-**Output**: 3 files with patterns - "Feature-first", "TypeScript strict", "React 19"
+
+**Input**: Empty steering, React TypeScript project\
+**Output**: 3 files with patterns - "Feature-first", "TypeScript strict", "React
+19"
 
 ### Sync
-**Input**: Existing steering, new `/api` directory  
-**Output**: Updated structure.md, flagged non-compliant files, suggested api-standards.md
+
+**Input**: Existing steering, new `/api` directory\
+**Output**: Updated structure.md, flagged non-compliant files, suggested
+api-standards.md
 
 ## Safety & Fallback
 
@@ -138,6 +147,9 @@ Review and approve as Source of Truth.
 - Templates and principles are external for customization
 - Focus on patterns, not catalogs
 - "Golden Rule": New code following patterns shouldn't require steering updates
-- Avoid documenting agent-specific tooling directories (e.g. `.cursor/`, `.gemini/`, `.claude/`)
-- `.kiro/settings/` content should NOT be documented in steering files (settings are metadata, not project knowledge)
-- Light references to `.kiro/specs/` and `.kiro/steering/` are acceptable; avoid other `.kiro/` directories
+- Avoid documenting agent-specific tooling directories (e.g. `.cursor/`,
+  `.gemini/`, `.claude/`)
+- `.kiro/settings/` content should NOT be documented in steering files (settings
+  are metadata, not project knowledge)
+- Light references to `.kiro/specs/` and `.kiro/steering/` are acceptable; avoid
+  other `.kiro/` directories

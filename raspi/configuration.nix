@@ -61,16 +61,19 @@ in
     networkmanager.enable = true;
   };
 
-  environment.systemPackages = with pkgs; [
-    vim
-    networkmanager
-    docker-compose
-    gh
-    opencode
-    opensrc
-  ] ++ [
-    picoclaw
-  ];
+  environment.systemPackages =
+    with pkgs;
+    [
+      vim
+      networkmanager
+      docker-compose
+      gh
+      opencode
+      opensrc
+    ]
+    ++ [
+      picoclaw
+    ];
 
   virtualisation.docker = {
     enable = true;
@@ -92,7 +95,12 @@ in
 
   users.users.coma = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "docker" "hermes" ];
+    extraGroups = [
+      "wheel"
+      "networkmanager"
+      "docker"
+      "hermes"
+    ];
     initialPassword = "changeme";
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGHn646g17wEv7rZoSKQCFNGGyLqVJnQ9mlEn7aQuOLj coma@comabook"
@@ -118,8 +126,14 @@ in
 
   # Flakesとnix-commandを有効化
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
-    trusted-users = [ "root" "coma" ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+    trusted-users = [
+      "root"
+      "coma"
+    ];
     max-jobs = 1;
     cores = 1;
     substituters = [
@@ -148,7 +162,7 @@ in
       "R2_ACCESS_KEY_ID" = { };
       "R2_SECRET_ACCESS_KEY" = { };
       "R2_ENDPOINT" = { };
-      "OPENCODE_GO_API_KEY" = {}; 
+      "OPENCODE_GO_API_KEY" = { };
 
       "WIFI_SSID" = { };
       "WIFI_PASSWORD" = { };
@@ -171,7 +185,7 @@ in
     #     TELEGRAM_BOT_TOKEN=${config.sops.placeholder."TELEGRAM_BOT_TOKEN"}
     #     TELEGRAM_ALLOWED_USERS=${config.sops.placeholder."TELEGRAM_ALLOWED_USERS"}
     #     OPENCODE_GO_API_KEY=${config.sops.placeholder."OPENCODE_GO_API_KEY"}
-    # 
+    #
     #     R2_ACCESS_KEY_ID=${config.sops.placeholder."R2_ACCESS_KEY_ID"}
     #     R2_SECRET_ACCESS_KEY=${config.sops.placeholder."R2_SECRET_ACCESS_KEY"}
     #     R2_ENDPOINT=${config.sops.placeholder."R2_ENDPOINT"}
@@ -230,7 +244,9 @@ in
   system.activationScripts.wifi-nmconnection = {
     text = ''
       mkdir -p /etc/NetworkManager/system-connections/
-      cp ${config.sops.templates."wifi-nmconnection".path} /etc/NetworkManager/system-connections/home-wifi.nmconnection
+      cp ${
+        config.sops.templates."wifi-nmconnection".path
+      } /etc/NetworkManager/system-connections/home-wifi.nmconnection
       chmod 600 /etc/NetworkManager/system-connections/home-wifi.nmconnection
     '';
     deps = [ "setupSecrets" ];
@@ -289,7 +305,10 @@ in
       cp -r ${inputs.openclaw-workspace}/skills/. "$dir/skills/"
       chown -R picoclaw:picoclaw /var/lib/picoclaw
     '';
-    deps = [ "users" "groups" ];
+    deps = [
+      "users"
+      "groups"
+    ];
   };
 
   system.stateVersion = "25.05";

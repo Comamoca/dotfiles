@@ -12,10 +12,9 @@ let
 
   mapping = builtins.fromJSON (builtins.readFile ./mapping.json);
 
-  scEntries =
-    builtins.filter
-      (name: builtins.match "sc_.*" name != null)
-      (builtins.attrNames sources);
+  scEntries = builtins.filter (name: builtins.match "sc_.*" name != null) (
+    builtins.attrNames sources
+  );
 
   linkCmds = builtins.concatStringsSep "\n" (
     builtins.map (name: ''

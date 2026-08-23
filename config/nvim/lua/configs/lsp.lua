@@ -133,7 +133,7 @@ require("ddc_source_lsp_setup").setup()
 -------------------------------------------------------------------
 
 -- astro: home.nix で pkgs.typescript を ~/.cache/nvim-lsp/typescript に配置済み
-vim.lsp.config('astro', {
+vim.lsp.config("astro", {
   cmd = { "astro-ls", "--stdio" },
   init_options = {
     typescript = {
@@ -141,19 +141,19 @@ vim.lsp.config('astro', {
     },
   },
 })
-vim.lsp.enable('astro')
+vim.lsp.enable("astro")
 
 -- ts_ls: package.json があるプロジェクトでのみ起動
-vim.lsp.config('ts_ls', {
+vim.lsp.config("ts_ls", {
   root_markers = { "package.json", "tsconfig.json" },
 })
-vim.lsp.enable('ts_ls')
+vim.lsp.enable("ts_ls")
 
 -- denols: deno.json があるプロジェクトでのみ起動
-vim.lsp.config('denols', {
+vim.lsp.config("denols", {
   root_markers = { "deno.json", "deno.jsonc" },
 })
-vim.lsp.enable('denols')
+vim.lsp.enable("denols")
 
 -- lsp keymaps
 vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")

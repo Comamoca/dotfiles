@@ -54,9 +54,9 @@ vim.api.nvim_create_autocmd("User", {
 
 vim.opt.runtimepath:append(vim.fn.expand("~/.config/nvim"))
 -- nvim-treesitter install_dir must be in rtp before lazy loading
-vim.opt.runtimepath:prepend(vim.fn.stdpath('data') .. '/site')
+vim.opt.runtimepath:prepend(vim.fn.stdpath("data") .. "/site")
 -- Nix-managed nvim-treesitter: all parsers (326) + queries bundled via symlinkJoin
-vim.opt.runtimepath:prepend(vim.fn.expand('~/.cache/dpp/_generated/nvim-treesitter'))
+vim.opt.runtimepath:prepend(vim.fn.expand("~/.cache/dpp/_generated/nvim-treesitter"))
 
 -- autocmd BufRead *.rs let g:rustfmt_autosave = 0
 vim.api.nvim_create_autocmd("BufRead", {
@@ -101,12 +101,12 @@ end, { nargs = 0 })
 vim.api.nvim_create_user_command("TSInstallParsers", function(args)
   local parsers = vim.split(args.args, " ", { trimempty = true })
   if #parsers == 0 then
-    parsers = {"c", "lua", "vim", "vimdoc", "query", "gleam"}
+    parsers = { "c", "lua", "vim", "vimdoc", "query", "gleam" }
   end
-  require('nvim-treesitter').install(parsers)
+  require("nvim-treesitter").install(parsers)
 end, {
   nargs = "*",
-  desc = "Install treesitter parsers"
+  desc = "Install treesitter parsers",
 })
 
 vim.api.nvim_create_user_command("Ddu", function(args)
@@ -207,11 +207,11 @@ vim.api.nvim_create_autocmd("BufEnter", {
 -- require("configs/kastel")
 
 vim.api.nvim_create_user_command("Init", "e $MYVIMRC", {})
-vim.api.nvim_create_user_command("Scratch", function ()
+vim.api.nvim_create_user_command("Scratch", function()
   require("snacks").scratch()
 end, {})
 
------ Neovide ----- 
+----- Neovide -----
 
 if vim.g.neovide then
   vim.g.neovide_cursor_vfx_mode = "torpedo"

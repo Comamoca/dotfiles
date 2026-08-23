@@ -30,17 +30,25 @@ let
   });
 
   emacs = (pkgs.emacsPackagesFor pkgs.emacs-git).emacsWithPackages (
-    epkgs: let
+    epkgs:
+    let
       # projectile 20260627+ requires consult at compile-time but the MELPA
       # recipe only declares (emacs compat). Override at the scope level so
       # all dependents (persp-projectile, treemacs-projectile, etc.) use it.
-      epkgs' = epkgs.overrideScope (eself: esuper: {
-        projectile = esuper.projectile.overrideAttrs (old: {
-          nativeBuildInputs = (old.nativeBuildInputs or []) ++ [ eself.consult ];
-          propagatedBuildInputs = (old.propagatedBuildInputs or []) ++ [ eself.consult ];
-        });
-      });
-    in (import ../../emacs.nix { inherit pkgs; epkgs = epkgs'; inherit nurpkgs; }).epkgs
+      epkgs' = epkgs.overrideScope (
+        eself: esuper: {
+          projectile = esuper.projectile.overrideAttrs (old: {
+            nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ eself.consult ];
+            propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ [ eself.consult ];
+          });
+        }
+      );
+    in
+    (import ../../emacs.nix {
+      inherit pkgs;
+      epkgs = epkgs';
+      inherit nurpkgs;
+    }).epkgs
   );
 
   sbcl' = pkgs.sbcl.withPackages (
@@ -815,7 +823,11 @@ rec {
   systemd.user.services.emacs = {
     Unit = {
       Description = "Emacs text editor";
-      Documentation = [ "info:emacs" "man:emacs(1)" "https://gnu.org/software/emacs/" ];
+      Documentation = [
+        "info:emacs"
+        "man:emacs(1)"
+        "https://gnu.org/software/emacs/"
+      ];
       X-RestartIfChanged = false;
     };
     Service = {
