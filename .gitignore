@@ -65,3 +65,15 @@ emacs.d/*.eln
 .env
 /.agent-shell/
 .sdd/runtime/
+
+# Coding agent runtime state / scratch
+/.omo/
+/.sisyphus/
+/.commandcode/
+/data/
+# bernstein のテンプレート一式 (upstream からコピーされる生成物)
+/templates/
+
+# Emacs local state
+emacs.d/oauth2.plstore
+emacs.d/test-file
