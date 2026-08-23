@@ -1,0 +1,5 @@
+# Wacom ペンタブ ExpressKeys (input-remapper で F13-F16 に変換)
+rotate_canvas_left=F13
+rotate_canvas_right=F14
+view_zoom_in=F15
+view_zoom_out=F16

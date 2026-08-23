@@ -1,0 +1,30 @@
+[
+  {
+    "input_combination": [
+      { "type": 1, "code": 11 }
+    ],
+    "target_uinput": "keyboard",
+    "output_symbol": "KEY_F13"
+  },
+  {
+    "input_combination": [
+      { "type": 1, "code": 12 }
+    ],
+    "target_uinput": "keyboard",
+    "output_symbol": "KEY_F14"
+  },
+  {
+    "input_combination": [
+      { "type": 1, "code": 13 }
+    ],
+    "target_uinput": "keyboard",
+    "output_symbol": "KEY_F15"
+  },
+  {
+    "input_combination": [
+      { "type": 1, "code": 14 }
+    ],
+    "target_uinput": "keyboard",
+    "output_symbol": "KEY_F16"
+  }
+]
