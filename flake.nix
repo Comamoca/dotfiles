@@ -24,9 +24,9 @@
     };
 
     nix-index-database = {
-     url = "github:nix-community/nix-index-database";
-     inputs.nixpkgs.follows = "nixpkgs";
-    }; 
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     mozilla-overlay.url = "github:mozilla/nixpkgs-mozilla";
     catppuccin.url = "github:catppuccin/nix";
@@ -114,6 +114,16 @@
       treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
 
       overlays = [
+        # Shadow deprecated stdenv.is{Linux,Aarch64,Darwin} with the recommended
+        # hostPlatform equivalents. Several external overlays still use the old
+        # names and would otherwise emit evaluation warnings.
+        (final: prev: {
+          stdenv = prev.stdenv // {
+            isLinux = prev.stdenv.hostPlatform.isLinux;
+            isAarch64 = prev.stdenv.hostPlatform.isAarch64;
+            isDarwin = prev.stdenv.hostPlatform.isDarwin;
+          };
+        })
         inputs.neovim-nightly-overlay.overlays.default
         (import inputs.emacs-overlay)
         inputs.nak.overlays.default
@@ -121,6 +131,19 @@
         # (import emacs.overlay)
         inputs.mozilla-overlay.overlays.firefox
         inputs.niri.overlays.niri
+        # WORKAROUND(sodiboo/niri-flake#1851): nixpkgs removed libdisplay-info_0_2
+        # (2026-08-04, now a throwing alias) while niri-flake's make-niri asserts
+        # version == "0.2.0". Shadow the alias with a real 0.2.0 build via the
+        # generic expression still shipped in nixpkgs.
+        # Remove once https://github.com/sodiboo/niri-flake/pull/1853 lands.
+        (final: prev: {
+          libdisplay-info_0_2 = final.callPackage
+            (import "${inputs.nixpkgs}/pkgs/by-name/li/libdisplay-info/generic.nix" {
+              version = "0.2.0";
+              hash = "sha256-6xmWBrPHghjok43eIDGeshpUEQTuwWLXNHg7CnBUt3Q=";
+            })
+            { };
+        })
         inputs.gleam-overlay.overlays.default
         inputs.llm-agents.overlays.shared-nixpkgs
         inputs.go-overlay.overlays.default
@@ -136,6 +159,22 @@
     # code = _: s: s;
     {
       formatter.x86_64-linux = treefmtEval.config.build.wrapper;
+
+      # エディタ・CI 用の treefmt.toml を生成する。
+      # treefmt.nix の設定から formatter コマンドをコマンド名で解決する形で書き出し、
+      # リポジトリにコミットして素の treefmt から使えるようにする。
+      #   nix build .#treefmt-toml -o treefmt-toml && cp treefmt-toml/treefmt.toml ./
+      packages.x86_64-linux.treefmt-toml = treefmt-nix.lib.mkConfigFile pkgs {
+        imports = [
+          ./treefmt.nix
+          {
+            settings.formatter.nixfmt.command = "nixfmt";
+            settings.formatter.taplo.command = "taplo";
+            settings.formatter.deno.command = "deno";
+            settings.formatter.stylua.command = "stylua";
+          }
+        ];
+      };
 
       checks.x86_64-linux = {
         format = treefmtEval.config.build.wrapper;
@@ -203,76 +242,83 @@
         };
       };
 
-      homeConfigurations = let
-        homeConfigHome = inputs.home-manager.lib.homeManagerConfiguration rec {
-          pkgs = import inputs.nixpkgs {
-            system = "x86_64-linux";
-            config.allowUnfree = true;
+      homeConfigurations =
+        let
+          homeConfigHome = inputs.home-manager.lib.homeManagerConfiguration rec {
+            pkgs = import inputs.nixpkgs {
+              system = "x86_64-linux";
+              config.allowUnfree = true;
+            };
+            extraSpecialArgs = {
+              inherit inputs;
+            };
+            modules = [
+              ./home.nix
+              inputs.catppuccin.homeModules.catppuccin
+              inputs.sops-nix.homeManagerModules.sops
+              inputs.dms.homeModules.dank-material-shell
+              inputs.nix-index-database.homeModules.default
+              {
+                nixpkgs.overlays = overlays ++ [
+                  inputs.deploy-rs.overlays.default
+                  (final: prev: {
+                    # nak = inputs.nak.packages.x86_64-linux.default;
+                    ghostty = inputs.ghostty.packages.${system}.default;
+                    xremap = inputs.xremap.packages.${pkgs.stdenv.hostPlatform.system}.default;
+                    worktrunk = inputs.worktrunk.packages.${system}.default;
+                    herdr = inputs.herdr.packages.${system}.default;
+                    hunk = inputs.hunk.packages.${system}.default;
+                    shinycolors-jacket = import ./pkgs/shinycolors-jacket { pkgs = final; };
+                  })
+                ];
+              }
+            ];
           };
-          extraSpecialArgs = {
-            inherit inputs;
-          };
-          modules = [
-            ./home.nix
-            inputs.catppuccin.homeModules.catppuccin
-            inputs.sops-nix.homeManagerModules.sops
-            inputs.dms.homeModules.dank-material-shell
-            inputs.nix-index-database.homeModules.default
-            {
-              nixpkgs.overlays = overlays ++ [
-                inputs.deploy-rs.overlays.default
-                (final: prev: {
-                  # nak = inputs.nak.packages.x86_64-linux.default;
-                  ghostty = inputs.ghostty.packages.${system}.default;
-                  xremap = inputs.xremap.packages.${pkgs.stdenv.hostPlatform.system}.default;
-                  worktrunk = inputs.worktrunk.packages.${system}.default;
-                  herdr = inputs.herdr.packages.${system}.default;
-                  hunk = inputs.hunk.packages.${system}.default;
-                  shinycolors-jacket = import ./pkgs/shinycolors-jacket { pkgs = final; };
-                })
-              ];
-            }
-          ];
-        };
 
-        homeConfigWSL = inputs.home-manager.lib.homeManagerConfiguration rec {
-          pkgs = import inputs.nixpkgs {
-            system = "x86_64-linux";
-            config.allowUnfree = true;
+          homeConfigWSL = inputs.home-manager.lib.homeManagerConfiguration rec {
+            pkgs = import inputs.nixpkgs {
+              system = "x86_64-linux";
+              config.allowUnfree = true;
+            };
+            extraSpecialArgs = {
+              inherit inputs;
+            };
+            modules = [
+              # ./home.nix
+              ./home-manager/wsl
+              inputs.catppuccin.homeModules.catppuccin
+              inputs.sops-nix.homeManagerModules.sops
+              inputs.nix-index-database.homeModules.default
+              {
+                nixpkgs.overlays = overlays ++ [
+                  (final: prev: {
+                    xremap = inputs.xremap.packages.${pkgs.stdenv.hostPlatform.system}.default;
+                  })
+                ];
+              }
+            ];
           };
-          extraSpecialArgs = {
-            inherit inputs;
-          };
-          modules = [
-            # ./home.nix
-            ./home-manager/wsl
-            inputs.catppuccin.homeModules.catppuccin
-            inputs.sops-nix.homeManagerModules.sops
-            inputs.nix-index-database.homeModules.default
-            {
-              nixpkgs.overlays = overlays ++ [
-                (final: prev: {
-                  xremap = inputs.xremap.packages.${pkgs.stdenv.hostPlatform.system}.default;
-                })
-              ];
-            }
-          ];
+        in
+        {
+          inherit homeConfigHome homeConfigWSL;
+          Home = homeConfigHome;
+          WSL = homeConfigWSL;
+          # nh home switch の自動検出用 (username = coma, hostname = comabook)
+          coma = homeConfigHome;
+          "coma@comabook" = homeConfigHome;
         };
-      in {
-        inherit homeConfigHome homeConfigWSL;
-        Home = homeConfigHome;
-        WSL = homeConfigWSL;
-        # nh home switch の自動検出用 (username = coma, hostname = comabook)
-        coma = homeConfigHome;
-        "coma@comabook" = homeConfigHome;
-      };
 
       deploy.nodes.raspi = {
         hostname = "raspi.tailbd3ca7.ts.net";
         profiles.system = {
           user = "root";
           sshUser = "coma";
-          sshOpts = [ "-o" "IdentitiesOnly=yes" "-i" "/home/coma/.ssh/id_ed25519" ];
+          sshOpts = [
+            "-o"
+            "IdentitiesOnly=yes"
+            "-i"
+            "/home/coma/.ssh/id_ed25519"
+          ];
           path = deploy-rs.lib.aarch64-linux.activate.nixos self.nixosConfigurations.raspi;
         };
       };
