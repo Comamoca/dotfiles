@@ -318,7 +318,7 @@ let
       dash
     ];
   };
-  
+
   nskk = pkgs.emacsPackages.trivialBuild {
     pname = "nskk";
     version = "main";
@@ -336,7 +336,11 @@ let
     };
     buildInputs = [ pkgs.emacs ];
     nativeBuildInputs = [ pkgs.pkg-config ];
-    cargoBuildFlags = [ "--package" "kuro-core" "--lib" ];
+    cargoBuildFlags = [
+      "--package"
+      "kuro-core"
+      "--lib"
+    ];
     doCheck = false;
     installPhase = ''
       runHook preInstall
@@ -394,7 +398,10 @@ let
     pname = "agent-shell";
     version = "main";
     src = sources.agent-shell.src;
-    buildInputs = [ shell-maker acp ];
+    buildInputs = [
+      shell-maker
+      acp
+    ];
   };
 in
 {
@@ -403,6 +410,7 @@ in
     multi-vterm
     vterm-toggle
     ghostel
+    popterm
 
     catppuccin-theme
     doom-modeline
@@ -565,6 +573,7 @@ in
     gptel
 
     elixir-mode
+    alchemist
     inf-elixir
     mix
 
@@ -679,7 +688,7 @@ in
 
     #highlight
     polymode
-    poly-markdown 
+    poly-markdown
 
     tramps3
     consult-ghq
@@ -704,5 +713,9 @@ in
 
     pdf-tools
     minimail
+    zen-mode
+
+    yaml
+    async
   ];
 }

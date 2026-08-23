@@ -81,32 +81,31 @@
   (setq vertico-posframe-size-function #'my/vertico-posframe-get-size)
   (vertico-posframe-mode 1)
 
-  ;; posframe が surrogate minibuffer frame を作成する関係で、
+  ;; posframe などの子フレームが surrogate minibuffer frame を作成する関係で、
   ;; delete-frame 時に "Attempt to delete a surrogate minibuffer frame"
   ;; エラーが発生するのを防ぐ。
-  ;; 対象フレームに依存する posframe 子フレームを先に削除してからリトライする。
+  ;; 対象フレームの子フレームを先に削除してから本体を削除する。
+  ;; それでも surrogate の関係で削除できない場合は静かにスキップする。
   (advice-add 'delete-frame :around
               (lambda (orig-fun frame &optional force)
-                "Delete dependent posframes before deleting a surrogate minibuffer frame."
-                (condition-case err
-                    (funcall orig-fun frame force)
-                  (error
-                   (if (string-match-p "Attempt to delete a surrogate minibuffer frame"
-                                       (error-message-string err))
-                       (progn
-                         ;; posframe の子フレームを先に削除
-                         (dolist (f (frame-list))
-                           (when (and (frame-parameter f 'posframe-buffer)
-                                      (eq (frame-parent f) frame))
-                             (let ((delete-frame-functions nil))
-                               (delete-frame f))))
-                         ;; リトライ
-                         (condition-case retry-err
-                             (funcall orig-fun frame force)
-                           (error
-                            (message "Surrogate minibuffer frame: 削除をスキップしました (%s)"
-                                     (error-message-string retry-err)))))
-                     (signal (car err) (cdr err))))))))
+                "Delete child frames before deleting FRAME to avoid
+surrogate minibuffer frame errors."
+                (let ((frame (or frame (selected-frame))))
+                  ;; 対象フレームの子フレームを先に削除
+                  (dolist (f (frame-list))
+                    (when (and (frame-live-p f)
+                               (not (eq f frame))
+                               (eq (frame-parent f) frame))
+                      (let ((delete-frame-functions nil))
+                        (ignore-errors (delete-frame f force)))))
+                  ;; 本体の削除
+                  (condition-case err
+                      (funcall orig-fun frame force)
+                    (error
+                     (unless (string-match-p "Attempt to delete a surrogate minibuffer frame"
+                                             (error-message-string err))
+                       (signal (car err) (cdr err)))))))))
+
 
 ;; Completion Styles
 (leaf orderless)
@@ -206,12 +205,26 @@
   :require t
   :custom
   ((treesit-auto-install . nil)
-   (treesit-extra-load-path . `(,(expand-file-name "~/.cache/dpp/_generated/nvim-treesitter/parser"))))
+   ;; emacs-daemon は --init-directory=/tmp/emacsd-{name} で起動するため
+   ;; user-emacs-directory が /tmp 以下になり、treesit のデフォルト検索先
+   ;; (user-emacs-directory/tree-sitter) が Nix 管理下の
+   ;; ~/.emacs.d/tree-sitter (home.nix の createTreeSitterGrammars 参照) を
+   ;; 見なくなる。ここで明示的に加える。
+   (treesit-extra-load-path . `(,(expand-file-name "~/.emacs.d/tree-sitter"))))
   :config  
   (global-treesit-auto-mode)
   ;; (treesit-auto-install 'prompt)
   ;; (treesit-auto-add-to-auto-mode-alist 'all)
   )
+
+;; Amber language (.ab) — no tree-sitter grammar / package exists yet,
+;; so a minimal derived mode is enough to get lsp-mode to attach.
+(define-derived-mode amber-mode prog-mode "Amber"
+  "Major mode for editing Amber (.ab) source files."
+  (setq-local comment-start "// ")
+  (setq-local comment-end ""))
+
+(add-to-list 'auto-mode-alist '("\\.ab\\'" . amber-mode))
 
 ;; for envrc
 (leaf envrc)
@@ -371,7 +384,11 @@
 
 ;; org-modern
 (leaf org-modern
-  :after
+  :after org-mode
+  :config
+  (setq org-modern-list '((?* . "•")
+                          (?+ . "•")
+                          (?- . "•")))
   :init
   (with-eval-after-load 'org (global-org-modern-mode)))
 
@@ -397,7 +414,191 @@
 (leaf org-nix-shell)
 
 (leaf om-dash
-  :after org)
+  :after org
+  :config
+  ;; org ファイルを開いた時に om-dash をロードして
+  ;; #+BEGIN: om-dash-* 動的ブロックを解釈できるようにする
+  (add-hook 'org-mode-hook #'my/om-dash-load-for-org))
+
+;; om-dash の動的ブロック更新を非同期化するために async を使用する。
+;; 関数内で require すると `async-inject-variables' がマクロ展開時に
+;; 未定義になるため、トップレベルでロードしておく。
+;; パッケージが無い環境（古いビルド）でも init が失敗しないよう
+;; エラーを抑制する。async が無い場合は非同期更新が無効になるだけ。
+(require 'async nil t)
+
+(defun my/om-dash-schedule-update (buf)
+  "Schedule an asynchronous om-dash dynamic block update for BUF.
+Defers the update so the buffer is displayed and flycheck's initial
+org-lint run has settled before the refresh starts.  Falls back to
+the synchronous update when async is not available."
+  (require 'om-dash)
+  (when (buffer-live-p buf)
+    (if (fboundp 'async-start)
+        (run-with-idle-timer 0.5 nil #'my/om-dash-async-update-dblocks buf)
+      (run-with-idle-timer 0.5 nil #'my/om-dash-update-dblocks buf))))
+
+(defun my/om-dash-update-dblocks (buf)
+  "Update all om-dash dynamic blocks in buffer BUF.
+flycheck is disabled for the duration of the update and re-enabled
+afterwards, so stale org-lint markers from the pre-update text are
+discarded."
+  (when (buffer-live-p buf)
+    (with-current-buffer buf
+      (let ((fc-mode (bound-and-true-p flycheck-mode)))
+        (when fc-mode (flycheck-mode -1))
+        (unwind-protect
+            (org-map-dblocks)
+          (when fc-mode
+            (flycheck-mode 1)
+            (flycheck-buffer)))))))
+
+(defvar my/om-dash-async-queue nil
+  "Queue of pending om-dash dynamic block update jobs.
+Each job is a plist with :buffer and :marker.")
+
+(defvar my/om-dash-async-running-p nil
+  "Non-nil when an async block update is currently running.")
+
+(defvar my/om-dash-async-flycheck-buffer nil
+  "Buffer whose flycheck mode should be re-enabled after all updates.")
+
+(defun my/om-dash-async-update-dblocks (buf)
+  "Update all om-dash dynamic blocks in BUF asynchronously.
+Blocks are processed one at a time via `my/om-dash-async-queue' so
+that concurrent edits to the buffer are avoided."
+  (when (buffer-live-p buf)
+    (with-current-buffer buf
+      (let ((fc-mode (bound-and-true-p flycheck-mode)))
+        (when fc-mode
+          (flycheck-mode -1)
+          (setq my/om-dash-async-flycheck-buffer buf)))
+      (let ((blocks (org-element-map (org-element-parse-buffer) 'dynamic-block
+                      (lambda (elem)
+                        (when (string-prefix-p "om-dash-"
+                                               (org-element-property :block-name elem))
+                          elem)))))
+        (when blocks
+          ;; Drop stale jobs for this buffer so repeated switches don't queue
+          ;; duplicate updates.
+          (setq my/om-dash-async-queue
+                (cl-remove-if (lambda (job)
+                                (eq (plist-get job :buffer) buf))
+                              my/om-dash-async-queue))
+          (dolist (block blocks)
+            (push (list :buffer buf
+                        :marker (copy-marker (org-element-property :begin block)))
+                  my/om-dash-async-queue))
+          (setq my/om-dash-async-queue (nreverse my/om-dash-async-queue))
+          (my/om-dash-async-process-queue))))))
+
+(defun my/om-dash-async-process-queue ()
+  "Start processing the next job in `my/om-dash-async-queue'."
+  (while (and my/om-dash-async-queue (not my/om-dash-async-running-p))
+    (let* ((job (pop my/om-dash-async-queue))
+           (buf (plist-get job :buffer))
+           (marker (plist-get job :marker)))
+      (if (not (and (buffer-live-p buf) (marker-buffer marker)))
+          (setq my/om-dash-async-running-p nil)
+        (setq my/om-dash-async-running-p t)
+        (my/om-dash-async-update-block buf marker)))))
+
+(defun my/om-dash-async--dynamic-block-p (elem)
+  "Return non-nil if ELEM is an om-dash dynamic block."
+  (and (eq (org-element-type elem) 'dynamic-block)
+       (string-prefix-p "om-dash-" (org-element-property :block-name elem))))
+
+(defun my/om-dash-async-update-block (buf marker)
+  "Update the om-dash dynamic block at MARKER in BUF asynchronously.
+The block text is processed in a child Emacs process so that
+synchronous shell commands used by om-dash do not block the UI."
+  (with-current-buffer buf
+    (save-excursion
+      (goto-char marker)
+      (let ((elem (org-element-at-point)))
+        (if (not (my/om-dash-async--dynamic-block-p elem))
+            (progn
+              (setq my/om-dash-async-running-p nil)
+              (my/om-dash-async-process-queue))
+          (let* ((begin (org-element-property :begin elem))
+                 (end (org-element-property :end elem))
+                 (block-name (org-element-property :block-name elem))
+                 (block-text (buffer-substring begin end))
+		 (om-dash-vars (async-inject-variables "\\`om-dash-"))
+		 (exec-path-var (async-inject-variables "\\`exec-path\\'"))
+		 (load-path-var (async-inject-variables "\\`load-path\\'"))
+		 (shell-file-name-var (async-inject-variables "\\`shell-file-name\\'"))
+		 (shell-command-switch-var (async-inject-variables "\\`shell-command-switch\\'"))
+		 (default-dir default-directory))
+            (async-start
+             `(lambda ()
+                ,load-path-var
+                (when (boundp 'native-comp-jit-compilation)
+                  (setq native-comp-jit-compilation nil))
+                (require 'org)
+                (require 'om-dash)
+                ,om-dash-vars
+                ,exec-path-var
+                ,shell-file-name-var
+                ,shell-command-switch-var
+                (let ((default-directory ,default-dir))
+                  (with-temp-buffer
+                    ;; Add a dummy heading before the block so that
+                    ;; om-dash--choose-level can find a previous heading and
+                    ;; does not loop forever in a child process buffer.
+                    (insert "* om-dash async dummy\n\n")
+                    (insert ,block-text)
+                    (org-mode)
+                    (org-map-dblocks)
+                    ;; Remove the dummy heading before returning the result.
+                    (goto-char (point-min))
+                    (when (search-forward "* om-dash async dummy\n\n" nil t)
+                      (delete-region (point-min) (point)))
+                    (substring-no-properties (buffer-string)))))
+             (lambda (result)
+               (my/om-dash-async-replace-block buf marker block-name result)))))))))
+
+(defun my/om-dash-async-replace-block (buf marker block-name result)
+  "Replace the dynamic block at MARKER in BUF with RESULT.
+RESULT must be a string produced by `org-map-dblocks' in a child
+process.  If the buffer was modified while the update was running,
+the replacement is skipped to avoid overwriting user edits."
+  (unwind-protect
+      (when (and (buffer-live-p buf) (stringp result))
+        (with-current-buffer buf
+          (unless (buffer-modified-p)
+            (save-excursion
+              (goto-char marker)
+              (let ((elem (org-element-at-point)))
+                (when (and (my/om-dash-async--dynamic-block-p elem)
+                           (string-equal block-name
+                                         (org-element-property :block-name elem)))
+                  (let ((inhibit-read-only t))
+                    (delete-region (org-element-property :begin elem)
+                                   (org-element-property :end elem))
+                    (insert result))))))))
+    (when (null my/om-dash-async-queue)
+      (when (and my/om-dash-async-flycheck-buffer
+                 (buffer-live-p my/om-dash-async-flycheck-buffer))
+        (with-current-buffer my/om-dash-async-flycheck-buffer
+          (flycheck-mode 1)
+          (flycheck-buffer))
+        (setq my/om-dash-async-flycheck-buffer nil)))
+    (setq my/om-dash-async-running-p nil)
+    (my/om-dash-async-process-queue)))
+
+(defun my/om-dash-load-for-org ()
+  "Load om-dash when an org file is opened, so om-dash-* dynamic blocks work.
+Schedules an om-dash dynamic block refresh for the buffer."
+  (when (buffer-file-name)
+    (my/om-dash-schedule-update (current-buffer))))
+
+;; om-dash の動的ブロック (#+BEGIN: om-dash-github) を org-lint の
+;; invalid-block checker が「不完全なブロック」と誤検出し、
+;; flycheck 経由で "Wrong type argument: number-or-marker-p" エラーになる。
+;; この checker を無効化して誤検出を防ぐ。
+(require 'org-lint)
+(org-lint-remove-checker 'invalid-block)
 
 ;; howm
 
@@ -454,12 +655,30 @@ Git worktrees resolve to the main repo's org file."
       (make-directory my/project-notes-dir t)
       (expand-file-name (concat repo ".org") my/project-notes-dir))))
 
+(defun my/project-notes-slug ()
+  "Return the \"owner/repo\" slug for the current project notes file.
+Derived from the notes file layout <author>/<repo>.org."
+  (let ((dir (directory-file-name (file-name-directory buffer-file-name))))
+    (format "%s/%s"
+            (file-name-nondirectory dir)
+            (file-name-base buffer-file-name))))
+
+(defun my/project-dashboard-blocks (slug)
+  "Return the initial om-dash-github dynamic blocks for SLUG (\"owner/repo\")."
+  (format "#+BEGIN: om-dash-github :repo \"%s\" :type pullreq :open \"*\" :closed \"-1mo\"
+   |-------+-----+---------------+---------------------------|
+#+END:
+
+#+BEGIN: om-dash-github :repo \"%s\" :type issue :open \"*\"
+#+END:" slug slug))
+
 (defun my/open-project-notes ()
   "Open the org file for the current projectile project.
 Creates the file with default headings if it doesn't exist.
 Sets `default-directory' to the projectile project root so that
 subsequent operations (e.g. org-capture, compile) run in the
-project context."
+project context.  Refreshes om-dash dynamic blocks in the opened
+file so dashboards are up to date on every project switch."
   (interactive)
   (let* ((file-path (my/project-notes-file))
          ;; Capture the project root BEFORE find-file changes the buffer context.
@@ -473,8 +692,13 @@ project context."
           (when project-root
             (setq default-directory (file-name-as-directory project-root)))
           (when (= (buffer-size) 0)
-            (insert (format "#+title: %s\n\n* Tasks\n\n* Notes\n\n"
-                            (file-name-base (buffer-file-name))))))
+            (insert (format "#+title: %s\n\n%s\n\n* Tasks\n\n* Notes\n\n"
+                            (file-name-base (buffer-file-name))
+                            (my/project-dashboard-blocks
+                             (my/project-notes-slug)))))
+          ;; バッファ表示後に非同期で om-dash ブロックを更新する
+          (when (fboundp 'my/om-dash-schedule-update)
+            (my/om-dash-schedule-update (current-buffer))))
       (message "Not in a project"))))
 
 (defun my/capture-project-todo ()
@@ -621,9 +845,13 @@ project context."
   (php-mode . lsp-deferred)
   (scala-mode . lsp-deferred)
   (lua-mode . lsp-deferred)
+  (amber-mode . lsp-deferred)
   :custom
   ((lsp-completion-provider . :none))   ;; :none で company 自動有効化を抑制（capf 経由で corfu が補完を表示）
   :config
+  ;; Nix環境向けにlsp serverのパスを追加
+  (setq lsp-elixir-server-command
+	'("elixir-ls"))
   ;; gc-cons-threshold はグローバルGC管理(my/gc-*)に委譲
   (setq read-process-output-max (* 1024 1024))
   (setq lsp-idle-delay 1.0)
@@ -633,8 +861,16 @@ project context."
 
   (push '(nix-mode . "nil") lsp-language-id-configuration)
   (push '(python-mode . "python") lsp-language-id-configuration)
+  (push '(amber-mode . "amber") lsp-language-id-configuration)
   (with-eval-after-load 'lsp-mode
-    (push 'semgrep-ls lsp-disabled-clients)))
+    (push 'semgrep-ls lsp-disabled-clients)
+    (lsp-register-client
+     (make-lsp-client :new-connection (lsp-stdio-connection "amber-lsp")
+                      :major-modes '(amber-mode)
+                      :server-id 'amber-lsp
+                      :initialization-options
+                      (lambda ()
+                        `(:resourcesPath ,(expand-file-name "~/.cache/amber-lsp/resources")))))))
 
 ;; LSP Booster
 (defun lsp-booster--advice-json-parse (old-fn &rest args)
@@ -919,6 +1155,12 @@ _/_: Playlist Search     _s_  : Shuffle           _q_: Quit
          (:projectile-mode-map
           ("C-c p p" . projectile-persp-switch-project))))
 
+;; プロジェクト切替時のアクションをファイル選択ミニバッファから
+;; そのプロジェクトの org ノート (C-c n p) の表示に変更する
+;; 注意: projectile はこのアクションを引数なしで funcall する。
+;; 呼び出し時には default-directory が新プロジェクトに設定済み。
+(setq projectile-switch-project-action #'my/open-project-notes)
+
 ;; Git worktree をメインリポジトリと同じ perspective で扱う
 ;; worktrunk が作成した worktree (e.g. dotfiles.test-feature) も
 ;; "dotfiles" perspective に統合される
@@ -1071,11 +1313,18 @@ Forces re-root even if treemacs was already open on a different project."
 (leaf markdown-mode
   :bind
   (:markdown-mode-map
-   (("<Tab>" . markdown-cycle)))
-  :hook
-  (markdown-mode . (lambda ()
-                     (setq-local completion-at-point-functions
-				 (cons #'cape-emoji completion-at-point-functions)))))
+   (("<Tab>" . markdown-cycle))))
+
+;; leaf の :hook がパッケージロード済み時に確実に効かないため直接登録する。
+;; markdown-ts-mode は markdown-mode から派生していないため両方に登録する。
+(defun my/blog-markdown-capf-setup ()
+  "Register blog tag completion for markdown buffers."
+  (setq-local completion-at-point-functions
+              (cons #'my/blog-tag-capf
+                    (cons #'cape-emoji completion-at-point-functions))))
+
+(add-hook 'markdown-mode-hook #'my/blog-markdown-capf-setup)
+(add-hook 'markdown-ts-mode-hook #'my/blog-markdown-capf-setup)
 
 ;; Migemo
 (leaf migemo
@@ -1113,6 +1362,11 @@ Forces re-root even if treemacs was already open on a different project."
 (leaf tempel
   :bind ((:evil-insert-state-map
           ("M-a" . tempel-done)))
+  :custom
+  ;; --init-directory=/tmp/emacsd-{name} で起動するため user-emacs-directory が
+  ;; /tmp/emacsd-{name} になり、デフォルトの tempel-path では
+  ;; テンプレートが見つからない。絶対パスで明示指定する。
+  ((tempel-path . "~/.emacs.d/templates"))
   :config 
   (defun tempel-setup-capf ()
     (setq-local completion-at-point-functions
@@ -1692,7 +1946,11 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 (leaf apheleia
   :require t
   :init
-  (apheleia-global-mode +1))
+  (apheleia-global-mode +1)
+  :config
+  ;; treefmt は Apheleia に組み込み済み (treefmt --stdin <file>)。
+  ;; treefmt-nix の wrapper (home.packages 経由) が PATH に乗っている前提。
+  (setf (alist-get 'nix-ts-mode apheleia-mode-alist) '(treefmt)))
 
 (leaf gerbil-mode
   :hook ((inferior-scheme-mode-hook . gambit-inferior-mode)))
@@ -1854,12 +2112,191 @@ Picks a random banner image each time."
 
 ;; ================ my extentions ================
 
+;; ================================================
+;; Blog tag completion
+;; YAML frontmatter の tags を Corfu で補完する。
+;; 参照: ~/.ghq/github.com/Comamoca/blog/src/blog/*.md
+;; ================================================
+
+(require 'yaml)
+
+(defvar my/blog-tags-dir
+  (expand-file-name "~/.ghq/github.com/Comamoca/blog/src/blog/")
+  "Directory containing blog markdown files.")
+
+(defvar my/blog-tag-cache nil
+  "Cached list of blog tags in frequency order.")
+
+(defun my/blog-extract-frontmatter (str)
+  "Extract the leading \"---\\n...\\n---\" block from STR.
+Return nil when there is no frontmatter."
+  (when (string-match-p "\\`---[ \t]*\n" str)
+    (let ((end (string-match "\n---[ \t]*\n?" str 3)))
+      (when end
+        (substring str 4 end)))))
+
+(defun my/blog-read-frontmatter (str)
+  "Parse frontmatter string STR into a hash table.
+Return nil on parse errors."
+  (condition-case nil
+      (yaml-parse-string str :object-type 'hash-table :object-key-type 'string)
+    (error nil)))
+
+(defun my/blog-tags-from-string (fm)
+  "Extract the tags list from frontmatter string FM.
+Uses `yaml-parse-string' so both `tags: [\"a\", \"b\"]' and the YAML list
+form (`tags:' followed by `- item' lines) are handled.  Returns nil when
+there are no tags."
+  (when-let* ((table (my/blog-read-frontmatter fm))
+              (tags (gethash "tags" table)))
+    (cl-remove-if-not #'stringp (append tags nil))))
+
+(defun my/blog-tags-from-file (file)
+  "Return the list of tags in the frontmatter of FILE."
+  (when-let* ((str (with-temp-buffer
+                     (insert-file-contents file)
+                     (buffer-string)))
+              (fm (my/blog-extract-frontmatter str)))
+    (my/blog-tags-from-string fm)))
+
+(defvar my/blog-file-tags-cache (make-hash-table :test #'equal)
+  "Per-file tag cache mapping blog post paths to their tag lists.")
+
+(defun my/blog-rebuild-tag-cache ()
+  "Rebuild `my/blog-tag-cache' from `my/blog-file-tags-cache'.
+Pure aggregation over cached data: no file I/O, so it is cheap."
+  (let ((counts (make-hash-table :test #'equal)))
+    (maphash (lambda (_file tags)
+               (dolist (tag tags)
+                 (puthash tag (1+ (gethash tag counts 0)) counts)))
+             my/blog-file-tags-cache)
+    (setq my/blog-tag-cache
+          (mapcar #'cdr
+                  (sort (cl-loop for k being the hash-keys of counts
+                                 using (hash-values v)
+                                 collect (cons v k))
+                        (lambda (a b) (> (car a) (car b))))))))
+
+(defun my/blog-refresh-tags ()
+  "Scan all blog posts and rebuild `my/blog-tag-cache' by frequency."
+  (interactive)
+  (clrhash my/blog-file-tags-cache)
+  (dolist (file (directory-files-recursively my/blog-tags-dir "\\.md\\'"))
+    (puthash file (my/blog-tags-from-file file) my/blog-file-tags-cache))
+  (my/blog-rebuild-tag-cache))
+
+(defun my/blog-update-tags-for-file (file)
+  "Incrementally update the tag cache for the single blog post FILE."
+  (puthash file (my/blog-tags-from-file file) my/blog-file-tags-cache)
+  (my/blog-rebuild-tag-cache))
+
+(defun my/blog-buffer-p ()
+  "Return non-nil when the current buffer is a blog post."
+  (let ((file (buffer-file-name)))
+    (and file
+         (string-prefix-p (expand-file-name my/blog-tags-dir)
+                          (expand-file-name file)))))
+
+(defvar-local my/blog-frontmatter-end-line-cache nil
+  "Cached frontmatter end line, invalidated on buffer modification.")
+
+(defun my/blog-frontmatter-end-line ()
+  "Return the line number where the frontmatter ends, or nil.
+Only the first 64 lines are inspected since frontmatter is always at
+the top; the result is cached and invalidated on buffer change."
+  (or my/blog-frontmatter-end-line-cache
+      (setq my/blog-frontmatter-end-line-cache
+            (save-excursion
+              (goto-char (point-min))
+              (when-let* ((str (buffer-substring
+                                (point-min)
+                                (min (point-max)
+                                     (save-excursion
+                                       (forward-line 64)
+                                       (point))))))
+                (let ((fm (my/blog-extract-frontmatter str)))
+                  (when fm
+                    (+ 1 (cl-count ?\n fm)))))))))
+
+(defun my/blog-invalidate-frontmatter-cache (_beg _end _len)
+  "Invalidate the cached frontmatter end line in blog buffers."
+  (when (my/blog-buffer-p)
+    (setq my/blog-frontmatter-end-line-cache nil)))
+
+(add-hook 'after-change-functions #'my/blog-invalidate-frontmatter-cache)
+
+(defun my/blog-in-frontmatter-p ()
+  "Return non-nil when point is inside the frontmatter."
+  (when-let ((end (my/blog-frontmatter-end-line)))
+    (<= (line-number-at-pos) end)))
+
+(defun my/blog-tag-bounds ()
+  "Return (start . end) of the tag symbol at point in the frontmatter."
+  (when (and (my/blog-buffer-p) (my/blog-in-frontmatter-p))
+    (save-excursion
+      (let ((end (point)))
+        (skip-syntax-backward "-w")
+        (when (> (point) (point-min))
+          (cons (point) end))))))
+
+(defun my/blog-tag-capf ()
+  "Complete blog tags from `my/blog-tag-cache' inside the frontmatter."
+  (when-let* ((cache my/blog-tag-cache)
+              (bounds (my/blog-tag-bounds)))
+    (list (car bounds) (cdr bounds) cache :exclusive 'no)))
+
+(defun my/blog-maybe-refresh-tags ()
+  "Update the tag cache after saving a blog post.
+Only re-parses the saved file (a few milliseconds).  The previous
+implementation re-scanned every post via an idle timer, which blocked
+Emacs for seconds right after each save."
+  (when (my/blog-buffer-p)
+    (my/blog-update-tags-for-file (buffer-file-name))))
+
+(add-hook 'after-save-hook #'my/blog-maybe-refresh-tags)
+
+(defun my/blog-ensure-tag-cache ()
+  "Build `my/blog-tag-cache' on first blog edit if it is still empty."
+  (when (and (my/blog-buffer-p) (null my/blog-tag-cache))
+    (run-with-idle-timer 0.5 nil #'my/blog-refresh-tags)))
+
+(add-hook 'find-file-hook #'my/blog-ensure-tag-cache)
+
+;; 起動時に一度だけ遅延構築する (キャッシュが空のままの main デーモン対策)
+(run-with-idle-timer 2 nil #'my/blog-refresh-tags)
+
 (defun my/set-pwd-to-project-root ()
   "Set `default-directory` to the root of the current project."
   (when-let ((project (project-current)))
     (setq default-directory (project-root project))))
 
 (add-hook 'find-file-hook #'my/set-pwd-to-project-root)
+
+
+(defun my/kaho-birthday-days ()
+  (let* ((now (current-time))
+         (decoded (decode-time now))
+         (year (decoded-time-year decoded))
+         (target (encode-time 0 0 0 29 7 year)))
+    ;; まだ今年の7/29を過ぎていない場合は前年基準
+    (if (time-less-p now target)
+        (setq target (encode-time 0 0 0 29 7 (1- year))))
+    (truncate (/ (float-time (time-subtract now target)) 86400))))
+
+(defconst my/kaho-idol-url
+  "https://shinycolors.idolmaster-official.jp/idol/hokagoclimaxgirls/kaho/")
+
+(defun my/kaho-birthday-message ()
+  (interactive)
+  (insert (format "[小宮果穂](%s)さん、%d日目お誕生日おめでとうございます！"
+                  my/kaho-idol-url
+                  (my/kaho-birthday-days))))
+
+(defun my/kaho-birthday-message-org ()
+  (interactive)
+  (insert (format "[[%s][小宮果穂]]さん、%d日目お誕生日おめでとうございます！"
+                  my/kaho-idol-url
+                  (my/kaho-birthday-days))))
 
 
 (defun window-resizer ()
@@ -2353,12 +2790,14 @@ Picks a random banner image each time."
 
 ;; Copy & Paste with wl-clipboard
 ;; ref: https://gist.github.com/yorickvP/6132f237fbc289a45c808d8d75e0e1fb
-(setenv "WAYLAND_DISPLAY" "wayland-1")
+;; daemon 起動時 (systemd) に正しい値が入っていれば上書きしない
+(setenv "WAYLAND_DISPLAY" (or (getenv "WAYLAND_DISPLAY") "wayland-1"))
 
 (setq wl-copy-process nil)
 (defun wl-copy (text)
   (setq wl-copy-process (make-process :name "wl-copy"
 				      :buffer nil
+				      :noquery t
 				      :command '("wl-copy" "-f" "-n")
 				      ;; :command '("wl-copy")
 				      :connection-type 'pipe))
@@ -2374,6 +2813,73 @@ Picks a random banner image each time."
 
 (setq interprogram-cut-function 'wl-copy)
 (setq interprogram-paste-function 'wl-paste)
+
+;;; 画像クリップボード (Krita などへの画像貼り付け用)
+;; interprogram-cut-function はテキストしか扱えないため、画像は
+;; wl-copy で image/* MIME として直接コピーする。
+;; Wayland クリップボード → XWayland (Krita 等) への画像受け渡しは
+;; niri のクリップボード同期が MIME を透過するのでこの方式で動作する。
+(defvar wl-copy-image-mime-alist
+  '(("png"  . "image/png")
+    ("jpg"  . "image/jpeg")
+    ("jpeg" . "image/jpeg")
+    ("gif"  . "image/gif")
+    ("webp" . "image/webp")
+    ("bmp"  . "image/bmp")
+    ("tif"  . "image/tiff")
+    ("tiff" . "image/tiff"))
+  "画像拡張子と MIME タイプの対応表。")
+
+(defun wl-copy-image (file)
+  "FILE の画像を Wayland クリップボードへ image/* としてコピーする。
+未対応形式は ffmpeg で PNG に変換してからコピーする。
+wl-copy は stdin を読み切ると fork してクリップボードを保持し続ける。"
+  (interactive "f画像ファイル: ")
+  (unless (and (file-readable-p file) (file-regular-p file))
+    (user-error "画像ファイルを読み込めません: %s" file))
+  (let* ((ext (downcase (or (file-name-extension file) "")))
+         (mime (cdr (assoc ext wl-copy-image-mime-alist)))
+         (src file)
+         (cleanup nil))
+    (unless mime
+      (setq src (make-temp-file "wl-copy-img-" nil ".png")
+            cleanup t)
+      (unless (zerop (call-process "ffmpeg" nil nil nil
+                                   "-y" "-loglevel" "error"
+                                   "-i" file "-frames:v" "1" src))
+        (delete-file src)
+        (user-error "ffmpeg での変換に失敗しました: %s" file))
+      (setq mime "image/png"))
+    ;; wl-copy は親プロセスが stdin を読み切って fork してから終了するため、
+    ;; その後に一時ファイルを削除してよい
+    (start-process "wl-copy-image" nil "sh" "-c"
+                   (format "wl-copy -t %s < %s%s"
+                           mime (shell-quote-argument src)
+                           (if cleanup
+                               (format " && rm -f %s"
+                                       (shell-quote-argument src))
+                             "")))
+    (message "画像をクリップボードにコピーしました: %s" file)))
+
+(defun wl-copy-image-from-dired ()
+  "dired のカーソル位置 (またはマーク) の画像をクリップボードへコピーする。"
+  (interactive)
+  (wl-copy-image (dired-get-file-for-visit)))
+
+(defun org-copy-image-at-point ()
+  "ポイント位置の org リンクが指す画像をクリップボードへコピーする。"
+  (interactive)
+  (require 'org-element)
+  (let ((path (org-element-property :path (org-element-context))))
+    (setq path (and path (expand-file-name path)))
+    (unless (and path (file-regular-p path))
+      (user-error "ここには画像ファイルがありません"))
+    (wl-copy-image path)))
+
+(with-eval-after-load 'dired
+  (define-key dired-mode-map (kbd "C-c C-w") #'wl-copy-image-from-dired))
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c C-i") #'org-copy-image-at-point))
 
 ;; フレーム透過を遅延適用（PGTKでは透過が背景色描画より先に効いて
 ;; 空っぽの透明窓が数秒表示されるのを防ぐため、default-frame-alist では
