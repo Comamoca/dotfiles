@@ -87,4 +87,5 @@ with pkgs;
   xdg-user-dirs
   xremap
   yq
+  (callPackage ../pkgs/celld/package.nix { })
 ]
