@@ -595,6 +595,11 @@ binds {
     Mod+Shift+F { fullscreen-window; }
     Mod+C { center-column; }
 
+    // Floating window controls
+    // フォーカス中のウィンドウをフローティング/タイル切り替え
+    Mod+Shift+Space { toggle-window-floating; }
+    // 移動/リサイズは組み込み: Mod+左ドラッグで移動、Mod+右ドラッグでリサイズ
+
     // Finer width adjustments.
     // This command can also:
     // * set width in pixels: "1000"
