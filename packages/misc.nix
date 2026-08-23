@@ -5,7 +5,7 @@ with pkgs;
   zenn-cli
   nb
   w3m
-  nixVersions.nix_2_28
+  nixVersions.nix_2_31
   godot
   arduino
   meson
@@ -39,4 +39,5 @@ with pkgs;
   nurpkgs.bsky
 
   pinta
+  krita
 ]

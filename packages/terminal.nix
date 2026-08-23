@@ -25,15 +25,17 @@ with pkgs;
   ghostty
 
   aider-chat
-  claude-code-acp
+  claude-agent-acp
 
   llm-agents.claude-code
   llm-agents.opencode
   llm-agents.oh-my-opencode
   llm-agents.gemini-cli
   llm-agents.crush
-  pkgs.llm-agents.bernstein
+  llm-agents.bernstein
+  llm-agents.agent-browser
+  llm-agents.fence
 
-  # takt 
+  # takt
   hunk
 ]
