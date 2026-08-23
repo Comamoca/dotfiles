@@ -72,12 +72,29 @@ in
     distributedBuilds = true;
     buildMachines = [
       {
-        hostName = "eu.nixbuild.net";
+        # nixbuild.net の新SSH実装 (port 2223)。旧実装 (port 22) は OpenSSH 10.4+ と非互換。
+        # ref: https://github.com/nixbuild/feedback/issues/49
+        hostName = "eu.nixbuild.net:2223";
         sshUser = "coma";
         sshKey = "/home/coma/.ssh/my-nixbuild-key";
-        systems = [ "x86_64-linux" "aarch64-linux" ];
-        maxJobs = 100;
-        supportedFeatures = [ "benchmark" "big-parallel" "nixos-test" ];
+        # root (nix-daemon) has no known_hosts entry for this host, so every
+        # dispatch attempt hangs/fails SSH host-key verification. Pinning the
+        # key inline (same key already trusted in ~/.ssh/known_hosts) lets
+        # nix skip known_hosts entirely.
+        # base64 は "[eu.nixbuild.net]:2223 ssh-ed25519 <key>" 形式でエンコードする必要がある。
+        # 非標準ポート接続時、SSHはホスト部を "[host]:port" 表記で照合するため、
+        # 角括弧+ポートを省いた形式だとホストキー照合が常に失敗する。
+        publicHostKey = "W2V1Lm5peGJ1aWxkLm5ldF06MjIyMyBzc2gtZWQyNTUxOSBBQUFBQzNOemFDMWxaREkxTlRFNUFBQUFJUElRQ1pjNTRwb0o4dnFhd2Q4VHJhTnJ5UWVKbnZIMWVMcElEZ2JpcXltTQ==";
+        systems = [
+          "x86_64-linux"
+          "aarch64-linux"
+        ];
+        maxJobs = 16;
+        supportedFeatures = [
+          "benchmark"
+          "big-parallel"
+          "nixos-test"
+        ];
       }
     ];
     settings = {
@@ -90,12 +107,16 @@ in
         "root"
         "coma"
       ];
-      substituters = [
+      # 素の substituters/trusted-public-keys は NixOS のデフォルト
+      # (cache.nixos.org) を上書きしてしまうため、extra- を使って追加する。
+      extra-substituters = [
         "https://cache.iog.io"
       ];
-      trusted-public-keys = [
+      extra-trusted-public-keys = [
         "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
       ];
+      # ローカルの並列ビルド枠を絞り、溢れた分を nixbuild.net にオフロードさせる。
+      max-jobs = 2;
     };
     gc = {
       automatic = true;
@@ -108,6 +129,20 @@ in
     };
   };
 
+  # nix.buildMachines.*.publicHostKey (/etc/nix/machines field 8) doesn't
+  # suppress SSH host-key checking for the legacy "ssh://" protocol used
+  # above, so nix-daemon (root) still fails with "Host key verification
+  # failed" since root has no known_hosts entry of its own. Registering the
+  # key system-wide (/etc/ssh/ssh_known_hosts, referenced via
+  # GlobalKnownHostsFile) covers root regardless of protocol.
+  programs.ssh.knownHosts."eu.nixbuild.net" = {
+    hostNames = [
+      "eu.nixbuild.net"
+      "[eu.nixbuild.net]:2223"
+    ];
+    publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPIQCZc54poJ8vqawd8TraNryQeJnvH1eLpIDgbiqymM";
+  };
+
   # Bootloader.
   boot.loader = {
     # systemd-bootを無効化してGRUBに移行
@@ -116,7 +151,7 @@ in
     # GRUB設定（UEFI対応）
     grub = {
       enable = true;
-      device = "nodev";           # UEFI環境では"nodev"
+      device = "nodev"; # UEFI環境では"nodev"
       efiSupport = true;
       efiInstallAsRemovable = false;
     };
@@ -133,10 +168,10 @@ in
   # niriのバージョンアップやカーネル更新後に不要になる可能性あり。
   # 検証手順は config/niri/WORKAROUNDS.md を参照。
   boot.kernelParams = [
-    "i915.enable_psr=0"      # Panel Self Refreshを無効化 - 外部ディスプレイ接続/切断時の表示崩れを防止
-    "i915.enable_fbc=0"      # Frame Buffer Compressionを無効化 - マルチディスプレイ時のレンダリング安定性向上
-    "i915.enable_dc=0"       # Display C-statesを無効化 - ディスプレイの電力状態遷移によるブラックアウト防止
-    "loglevel=7"             # カーネルログ詳細化 - パニック調査のためデフォルト(4)から引き上げ
+    "i915.enable_psr=0" # Panel Self Refreshを無効化 - 外部ディスプレイ接続/切断時の表示崩れを防止
+    "i915.enable_fbc=0" # Frame Buffer Compressionを無効化 - マルチディスプレイ時のレンダリング安定性向上
+    "i915.enable_dc=0" # Display C-statesを無効化 - ディスプレイの電力状態遷移によるブラックアウト防止
+    "loglevel=7" # カーネルログ詳細化 - パニック調査のためデフォルト(4)から引き上げ
     "crash_kexec_post_notifiers" # パニック時にnotifier完了後にkexecを実行 - クラッシュダンプ保存を確実にする
   ];
   # カーネルパニック時のクラッシュダンプ保存
@@ -159,8 +194,8 @@ in
   catppuccin.sddm.enable = true;
 
   # GRUB用Catppuccin Mochaテーマ
-  catppuccin.grub.enable = true;      # boolean型
-  catppuccin.grub.flavor = "mocha";   # "mocha"を指定
+  catppuccin.grub.enable = true; # boolean型
+  catppuccin.grub.flavor = "mocha"; # "mocha"を指定
 
   networking.hostName = "comabook"; # Define your hostname.
   # networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
@@ -168,7 +203,6 @@ in
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
 
   networking.nat = {
     enable = true;
@@ -214,7 +248,10 @@ in
   services.ollama = {
     enable = true;
     package = unstable-pkgs.ollama;
-    loadModels = [ "qwen2.5-coder:1.5b" "qwen2.5-coder:0.5b" ];
+    loadModels = [
+      "qwen2.5-coder:1.5b"
+      "qwen2.5-coder:0.5b"
+    ];
   };
 
   services.xremap = {
@@ -223,6 +260,13 @@ in
     userName = "coma";
 
     config = xremap.xremap-config;
+  };
+
+  # Wacom ペンタブの ExpressKeys をキーに変換するための input-remapper サービス。
+  # プリセットは Home Manager の activation スクリプト(setupWacomInputRemapper)が
+  # ~/.config/input-remapper-2/ に配置し、autoload する。
+  services.input-remapper = {
+    enable = true;
   };
 
   # NextDNS
@@ -361,8 +405,8 @@ in
       "kvm"
       "adbusers"
       "plugdev"
-      "inputs"
-      "video"  # Fix: Add video group for DRM device access (niri display hotplug)
+      "input" # input-remapper が /dev/input を読むために必要
+      "video" # Fix: Add video group for DRM device access (niri display hotplug)
     ];
     packages = with pkgs; [
       #  thunderbird
@@ -379,6 +423,7 @@ in
   # Install irefox.
   programs.firefox = {
     enable = true;
+    languagePacks = [ "ja" "en-US" ];
     # profiles = {
     #   myprofile = {
     #     settings = {
@@ -578,24 +623,37 @@ in
       localAddress = "192.168.100.2";
 
       forwardPorts = [
-        { hostPort = 10001; containerPort = 80; }
+        {
+          hostPort = 10001;
+          containerPort = 80;
+        }
       ];
 
       hostAddress6 = "fc00::1";
       localAddress6 = "fc00::2";
-      config = { config, pkgs, lib, ... }: {
-        services.httpd = {
-          enable = true;
-          adminAddr = "admin@example.org";
+      config =
+        {
+          config,
+          pkgs,
+          lib,
+          ...
+        }:
+        {
+          services.httpd = {
+            enable = true;
+            adminAddr = "admin@example.org";
+          };
+
+          networking = {
+            firewall.allowedTCPPorts = [
+              22
+              80
+            ];
+            useHostResolvConf = lib.mkForce false;
+          };
+          services.resolved.enable = true;
+          system.stateVersion = "24.11";
         };
-    
-        networking = {
-          firewall.allowedTCPPorts = [ 22 80 ];
-          useHostResolvConf = lib.mkForce false;
-        };
-        services.resolved.enable = true;
-        system.stateVersion = "24.11";
-      };
     };
 
     ai-agent = {
@@ -605,30 +663,43 @@ in
       localAddress = "192.168.100.3";
 
       forwardPorts = [
-        { hostPort = 10002; containerPort = 80; }
+        {
+          hostPort = 10002;
+          containerPort = 80;
+        }
       ];
 
       hostAddress6 = "fc00::3";
       localAddress6 = "fc00::4";
-      config = { config, pkgs, lib, ... }: {
-        networking = {
-          firewall.allowedTCPPorts = [ 22 80 ];
-          useHostResolvConf = lib.mkForce false;
+      config =
+        {
+          config,
+          pkgs,
+          lib,
+          ...
+        }:
+        {
+          networking = {
+            firewall.allowedTCPPorts = [
+              22
+              80
+            ];
+            useHostResolvConf = lib.mkForce false;
+          };
+
+          users.users.coma = {
+            isNormalUser = true;
+            home = "/home/coma";
+            extraGroups = [ "wheel" ];
+          };
+
+          environment.systemPackages = with pkgs; [
+            git
+          ];
+
+          services.resolved.enable = true;
+          system.stateVersion = "24.11";
         };
-
-        users.users.coma = {
-          isNormalUser = true;
-          home = "/home/coma";
-          extraGroups = [ "wheel" ];
-        };
-
-        environment.systemPackages = with pkgs; [
-          git
-        ];
-
-        services.resolved.enable = true;
-        system.stateVersion = "24.11";
-      };
     };
   };
 

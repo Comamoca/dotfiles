@@ -57,12 +57,29 @@ in
     distributedBuilds = true;
     buildMachines = [
       {
-        hostName = "eu.nixbuild.net";
+        # nixbuild.net の新SSH実装 (port 2223)。旧実装 (port 22) は OpenSSH 10.4+ と非互換。
+        # ref: https://github.com/nixbuild/feedback/issues/49
+        hostName = "eu.nixbuild.net:2223";
         sshUser = "coma";
         sshKey = "/home/coma/.ssh/my-nixbuild-key";
-        systems = [ "x86_64-linux" "aarch64-linux" ];
-        maxJobs = 100;
-        supportedFeatures = [ "benchmark" "big-parallel" "nixos-test" ];
+        # root (nix-daemon) has no known_hosts entry for this host, so every
+        # dispatch attempt hangs/fails SSH host-key verification. Pinning the
+        # key inline (same key already trusted in ~/.ssh/known_hosts) lets
+        # nix skip known_hosts entirely.
+        # base64 は "[eu.nixbuild.net]:2223 ssh-ed25519 <key>" 形式でエンコードする必要がある。
+        # 非標準ポート接続時、SSHはホスト部を "[host]:port" 表記で照合するため、
+        # 角括弧+ポートを省いた形式だとホストキー照合が常に失敗する。
+        publicHostKey = "W2V1Lm5peGJ1aWxkLm5ldF06MjIyMyBzc2gtZWQyNTUxOSBBQUFBQzNOemFDMWxaREkxTlRFNUFBQUFJUElRQ1pjNTRwb0o4dnFhd2Q4VHJhTnJ5UWVKbnZIMWVMcElEZ2JpcXltTQ==";
+        systems = [
+          "x86_64-linux"
+          "aarch64-linux"
+        ];
+        maxJobs = 16;
+        supportedFeatures = [
+          "benchmark"
+          "big-parallel"
+          "nixos-test"
+        ];
       }
     ];
     settings = {
@@ -75,6 +92,8 @@ in
         "root"
         "coma"
       ];
+      # ローカルの並列ビルド枠を絞り、溢れた分を nixbuild.net にオフロードさせる。
+      max-jobs = 2;
     };
     gc = {
       automatic = true;

@@ -74,10 +74,11 @@ with pkgs;
   usbutils
   vhs
   wev
-  wf-recorder
+  (wf-recorder.override { ffmpeg_8 = ffmpeg_7; })
   which
   wireless-regdb
   wl-clipboard
+  wl-clip-persist
   wlay
   wlsunset
   wofi
