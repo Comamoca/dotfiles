@@ -1,0 +1,9 @@
+# Bernstein orchestration config
+# Uncomment and edit the goal, then run: bernstein
+
+goal: "Manage and improve the dotfiles configuration"
+
+cli: opencode # Use OpenCode as the CLI agent backend
+team: auto
+model: opencode-go/deepseek-v4-flash # Use OpenCode Go (free tier)
+internal_llm_provider: none # Disable evolution/auto_decompose (OpenRouter key not configured)

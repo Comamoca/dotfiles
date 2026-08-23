@@ -1,0 +1,87 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
+  "claude_code": {
+    "agents": false
+  },
+  "agents": {
+    "sisyphus": {
+      "fallback_models": [
+        "opencode/claude-opus-5 max",
+        "opencode-go/kimi-k2.7-code",
+        "opencode/gpt-5.6-sol medium",
+        "opencode/glm-5.2",
+        "opencode/big-pickle"
+      ]
+    },
+    "prometheus": {
+      "fallback_models": [
+        "opencode/claude-fable-5 xhigh",
+        "opencode-go/kimi-k2.7-code max"
+      ]
+    },
+    "metis": {
+      "fallback_models": [
+        "opencode/claude-opus-5 high",
+        "opencode-go/kimi-k2.7-code low"
+      ]
+    },
+    "multimodal-looker": {
+      "fallback_models": [
+        "opencode/gpt-5.6-sol low",
+        "opencode-go/kimi-k2.7-code",
+        "opencode/glm-4.6v",
+        "opencode/gpt-5-nano"
+      ]
+    },
+    "atlas": {
+      "fallback_models": [
+        "opencode/claude-sonnet-5",
+        "opencode-go/kimi-k2.7-code",
+        "opencode/gpt-5.6-sol medium",
+        "opencode-go/minimax-m3",
+        "opencode-go/minimax-m2.7"
+      ]
+    },
+    "sisyphus-junior": {
+      "fallback_models": [
+        "opencode/claude-sonnet-5",
+        "opencode-go/kimi-k2.7-code",
+        "opencode/gpt-5.6-sol medium",
+        "opencode-go/minimax-m3",
+        "opencode-go/minimax-m2.7",
+        "opencode/big-pickle"
+      ]
+    }
+  },
+  "categories": {
+    "visual-engineering": {
+      "models": [
+        "opencode/claude-opus-5 max",
+        "opencode-go/kimi-k2.7-code max",
+        "opencode/glm-5.2 max",
+        "opencode/gpt-5.6-sol medium"
+      ]
+    },
+    "artistry": {
+      "models": [
+        "opencode/claude-fable-5 xhigh",
+        "opencode-go/kimi-k2.7-code max",
+        "opencode/claude-opus-5 xhigh"
+      ]
+    },
+    "unspecified-high": {
+      "models": [
+        "opencode-go/kimi-k2.7-code max",
+        "opencode/claude-opus-5 xhigh",
+        "opencode/gpt-5.6-sol high"
+      ]
+    },
+    "writing": {
+      "models": [
+        "opencode-go/kimi-k2.7-code low",
+        "opencode/claude-opus-5 low",
+        "opencode/gemini-3.6-flash"
+      ]
+    }
+  }
+}
