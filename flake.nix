@@ -82,6 +82,13 @@
       url = "github:modem-dev/hunk";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # main の vendorHash が go.mod と同期切れしている (2026-08-24 時点) ため
+    # セルフコンシステントな v0.18.0 タグにピン留めする。
+    hister = {
+      url = "github:asciimoo/hister/v0.18.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   nixConfig = {
@@ -258,6 +265,7 @@
               inputs.sops-nix.homeManagerModules.sops
               inputs.dms.homeModules.dank-material-shell
               inputs.nix-index-database.homeModules.default
+              inputs.hister.homeModules.default
               {
                 nixpkgs.overlays = overlays ++ [
                   inputs.deploy-rs.overlays.default

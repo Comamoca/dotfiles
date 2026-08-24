@@ -815,6 +815,16 @@ rec {
     };
   };
 
+  # セルフホストの検索エンジン。ブラウザ拡張の履歴取り込み先。
+  # Web UI: http://127.0.0.1:4433
+  # データはデフォルトの ~/.config/hister に置かれる。
+  services.hister = {
+    enable = true;
+    settings = {
+      server.address = "127.0.0.1:4433";
+    };
+  };
+
   # Emacs daemon テンプレートユニット。
   # 名前付きデーモン機能により main/test/coding 等のインスタンスを分離。
   # %I にインスタンス名が入り、emacs-daemon-script に引数として渡される。
