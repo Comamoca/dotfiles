@@ -123,6 +123,11 @@ surrogate minibuffer frame errors."
     (define-key evil-normal-state-map (kbd "SPC i") #'consult-buffer))
   :bind* (("C-." . embark-act)))
 
+;; hister × consult リアルタイム検索
+(with-eval-after-load 'consult
+  (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+  (require 'hister))
+
 (leaf consult-dir)
 
 ;; Embark
