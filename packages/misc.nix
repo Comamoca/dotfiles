@@ -40,4 +40,5 @@ with pkgs;
 
   pinta
   krita
+  nyxt
 ]

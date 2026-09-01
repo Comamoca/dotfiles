@@ -462,6 +462,11 @@ rec {
         recursive = true;
       };
 
+      ".config/nyxt" = {
+        source = (symlink /${dotfiles}/config/nyxt);
+        recursive = true;
+      };
+
       ".config/sway" = {
         source = (symlink /${dotfiles}/config/sway);
         recursive = true;
