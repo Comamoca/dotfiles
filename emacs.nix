@@ -475,6 +475,8 @@ in
     lsp-mode
     lsp-ui
 
+    dap-mode
+
     corfu
     cape
 

@@ -946,6 +946,93 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
 
 (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 
+;; DAP Mode — Debug Adapter Protocol support
+(leaf dap-mode
+  :after lsp-mode
+  :config
+  ;; Enable dap-mode features
+  (dap-auto-configure-mode 1)
+
+  ;; UI configuration
+  (setq dap-auto-show-output nil)
+
+  ;; Rust/LLDB debugging configuration (for Gleam compiler itself)
+  (require 'dap-codelldb)
+
+  ;; Configure codelldb path from vscode-lldb extension
+  (setq dap-codelldb-extension-path
+        (expand-file-name "~/.nix-profile/share/vscode/extensions/vadimcn.vscode-lldb"))
+
+  ;; Set the actual codelldb executable path
+  (setq dap-codelldb-debug-program
+        (expand-file-name "~/.nix-profile/share/vscode/extensions/vadimcn.vscode-lldb/adapter/codelldb"))
+
+  ;; Gleam compiler debug template (Rust/LLDB)
+  (dap-register-debug-template
+   "Rust::LLDB Gleam Compiler"
+   (list :type "lldb"
+         :request "launch"
+         :name "Debug Gleam Compiler"
+         :program "${workspaceFolder}/target/debug/gleam"
+         :args []
+         :cwd "${workspaceFolder}"
+         :sourceLanguages ["rust"]))
+
+  ;; Gleam compiler debug with test project (persistent setup)
+  (dap-register-debug-template
+   "Gleam Compiler :: Debug with Test Project"
+   (let* ((env-table (make-hash-table :test 'equal))
+          ;; 動的にErlangパスを検索
+          (erlang-path
+           (string-trim
+            (shell-command-to-string
+             "find /nix/store -maxdepth 1 -name '*erlang-28*' -type d 2>/dev/null | head -1")))
+          (erlang-bin (if (and erlang-path (file-directory-p erlang-path))
+                          (concat erlang-path "/bin")
+                        ;; フォールバック: システムのErlangを使用
+                        (file-name-directory (executable-find "erl")))))
+     (when erlang-bin
+       (puthash "PATH" (concat erlang-bin ":" (getenv "PATH")) env-table))
+     (list :type "lldb-vscode"
+           :request "launch"
+           :name "Debug Gleam Compiler AST"
+           :program (expand-file-name "~/.ghq/github.com/gleam-lang/gleam/target/debug/gleam")
+           :args (vector "build")
+           :cwd (expand-file-name "~/.local/share/gleam-debug-test/debug_test")
+           :env env-table
+           :stopOnEntry t)))
+
+  ;; Elixir/Erlang debugging configuration (for programs written in Gleam)
+  (require 'dap-elixir)
+
+  ;; Gleam program debug configuration (uses Erlang/BEAM debugger via ElixirLS)
+  (dap-register-debug-template
+   "Gleam :: Run Program"
+   (list :type "mix_task"
+         :name "gleam:run"
+         :request "launch"
+         :task "run"
+         :taskArgs '()
+         :projectDir (lsp-workspace-root)
+         :requireFiles '()
+         :startApps t
+         :dap-server-path '("elixir-ls")))
+
+  :bind
+  (:dap-mode-map
+   ("C-c d d" . dap-debug)
+   ("C-c d r" . dap-debug-restart)
+   ("C-c d l" . dap-debug-last)
+   ("C-c d b" . dap-breakpoint-toggle)
+   ("C-c d n" . dap-next)
+   ("C-c d i" . dap-step-in)
+   ("C-c d o" . dap-step-out)
+   ("C-c d c" . dap-continue)))
+
+;; SPC d でdap-hydraを起動
+(with-eval-after-load 'dap-mode
+  (define-key evil-normal-state-map (kbd "SPC d") #'dap-hydra))
+
 ;; Auto Formatting — reformatter-define はマクロのため :require t 必須
 (leaf reformatter
   :require t

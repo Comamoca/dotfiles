@@ -25,5 +25,10 @@ with pkgs;
   typescript-language-server
   luau
 
+  # Debug Adapter Protocol
+  (pkgs.lib.hiPrio elixir-ls)
+  lldb
+  vscode-extensions.vadimcn.vscode-lldb  # codelldb for Rust debugging
+
   opensrc
 ]
