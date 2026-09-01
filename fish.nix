@@ -102,7 +102,6 @@
     # fish_add_path $HOME/go/bin
     # fish_add_path $HOME/local/
 
-    alias claude-code-acp="CLAUDE_ACP_SKIP_PERMISSIONS=true claude-code-acp"
     alias nixos-rebuild="/run/current-system/sw/bin/nixos-rebuild"
     alias magit="emacsclient -s main -c --eval '(magit)'"
     alias emain="emacsclient -s main"
