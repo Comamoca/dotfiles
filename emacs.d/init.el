@@ -975,7 +975,17 @@ Uses --json-object-type hashtable to match Nix-compiled lsp-mode (lsp-use-plists
   :config
   (with-eval-after-load 'corfu
     (define-key corfu-map (kbd "C-n") #'corfu-next)
-    (define-key corfu-map (kbd "C-p") #'corfu-previous))
+    (define-key corfu-map (kbd "C-p") #'corfu-previous)
+
+    ;; corfu-auto のタイマー発火と RET 等によるバッファ変更がレースすると
+    ;; completion-in-region--data が nil のまま corfu--update が走り
+    ;; "Wrong type argument: number-or-marker-p" で落ちることがある
+    ;; (upstream: https://github.com/minad/corfu/issues/67, #85)。
+    ;; nil のときは何もせず抜けるようにガードする。
+    (advice-add 'corfu--update :around
+                (lambda (orig-fn &rest args)
+                  (when completion-in-region--data
+                    (apply orig-fn args)))))
 
   :init
   (global-corfu-mode))
@@ -1097,7 +1107,7 @@ Starts from PAGE and accumulates into ACCUMULATED list."
                  (message "No tracks found in this playlist."))))
           (message "No playlists found.")))))))
 
-(defhydra hydra-spotify (:hint nil)
+(defhydra hydra-spotify (:hint nil :pre (require 'smudge))
   "
 ^Search^                  ^Control^               ^Manage^
 ^^^^^^^^-----------------------------------------------------------------
@@ -1184,6 +1194,23 @@ _/_: Playlist Search     _s_  : Shuffle           _q_: Quit
   (setq persp-save-dir (expand-file-name "perspectives/" user-emacs-directory))
   (make-directory persp-save-dir t)
   (persp-mode 1))
+
+;; persp-kill switches into the target via with-perspective (persp-switch)
+;; before removing it from perspectives-hash. If that intermediate switch
+;; is ever interrupted, the perspective struct is left registered with
+;; :killed t but never removed -- and re-running persp-kill on it fails
+;; the same way, since it also switches in first. Repair such zombies at
+;; persp-new, the common get-or-create choke point for persp-switch,
+;; with-perspective, and the Projectile bridge.
+(defun my/persp-repair-zombie (name)
+  "Delete a killed-but-registered perspective named NAME so it can be recreated."
+  (let ((persp (gethash name (perspectives-hash))))
+    (when (and persp (persp-killed-p persp))
+      (message "perspective: repairing zombie perspective `%s'" name)
+      (setf (persp-killed persp) nil)
+      (persp-kill name))))
+
+(advice-add 'persp-new :before #'my/persp-repair-zombie)
 
 ;; Perspective x Projectile bridge
 (leaf persp-projectile
@@ -1353,6 +1380,24 @@ Forces re-root even if treemacs was already open on a different project."
   :bind
   (:markdown-mode-map
    (("<Tab>" . markdown-cycle))))
+
+(leaf markdown-ts-mode
+  :config
+  (with-eval-after-load 'markdown-ts-mode
+    ;; ddskk が `newline' に :around advice (newline@skk-ad) を付けると
+    ;; (func-arity 'newline) が (0 . 2) ではなく (0 . many) を返すようになる。
+    ;; markdown-ts--run-command-in-code-block はこの arity を (zerop arity) で
+    ;; 判定しており、symbol の many を渡すと
+    ;; "Wrong type argument: number-or-marker-p, many" で落ちる
+    ;; (コードブロック内で RET/C-j/M-RET を押すと発生)。
+    ;; newline の実際の arity は (0 . 2) なので、ここで矯正する。
+    (advice-add
+     'func-arity :around
+     (lambda (orig-fun fn)
+       (let ((arity (funcall orig-fun fn)))
+         (if (and (eq fn 'newline) (eq (cdr arity) 'many))
+             (cons (car arity) 2)
+           arity))))))
 
 ;; leaf の :hook がパッケージロード済み時に確実に効かないため直接登録する。
 ;; markdown-ts-mode は markdown-mode から派生していないため両方に登録する。
@@ -2485,12 +2530,25 @@ Emacs for seconds right after each save."
   (setq display-time-day-and-date t)
   (display-time-mode t))
 
+(defun mode-line-format--custom-entry-p (entry)
+  "ENTRY が `mode-line-format-update' によって追加された :eval 要素かどうか。
+再読み込みのたびに `mode-line-format' へ重複追加されるのを防ぐための判定。"
+  (and (consp entry)
+       (eq (car entry) :eval)
+       (let ((form (cadr entry)))
+         (or (equal form '(update-buffer-char-count))
+             (equal form '(mode-line-time))
+             (eq form 'smudge-controller-player-status)
+             (and (consp form) (eq (car form) 'and))))))
+
 (defun mode-line-format-update ()
   (interactive)
   (setq-default mode-line-format
-                (append (default-value 'mode-line-format)
+                (append (seq-remove #'mode-line-format--custom-entry-p
+                                    (default-value 'mode-line-format))
                         '((:eval (update-buffer-char-count))
-                          (:eval smudge-controller-player-status)
+                          (:eval (and (boundp 'smudge-controller-player-status)
+                                      smudge-controller-player-status))
                           (:eval (mode-line-time))))))
 
 ;; For diary
