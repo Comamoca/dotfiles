@@ -234,10 +234,10 @@ surrogate minibuffer frame errors."
 
 ;; org-mode
 (leaf org
-  :after text-mode calendar-mode
+  :after text-mode calendar
   :custom
   ((org-todo-keywords .
-		      '((sequence "TODO(t)" "NEXT(n)" "IN-PROGRESS(i)" "WAIT(w@/!)" "SOMEDAY(s)" "|" "DONE(d!)" "CANCELED(c@)")))
+		      '((sequence "TODO(t)" "NEXT(n)" "PROG(i)" "WAIT(w@/!)" "|" "DONE(d!)" "CANCELED(c@)")))
    (org-default-notes-file . "notes.org")
    `(org-directory . ,(expand-file-name "~/.ghq/github.com/Comamoca/org"))
    `(diary-file-path . ,(format-time-string "diary/%Y/%m-%d.org"))
@@ -295,6 +295,45 @@ surrogate minibuffer frame errors."
      (gleam . t)))
   :bind ((:calendar-mode-map
           ("C-c c" . org-capture-from-calendar))))
+
+;; org-mode の改行: electric-indent-mode によって
+;; `org-indent-line' がリスト項目の本文位置(2桁)までインデントしてしまい、
+;; 続けて "- " を打つとネストが深くなる。現在行のインデントを引き継ぐようにする。
+(defun my/org-return-keep-indent ()
+  "現在行のインデントを引き継いで改行する `org-return'。
+表とソースブロックの中では通常の `org-return' の挙動を保つ。"
+  (interactive)
+  (if (or (org-at-table-p) (org-in-src-block-p))
+      (call-interactively #'org-return)
+    (let ((indent (current-indentation)))
+      (call-interactively #'org-return)
+      (indent-line-to indent))))
+
+(defconst my/org-empty-item-re
+  "^[ \t]*\\(?:[-+*]\\|\\(?:[0-9]+\\|[A-Za-z]\\)[.)]\\)\\(?:[ \t]+\\[[ X-]\\]\\)?[ \t]*$"
+  "本文が空の箇条書き項目にマッチする。")
+
+(defun my/org-return-list-item ()
+  "箇条書きの中で改行したら次の項目を自動で挿入する。
+番号付きリストの採番とチェックボックスは `org-insert-item' が引き継ぐ。
+本文が空の項目で改行した場合は項目を削除してリストを抜ける。
+表とソースブロックの中では通常の `org-return'、
+それ以外では `my/org-return-keep-indent' の挙動になる。
+箇条書きの中で普通に改行したいときは C-j (`org-return-and-maybe-indent')。"
+  (interactive)
+  (cond
+   ((or (org-at-table-p) (org-in-src-block-p))
+    (call-interactively #'org-return))
+   ;; 空の項目 → 箇条書きを抜ける
+   ((and (org-at-item-p)
+         (save-excursion (forward-line 0) (looking-at-p my/org-empty-item-re)))
+    (delete-region (line-beginning-position) (line-end-position)))
+   ;; 箇条書きの中 → 次の項目を作る (nil が返ったら下の節に落ちる)
+   ((and (org-in-item-p) (org-insert-item (org-at-item-checkbox-p))))
+   (t (my/org-return-keep-indent))))
+
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "RET") #'my/org-return-list-item))
 
 (add-hook 'org-mode-hook
           (lambda ()
@@ -384,7 +423,7 @@ surrogate minibuffer frame errors."
 
 ;; org-modern
 (leaf org-modern
-  :after org-mode
+  :after org
   :config
   (setq org-modern-list '((?* . "•")
                           (?+ . "•")
