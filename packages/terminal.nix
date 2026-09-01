@@ -36,6 +36,8 @@ with pkgs;
   llm-agents.agent-browser
   llm-agents.fence
 
+  (import ../pkgs/terminal-browser { inherit pkgs; })
+
   # takt
   hunk
 ]
