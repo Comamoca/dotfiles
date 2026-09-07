@@ -528,10 +528,6 @@ rec {
 
       ".config/opencode/tui.json".source = (symlink /${dotfiles}/config/opencode/tui.json);
 
-      ".config/opencode/oh-my-opencode.json".source = (
-        symlink /${dotfiles}/config/opencode/oh-my-opencode.json
-      );
-
       ".config/opencode/themes" = {
         source = (symlink /${dotfiles}/config/opencode/themes);
         recursive = true;

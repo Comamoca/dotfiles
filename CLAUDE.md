@@ -69,6 +69,21 @@ features
 
 ## Project-Specific Tooling Rules
 
+### oh-my-openagent (opencode) Configuration
+
+- **The active oh-my-openagent config is `~/.omo/omo.jsonc`**, sourced from
+  `config/omo/omo.jsonc` in this repo. `~/.omo/omo.jsonc` is an out-of-store
+  symlink, so edits apply without `home-manager switch`.
+- The legacy `~/.config/opencode/oh-my-opencode.json` (sourced from
+  `config/opencode/oh-my-opencode.json`) predates the 2026-07 opencode config
+  unification. **Do not edit it for model changes** — edit
+  `config/omo/omo.jsonc` instead, otherwise changes will not take effect.
+- Agent models are overridden per-harness under the `"[opencode]"` section of
+  `omo.jsonc`. `agents.<name>.model` sets the primary model;
+  `fallback_models` is only the runtime failover chain and does **not**
+  determine the primary model.
+- Model changes require restarting opencode (new session) to take effect.
+
 ### Emacs Lisp Evaluation
 
 This dotfiles setup runs multiple Emacs daemons as systemd units
