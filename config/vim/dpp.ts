@@ -34,24 +34,9 @@ export class Config extends BaseConfig {
     };
 
     const [context, options] = await args.contextBuilder.get(args.denops);
-    // const dotfilesDir = "~/.vim/";
     const dotfilesDir = "~/.config/vim/";
 
     const tomls: Toml[] = [];
-
-    const localPlugins = await args.dpp.extAction(
-      args.denops,
-      context,
-      options,
-      "local",
-      "local",
-      // {
-      //   directory: "/home/coma/.cache/dpp/_generated/nvim-treesitter/",
-      //   options: {
-      //     merged: false,
-      //   },
-      // },
-    ) as Plugin[];
 
     const toml_files: { name: string; lazy: boolean }[] = [
       { name: "dpp.toml", lazy: false },
@@ -60,7 +45,6 @@ export class Config extends BaseConfig {
       { name: "ddu.toml", lazy: true },
       { name: "ddc.toml", lazy: true },
       { name: "ft.toml", lazy: true },
-      // { name: "dap.toml", lazy: true },
     ];
 
     const toml_promises = toml_files.map(async (toml) => {
@@ -89,7 +73,7 @@ export class Config extends BaseConfig {
     const hooksFiles: string[] = [];
 
     tomls.forEach((toml) => {
-      for (const plugin of toml.plugins) {
+      for (const plugin of toml.plugins ?? []) {
         recordPlugins[plugin.name] = plugin;
       }
 
@@ -108,10 +92,6 @@ export class Config extends BaseConfig {
       }
     });
 
-    // localPlugins.forEach((plugin: Plugin) => {
-    //   recordPlugins[plugin.name] = plugin;
-    // });
-
     const lazyResult = await args.dpp.extAction(
       args.denops,
       context,
@@ -122,12 +102,6 @@ export class Config extends BaseConfig {
         plugins: Object.values(recordPlugins),
       },
     ) as LazyMakeStateResult;
-
-    // console.log(Object.values(recordPlugins));
-    // console.log({
-    //   plugins: lazyResult.plugins,
-    //   stateLines: lazyResult.stateLines,
-    // });
 
     return {
       plugins: lazyResult.plugins,

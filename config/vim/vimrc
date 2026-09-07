@@ -15,8 +15,6 @@ execute 'set runtimepath^=' .. '~/.cache/dpp_vim/repos/github.com/Shougo/dpp-ext
 execute 'set runtimepath^=' .. '~/.cache/dpp_vim/repos/github.com/Shougo/dpp-ext-lazy'
 
 
-" call dpp#min#load_state("~/.cache/dpp_vim")
-" call dpp#make_state("~/.cache/dpp_vim", "~/.config/vim/dpp.ts")
 if s:dpp_base->dpp#min#load_state()
   " NOTE: dpp#make_state() requires denops.vim
   execute 'set runtimepath^=' .. s:denops_src
@@ -25,7 +23,7 @@ if s:dpp_base->dpp#min#load_state()
   \ echo "denops ready"
 
   autocmd User DenopsReady
-  \ call dpp#make_state(s:dpp_base, '~/.vim/dpp.ts')
+  \ call dpp#make_state(s:dpp_base, '~/.config/vim/dpp.ts')
 
   autocmd BufWritePre *.ts,*.tsx call execute('LspDocumentFormatSync --server=efm-langserver')
 endif
@@ -70,10 +68,6 @@ set formatoptions-=o
 set completeopt=menuone,noinsert
 
 set autoindent
-" set smartindent
-" set cindent
-" set smarttab
-" set expandtab
 
 const mapleader = " "
 
@@ -85,19 +79,11 @@ nnoremap <silent> <C-[> <cmd>nohlsearch<CR>
 nnoremap <C-o> <cmd>Ddu file_rec<CR>
 nnoremap <C-i> <cmd>Ddu buffer<CR>
 nnoremap <C-u> <cmd>Ddu mr<CR>
-" nnoremap <C-u> <cmd>Ddu source<CR>
 nnoremap <Leader>l <cmd>call vimspector#Launch()<CR>
 
 nnoremap <Leader>f <cmd>call ddu#start({"name": "filer", "searchPath": expand('%:p'),})<CR>
 
 nnoremap <C-f> <cmd>close<CR>
-
-" nnoremap <buffer> <C-p> <Cmd>call <SID>operator_partedit()<CR>
-" nnoremap <C-o> <cmd>Ddu file_rec<CR>
-" nnoremap <C-o> <cmd>Ddu file_rec<CR>
-" nnoremap <C-o> <cmd>Ddu file_rec<CR>
-
-" execute("set runtimepath^=" .. expand("~/ghq/github.com/coma/memos.vim"))
 
 inoremap jj <C-[>
 nnoremap s <C-w>
@@ -108,8 +94,6 @@ function! s:cmd_win_hook() abort
     nnoremap <buffer> <C-c> <Cmd>quit<CR>
     inoremap <buffer> <C-c> <ESC><Cmd>quit<CR>
 endfunction
-
-" au BufNewFile,BufRead *.hy setf lisp
 
 let g:lightline = {
       \ 'colorscheme': 'edge',
@@ -139,20 +123,10 @@ let g:lightline = {
       \ }
 
 function Bufchar() abort
-	return wordcount()['chars'] 
+	return wordcount()['chars']
 endfunction
-      \   'bufchar': 'Bufchar',
-      \ }
-    \ }
-
-function! Bufchar() abort
-	return wordcount()['chars'] 
-endfunction
-
-" set runtimepath+=~/.ghq/github.com/Comamoca/vimskey
 
 set clipboard=unnamedplus
-set autoindent
 
 autocmd BufRead,ColorScheme * highlight Normal ctermbg=none
 autocmd BufRead *.lark set filetype=lark
@@ -182,7 +156,7 @@ function s:dduCustom(items, callback)
 		\   'params': {'texts': a:items, 'callbackId': a:callback}}]})
 endfunction
 
-function s:openConfig() abort 
+function s:openConfig() abort
     const configs = map(
     \  split(glob("~/.vim/*"), "\n"),
     \  "substitute(v:val, printf('%s/.vim/', $HOME), '', 'g')")
@@ -190,20 +164,11 @@ function s:openConfig() abort
     const configedit = denops#callback#register(
         \ {s -> execute(printf('e ~/.vim/%s', s), '')},
         \ {'once': v:true})
-    
+
     call s:dduCustom(configs, configedit)
 endfunction
 
 command! Configs call s:openConfig()
-
-
-" call s:dduCustom(['DppInstall', 'DppMakeState', 'DppUpdate'], exec)
-
-" const ghq_root = system('ghq root')
-
-" echo system("ghq list")
-" 	\ ->split()
-" 	\ ->map('"/home/coma/.ghq/" .. v:val')
 
 execute 'set runtimepath^=' .. '~/.ghq/github.com/Comamoca/memos.vim'
 execute 'set runtimepath^=' .. '~/.ghq/github.com/coma/ddu-kind-cd'
@@ -216,20 +181,15 @@ if has('vim_starting')
 endif
 
 set termguicolors
-" set background=dark
-" colorscheme gruvbox-material
-" colorscheme deep-space
-colorscheme catppuccin_mocha  
-" set background=dark
+colorscheme catppuccin_mocha
 
-" set termguicolors
 augroup TransparentBG
   	autocmd!
 	autocmd Colorscheme * highlight Normal ctermbg=none
 	autocmd Colorscheme * highlight NonText ctermbg=none
 	autocmd Colorscheme * highlight LineNr ctermbg=none
 	autocmd Colorscheme * highlight Folded ctermbg=none
-	autocmd Colorscheme * highlight EndOfBuffer ctermbg=none 
+	autocmd Colorscheme * highlight EndOfBuffer ctermbg=none
 augroup END
 
 set wildmenu
@@ -240,5 +200,3 @@ let g:deepspace_italics=1
 set runtimepath^=~/.ghq/github.com/Comamoca/denops.init/tmp
 set runtimepath^=~/.ghq/github.com/coma/vim-spotify
 set runtimepath^=~/.ghq/github.com/coma/vim-palette
-
-" set termguicolors

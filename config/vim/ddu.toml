@@ -2,8 +2,6 @@
 repo = 'Shougo/ddu.vim'
 on_event = ['BufRead', 'CursorHold']
 hook_source = '''
-" execute("source" .. expand("~/.vim/ddu.vim"))
-
 const width = &columns * 0.8
 const col = &columns * 0.12
 
@@ -283,11 +281,6 @@ on_source = 'ddu.vim'
 repo = 'Shougo/deol.nvim'
 on_source = 'ddu.vim'
 
-# [[plugins]]
-# repo = "hasundue/ddu-filter-zf"
-# on_source = 'ddu.vim'
-# build = 'deno task fetch' 
-
 [[plugins]]
 repo = 'kyoh86/ddu-source-command'
 on_source = 'ddu.vim'
@@ -295,7 +288,3 @@ on_source = 'ddu.vim'
 [[plugins]]
 repo = 'kuuote/ddu-source-mr'
 on_source = 'ddu.vim'
-
-# [[plugins]]
-# repo = '~/.ghq/github.com/coma/ddu-source-outline'
-# on_source = 'ddu.vim'
