@@ -1,9 +1,9 @@
 # ローカル Forgejo を home-manager 管理の systemd user service として起動する。
 # 管理者登録は初回に CLI で作成する:
-#   forgejo admin user create --config ~/.config/forgejo/app.ini \
+#   forgejo admin user create --config ~/.local/state/forgejo/custom/conf/app.ini \
 #     --admin --username coma --email coma@localhost --password <pass>
 # API トークンも CLI で発行できる:
-#   forgejo admin user generate-token --config ~/.config/forgejo/app.ini \
+#   forgejo admin user generate-token --config ~/.local/state/forgejo/custom/conf/app.ini \
 #     --username coma --token-name maestro
 {
   config,
@@ -11,12 +11,9 @@
   ...
 }: let
   stateDir = "${config.home.homeDirectory}/.local/state/forgejo";
-  configDir = "${config.home.homeDirectory}/.config/forgejo";
-in {
-  # systemd の switch 時に新規/更新ユニットを起動する
-  systemd.user.startServices = "sd-switch";
-
-  xdg.configFile."forgejo/app.ini".text = ''
+  # forgejo は起動時に internal token を app.ini へ追記するため、
+  # nix store から state 配下にコピーして書き込み可能にしておく。
+  appIni = pkgs.writeText "forgejo-app.ini" ''
     APP_NAME = forgejo (local)
     RUN_MODE = prod
     RUN_USER = coma
@@ -24,11 +21,9 @@ in {
     [server]
     PROTOCOL = http
     HTTP_ADDR = 127.0.0.1
-    HTTP_PORT = 3000
-    ROOT_URL = http://localhost:3000/
+    HTTP_PORT = 3300
+    ROOT_URL = http://localhost:3300/
     DISABLE_SSH = true
-    APP_DATA_PATH = ${stateDir}/data
-
     [database]
     DB_TYPE = sqlite3
     PATH = ${stateDir}/data/forgejo.db
@@ -48,6 +43,9 @@ in {
     [migrations]
     ALLOWED_DOMAINS = localhost,127.0.0.1
   '';
+in {
+  # systemd の switch 時に新規/更新ユニットを起動する
+  systemd.user.startServices = "sd-switch";
 
   systemd.user.services.forgejo = {
     Unit = {
@@ -56,10 +54,14 @@ in {
     };
     Service = {
       ExecStartPre = [
-        "${pkgs.coreutils}/bin/mkdir -p ${stateDir}/data"
+        "${pkgs.coreutils}/bin/mkdir -p ${stateDir}/custom/conf ${stateDir}/data"
+        "${pkgs.coreutils}/bin/install -m 600 ${appIni} ${stateDir}/custom/conf/app.ini"
       ];
-      ExecStart = "${pkgs.forgejo}/bin/forgejo web --config ${configDir}/app.ini";
-      Environment = "GITEA_WORK_DIR=${stateDir}";
+      ExecStart = "${pkgs.forgejo}/bin/forgejo web --config ${stateDir}/custom/conf/app.ini";
+      Environment = [
+        "GITEA_WORK_DIR=${stateDir}"
+        "GITEA_CUSTOM=${stateDir}/custom"
+      ];
       Restart = "on-failure";
       RestartSec = 5;
     };
