@@ -1,11 +1,9 @@
 [[plugins]]
 repo = 'neovim/nvim-lspconfig'
-# on_event = ['BufEnter']
 on_event = ['BufRead', 'CursorHold']
 lua_source = """
 require("configs/lsp")
 """
-# on_event = ['LspAttach']
 
 # Add `vim.*` in LSP suggestion
 [[plugins]]
@@ -20,14 +18,13 @@ lua_source = """
 require("mason").setup()
 """
 
-# [[plugins]]
-# repo = 'williamboman/mason-lspconfig.nvim'
-# on_source = 'mason.nvim'
-# lua_source = """
-# require("mason-lspconfig").setup_handlers({
-# 	function(server_name)
-# 		-- require("lspconfig")[server_name].setup({})
-# 		vim.lsp.enable(server_name)
-# 	end,
-# })
-# """
+# ensure_installed は lua/configs/lsp.lua で設定しているサーバと揃える
+[[plugins]]
+repo = 'williamboman/mason-lspconfig.nvim'
+on_source = 'mason.nvim'
+lua_source = """
+require("mason-lspconfig").setup({
+  ensure_installed = { "astro", "ts_ls", "denols" },
+  automatic_enable = true,
+})
+"""

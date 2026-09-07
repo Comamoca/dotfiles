@@ -27,8 +27,6 @@ command! Deol call deol#start()
 repo = "hrsh7th/nvim-insx"
 on_event = ['InsertEnter']
 lua_source = '''
--- require('insx.preset.standard').setup()
-
 local insx = require('insx')
 local esc = require('insx').helper.regex.esc
 
@@ -72,13 +70,6 @@ for k, v in pairs(brackets) do
   }))
 end
 '''
-
-# [[plugins]]
-# repo = 'm4xshen/autoclose.nvim'
-# on_event = ['InsertEnter']
-# lua_source = """
-# require("autoclose").setup()
-# """
 
 [[plugins]]
 repo = 'nvim-treesitter/nvim-treesitter'
@@ -192,8 +183,6 @@ on_source = ["nvim-treesitter"]
 
 [[plugins]]
 repo = 'hiphish/rainbow-delimiters.nvim'
-# on_source = ["nvim-treesitter"]
-# on_event = ['BufRead', 'CursorHold']
 lua_source = '''
 local rainbow_delimiters = require('rainbow-delimiters')
 
@@ -211,46 +200,12 @@ require('rainbow-delimiters.setup').setup(
             [''] = 110,
             lua = 210,
         },
-        -- highlight = {
-        --     'RainbowDelimiterRed',
-        --     'RainbowDelimiterYellow',
-        --     'RainbowDelimiterBlue',
-        --     'RainbowDelimiterOrange',
-        --     'RainbowDelimiterGreen',
-        --     'RainbowDelimiterViolet',
-        --     'RainbowDelimiterCyan',
-        -- },
     }
 )
-
--- vim.g.rainbow_delimiters = {
---     strategy = {
---         [''] = rainbow_delimiters.strategy['global'],
---         vim = rainbow_delimiters.strategy['local'],
---     },
---     query = {
---         [''] = 'rainbow-delimiters',
---         lua = 'rainbow-blocks',
---     },
---     priority = {
---         [''] = 110,
---         lua = 210,
---     },
---     -- highlight = {
---     --     'RainbowDelimiterRed',
---     --     'RainbowDelimiterYellow',
---     --     'RainbowDelimiterBlue',
---     --     'RainbowDelimiterOrange',
---     --     'RainbowDelimiterGreen',
---     --     'RainbowDelimiterViolet',
---     --     'RainbowDelimiterCyan',
---     -- },
--- }
 '''
 
 [[plugins]]
 repo = "numToStr/Comment.nvim"
-# on_event = ['BufEnter']
 on_event = ['BufRead', 'CursorHold']
 lua_source = """
 require('Comment').setup()
@@ -258,8 +213,6 @@ require('Comment').setup()
 
 [[plugins]]
 repo = "yuttie/comfortable-motion.vim"
-# on_event = ['BufEnter']
-# on_event = ['BufRead', 'CursorHold']
 hook_source = """
 nnoremap <silent><C-k> :<C-u>call comfortable_motion#flick(-70)<CR>
 nnoremap <silent><C-j> :<C-u>call comfortable_motion#flick(70)<CR>
@@ -267,12 +220,33 @@ nnoremap <silent><C-j> :<C-u>call comfortable_motion#flick(70)<CR>
 let g:comfortable_motion_no_default_key_mappings = 1
 """
 
-
 [[plugins]]
 repo = 'stevearc/oil.nvim'
-lua_source = "require(\"oil\").setup()\n"
 on_cmd = ["Oil"]
 on_event = ['BufRead', 'CursorHold']
+lua_source = '''
+require("oil").setup({
+  default_file_explorer = true,
+  keymaps = {
+    ["l"] = "actions.select",
+    ["<C-p>"] = "actions.preview",
+    ["-"] = "actions.parent",
+  },
+  preview = {
+    max_width = 0.9,
+    min_width = { 40, 0.4 },
+    width = nil,
+    max_height = 0.9,
+    min_height = { 5, 0.1 },
+    height = nil,
+    border = "rounded",
+    win_options = {
+      winblend = 0,
+    },
+    update_on_cursor_moved = true,
+  },
+})
+'''
 
 # color theme
 [[plugins]]
@@ -291,13 +265,9 @@ require("gruvbox").setup({
 
 [[plugins]]
 repo = "miyakogi/seiya.vim"
-# on_event = ['BufRead', 'CursorHold']
 on_event = ["ColorSchemePre", 'BufRead', 'CursorHold']
-# on_cmd = ["SeiyaEnable"]
 lua_source = """
-vim.cmd("let g:seiya_target_groups = has('nvim') ? ['guibg'] : ['ctermbhhg']")
--- vim.g.seiya_auto_enable = 1
--- vim.cmd("SeiyaEnable")
+vim.cmd("let g:seiya_target_groups = has('nvim') ? ['guibg'] : ['ctermbg']")
 """
 
 [[plugins]]
@@ -332,25 +302,8 @@ hook_source = '''
     let g:partedit#auto_prefix = 0
 '''
 
-# [[plugins]]
-# repo = 'monaqa/nvim-treesitter-clipping'
-# depends = ['nvim-treesitter', 'vim-partedit']
-# on_lua = 'nvim-treesitter-clipping'
-# lua_add = '''
-#     vim.api.nvim_create_autocmd("FileType", {
-#       pattern = { "toml", "markdown" },
-#       callback = function()
-#         vim.keymap.set("n", "<C-p>", function()
-#           require("nvim-treesitter-clipping.internal").clip()
-#           vim.keymap.set("n", "Q", "<Cmd>w<CR><Cmd>ParteditEnd<CR>", { buffer = true })
-#         end, { buffer = true })
-#       end,
-#     })
-# '''
-
 [[plugins]]
 repo = 'stevearc/conform.nvim'
-# on_event = ['BufRead', 'CursorHold']
 lua_source = """
     local conform = require("conform")
 
@@ -405,7 +358,6 @@ lua_source = """
     vim.api.nvim_create_autocmd("BufWritePre", {
       pattern = "*",
       callback = function(args)
-        -- require("conform").format({ bufnr = args.buf })
         require("conform").format({ async = true, lsp_fallback = true, bufnr = args.buf })
       end,
     })
@@ -446,10 +398,6 @@ lua_source = """
 repo = 'skanehira/denops-translate.vim'
 on_cmd = ['Translate']
 
-# [[plugins]]
-# repo = 'Allianaab2m/vimskey'
-# on_cmd = ['VimskeyOpenTL', 'VimskeyAuth', 'VimskeyNote', 'VimskeyRenote']
-
 [[plugins]]
 repo = 'yuki-yano/fzf-preview.vim'
 on_event = ['BufRead', 'CursorHold']
@@ -482,7 +430,6 @@ end,
 # status line
 [[plugins]]
 repo = 'nvim-lualine/lualine.nvim'
-# on_event = ['BufRead', 'CursorHold']
 lua_source = '''
 require('lualine').setup {
   options = {
@@ -589,107 +536,13 @@ let g:rainbow_active = 1
 repo = 'lambdalisue/vim-mr'
 on_event = ['BufRead', 'CursorHold']
 
-# [[plugins]]
-# repo = 'nvimtools/none-ls.nvim'
-# on_event = ['BufRead', 'CursorHold']
-
-# [[plugins]]
-# repo = "nvimtools/none-ls-extras.nvim"
-# on_source = "none-ls.nvim"
-# lua_source = '''
-# local null_ls = require("null-ls")
-# local methods = require("null-ls").methods
-#
-#
-# local h = require("null-ls.helpers")
-# local u = require("null-ls.utils")
-#
-#
-# local handle_output = function(params)
-#     params.messages = params.output and params.output[1] and params.output[1].messages or {}
-#     if params.err then
-#         table.insert(params.messages, { message = params.err })
-#     end
-#
-#     local parser = h.diagnostics.from_json({
-#         attributes = {
-#             severity = "severity",
-#         },
-#         severities = {
-#             h.diagnostics.severities["warning"],
-#             h.diagnostics.severities["error"],
-#         },
-#     })
-#
-#     return parser({ output = params.messages })
-# end
-#
-# local textlint = h.make_builtin({
-# 	-- generator_opts,
-# 	method = methods.DIAGNOSTICS,
-# 	meta = {},
-# 	filetypes = { "txt", "markdown" },
-# 	generator = h.generator_factory({
-# 	command = {"bunx", "textlint"},
-# 	args = { "-f", "json", "--stdin", "-c", "$ROOT/.textlintrc.json", "--stdin-filename", "$FILENAME" },
-# 	format = "json_raw",
-# 	check_exit_code = { 0, 1 },
-# 	to_stdin = true,
-# 	cwd = h.cache.by_bufnr(function(params)
-#             return u.root_pattern(
-#                 ".textlintrc",
-#                 -- ".textlintrc.js",
-#                 ".textlintrc.json"
-#                 -- ".textlintrc.yml",
-#                 -- ".textlintrc.yaml",
-#                 -- "package.json"
-#             )(params.bufname)
-#         end),
-# 	on_output = handle_output,
-#     }),
-# })
-#
-#
-# -- local cspell = require('cspell')
-#
-# -- local cspell_config = {
-# --   config_file_preferred_name = 'cspell.json',
-# -- }
-#
-# local config = {
-# 		diagnostics_format = "#{m} (#{s}: #{c})",
-# 		sources = {
-# 			null_ls.builtins.formatting.stylua,
-# 			null_ls.builtins.formatting.black,
-# 			-- null_ls.builtins.completion.spell,
-# 			-- cspell.diagnostics.with({config = cspell_config}),
-# 		},
-# 	}
-#
-#
-# if vim.fn["isdirectory"]("node_modules") == 1 then
-# 	config.sources[#config.sources + 1] = textlint
-# end
-#
-# null_ls.setup(config)
-# '''
-
-[[plugins]]
-repo = "davidmh/cspell.nvim"
-# on_source = "none-ls.nvim"
-
 [[plugins]]
 repo = "lambdalisue/vim-kensaku"
 on_event = ['BufRead', 'CursorHold']
-hook_source = """
-"""
 
 [[plugins]]
 repo = "lambdalisue/vim-kensaku-search"
 on_source = ["vim-kensaku"]
-hook_source = '''
-" cnoremap <CR> <Plug>(kensaku-search-replace)<CR>
-'''
 
 [[plugins]]
 repo = "mattn/emmet-vim"
@@ -768,10 +621,6 @@ repo = 'mattn/vim-maketable'
 on_ft = 'markdown'
 
 [[plugins]]
-repo = 'lambdalisue/vim-gin'
-on_event = ['BufRead', 'CursorHold']
-
-[[plugins]]
 repo = 'lukas-reineke/indent-blankline.nvim'
 on_event = ['BufRead', 'CursorHold']
 lua_source = """
@@ -835,21 +684,6 @@ on_ft = ["haxe"]
 # format
 [[plugins]]
 repo = 'dense-analysis/ale'
-# on_event = ['BufRead', 'CursorHold']
-
-# [[plugins]]
-# repo = "scalameta/nvim-metals"
-# on_ft = ["scala", "sbt", "java"]
-# # on_event = ['BufRead', 'CursorHold']
-# lua_source = """
-# local metals_config = require("metals").bare_config()
-#
-# metals_config.on_attach = function(client, bufnr)
-#   -- your on_attach function
-# end
-#
-# require("metals").initialize_or_attach(metals_config)
-# """
 
 [[plugins]]
 repo = '4513ECHO/nvim-keycastr'
@@ -907,7 +741,6 @@ repo = 'Shougo/ddt.vim'
 on_event = ['BufRead', 'CursorHold']
 depends = 'denops.vim'
 hook_source = '''
-" hook_add 
 nnoremap [Space]s  <Cmd>call ddt#start(#{
       \   name: t:->get('ddt_ui_terminal_last_name',
       \                 'terminal-' .. win_getid()),
@@ -1017,9 +850,6 @@ endif
 repo = 'gw31415/mstdn.vim'
 on_event = ['BufRead', 'CursorHold']
 hook_source = '''
-" command! MstdnHome :e mstdn://Comamoca@mstdn.jp/home
-" execute $"e mstdn://Comamoca@mstdn.jp/home"
-
 let s:username = "Comamoca"
 let s:server = "mstdn.jp"
 
@@ -1115,10 +945,6 @@ require('nvim-ts-autotag').setup({
 repo = 'gleam-lang/gleam.vim'
 ft = ["gleam"]
 
-# [[plugins]]
-# repo = 'sheerun/vim-polyglot'
-# on_event = ['BufRead', 'CursorHold']
-
 [[plugins]]
 repo = 'uki00a/denops-pomodoro.vim'
 on_cmd = [
@@ -1183,15 +1009,6 @@ on_event = ['BufRead', 'CursorHold']
 repo = 'thinca/vim-quickrun'
 on_event = ['BufRead', 'CursorHold']
 hook_add = '''
-" \   "moonbit" : #{
-" \     type: 'moonbit/run',
-" \   },
-" \  'moonbit/run': #{
-" \    cmdopt: 'run',
-" \    command: 'moon',
-" \    tempfile: '%{tempname()}.mbt',
-" \  },
-
 augroup quickrun
   autocmd!
   autocmd FileType quickrun nnoremap q <cmd>q<CR>
@@ -1228,22 +1045,13 @@ let g:quickrun_config = {
 [[plugins]]
 repo = 'kovisoft/slimv'
 on_ft = ["lisp"]
-hook_add = '''
-''''
 
 [[plugins]]
 repo = 'previm/previm'
 on_cmd = ["PrevimOpen"]
 hook_add = '''
 let g:previm_open_cmd = "firefox"
-''''
-
-# [[plugins]]
-# repo = "fukamachi/vlime"
-# on_cmd = [""]
-# hook_add = '''
-# let g:previm_open_cmd = "firefox"
-# ''''
+'''
 
 [[plugins]]
 repo = "vim-jp/vital.vim"

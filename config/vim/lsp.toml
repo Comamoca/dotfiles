@@ -13,14 +13,6 @@ let g:lsp_diagnostics_virtual_text_insert_mode_enabled = 1
 let g:lsp_diagnostics_virtual_text_enabled = "after"
 let g:lsp_diagnostics_enabled = 1
 
-" if executable('gop')
-"   au User lsp_setup call lsp#register_server({
-"       \ 'name': 'Go+ language server',
-"       \ 'cmd': ["gop", "serve"],
-"       \ 'allowlist': ['gop'],
-"       \ })
-" endif
-
 if executable('moonbit-lsp')
   au User lsp_setup call lsp#register_server({
       \ 'name': 'moonbit',
@@ -28,22 +20,6 @@ if executable('moonbit-lsp')
       \ 'allowlist': ['moonbit'],
       \ })
 endif
-
-" if executable('gleam')
-"   au User lsp_setup call lsp#register_server({
-"       \ 'name': 'gleam',
-"       \ 'cmd': ["gleam", "lsp"],
-"       \ 'allowlist': ['gleam'],
-"       \ })
-" endif
-
-" if executable('glas')
-"     au User lsp_setup call lsp#register_server({
-"         \ 'name': 'glas',
-" 	\ 'cmd': {server_info->['glas', '--stdio']},
-"         \ 'whitelist': ['gleam'],
-"         \ })
-" endif
 
 if executable('erg')
   au User lsp_setup call lsp#register_server({
@@ -114,12 +90,9 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> [g <plug>(lsp-previous-diagnostic)
     nmap <buffer> ]g <plug>(lsp-next-diagnostic)
     nmap <buffer> K <plug>(lsp-hover)
-    " nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
-    " nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
 
     let g:lsp_format_sync_timeout = 0
-    " autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
-    
+
     " refer to doc to add more commands
 endfunction
 

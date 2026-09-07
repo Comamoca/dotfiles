@@ -364,14 +364,7 @@ rec {
         source = (symlink /${dotfiles}/bin/scripts/verify-opencode-failover.fish);
       };
 
-      # Vim configs.
-      # ".vimrc".source = (symlink /${dotfiles}/vimrc);
-      # ".vim" = {
-      #   source = (symlink /${dotfiles}/vim);
-      #   recursive = true;
-      # };
-      # # ========== SKK ==========
-      # skk-dicts
+      # ========== SKK ==========
       ".skk-dict/SKK-JISYO.L".source = "${pkgs.skkDictionaries.l}/share/skk/SKK-JISYO.L";
       ".skk-dict/SKK-JISYO.im@sparql.all.utf8".source =
         "${nurpkgs.skk-jisyo-imasparql}/share/SKK-JISYO.im@sparql.all.utf8";
