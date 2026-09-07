@@ -15,6 +15,7 @@ workspace:
   root: ~/.local/state/maestro/workspaces
   repo_path: /home/coma/.ghq/github.com/Comamoca/dotfiles
   base_ref: main
+  fetch_remote: origin
 agent:
   driver: opencode
   command: opencode run --format json
