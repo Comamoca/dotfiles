@@ -126,6 +126,26 @@ let
               fi
             '';
           });
+          # lispyのle-swiper.elはコンパイル時にswiperを硬要求するが、
+          # nixpkgs 044bfe75のemacs-git-pgtkパッケージセットでは生成されたlispyの
+          # packageRequiresが欠落している(iedit/swiper等がビルド環境に入らない)。
+          # さらにmelpaBuildは.override引数を転送しないため
+          # `lispy.override { ignoreCompilationError = true; }`は無効で、
+          # ignore-compilation-error=nilのままビルドが致命的失敗する。
+          # nixpkgsのignoreCompilationErrorヘルパーと同じoverrideAttrs形式で
+          # フラグを設定し、依存を明示的に復元する。依存を戻さないと
+          # lispyvilleのバイトコンパイル時にlispy.elの(require 'iedit)で
+          # マクロ展開が失敗する。
+          lispy = esuper.lispy.overrideAttrs (old: {
+            ignoreCompilationError = true;
+            packageRequires = with eself; [
+              ace-window
+              hydra
+              iedit
+              swiper
+              zoutline
+            ];
+          });
         }
       );
     in
@@ -193,6 +213,7 @@ let
 
 in
 rec {
+  imports = [./forgejo.nix];
   nixpkgs.config = {
     allowUnfree = true;
     permittedInsecurePackages = [
@@ -208,9 +229,6 @@ rec {
     # # age.sshKeyPaths = [ "/home/user/path-to-ssh-key" ];
     defaultSopsFile = ./secrets/secrets.yaml;
     secrets = {
-      "spotify-password" = {
-        path = "/run/user/1000/spotify-password";
-      };
       "claude-code" = {
         sopsFile = ./secrets/claude-code.env;
         path = "/run/user/1000/claude-code.env";
@@ -808,11 +826,19 @@ rec {
     comma.enable = true;
   };
 
+  # Spotify はユーザー名/パスワード認証を廃止済みのため、認証情報は
+  # `spotifyd authenticate` (OAuth) で生成され ~/.cache/spotifyd/oauth に
+  # キャッシュされる。ここでの username/password_cmd 設定は無効なため削除済み。
   services.spotifyd = {
     enable = true;
     settings = {
-      username = "31tkpkdg2lkjahtnnj4es4l2fs6q";
-      password_cmd = "cat ${config.sops.secrets.spotify-password.path}";
+      # dank-material-shell 等が MPRIS 経由で再生中トラックを表示できるように有効化
+      global = {
+        use_mpris = true;
+        # spotifyd が出せる最大音質 (Ogg Vorbis 320kbps、Premium 必須)
+        # 本家 Spotify の Lossless (FLAC) は librespot 系クライアント未対応
+        bitrate = 320;
+      };
     };
   };
 
