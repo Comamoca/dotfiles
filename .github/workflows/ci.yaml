@@ -20,7 +20,7 @@ jobs:
       - name: Check flake
         run: nix flake check
       - name: Auto Commit
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: Apply Code Formatter
 
