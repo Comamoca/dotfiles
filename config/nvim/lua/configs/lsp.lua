@@ -23,6 +23,13 @@ vim.lsp.config("denols", {
 })
 vim.lsp.enable("denols")
 
+-- devenv などの devshell が古い gleam を PATH の先頭に置くことがあるため、
+-- LSP には home-manager プロファイルの gleam を絶対パスで指定する (issue #6)。
+vim.lsp.config("gleam", {
+  cmd = { vim.fn.expand("~/.nix-profile/bin/gleam"), "lsp" },
+})
+vim.lsp.enable("gleam")
+
 -- lsp keymaps
 vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
 vim.keymap.set("n", "gf", "<cmd>lua vim.lsp.buf.formatting()<CR>")
