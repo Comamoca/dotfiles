@@ -77,3 +77,7 @@ emacs.d/*.eln
 # Emacs local state
 emacs.d/oauth2.plstore
 emacs.d/test-file
+
+# Vim runtime artifacts
+config/vim/.netrwhist
+config/nvim/state.vim

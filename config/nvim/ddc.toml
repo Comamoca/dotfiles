@@ -1,9 +1,7 @@
 # AutoComplete plugin
 [[plugins]]
 repo = 'Shougo/ddc.vim'
-# on_event = ['InsertEnter']
 on_event = ['BufRead', 'CursorHold']
-# on_event = ['BufEnter']
 depends = ['denops.vim']
 lua_source = '''
 local ddc_custom_patch_global = vim.fn["ddc#custom#patch_global"]
@@ -16,14 +14,6 @@ local pum_entered = vim.fn["pum#entered"]
 
 vim.fn["ddc#custom#load_config"](vim.fn.expand("~/.config/nvim/ddc.ts"))
 vim.fn["ddc#enable"]({context_filetype = "treesitter"})
-
--- vim.keymap.set({ "i", "s" }, "<C-k>", function()
--- 	return vim.fn["vsnip#jumpable"](1) == 1 and "<Plug>(vsnip-jump-next)" or "<Tab>"
--- end, { expr = true, noremap = false })
-
--- vim.keymap.set({ "i", "s" }, "<C-j>", function()
--- 	return vim.fn["vsnip#jumpable"](-1) == 1 and "<Plug>(vsnip-jump-prev)" or "<S-Tab>"
--- end, { expr = true, noremap = false })
 
 vim.keymap.set("i", "<C-p>", function()
 	pum_map_select_relative(-1)
@@ -40,15 +30,6 @@ end, { expr = true, silent = true })
 vim.keymap.set("i", "<CR>", function()
 	return pum_visible() and '<Cmd>call pum#map#confirm()<CR>' or '<CR>'
 end, { expr = true, silent = true })
-
--- vim.keymap.set("i", "<CR>", function()
--- 	return '<Cmd>call pum#map#confirm()<CR>'
--- end, { expr = true, silent = true })
-
--- vim.cmd([[inoremap <silent><expr> <CR> pum#visible() ? '<cmd>call pum#map#confirm()<CR>' : '<cr>']])
-
--- vim.keymap.set({ "n", "s" }, "<s>", [[<Plug>(vsnip-select-text)]], { expr = true, noremap = false })
--- vim.keymap.set({ "n", "s" }, "<S>", [[<Plug>(vsnip-cut-text)]], { expr = true, noremap = false })
 '''
 
 [[plugins]]
@@ -56,16 +37,8 @@ repo = 'Shougo/pum.vim'
 on_source = 'ddc.vim'
 
 [[plugins]]
-repo = 'Shougo/ddc-ui-pum'
+repo = 'Shougo/ddc-sorter_rank'
 on_source = 'ddc.vim'
-
-# [[plugins]]
-# repo = 'Shougo/ddc-ui-native'
-# on_source = 'ddc.vim'
-
-# [[plugins]]
-# repo = "uga-rosa/ddc-source-vsnip"
-# on_source = 'ddc.vim'
 
 [[plugins]]
 repo = 'Shougo/ddc-around'
@@ -90,11 +63,9 @@ on_source = 'nvim-lspconfig'
 [[plugins]]
 repo = "uga-rosa/ddc-source-lsp-setup"
 on_source = 'nvim-lspconfig'
-# on_source = 'ddc.vim'
 
 [[plugins]]
 repo = 'matsui54/denops-signature_help'
-# on_source = 'ddc.vim'
 lua_source = '''
  vim.fn["signature_help#enable"]()
 '''
@@ -102,9 +73,6 @@ lua_source = '''
 [[plugins]]
 repo = 'matsui54/denops-popup-preview.vim'
 on_source = 'ddc.vim'
-hook_source = '''
-" call popup_preview#enable()
-'''
 
 [[plugins]]
 repo = 'tani/ddc-path'
@@ -125,7 +93,6 @@ vim.g.vsnip_filetypes = {
 }
 
 vim.g.vsnip_snippet_dirs = {
-  -- vim.fn.expand("~/.cache/dpp/repos/github.com/rafamadriz/friendly-snippets/snippets"),
   vim.fn.expand("~/.vsnip/snippets")
 }
 """
@@ -216,24 +183,3 @@ on_source = 'skkeleton'
 [[plugins]]
 repo = "andymass/vim-matchup"
 on_source = ""
-
-# [[plugins]]
-# repo = 'matsui54/ddc-source-dictionary'
-# on_source = 'ddc.vim'
-# hook_source = '''
-# call ddc#custom#patch_global('sourceParams', {
-#       \ 'dictionary': { 'dictPaths': [
-#       \  expand("~/.spell-dict/dict.txt"),
-#       \  ],
-#       \ 'smartCase': v:true,
-#       \ 'isVolatile': v:true,
-#       \ }
-#       \ })
-#
-# call ddc#custom#patch_global('sources', ['dictionary'])
-# call ddc#custom#patch_global('sourceOptions', {
-#       \ '_': {'matchers': ['matcher_head']},
-#       \ 'dictionary': {'mark': 'D'},
-#       \ })
-# '''
-# \  expand("~/.spell-dict/programming-english-dict"),

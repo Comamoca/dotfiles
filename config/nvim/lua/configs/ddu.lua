@@ -1,5 +1,3 @@
--- require("configs/ddu")
-
 local keymap = vim.keymap.set
 local ddu_custom_patch_global = vim.fn["ddu#custom#patch_global"]
 local ddu_custom_action = vim.fn["ddu#custom#action"]
@@ -14,22 +12,13 @@ ddu_custom_patch_global({
     {
       -- default source
       name = "file_external",
-      params = {
-        -- ignoredDirectories = { ".venv", ".git", "node_modules", "vendor", ".next" },
-      },
+      params = {},
     },
   },
   sourceOptions = {
     _ = {
-      -- matchers = { "matcher_substring" },
       matchers = { "merge" },
       sorters = { "sorter_fzf" },
-    },
-    spotify = {
-      -- matchers = { "matcher_kensaku" },
-    },
-    file_external = {
-      -- matchers = { "matcher_kensaku" },
     },
   },
   sourceParams = {
@@ -44,7 +33,6 @@ ddu_custom_patch_global({
   filterParams = {
     merge = {
       filters = {
-        -- { name = "matcher_kensaku", weight = 1.0 },
         { name = "matcher_fzf", weight = 1.0 },
       },
     },
@@ -79,13 +67,11 @@ ddu_custom_patch_global({
     },
     deol = {
       defaultAction = "switch",
-      -- defaultAction = "new"
     },
   },
   uiParams = {
     ff = {
       prompt = "> ",
-      -- split = "floating",
       previewFloating = false,
       previewSplit = "vertical",
       previewFloatingBorder = "single",
@@ -98,30 +84,9 @@ ddu_custom_patch_global({
   },
 })
 
-ddu_custom_patch_global("sourceOptions", {
-  spotify = {
-    -- matchers = { "matcher_kensaku" },
-  },
-})
-
--- ddu_custom_patch_global('filterParams', {
--- 	matcher_kensaku = {
--- 		highlightMatched = 'Search',
--- 	},
--- })
-
--- ddu#custom#action('source', 'buffer', 'bdelete', function('s:deleteBuffer'))
--- ddu_custom_action('ui', 'ff', 'buf_delete', function (args)
-
 ddu_custom_action("ui", "ff", "custom:buf_delete", function()
-  -- ddu_custom_action('kind', 'file', 'custom:buf_delete', function (args)
-  -- local items = args.items
-  -- local items = vim.fn["ddu#ui#get_items"]()
   local item = vim.fn["ddu#ui#get_item"]()
-
   local action = item["action"]
-  -- vim.print(action)
-
   local bufnr = action["bufNr"]
 
   vim.cmd("bd " .. bufnr)
@@ -137,22 +102,10 @@ vim.api.nvim_create_autocmd("FileType", {
     keymap("n", "i", "<Cmd>call ddu#ui#do_action('openFilterWindow')<CR>", keymap_opt)
     keymap("n", "q", "<Cmd>call ddu#ui#do_action('quit')<CR>", keymap_opt)
 
-    ------
-
-    local item = vim.fn["ddu#ui#get_item"]()
-    local items = vim.fn["ddu#ui#get_items"]()
-
     local source = vim.fn["ddu#custom#get_current"]()["sources"]
 
     -- enable keymap when source is buffer.
     if #source == 1 and source[1]["name"] == "buffer" then
-      -- keymap.del("n", "dd")
-      -- if items == 1 then
-      --  local bufnr = items[1]["action"]["bufNr"]
-      --  print(bufnr)
-      --  -- print(vim.fn["ddu#ui#get_item"]())
-      -- end
-
       keymap("n", "d", "<Cmd>call ddu#ui#do_action('custom:buf_delete')<CR>", keymap_opt)
     end
 
