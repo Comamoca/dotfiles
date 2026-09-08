@@ -25,6 +25,34 @@ let
 
   xremap-config = import ./xremap.nix { inherit pkgs; };
 
+  # comma / nix-locate から参照する nix-index DB (実DB) の再構築用。
+  # index 対象: この flake の homeConfigurations.Home の pkgs (overlay / flake input 込み)。
+  # 更新スクリプトの実行時に getFlake で評価されるため、inputs.nixpkgs や
+  # 自作パッケージもすべてインデックスされる。
+  # NOTE: ホスト名 Home は flake.nix の homeConfigurations.{Home,coma,"coma@comabook"} に対応
+  nixIndexPkgsExpr = pkgs.writeText "dotfiles-index-pkgs.nix" ''
+    (builtins.getFlake "${inputs.self}").homeConfigurations.Home.pkgs
+  '';
+
+  nixIndexUpdateScript = pkgs.writeShellScript "nix-index-update" ''
+    set -eu
+    DB_DIR="$HOME/.cache/nix-index"
+    MARKER="$DB_DIR/.last-flake"
+    WANT=${inputs.self}
+    if [ -f "$DB_DIR/files" ] && grep -qxF "$WANT" "$MARKER" 2>/dev/null; then
+      echo "nix-index database is up to date for $WANT" >&2
+      exit 0
+    fi
+    TMP="$(mktemp -d "$DB_DIR/.update.XXXXXX")"
+    trap 'rm -rf "$TMP"' EXIT
+    echo "rebuilding nix-index database from $WANT (may take a few minutes)..." >&2
+    ${pkgs.nix-index-unwrapped}/bin/nix-index --show-trace -f ${nixIndexPkgsExpr} -d "$TMP"
+    mv "$TMP/files" "$DB_DIR/files.new"
+    mv "$DB_DIR/files.new" "$DB_DIR/files"
+    printf '%s\n' "$WANT" > "$MARKER"
+    echo "nix-index database rebuilt" >&2
+  '';
+
   # treefmt 本体と treefmt.nix で有効化している formatter 群。
   # コミット済み treefmt.toml (flake.nix の packages.treefmt-toml で生成)
   # がコマンド名で参照するので、PATH に揃えておく。
@@ -262,12 +290,13 @@ rec {
     ++ (import ./packages/misc.nix { inherit pkgs nurpkgs; })
     ++ (with pkgs; [
       # Additional packages
+      comma # nix-index-database モジュール経由ではなく生の comma を使う (下記参照)
       ni
       asar
       nak
       vim-startuptime
       spotify
-      input-remapper  # Wacom ペンタブの ExpressKeys を Krita 用キーに変換
+      input-remapper # Wacom ペンタブの ExpressKeys を Krita 用キーに変換
 
       # NOTE: 2025/06/22 hashまわりで壊れたので一旦無効化
       # (import ./pkgs/lspx { inherit pkgs; })
@@ -536,8 +565,9 @@ rec {
       # input-remapper: Wacom ペンタブ ExpressKeys → Krita 用キー(F13-F16)変換
       # デバイス別プリセットディレクトリは activation スクリプト(setupWacomInputRemapper)で
       # デバイス名を検出して配置する。ここではテンプレートとして symlink を張る。
-      ".config/input-remapper-2/presets/_wacom-krita-template/wacom-krita.json".source =
-        (symlink /${dotfiles}/config/input-remapper/wacom-krita.json);
+      ".config/input-remapper-2/presets/_wacom-krita-template/wacom-krita.json".source = (
+        symlink /${dotfiles}/config/input-remapper/wacom-krita.json
+      );
 
       ".omo/omo.jsonc".source = (symlink /${dotfiles}/config/omo/omo.jsonc);
 
@@ -792,14 +822,59 @@ rec {
     # spawn-at-startup "au" "run"
   };
 
+  # comma / nix-locate は nix-index-database モジュールの「flake pin 固定の
+  # 事前構築DB」ではなく ~/.cache/nix-index/files の実DBを見るようにする。
+  # モジュールの事前構築DBは
+  #  - nix flake update の時にしか更新されない
+  #  - nixpkgs の内容しか含まず、overlay / flake input 由来のパッケージ
+  #    (ghostty, xremap, worktrunk など) が常に欠落する
+  #  - home.file の symlink が ~/.cache を占拠するため手動の nix-index 更新も不可能
+  # という原因で comma がコマンドを引けないことが多発していた (issue #8)。
+  # 素の nix-index / comma に切り替え、下記の systemd timer で実DBを再構築する。
   programs.nix-index = {
     enable = true;
     enableFishIntegration = true;
+    # 事前構築DBを焼き込んだ wrapper ではなく素の nix-index を使う
+    package = pkgs.nix-index-unwrapped;
+    # ~/.cache/nix-index/files は home.file ではなく nix-index-update の管理下に置く
+    symlinkToCacheHome = false;
   };
 
-  programs.nix-index-database = {
-    comma.enable = true;
+  # 事前構築DBを焼き込んだ comma wrapper を無効化 (素の comma は home.packages で追加)
+  programs.nix-index-database.comma.enable = false;
+
+  # 対象: この flake の homeConfigurations.Home の pkgs (overlay / flake input 込み)。
+  # 更新スクリプトの実行時に getFlake で評価されるため、#inputs.nixpkgs や
+  # 自作パッケージもすべてインデックスされる。
+  # NOTE: ホスト名 Home は flake.nix の homeConfigurations.{Home,coma,"coma@comabook"} に対応
+  systemd.user.services.nix-index-update = {
+    Unit.Description = "Rebuild nix-index database from this flake's pkgs";
+    Service = {
+      Type = "oneshot";
+      Environment = [
+        "HOME=%h"
+        "XDG_CACHE_HOME=%h/.cache"
+        "NIX_CONFIG=experimental-features = nix-command flakes"
+      ];
+      ExecStart = nixIndexUpdateScript;
+    };
   };
+
+  systemd.user.timers.nix-index-update = {
+    Unit.Description = "Timer for nix-index database update";
+    Timer = {
+      Unit = "nix-index-update.service";
+      OnCalendar = "daily";
+      RandomizedDelaySec = "1h";
+      Persistent = true;
+    };
+    Install.WantedBy = [ "timers.target" ];
+  };
+
+  # home-manager switch のたびに (flake が変わっていればバックグラウンドで) DBを更新
+  home.activation.nixIndexQuickUpdate = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    systemctl --user start nix-index-update.service 2>/dev/null || true
+  '';
 
   services.spotifyd = {
     enable = true;
