@@ -1,0 +1,22 @@
+{
+  "feature_name": "denix-module-migration",
+  "created_at": "2026-09-16T14:23:59Z",
+  "updated_at": "2026-09-17T11:24:12Z",
+  "language": "ja",
+  "phase": "tasks-generated",
+  "approvals": {
+    "requirements": {
+      "generated": true,
+      "approved": true
+    },
+    "design": {
+      "generated": true,
+      "approved": true
+    },
+    "tasks": {
+      "generated": true,
+      "approved": true
+    }
+  },
+  "ready_for_implementation": true
+}
