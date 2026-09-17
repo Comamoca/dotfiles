@@ -27,7 +27,7 @@ _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.7_
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.7_
   - _Boundary: Migration Phases_
 
-- [ ] 1.2 (P) impure な nixpkgs 取得を撤去する
+- [x] 1.2 (P) impure な nixpkgs 取得を撤去する
   - 旧版 nixpkgs の取得定義とそれを参照する Hyprland パッケージ定義を除去する。両者は他から
     参照されていないため代替は不要
   - unstable 版 nixpkgs の取得定義を撤去し、これを使用している言語モデル実行サービスの
@@ -354,5 +354,25 @@ Phase 3 (タスク 9) の各サブタスクは、機密情報の宣言内容と�
 - (1.2) `builtins.fetchTarball` は configuration.nix の2件のほか、`home.nix` L95 と
   `home-manager/wsl/default.nix` L13 (いずれも catppuccin-wallpapers の branch tarball) にも存在する。
   設計の構造テスト (Testing Strategy / 構造テスト) は Phase 0 完了時点で `builtins.fetchTarball` 0 件を
-  要求するため、これらも Requirement 2.5 の「flake input または overlay へ置換」に従い
-  pinned な flake input (`flake = false`) へ置換する。
+  要求するため、これらも置換する。置換は `pkgs.fetchzip` に同一 URL + 同一ハッシュを渡す方式とし、
+  取得内容を変えない (`nix-prefetch-url --unpack` の実測値が既存の `sha256` と一致することを確認済み。
+  `0rd6hfd88bsprjg68saxxlgf2c2lv1ldyr6a8i7m4lgg6nahbrw7` = SRI `sha256-h+cFlTXvUVJPRMpk32jYVDDhHu1daWSezFcvhJqDpmU=`、
+  展開先に `misc/cat-sound.png` が存在)。Requirement 1.6 (意図しない closure 差分を生じさせない) を
+  優先し、flake input の追加による rev 再ピン (内容が変わり得る) は採らない。
+- (1.2 実測 / 環境) `nix flake check --no-impure` は nix 2.31.5 に存在しないフラグである
+  (`unrecognised flag '--no-impure'`)。Requirement 2.3 の意図は「pure eval で評価が壊れないこと」であり、
+  正準コマンドは `nix flake check` (flakes は既定で pure eval) とする。以降のフェーズゲートもこれで読み替える。
+- (1.2 実測 / 環境) リモートビルダー `eu.nixbuild.net` が不安定 (SSH `unexpected end-of-file`、
+  空のビルドログ、試行ごとに失敗する派生が変わる) なため、x86_64 のビルドゲートは
+  `--builders ''` を付けてローカル実行して良い。ローカルビルドは成功する。
+- (1.2 実測 / 環境) home プロファイルは `/nix/var/nix/profiles/per-user/coma/home-manager` には無く、
+  `~/.local/state/nix/profiles/home-manager` にある。差分テストはこちらを基準にする。
+- (gate の適用単位) tasks.md のフェーズゲートは「各 Major タスク完了時」(= その Major の最後の
+  サブタスク完了時) に実行する。サブタスク単位ではタスク固有の検証のみを行う。
+- (Phase 0 / Major 1 完了) `.#NixOS` の評価が回復
+  (`/nix/store/hq4775n24kj7vn9rshzs89msblq949wk-nixos-system-comabook-26.11.20260822.174eb78.drv`)、
+  `nix flake check` が exit 0、`nixos-rebuild build --flake .#NixOS` / `.#WSL` /
+  `home-manager build --flake .#Home` がすべて exit 0。closure 差分は大きいが、
+  `/run/current-system` および `~/.local/state/nix/profiles/home-manager` の最終 switch 以降のドリフト
+  (comabook の構成はタスク 1.2 まで評価不能で switch できていなかった) と、ollama の供給元変更
+  (`unstable-pkgs.ollama` → `pkgs.ollama`、0.19.0 → 0.32.14)、壁紙派生の供給元変更 (内容同一) で説明できる。

@@ -13,17 +13,6 @@ let
   username = "coma";
   homeDirectory = config.users.users.${username}.home;
 
-  old-pkgs = import (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/e89cf1c932006531f454de7d652163a9a5c86668.tar.gz";
-    sha256 = "sha256:09cbqscrvsd6p0q8rswwxy7pz1p1qbcc8cdkr6p6q8sx0la9r12c";
-  }) { };
-
-  unstable-pkgs = import (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
-    sha256 = "sha256:1xfg014g26v79y4088s02qm0gq33fjasplznxjwjwxw2zffc1236";
-  }) { system = "x86_64-linux"; };
-
-  hyprland-0-35-0 = old-pkgs.hyprland;
 in
 {
   imports = [
@@ -245,7 +234,7 @@ in
 
   services.ollama = {
     enable = true;
-    package = unstable-pkgs.ollama;
+    package = pkgs.ollama;
     loadModels = [
       "qwen2.5-coder:1.5b"
       "qwen2.5-coder:0.5b"

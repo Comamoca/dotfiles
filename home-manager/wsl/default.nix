@@ -10,9 +10,9 @@ let
   system = "x86_64-linux";
   nurpkgs = inputs.nur-packages.legacyPackages.${system};
 
-  wallpapers = builtins.fetchTarball {
+  wallpapers = pkgs.fetchzip {
     url = "https://github.com/zhichaoh/catppuccin-wallpapers/archive/refs/heads/main.zip";
-    sha256 = "sha256:0rd6hfd88bsprjg68saxxlgf2c2lv1ldyr6a8i7m4lgg6nahbrw7";
+    hash = "sha256-h+cFlTXvUVJPRMpk32jYVDDhHu1daWSezFcvhJqDpmU=";
   };
 
   wallpaper = "${wallpapers}/misc/cat-sound.png";
