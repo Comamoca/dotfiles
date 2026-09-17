@@ -120,51 +120,12 @@
       };
       treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
 
-      overlays = [
-        # Shadow deprecated stdenv.is{Linux,Aarch64,Darwin} with the recommended
-        # hostPlatform equivalents. Several external overlays still use the old
-        # names and would otherwise emit evaluation warnings.
-        (final: prev: {
-          stdenv = prev.stdenv // {
-            isLinux = prev.stdenv.hostPlatform.isLinux;
-            isAarch64 = prev.stdenv.hostPlatform.isAarch64;
-            isDarwin = prev.stdenv.hostPlatform.isDarwin;
-          };
-        })
-        inputs.neovim-nightly-overlay.overlays.default
-        (import inputs.emacs-overlay)
-        inputs.nak.overlays.default
-        inputs.deno-overlay.overlays.deno-overlay
-        # (import emacs.overlay)
-        inputs.mozilla-overlay.overlays.firefox
-        inputs.niri.overlays.niri
-        # WORKAROUND(sodiboo/niri-flake#1851): nixpkgs removed libdisplay-info_0_2
-        # (2026-08-04, now a throwing alias) while niri-flake's make-niri asserts
-        # version == "0.2.0". Shadow the alias with a real 0.2.0 build via the
-        # generic expression still shipped in nixpkgs.
-        # Remove once https://github.com/sodiboo/niri-flake/pull/1853 lands.
-        (final: prev: {
-          libdisplay-info_0_2 = final.callPackage
-            (import "${inputs.nixpkgs}/pkgs/by-name/li/libdisplay-info/generic.nix" {
-              version = "0.2.0";
-              hash = "sha256-6xmWBrPHghjok43eIDGeshpUEQTuwWLXNHg7CnBUt3Q=";
-            })
-            { };
-        })
-        inputs.gleam-overlay.overlays.default
-        inputs.llm-agents.overlays.shared-nixpkgs
-        inputs.go-overlay.overlays.default
-        # inputs.quickshell.overlays.default  # dmsバンドル版と競合するため無効化
-        # openldap のフラッキーなテストをスキップ (bottles の依存)
-        (final: prev: {
-          openldap = prev.openldap.overrideAttrs (_: {
-            doCheck = false;
-          });
-        })
-      ];
+      overlaySet = import ./overlays inputs;
     in
     # code = _: s: s;
     {
+      overlays = overlaySet;
+
       formatter.x86_64-linux = treefmtEval.config.build.wrapper;
 
       # エディタ・CI 用の treefmt.toml を生成する。
@@ -234,13 +195,7 @@
             chaotic.nixosModules.nyx-registry
             nix-ld.nixosModules.nix-ld
             {
-              nixpkgs.overlays = overlays ++ [
-                (final: prev: {
-                  xremap = inputs.xremap.packages.${system}.default;
-                  lem-ncurses = inputs.lem.packages.${system}.lem-ncurses;
-                  lem-sdl2 = inputs.lem.packages.${system}.lem-sdl2;
-                })
-              ];
+              nixpkgs.overlays = [ overlaySet.default ];
             }
           ];
           specialArgs = {
@@ -267,15 +222,11 @@
               inputs.nix-index-database.homeModules.default
               inputs.hister.homeModules.default
               {
-                nixpkgs.overlays = overlays ++ [
-                  inputs.deploy-rs.overlays.default
+                nixpkgs.overlays = [
+                  overlaySet.default
+                ]
+                ++ [
                   (final: prev: {
-                    # nak = inputs.nak.packages.x86_64-linux.default;
-                    ghostty = inputs.ghostty.packages.${system}.default;
-                    xremap = inputs.xremap.packages.${pkgs.stdenv.hostPlatform.system}.default;
-                    worktrunk = inputs.worktrunk.packages.${system}.default;
-                    herdr = inputs.herdr.packages.${system}.default;
-                    hunk = inputs.hunk.packages.${system}.default;
                     shinycolors-jacket = import ./pkgs/shinycolors-jacket { pkgs = final; };
                   })
                 ];
@@ -298,11 +249,7 @@
               inputs.sops-nix.homeManagerModules.sops
               inputs.nix-index-database.homeModules.default
               {
-                nixpkgs.overlays = overlays ++ [
-                  (final: prev: {
-                    xremap = inputs.xremap.packages.${pkgs.stdenv.hostPlatform.system}.default;
-                  })
-                ];
+                nixpkgs.overlays = [ overlaySet.default ];
               }
             ];
           };
