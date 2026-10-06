@@ -8,7 +8,7 @@ let
   kitty = "kitty";
 
   symlink = config.lib.file.mkOutOfStoreSymlink;
-  dotfiles = /${home.homeDirectory}/.ghq/github.com/Comamoca/dotfiles;
+  dotfiles = /${home.homeDirectory}/.ghq/localhost/comamoca/dotfiles;
 
   xremap-config = (pkgs.formats.yaml { }).generate "xremap.yml" {
     modmap = [

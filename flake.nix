@@ -4,6 +4,12 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    # services.ollama.package 専用。可動タグを builtins.fetchTarball + 固定
+    # sha256 で取っていたため、上流が進むたび hash mismatch で評価が壊れていた。
+    # flake input にして flake.lock で固定する。
+    # 既存の nixpkgs とはブランチが異なる (nixpkgs-unstable vs nixos-unstable)
+    # ので、統合せず別 input のままにしてある。
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
@@ -72,6 +78,18 @@
       flake = false;
     };
     worktrunk.url = "github:max-sixty/worktrunk";
+
+    # ~/.claude/skills などエージェントの skill ディレクトリを宣言的に管理する。
+    # skill の実体は ./skills/ 配下に置き、home-manager モジュールから同期する。
+    agent-skills = {
+      url = "github:Kyure-A/agent-skills-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    codex-plugin-cc = {
+      url = "github:openai/codex-plugin-cc/db52e28f4d9ded852ab3942cea316258ae4ef346";
+      flake = false;
+    };
 
     herdr = {
       url = "github:ogulcancelik/herdr";
@@ -144,12 +162,13 @@
         # generic expression still shipped in nixpkgs.
         # Remove once https://github.com/sodiboo/niri-flake/pull/1853 lands.
         (final: prev: {
-          libdisplay-info_0_2 = final.callPackage
-            (import "${inputs.nixpkgs}/pkgs/by-name/li/libdisplay-info/generic.nix" {
+          libdisplay-info_0_2 = final.callPackage (import
+            "${inputs.nixpkgs}/pkgs/by-name/li/libdisplay-info/generic.nix"
+            {
               version = "0.2.0";
               hash = "sha256-6xmWBrPHghjok43eIDGeshpUEQTuwWLXNHg7CnBUt3Q=";
-            })
-            { };
+            }
+          ) { };
         })
         inputs.gleam-overlay.overlays.default
         inputs.llm-agents.overlays.shared-nixpkgs
@@ -216,6 +235,9 @@
         NixOS = inputs.nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
           modules = [
+            # configuration.nix の sops.* (nixbuild.net トークン) に必要。
+            # raspi は既に読み込んでいるが、こちらには入っていなかった。
+            inputs.sops-nix.nixosModules.sops
             inputs.catppuccin.nixosModules.catppuccin
             inputs.nix-index-database.nixosModules.default
             # home-manager.nixosModules.home-manager
@@ -266,6 +288,7 @@
               inputs.dms.homeModules.dank-material-shell
               inputs.nix-index-database.homeModules.default
               inputs.hister.homeModules.default
+              inputs.agent-skills.homeManagerModules.default
               {
                 nixpkgs.overlays = overlays ++ [
                   inputs.deploy-rs.overlays.default

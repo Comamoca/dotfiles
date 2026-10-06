@@ -4,11 +4,14 @@
   "[opencode]": {
     "agents": {
       "sisyphus": {
-        "model": "opencode-go/glm-5.3-flash",
+        "model": "opencode-go/deepseek-v4-flash",
         "ultrawork": {
-          "model": "opencode-go/glm-5.3-flash"
+          "model": "opencode-go/deepseek-v4-flash"
         },
         "fallback_models": [
+          {
+            "model": "opencode-go/deepseek-v4-flash"
+          },
           {
             "model": "opencode-go/glm-5.3-flash"
           },
@@ -139,8 +142,17 @@
             "model": "opencode-go/minimax-m2.7"
           }
         ]
+      },
+      "codex-sol": {
+        "description": "Hard-problem consultation advisor. Shells out to Codex CLI running gpt-6-sol.",
+        "model": "opencode-go/glm-5.3-flash",
+        "prompt": "You are a design-consultation advisor for difficult implementation questions. Your own model is cheap on purpose: the real reasoning is delegated to gpt-6-sol via the Codex CLI.\n\nWhen consulted:\n1. Formulate the consultation as a fully self-contained brief: goal, relevant decisions/constraints, and the specific question. Include any code snippets or facts needed to answer without repo access.\n2. Run: codex exec --skip-git-repo-check -m gpt-6-sol \"<brief>\" (auth is the ChatGPT subscription in ~/.codex/auth.json — pass NO -c provider overrides and NO OPENCODE_API_KEY; long context goes via stdin: printf '%s' \"$BRIEF\" | codex exec --skip-git-repo-check -m gpt-6-sol). Also see the consult-gpt6-sol skill.\n3. Report Codex's answer back verbatim where useful, then add your own short summary of concrete next steps.\n\nRules: read-only consultant. Never edit files, never run mutating commands. If codex exec fails, retry once, then report the failure with the exact command so the caller can debug.",
+        "prompt_append": "Always answer in Japanese unless the caller writes in English.",
+        "reasoning": "low",
+        "max_turns": 8
       }
     },
+
 
     "categories": {
       "visual-engineering": {

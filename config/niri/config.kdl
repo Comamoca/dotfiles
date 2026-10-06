@@ -42,7 +42,8 @@ input {
         dwt
         // dwtp
         natural-scroll
-        // accel-speed 0.2
+        // カーソル速度。範囲は -1.0 〜 1.0（niri v25.08）。
+        accel-speed 0.4
         // accel-profile "flat"
         // scroll-method "two-finger"
         // disabled-on-external-mouse
@@ -51,7 +52,10 @@ input {
     mouse {
         // off
         // natural-scroll
-        // accel-speed 0.2
+        // カーソル速度。範囲は -1.0 〜 1.0（niri v25.08）。
+        // HHKB Studio のポインティングスティックもこのブロックの設定が効く。
+        // 加速が邪魔な場合は accel-profile "flat" を有効化する。
+        accel-speed 0.5
         // accel-profile "flat"
         // scroll-method "no-scroll"
     }
@@ -110,6 +114,14 @@ input {
     // If the position is unset or results in an overlap, the output is instead placed
     // automatically.
     position x=1280 y=0
+}
+
+// カーソルテーマとサイズ。
+// Emacs だけテーマが反映されない既知の問題は CURSOR-THEME-ISSUE.md を参照。
+// https://github.com/YaLTeR/niri/wiki/Configuration:-Miscellaneous
+cursor {
+    xcursor-theme "Temari Tsukimura"
+    xcursor-size 43
 }
 
 // Settings that influence how windows are positioned and sized.
@@ -404,9 +416,9 @@ binds {
     Mod+D { spawn "rofi" "-show" "combi"; }
     Mod+Space { spawn "rofi" "-show" "drun"; }
     Mod+E { spawn "emacsclient" "-s" "main" "-c"; }
-    Mod+B { spawn "bash" "-c" "/home/coma/.ghq/github.com/Comamoca/dotfiles/bin/scripts/browser-focus-niri.sh"; }
+    Mod+B { spawn "bash" "-c" "/home/coma/.ghq/localhost/comamoca/dotfiles/bin/scripts/browser-focus-niri.sh"; }
     // Window switcher: rofi検索→フォーカス
-    Mod+W { spawn "bash" "-c" "/home/coma/.ghq/github.com/Comamoca/dotfiles/bin/scripts/niri-window-switch.sh"; }
+    Mod+W { spawn "bash" "-c" "/home/coma/.ghq/localhost/comamoca/dotfiles/bin/scripts/niri-window-switch.sh"; }
     // Scratchpad: alacritty 端末をトグル (niri-scratchpad)
     Mod+T { spawn "niri-scratchpad" "target" "--spawn" "alacritty --class foot-scratch" "appid" "foot-scratch"; }
     // Scratchpad: Emacs をトグル (niri-scratchpad) - 名前付きデーモン(main)に接続、タイトルで識別

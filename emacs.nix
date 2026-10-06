@@ -93,7 +93,39 @@ let
     pname = "claudemacs";
     version = "main";
     src = sources.claudemacs.src;
-    buildInputs = with pkgs.emacsPackages; [ ];
+    buildInputs = with pkgs.emacsPackages; [
+      eat
+      ghostel
+      # Package-Requires: ((emacs "28.1") (transient "0.4.0"))
+      transient
+    ];
+    # バイトコンパイルの前にソースを load する。
+    #
+    # claudemacs.el の transient-define-prefix は suffix の説明位置に
+    # シンボル (関数) を渡す。transient はこれを説明として扱う条件として
+    # 「次の要素が commandp であること」をマクロ展開時に判定するが、
+    # batch-byte-compile は同一ファイル内の defun を評価しないため
+    # claudemacs-toggle-model-type がまだ command になっておらず、
+    # 説明シンボルの方がコマンドと解釈されて
+    # "Need keyword, got claudemacs-toggle-model-type" で失敗する。
+    # 先に load しておけば defun が実体化し、判定が通る。
+    #
+    # postInstall の native-compile は各 .el を load せずに個別処理するため
+    # 同じ理由で失敗する。claudemacs.el だけ native-compile を諦める
+    # (.elc は buildPhase で生成済みなので動作には影響しない)。
+    ignoreCompilationError = true;
+    buildPhase = ''
+      runHook preBuild
+
+      emacs -l package -f package-initialize \
+        --eval "(setq byte-compile-debug t)" \
+        --eval "(setq byte-compile-error-on-warn nil)" \
+        -L . --batch \
+        --eval "(require 'claudemacs)" \
+        -f batch-byte-compile *.el
+
+      runHook postBuild
+    '';
   };
 
   claude-code = pkgs.emacsPackages.trivialBuild {

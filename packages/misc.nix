@@ -41,4 +41,6 @@ with pkgs;
   pinta
   krita
   nyxt
+
+  llm-agents.chatgpt
 ]
