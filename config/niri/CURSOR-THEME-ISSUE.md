@@ -1,0 +1,1 @@
+/home/coma/.ghq/localhost/comamoca/dotfiles/config/niri/CURSOR-THEME-ISSUE.md

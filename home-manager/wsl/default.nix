@@ -656,7 +656,7 @@ rec {
   home.file =
     let
       symlink = config.lib.file.mkOutOfStoreSymlink;
-      dotfiles = /${home.homeDirectory}/.ghq/github.com/Comamoca/dotfiles;
+      dotfiles = /${home.homeDirectory}/.ghq/localhost/comamoca/dotfiles;
       xdgConfigHome = /${home.homeDirectory}/.config;
       homeBin = /${home.homeDirectory}/.bin;
     in

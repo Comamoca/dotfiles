@@ -35,6 +35,7 @@ with pkgs;
   llm-agents.bernstein
   llm-agents.agent-browser
   llm-agents.fence
+  # llm-agents.codex は programs.codex.package (home.nix) 経由で入る
 
   (import ../pkgs/terminal-browser { inherit pkgs; })
 

@@ -146,6 +146,9 @@
 
     alias vimdiff='nvim -d'
 
+    # nix + lz.n 試用環境 (config/nvim-lzn)
+    alias nvl='NVIM_APPNAME=nvim-lzn nvim'
+
     alias README='cp (ghq root)/github.com/Comamoca/baserepo/README.md (ghq root)/github.com/Comamoca/baserepo/README.ja.md .'
     alias ISSUE='cp (ghq root)/github.com/coma/ask/template.ja.md issue.ja.md'
 
@@ -268,16 +271,20 @@
     # opam configuration
 
     # nh: nh home switch に --impure -b backup を自動付与
-    # aider: OpenCode Go (OpenAI API compatible) API keys from sops
-    # loaded into env vars (AIDER_OPENAI_API_KEY / AIDER_OPENAI_API_BASE)
+    # aider: OpenCode Go (OpenAI API compatible) の API キーを sops から読む。
+    # sops 側のキー名は OPENAI_API_KEY / OPENAI_API_BASE だが、そのまま素の名前で
+    # export すると codex が ChatGPT サブスク認証 (~/.codex/auth.json) より
+    # OPENAI_API_KEY を優先してしまい、OpenCode Go の鍵で純正 API を叩いて失敗する。
+    # aider は任意の CLI オプションを AIDER_ 接頭辞の環境変数で受けられるので、
+    # 名前を付け替えて aider 専用にスコープする。
     if test -f /run/user/1000/aider-opencode-go.env
         for line in (cat /run/user/1000/aider-opencode-go.env | string match -r '^[A-Z_]+=.*')
             set -l kv (string split -m 1 '=' -- $line)
-            set -gx $kv[1] $kv[2]
+            set -gx AIDER_$kv[1] $kv[2]
         end
     end
 
-    set -gx NH_HOME_FLAKE (ghq root)/github.com/Comamoca/dotfiles
+    set -gx NH_HOME_FLAKE (ghq root)/localhost/comamoca/dotfiles
     function nh --wraps nh
       switch "$argv[1] $argv[2]"
         case "home switch"

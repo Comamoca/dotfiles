@@ -1,7 +1,7 @@
 {
     "acp": {
         "cargoLock": null,
-        "date": "2026-09-06",
+        "date": "2026-09-14",
         "extract": null,
         "name": "acp",
         "passthru": null,
@@ -13,16 +13,16 @@
             "name": null,
             "owner": "xenodium",
             "repo": "acp.el",
-            "rev": "2a59373ddf252c78e8d6b25b094458f67aba9e10",
-            "sha256": "sha256-t7U3f1StttQaPh4SrHUpyxk5qEsEpx1Px9h56+OWFvY=",
+            "rev": "242cef63d76cc1073485847f67a21f6d8406d158",
+            "sha256": "sha256-Gz8u3p+eaO2d/lD3u5i85ucNijwSATyfdndY+iJxKgg=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "2a59373ddf252c78e8d6b25b094458f67aba9e10"
+        "version": "242cef63d76cc1073485847f67a21f6d8406d158"
     },
     "agent-shell": {
         "cargoLock": null,
-        "date": "2026-09-02",
+        "date": "2026-10-06",
         "extract": null,
         "name": "agent-shell",
         "passthru": null,
@@ -34,16 +34,16 @@
             "name": null,
             "owner": "xenodium",
             "repo": "agent-shell",
-            "rev": "d027d8de2b74019ae83e36b1edcd0b968295ac31",
-            "sha256": "sha256-GSEW9LdzPalikaHlfxEhBcQkaeDvWdGAdUbyjIU7P1g=",
+            "rev": "6c1462d6713f3c2a32531b9b1437bf0bd78fa1a1",
+            "sha256": "sha256-lhHDiQbhqFewkVS0/qC8Axo88t46mB8S/dMhaBqpWII=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "d027d8de2b74019ae83e36b1edcd0b968295ac31"
+        "version": "6c1462d6713f3c2a32531b9b1437bf0bd78fa1a1"
     },
     "agent-shell-manager": {
         "cargoLock": null,
-        "date": "2026-02-13",
+        "date": "2026-10-02",
         "extract": null,
         "name": "agent-shell-manager",
         "passthru": null,
@@ -53,17 +53,17 @@
             "fetchSubmodules": false,
             "leaveDotGit": false,
             "name": null,
-            "rev": "53b73f13ed1ac9d2de128465a8504a7265490ea7",
-            "sha256": "sha256-JPB/OnOhYbM0LMirSYQhpB6hW8SAg0Ri6buU8tMP7rA=",
+            "rev": "d3ee783751f0870e36d715c43381a80b1114ac72",
+            "sha256": "sha256-D6/aHnRK4uKtmR3vcQk7s3s2XZ+/UlZiDyWOtPUZKno=",
             "sparseCheckout": [],
             "type": "git",
             "url": "https://github.com/jethrokuan/agent-shell-manager"
         },
-        "version": "53b73f13ed1ac9d2de128465a8504a7265490ea7"
+        "version": "d3ee783751f0870e36d715c43381a80b1114ac72"
     },
     "aider": {
         "cargoLock": null,
-        "date": "2026-01-10",
+        "date": "2026-10-04",
         "extract": null,
         "name": "aider",
         "passthru": null,
@@ -75,12 +75,12 @@
             "name": null,
             "owner": "tninja",
             "repo": "aider.el",
-            "rev": "ac10526c5cfcc2f4288d3539853ff23f4ee7f915",
-            "sha256": "sha256-45TX5g874ZWq8pAi/bU82SuyWvAbYn31LI2ECqLKXOA=",
+            "rev": "e081efe739a719ad61a1c4e9fd9928d9c5763250",
+            "sha256": "sha256-IbytgpxxNyTN81970/fPHMx2lzP8DnCzUgCKjsWEreQ=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "ac10526c5cfcc2f4288d3539853ff23f4ee7f915"
+        "version": "e081efe739a719ad61a1c4e9fd9928d9c5763250"
     },
     "alstroemeria_thumb": {
         "cargoLock": null,
@@ -191,7 +191,7 @@
     },
     "claudemacs": {
         "cargoLock": null,
-        "date": "2026-08-28",
+        "date": "2026-09-26",
         "extract": null,
         "name": "claudemacs",
         "passthru": null,
@@ -203,12 +203,12 @@
             "name": null,
             "owner": "cpoile",
             "repo": "claudemacs",
-            "rev": "faaeba5be984ec73880311b1aa991aa36614a52c",
-            "sha256": "sha256-zOUTri2v3dTMwtsdVdy5TgloLMW23wbeolxi3emBBP4=",
+            "rev": "354ba3537401b4dc35012b46d24d70028ff9c197",
+            "sha256": "sha256-/c27bvAwBWntxuRnIMTd8togWfZ3QEm9QbBBQ3uPNAU=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "faaeba5be984ec73880311b1aa991aa36614a52c"
+        "version": "354ba3537401b4dc35012b46d24d70028ff9c197"
     },
     "cometik_thumb": {
         "cargoLock": null,
@@ -227,7 +227,7 @@
     },
     "copilot": {
         "cargoLock": null,
-        "date": "2026-07-07",
+        "date": "2026-09-07",
         "extract": null,
         "name": "copilot",
         "passthru": null,
@@ -239,12 +239,12 @@
             "name": null,
             "owner": "copilot-emacs",
             "repo": "copilot.el",
-            "rev": "277ca357422ba34bcf7fe650cb720580994eea84",
-            "sha256": "sha256-LYjZeBpQ8UOGoiFETyDF85fOFhKH1aQ/YwCOPfaARjo=",
+            "rev": "90f429b100418d897b673d6c36c2817364b28e3e",
+            "sha256": "sha256-6YKgRk9u71hIfEVhi9mIRa5rwH1eysl7yIHLMabioxU=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "277ca357422ba34bcf7fe650cb720580994eea84"
+        "version": "90f429b100418d897b673d6c36c2817364b28e3e"
     },
     "digs": {
         "cargoLock": null,
@@ -269,7 +269,7 @@
     },
     "eca": {
         "cargoLock": null,
-        "date": "2026-09-03",
+        "date": "2026-09-28",
         "extract": null,
         "name": "eca",
         "passthru": null,
@@ -279,13 +279,34 @@
             "fetchSubmodules": false,
             "leaveDotGit": false,
             "name": null,
-            "rev": "bca35bef87872965d884389b76cd3ad855f0e829",
-            "sha256": "sha256-c2ENt06WnzdLlfQnNVPOW/9yYzUhHs+h27wnq+kF+m0=",
+            "rev": "d4356ae7d20b8f0630ffafec7500aabeda59bbad",
+            "sha256": "sha256-mCnXIgvBSiCHmJZcpLr3+I4iH/rT6CE1QGUhOXGm1ns=",
             "sparseCheckout": [],
             "type": "git",
             "url": "https://github.com/editor-code-assistant/eca-emacs"
         },
-        "version": "bca35bef87872965d884389b76cd3ad855f0e829"
+        "version": "d4356ae7d20b8f0630ffafec7500aabeda59bbad"
+    },
+    "efm-langserver": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "efm-langserver",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "mattn",
+            "repo": "efm-langserver",
+            "rev": "v0.0.57",
+            "sha256": "sha256-LWpm5DyHhrSAGxfwEAM0HABPwfsvWEHZ22U93wdldTw=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v0.0.57"
     },
     "eglot-booster": {
         "cargoLock": null,
@@ -414,12 +435,12 @@
             "name": null,
             "owner": "k1LoW",
             "repo": "git-wt",
-            "rev": "v0.29.1",
-            "sha256": "sha256-8WePARXoLC9NV8Z5PSkM2A4UXFxAZOhT6QbSCY+jtaw=",
+            "rev": "v0.29.3",
+            "sha256": "sha256-K6ygsdLXEHCFmtagZpvHlbW4Iedc2HG/PS61U08IY6s=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "v0.29.1"
+        "version": "v0.29.3"
     },
     "gleam-mode": {
         "cargoLock": null,
@@ -628,7 +649,7 @@
     },
     "nskk": {
         "cargoLock": null,
-        "date": "2026-09-06",
+        "date": "2026-09-13",
         "extract": null,
         "name": "nskk",
         "passthru": null,
@@ -638,13 +659,13 @@
             "fetchSubmodules": false,
             "leaveDotGit": false,
             "name": null,
-            "rev": "065730641aa74a4b55c0b251fb71ce0a092f3b81",
-            "sha256": "sha256-6qZRHfKzo511PhOiejlTLhl84OCx7uwMdbcMBk7tdGs=",
+            "rev": "48e14d430ac744d1a5bbc9ac94a22dee78590cd4",
+            "sha256": "sha256-9R7re7ByJR6gG1Np5JNmqNrigrJ11NBiumHr4NzW22U=",
             "sparseCheckout": [],
             "type": "git",
             "url": "https://github.com/takeokunn/nskk.el"
         },
-        "version": "065730641aa74a4b55c0b251fb71ce0a092f3b81"
+        "version": "48e14d430ac744d1a5bbc9ac94a22dee78590cd4"
     },
     "ob-gleam": {
         "cargoLock": null,
@@ -3805,7 +3826,7 @@
     },
     "shell-maker": {
         "cargoLock": null,
-        "date": "2026-08-20",
+        "date": "2026-10-01",
         "extract": null,
         "name": "shell-maker",
         "passthru": null,
@@ -3817,12 +3838,12 @@
             "name": null,
             "owner": "xenodium",
             "repo": "shell-maker",
-            "rev": "ab4f8ebaf4ef7a7db4762c5d5075baea580044ba",
-            "sha256": "sha256-OT2aGY/7fc1c0qAqAMp7L7TDJSdRRniBWjNv3WmPMYc=",
+            "rev": "dcc05a8cf24eb62f2f611fd2d009a161fada5f6e",
+            "sha256": "sha256-xSNKAA7p2hUGlxwkcN229LBaV3UcNnz56WECgJV4ViY=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "ab4f8ebaf4ef7a7db4762c5d5075baea580044ba"
+        "version": "dcc05a8cf24eb62f2f611fd2d009a161fada5f6e"
     },
     "shhis_thumb": {
         "cargoLock": null,
@@ -3934,7 +3955,7 @@
     },
     "takt": {
         "cargoLock": null,
-        "date": "2026-09-05",
+        "date": "2026-10-06",
         "extract": null,
         "name": "takt",
         "passthru": null,
@@ -3946,12 +3967,12 @@
             "name": null,
             "owner": "nrslib",
             "repo": "takt",
-            "rev": "8d1274cd841f546433f9d3d1d002f4583f15b88d",
-            "sha256": "sha256-4xt/Pypdzw2odW+R0sKrMXHtPYvJTTDC87hUtWQus+c=",
+            "rev": "94cd580deff312a0e1f89ee7fa8af9d90ff06cfb",
+            "sha256": "sha256-GwgsAWbAHL9Bm1N9BtwJCwgtaagKqSYxkAXXCwmDdKo=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "8d1274cd841f546433f9d3d1d002f4583f15b88d"
+        "version": "94cd580deff312a0e1f89ee7fa8af9d90ff06cfb"
     },
     "tramps3": {
         "cargoLock": null,
@@ -4076,6 +4097,66 @@
             "type": "github"
         },
         "version": "v0.1.44-20260424091429"
+    },
+    "vite-plus-cli-darwin-arm64": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "vite-plus-cli-darwin-arm64",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-MasCokHtBO0TarNlnYFvKUnogAEWsFPH9FtxURP2dKs=",
+            "type": "url",
+            "url": "https://registry.npmjs.org/@voidzero-dev/vite-plus-cli-darwin-arm64/-/vite-plus-cli-darwin-arm64-1.0.0.tgz"
+        },
+        "version": "1.0.0"
+    },
+    "vite-plus-cli-darwin-x64": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "vite-plus-cli-darwin-x64",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-xmsaWDy/2juGRU69CCwUDfB6RvKumQvceu0n4SI3teo=",
+            "type": "url",
+            "url": "https://registry.npmjs.org/@voidzero-dev/vite-plus-cli-darwin-x64/-/vite-plus-cli-darwin-x64-1.0.0.tgz"
+        },
+        "version": "1.0.0"
+    },
+    "vite-plus-cli-linux-arm64-gnu": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "vite-plus-cli-linux-arm64-gnu",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-l6LbkqiEgervbAUM52TkN4iyMMX9We7gSg+KEo/AMgs=",
+            "type": "url",
+            "url": "https://registry.npmjs.org/@voidzero-dev/vite-plus-cli-linux-arm64-gnu/-/vite-plus-cli-linux-arm64-gnu-1.0.0.tgz"
+        },
+        "version": "1.0.0"
+    },
+    "vite-plus-cli-linux-x64-gnu": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "vite-plus-cli-linux-x64-gnu",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-MUObEuuKhCB3uiDBpu6QFuG3VSWHt2cGsXb6vOWR+1I=",
+            "type": "url",
+            "url": "https://registry.npmjs.org/@voidzero-dev/vite-plus-cli-linux-x64-gnu/-/vite-plus-cli-linux-x64-gnu-1.0.0.tgz"
+        },
+        "version": "1.0.0"
     },
     "wl-mirror": {
         "cargoLock": null,

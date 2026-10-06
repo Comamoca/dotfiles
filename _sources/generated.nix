@@ -8,53 +8,53 @@
 {
   acp = {
     pname = "acp";
-    version = "2a59373ddf252c78e8d6b25b094458f67aba9e10";
+    version = "242cef63d76cc1073485847f67a21f6d8406d158";
     src = fetchFromGitHub {
       owner = "xenodium";
       repo = "acp.el";
-      rev = "2a59373ddf252c78e8d6b25b094458f67aba9e10";
+      rev = "242cef63d76cc1073485847f67a21f6d8406d158";
       fetchSubmodules = false;
-      sha256 = "sha256-t7U3f1StttQaPh4SrHUpyxk5qEsEpx1Px9h56+OWFvY=";
+      sha256 = "sha256-Gz8u3p+eaO2d/lD3u5i85ucNijwSATyfdndY+iJxKgg=";
     };
-    date = "2026-09-06";
+    date = "2026-09-14";
   };
   agent-shell = {
     pname = "agent-shell";
-    version = "d027d8de2b74019ae83e36b1edcd0b968295ac31";
+    version = "6c1462d6713f3c2a32531b9b1437bf0bd78fa1a1";
     src = fetchFromGitHub {
       owner = "xenodium";
       repo = "agent-shell";
-      rev = "d027d8de2b74019ae83e36b1edcd0b968295ac31";
+      rev = "6c1462d6713f3c2a32531b9b1437bf0bd78fa1a1";
       fetchSubmodules = false;
-      sha256 = "sha256-GSEW9LdzPalikaHlfxEhBcQkaeDvWdGAdUbyjIU7P1g=";
+      sha256 = "sha256-lhHDiQbhqFewkVS0/qC8Axo88t46mB8S/dMhaBqpWII=";
     };
-    date = "2026-09-02";
+    date = "2026-10-06";
   };
   agent-shell-manager = {
     pname = "agent-shell-manager";
-    version = "53b73f13ed1ac9d2de128465a8504a7265490ea7";
+    version = "d3ee783751f0870e36d715c43381a80b1114ac72";
     src = fetchgit {
       url = "https://github.com/jethrokuan/agent-shell-manager";
-      rev = "53b73f13ed1ac9d2de128465a8504a7265490ea7";
+      rev = "d3ee783751f0870e36d715c43381a80b1114ac72";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
       sparseCheckout = [ ];
-      sha256 = "sha256-JPB/OnOhYbM0LMirSYQhpB6hW8SAg0Ri6buU8tMP7rA=";
+      sha256 = "sha256-D6/aHnRK4uKtmR3vcQk7s3s2XZ+/UlZiDyWOtPUZKno=";
     };
-    date = "2026-02-13";
+    date = "2026-10-02";
   };
   aider = {
     pname = "aider";
-    version = "ac10526c5cfcc2f4288d3539853ff23f4ee7f915";
+    version = "e081efe739a719ad61a1c4e9fd9928d9c5763250";
     src = fetchFromGitHub {
       owner = "tninja";
       repo = "aider.el";
-      rev = "ac10526c5cfcc2f4288d3539853ff23f4ee7f915";
+      rev = "e081efe739a719ad61a1c4e9fd9928d9c5763250";
       fetchSubmodules = false;
-      sha256 = "sha256-45TX5g874ZWq8pAi/bU82SuyWvAbYn31LI2ECqLKXOA=";
+      sha256 = "sha256-IbytgpxxNyTN81970/fPHMx2lzP8DnCzUgCKjsWEreQ=";
     };
-    date = "2026-01-10";
+    date = "2026-10-04";
   };
   alstroemeria_thumb = {
     pname = "alstroemeria_thumb";
@@ -120,15 +120,15 @@
   };
   claudemacs = {
     pname = "claudemacs";
-    version = "faaeba5be984ec73880311b1aa991aa36614a52c";
+    version = "354ba3537401b4dc35012b46d24d70028ff9c197";
     src = fetchFromGitHub {
       owner = "cpoile";
       repo = "claudemacs";
-      rev = "faaeba5be984ec73880311b1aa991aa36614a52c";
+      rev = "354ba3537401b4dc35012b46d24d70028ff9c197";
       fetchSubmodules = false;
-      sha256 = "sha256-zOUTri2v3dTMwtsdVdy5TgloLMW23wbeolxi3emBBP4=";
+      sha256 = "sha256-/c27bvAwBWntxuRnIMTd8togWfZ3QEm9QbBBQ3uPNAU=";
     };
-    date = "2026-08-28";
+    date = "2026-09-26";
   };
   cometik_thumb = {
     pname = "cometik_thumb";
@@ -140,15 +140,15 @@
   };
   copilot = {
     pname = "copilot";
-    version = "277ca357422ba34bcf7fe650cb720580994eea84";
+    version = "90f429b100418d897b673d6c36c2817364b28e3e";
     src = fetchFromGitHub {
       owner = "copilot-emacs";
       repo = "copilot.el";
-      rev = "277ca357422ba34bcf7fe650cb720580994eea84";
+      rev = "90f429b100418d897b673d6c36c2817364b28e3e";
       fetchSubmodules = false;
-      sha256 = "sha256-LYjZeBpQ8UOGoiFETyDF85fOFhKH1aQ/YwCOPfaARjo=";
+      sha256 = "sha256-6YKgRk9u71hIfEVhi9mIRa5rwH1eysl7yIHLMabioxU=";
     };
-    date = "2026-07-07";
+    date = "2026-09-07";
   };
   digs = {
     pname = "digs";
@@ -164,17 +164,28 @@
   };
   eca = {
     pname = "eca";
-    version = "bca35bef87872965d884389b76cd3ad855f0e829";
+    version = "d4356ae7d20b8f0630ffafec7500aabeda59bbad";
     src = fetchgit {
       url = "https://github.com/editor-code-assistant/eca-emacs";
-      rev = "bca35bef87872965d884389b76cd3ad855f0e829";
+      rev = "d4356ae7d20b8f0630ffafec7500aabeda59bbad";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
       sparseCheckout = [ ];
-      sha256 = "sha256-c2ENt06WnzdLlfQnNVPOW/9yYzUhHs+h27wnq+kF+m0=";
+      sha256 = "sha256-mCnXIgvBSiCHmJZcpLr3+I4iH/rT6CE1QGUhOXGm1ns=";
     };
-    date = "2026-09-03";
+    date = "2026-09-28";
+  };
+  efm-langserver = {
+    pname = "efm-langserver";
+    version = "v0.0.57";
+    src = fetchFromGitHub {
+      owner = "mattn";
+      repo = "efm-langserver";
+      rev = "v0.0.57";
+      fetchSubmodules = false;
+      sha256 = "sha256-LWpm5DyHhrSAGxfwEAM0HABPwfsvWEHZ22U93wdldTw=";
+    };
   };
   eglot-booster = {
     pname = "eglot-booster";
@@ -245,13 +256,13 @@
   };
   git-wt = {
     pname = "git-wt";
-    version = "v0.29.1";
+    version = "v0.29.3";
     src = fetchFromGitHub {
       owner = "k1LoW";
       repo = "git-wt";
-      rev = "v0.29.1";
+      rev = "v0.29.3";
       fetchSubmodules = false;
-      sha256 = "sha256-8WePARXoLC9NV8Z5PSkM2A4UXFxAZOhT6QbSCY+jtaw=";
+      sha256 = "sha256-K6ygsdLXEHCFmtagZpvHlbW4Iedc2HG/PS61U08IY6s=";
     };
   };
   gleam-mode = {
@@ -376,17 +387,17 @@
   };
   nskk = {
     pname = "nskk";
-    version = "065730641aa74a4b55c0b251fb71ce0a092f3b81";
+    version = "48e14d430ac744d1a5bbc9ac94a22dee78590cd4";
     src = fetchgit {
       url = "https://github.com/takeokunn/nskk.el";
-      rev = "065730641aa74a4b55c0b251fb71ce0a092f3b81";
+      rev = "48e14d430ac744d1a5bbc9ac94a22dee78590cd4";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
       sparseCheckout = [ ];
-      sha256 = "sha256-6qZRHfKzo511PhOiejlTLhl84OCx7uwMdbcMBk7tdGs=";
+      sha256 = "sha256-9R7re7ByJR6gG1Np5JNmqNrigrJ11NBiumHr4NzW22U=";
     };
-    date = "2026-09-06";
+    date = "2026-09-13";
   };
   ob-gleam = {
     pname = "ob-gleam";
@@ -2096,15 +2107,15 @@
   };
   shell-maker = {
     pname = "shell-maker";
-    version = "ab4f8ebaf4ef7a7db4762c5d5075baea580044ba";
+    version = "dcc05a8cf24eb62f2f611fd2d009a161fada5f6e";
     src = fetchFromGitHub {
       owner = "xenodium";
       repo = "shell-maker";
-      rev = "ab4f8ebaf4ef7a7db4762c5d5075baea580044ba";
+      rev = "dcc05a8cf24eb62f2f611fd2d009a161fada5f6e";
       fetchSubmodules = false;
-      sha256 = "sha256-OT2aGY/7fc1c0qAqAMp7L7TDJSdRRniBWjNv3WmPMYc=";
+      sha256 = "sha256-xSNKAA7p2hUGlxwkcN229LBaV3UcNnz56WECgJV4ViY=";
     };
-    date = "2026-08-20";
+    date = "2026-10-01";
   };
   shhis_thumb = {
     pname = "shhis_thumb";
@@ -2169,15 +2180,15 @@
   };
   takt = {
     pname = "takt";
-    version = "8d1274cd841f546433f9d3d1d002f4583f15b88d";
+    version = "94cd580deff312a0e1f89ee7fa8af9d90ff06cfb";
     src = fetchFromGitHub {
       owner = "nrslib";
       repo = "takt";
-      rev = "8d1274cd841f546433f9d3d1d002f4583f15b88d";
+      rev = "94cd580deff312a0e1f89ee7fa8af9d90ff06cfb";
       fetchSubmodules = false;
-      sha256 = "sha256-4xt/Pypdzw2odW+R0sKrMXHtPYvJTTDC87hUtWQus+c=";
+      sha256 = "sha256-GwgsAWbAHL9Bm1N9BtwJCwgtaagKqSYxkAXXCwmDdKo=";
     };
-    date = "2026-09-05";
+    date = "2026-10-06";
   };
   tramps3 = {
     pname = "tramps3";
@@ -2252,6 +2263,38 @@
       rev = "v0.1.44-20260424091429";
       fetchSubmodules = false;
       sha256 = "sha256-PNfk8spdjxg2TAaA6g83YJPugH2O5UirrjJIJ1GVoeo=";
+    };
+  };
+  vite-plus-cli-darwin-arm64 = {
+    pname = "vite-plus-cli-darwin-arm64";
+    version = "1.0.0";
+    src = fetchurl {
+      url = "https://registry.npmjs.org/@voidzero-dev/vite-plus-cli-darwin-arm64/-/vite-plus-cli-darwin-arm64-1.0.0.tgz";
+      sha256 = "sha256-MasCokHtBO0TarNlnYFvKUnogAEWsFPH9FtxURP2dKs=";
+    };
+  };
+  vite-plus-cli-darwin-x64 = {
+    pname = "vite-plus-cli-darwin-x64";
+    version = "1.0.0";
+    src = fetchurl {
+      url = "https://registry.npmjs.org/@voidzero-dev/vite-plus-cli-darwin-x64/-/vite-plus-cli-darwin-x64-1.0.0.tgz";
+      sha256 = "sha256-xmsaWDy/2juGRU69CCwUDfB6RvKumQvceu0n4SI3teo=";
+    };
+  };
+  vite-plus-cli-linux-arm64-gnu = {
+    pname = "vite-plus-cli-linux-arm64-gnu";
+    version = "1.0.0";
+    src = fetchurl {
+      url = "https://registry.npmjs.org/@voidzero-dev/vite-plus-cli-linux-arm64-gnu/-/vite-plus-cli-linux-arm64-gnu-1.0.0.tgz";
+      sha256 = "sha256-l6LbkqiEgervbAUM52TkN4iyMMX9We7gSg+KEo/AMgs=";
+    };
+  };
+  vite-plus-cli-linux-x64-gnu = {
+    pname = "vite-plus-cli-linux-x64-gnu";
+    version = "1.0.0";
+    src = fetchurl {
+      url = "https://registry.npmjs.org/@voidzero-dev/vite-plus-cli-linux-x64-gnu/-/vite-plus-cli-linux-x64-gnu-1.0.0.tgz";
+      sha256 = "sha256-MUObEuuKhCB3uiDBpu6QFuG3VSWHt2cGsXb6vOWR+1I=";
     };
   };
   wl-mirror = {

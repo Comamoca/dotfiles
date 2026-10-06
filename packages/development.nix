@@ -1,6 +1,10 @@
 { pkgs }:
 let
   opensrc = import ../pkgs/opensrc { inherit pkgs; };
+  vite-plus = import ../pkgs/vite-plus { inherit pkgs; };
+  efm-langserver = import ../pkgs/efm-langserver { inherit pkgs; };
+  ort = import ../pkgs/ort { inherit pkgs; };
+  license-efm = import ../pkgs/license-efm { inherit pkgs; };
 in
 with pkgs;
 [
@@ -10,6 +14,7 @@ with pkgs;
   nodejs_24
   bun
   uv
+  vite-plus
 
   # Languages
   vlang
@@ -23,12 +28,13 @@ with pkgs;
 
   typescript
   typescript-language-server
+  efm-langserver
   luau
 
   # Debug Adapter Protocol
   (pkgs.lib.hiPrio elixir-ls)
   lldb
-  vscode-extensions.vadimcn.vscode-lldb  # codelldb for Rust debugging
+  vscode-extensions.vadimcn.vscode-lldb # codelldb for Rust debugging
 
   opensrc
 
@@ -36,4 +42,7 @@ with pkgs;
   # (ランタイムでのTree-sitterパーサーコンパイルにCコンパイラが必要)
   kakehashi
   gcc
+  ort
+  license-efm
+  docker-sbx
 ]

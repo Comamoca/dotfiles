@@ -11,7 +11,7 @@ let
   homeDirectory = "/home/${username}";
   system = "x86_64-linux";
   nurpkgs = inputs.nur-packages.legacyPackages.${system};
-  dotfiles = "/home/${username}/.ghq/github.com/Comamoca/dotfiles";
+  dotfiles = "/home/${username}/.ghq/localhost/comamoca/dotfiles";
 
   generated = import ./_sources/generated.nix;
   sources = generated {
@@ -193,7 +193,17 @@ let
       # nixpkgs の tree-sitter-grammars は scope 化されており、
       # callPackage / packages / allGrammars / derivations 等の非 grammar 属性が混在する。
       # `tree-sitter-` プレフィックスを持つ属性だけが grammar derivation。
-      grammars = lib.filterAttrs (n: v: lib.hasPrefix "tree-sitter-" n) pkgs.tree-sitter-grammars;
+      #
+      # tree-sitter-cuda は除外する。nixpkgs の指定ハッシュと GitHub が返す
+      # 自動生成 tarball (archive/v0.21.2.tar.gz) の内容が一致せず、
+      # hash mismatch でビルドが必ず失敗するため。
+      #   specified: sha256-QGNCld6J0eTPDv+VjjtGuv5/6SCJx8iSMECQTN01V6Q=
+      #   got:       sha256-s2qrZx5fEu/I6xE2paX/Nlmgvo6T27qqvy1cI8iznAA=
+      # nixpkgs 側で修正されたら、この除外は外してよい。
+      brokenGrammars = [ "tree-sitter-cuda" ];
+      grammars = lib.filterAttrs (
+        n: v: lib.hasPrefix "tree-sitter-" n && !(builtins.elem n brokenGrammars)
+      ) pkgs.tree-sitter-grammars;
       mkLink =
         name: grammar:
         let
@@ -210,6 +220,89 @@ let
       ${lib.concatStringsSep "\n" links}
     ''
   );
+
+  # nix-index のプリビルド DB は Hydra がビルドした (= cache.nixos.org に存在する)
+  # パッケージしか収録しない。docker-sbx は Hydra 未ビルドのため DB に無く、comma で
+  # 実行できない。DB はパッケージごとの frcode ブロックを zstd フレームとして連結した
+  # 形式なので、ローカルでビルドした docker-sbx のブロックを追記した DB を生成して使う。
+  nix-index-database-pkgs = inputs.nix-index-database.packages.${system};
+
+  merge-nix-index-db =
+    {
+      name,
+      base,
+      filterPrefix,
+    }:
+    pkgs.runCommand "nix-index-database-${name}"
+      {
+        nativeBuildInputs = [
+          pkgs.python3
+          pkgs.zstd
+        ];
+      }
+      ''
+        python3 ${./pkgs/nix-index-db-merge.py} \
+          --base ${base} \
+          --package ${pkgs.docker-sbx} \
+          --attr docker-sbx \
+          --system ${system} \
+          --filter-prefix '${filterPrefix}' \
+          --out $out
+      '';
+
+  nix-index-docker-sbx-db = {
+    full = merge-nix-index-db {
+      name = "full-with-docker-sbx";
+      base = nix-index-database-pkgs.nix-index-database;
+      filterPrefix = "";
+    };
+    small = merge-nix-index-db {
+      name = "small-with-docker-sbx";
+      base = nix-index-database-pkgs.nix-index-small-database;
+      filterPrefix = "/bin/";
+    };
+  };
+
+  # nix-index-database のラッパーを、マージ済み DB を指すように組み直す。
+  nix-index-with-db = pkgs.callPackage "${inputs.nix-index-database}/nix-index-wrapper.nix" {
+    nix-index-database = nix-index-docker-sbx-db.full;
+  };
+
+  comma-with-db = pkgs.callPackage "${inputs.nix-index-database}/comma-wrapper.nix" {
+    nix-index-database = nix-index-docker-sbx-db.small;
+  };
+
+  # codex-plugin-cc の rescue 経路 (skill / subagent / slash command) が使う
+  # モデルを gpt-6-sol に固定したコピーを作る。
+  #
+  # 上流は「モデルは既定では指定しない」(Leave model unset by default) 方針で、
+  # そのままだと ~/.codex/config.toml の既定モデルがそのまま使われる。
+  # config.toml 側の model は pin しない方針を維持したいので、
+  # rescue 経由の Codex 実行だけをここで sol に寄せる。
+  #
+  # 上流は flake input の読み取り専用 store path なので、ビルド時に書き換える。
+  # 対象行が消えたら --replace-fail でビルドが失敗するため、input の rev を
+  # 上げたときに書き換え漏れを黙って通すことはない。
+  codexRescueModel = "gpt-6-sol";
+  codex-plugin-cc = pkgs.runCommand "codex-plugin-cc-${codexRescueModel}" { } ''
+    cp -r ${inputs.codex-plugin-cc} "$out"
+    chmod -R u+w "$out"
+
+    substituteInPlace "$out/plugins/codex/skills/codex-cli-runtime/SKILL.md" \
+      --replace-fail \
+        '- Leave model unset by default. Add `--model` only when the user explicitly asks for one.' \
+        '- Default to `--model ${codexRescueModel}`. Add a different `--model` only when the user explicitly asks for another model.'
+
+    substituteInPlace "$out/plugins/codex/agents/codex-rescue.md" \
+      --replace-fail \
+        '- Leave model unset by default. Only add `--model` when the user explicitly asks for a specific model.' \
+        '- Default to `--model ${codexRescueModel}`. Only pass a different `--model` when the user explicitly asks for a specific model.'
+
+    substituteInPlace "$out/plugins/codex/commands/rescue.md" \
+      --replace-fail \
+        '- Leave the model unset unless the user explicitly asks for one. If they ask for `spark`, map it to `gpt-5.3-codex-spark`.' \
+        '- Default the model to `${codexRescueModel}` unless the user explicitly asks for another one. If they ask for `spark`, map it to `gpt-5.3-codex-spark`.'
+  '';
 
 in
 rec {
@@ -315,9 +408,11 @@ rec {
       # (import ./pkgs/lspx { inherit pkgs; })
       rclone-sync
       rclone-resync
+      (callPackage ./pkgs/nvim-lzn-plugins { })
     ])
     ++ [
       emacs'
+      comma-with-db
     ]
     ++ treefmt-packages;
 
@@ -338,12 +433,32 @@ rec {
   home.file =
     let
       symlink = config.lib.file.mkOutOfStoreSymlink;
-      dotfiles = /${home.homeDirectory}/.ghq/github.com/Comamoca/dotfiles;
+      dotfiles = /${home.homeDirectory}/.ghq/localhost/comamoca/dotfiles;
       xdgConfigHome = /${home.homeDirectory}/.config;
       homeBin = /${home.homeDirectory}/.bin;
       base = ".cache/dpp/_generated";
     in
     {
+      # OpenAI 公式の Codex プラグイン (codex-plugin-cc) を Claude Code に配置する。
+      # marketplace.json を持つリポジトリルートをそのまま marketplaces/ に置き、
+      # ~/.claude/settings.json の extraKnownMarketplaces / enabledPlugins から
+      # "codex@openai-codex" として参照する。
+      #
+      # skills だけでなく agents/codex-rescue.md, commands/, scripts/ も入るので、
+      # /codex:rescue と codex:codex-rescue サブエージェントが実際に動くようになる。
+      # codex 系 skill はこちら経由で入るため skills/remote.nix からは外してある。
+      #
+      # 実行時の状態は CLAUDE_PLUGIN_DATA (未設定なら $TMPDIR/codex-companion) に
+      # 書かれるので、プラグイン本体が読み取り専用の store path でも問題ない。
+      #
+      # source は上流そのままではなく、rescue 経路のモデルを gpt-6-sol に
+      # 書き換えたコピー (let の codex-plugin-cc)。
+      ".claude/plugins/marketplaces/openai-codex".source = codex-plugin-cc;
+
+      # NIX_INDEX_DATABASE 未設定時に参照される ~/.cache/nix-index/files を、
+      # docker-sbx を追記した DB に差し替える。
+      "${config.xdg.cacheHome}/nix-index/files".source = lib.mkForce nix-index-docker-sbx-db.full;
+
       "${base}/nvim-treesitter" =
         let
           ts = pkgs.vimPlugins.nvim-treesitter;
@@ -504,6 +619,20 @@ rec {
         recursive = true;
       };
 
+      # nvim-lzn: nix + lz.n の試用環境 (NVIM_APPNAME=nvim-lzn)
+      # プラグインは pkgs/nvim-lzn-plugins が home.packages 経由で ~/.nix-profile/share
+      # に配置され、packpath に入る。config は既存 dpp 環境とは完全に別。
+      ".config/nvim-lzn" = {
+        source = (symlink /${dotfiles}/config/nvim-lzn);
+        recursive = true;
+      };
+
+      # efm-langserver (Gleam マニフェストのライセンス診断)
+      ".config/efm-langserver" = {
+        source = (symlink /${dotfiles}/config/efm-langserver);
+        recursive = true;
+      };
+
       ".config/nyxt" = {
         source = (symlink /${dotfiles}/config/nyxt);
         recursive = true;
@@ -581,6 +710,15 @@ rec {
         source = (symlink /${dotfiles}/config/opencode/themes);
         recursive = true;
       };
+
+      ".config/opencode/tui-plugins" = {
+        source = (symlink /${dotfiles}/config/opencode/tui-plugins);
+        recursive = true;
+      };
+
+      ".config/opencode/commands/btw.md".source = (symlink /${dotfiles}/config/opencode/commands/btw.md);
+
+      ".config/opencode/plugins/btw.ts".source = (symlink /${dotfiles}/config/opencode/plugins/btw.ts);
 
       # input-remapper: Wacom ペンタブ ExpressKeys → Krita 用キー(F13-F16)変換
       # デバイス別プリセットディレクトリは activation スクリプト(setupWacomInputRemapper)で
@@ -680,6 +818,9 @@ rec {
     # Affects: Signal, Slack, Discord, Teams, Chrome, etc.
     NIXOS_OZONE_WL = "1";
 
+    # TTY が無い (coding agent など) 状況の sudo で GUI パスワードプロンプトを出す
+    SUDO_ASKPASS = "${pkgs.kdePackages.ksshaskpass}/bin/ksshaskpass";
+
     # opencode-failover reads API keys from this file at startup
     OPENCODE_FAILOVER_ENV_FILE = config.sops.secrets.opencode-failover.path;
   };
@@ -698,6 +839,9 @@ rec {
 
     # GPG agent socket - required for GPG operations in Emacs daemon
     GPG_AGENT_INFO = "/run/user/1000/gnupg/S.gpg-agent";
+
+    # sudo の askpass (サービスから GUI パスワードプロンプトを出す)
+    SUDO_ASKPASS = "${pkgs.kdePackages.ksshaskpass}/bin/ksshaskpass";
 
     # opencode-failover reads API keys from this file at startup
     OPENCODE_FAILOVER_ENV_FILE = config.sops.secrets.opencode-failover.path;
@@ -739,6 +883,68 @@ rec {
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+
+  # Agent Skills (SKILL.md) を宣言的に管理し、~/.claude/skills へ同期する。
+  # - remote: 固定した上流ソースまたは公開 SKILL.md を fetch して配置する。
+  #           追加は ./skills/remote.nix に定義する。
+  # - local:  上流が無い自作 skill だけを ./skills/local/<name>/SKILL.md に置く。
+  # structure = "symlink-tree" は rsync --delete なので、ここに無い skill は
+  # ~/.claude/skills から削除される点に注意。
+  programs.agent-skills = {
+    enable = true;
+    sources.remote.path = import ./skills/remote.nix { inherit pkgs lib; };
+    sources.local.path = ./skills/local;
+    skills.enableAll = true;
+    targets.claude.enable = true;
+  };
+
+  # codex (OpenAI Codex CLI) の設定を宣言的に管理する。
+  # 生成先は ~/.codex/config.toml (home.preferXdgDirectories 未設定のため)。
+  #
+  # mutableSettings = true により config.toml は /nix/store への読み取り専用
+  # シンボリックリンクではなく実ファイルになり、home-manager switch のたびに
+  # 「Nix 宣言値」を「現在の config.toml」へマージする (宣言値が優先、codex が
+  # 追記したキーは保持)。これで静的な設定は Nix が正、codex 自身が書き込む
+  # stateful な設定 (ディレクトリ信頼、TUI の初回検出フラグ、モデル移行の通知
+  # など) は $HOME に残り続ける。
+  # 既知の信頼ディレクトリを projects に宣言しておくと、別マシンでも初回から
+  # trust 済みになる (新しいディレクトリは codex の書き込みが保持される)。
+  programs.codex = {
+    enable = true;
+    package = pkgs.llm-agents.codex;
+
+    # config.toml を実ファイルとして codex に所有させ、宣言値だけをマージする。
+    # 読み取り専用シンボリックリンクに戻すと codex の書き込みが消えるため false のままにしない。
+    mutableSettings = true;
+
+    settings = {
+      personality = "pragmatic";
+      # モデルとプロバイダは意図的に pin しない。
+      # codex は ChatGPT サブスク認証 (~/.codex/auth.json, auth_mode = "chatgpt")
+      # で純正エンドポイントに接続し、現行の codex チューニング版モデルを
+      # 自動選択する。codex-cli-runtime skill も
+      # "Leave model unset by default" を前提にしているため、ここで固定すると
+      # skill 側の想定 (spark 指定時のみ --model を渡す) と食い違う。
+      #
+      # 以前は OpenCode Go (zen/go/v1) を proxy プロバイダとして噛ませていたが、
+      # Go プランは codex 系モデルを配っておらず、skill が想定する
+      # codex チューニング版を使えなかったため撤去した。
+      model_reasoning_effort = "high";
+
+      approval_policy = "on-request";
+      approvals_reviewer = "auto_review";
+
+      tui.screen_reader_detection_done = true;
+
+      projects = {
+        "${homeDirectory}".trust_level = "trusted";
+        "${dotfiles}".trust_level = "trusted";
+        "${homeDirectory}/.ghq/github.com/Comamoca/dotfiles".trust_level = "trusted";
+        "${homeDirectory}/.ghq/github.com/Comamoca/glanty".trust_level = "trusted";
+        "${homeDirectory}/sandbox/litellm".trust_level = "trusted";
+      };
+    };
+  };
 
   # Hyprland
   wayland.windowManager.hyprland.enable = true;
@@ -844,11 +1050,14 @@ rec {
   programs.nix-index = {
     enable = true;
     enableFishIntegration = true;
+    # ローカルでビルドした docker-sbx を追記した DB を使う。
+    package = lib.mkForce nix-index-with-db;
   };
 
-  programs.nix-index-database = {
-    comma.enable = true;
-  };
+  # 上流の comma-with-db は DB を自身の store path に固定する (makeBinaryWrapper の
+  # --set は後勝ちで外から差し替えられない) ため enable せず、マージ済み DB を指す
+  # ラッパー (home.packages の comma-with-db) を使う。
+  programs.nix-index-database.comma.enable = false;
 
   # Spotify はユーザー名/パスワード認証を廃止済みのため、認証情報は
   # `spotifyd authenticate` (OAuth) で生成され ~/.cache/spotifyd/oauth に
@@ -1180,6 +1389,8 @@ PY
       Type = "simple";
       ExecStart = "${pkgs.llm-agents.opencode}/bin/opencode serve --hostname 127.0.0.1 --port 4096";
       # ghq 管理下のリポジトリ (~/.ghq) をサーバーのデフォルト作業ディレクトリにする。
+      # クライアント側は oc 関数が --dir "$PWD" を渡すため、これは主に
+      # --dir 指定なしで attach した際のデフォルトプロジェクトに効く。
       WorkingDirectory = "%h/.ghq";
       Restart = "on-failure";
       RestartSec = 3;

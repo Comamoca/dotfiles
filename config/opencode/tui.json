@@ -3,6 +3,15 @@
   "theme": "catppuccin-mocha-transparent",
   "plugin": [
     "oh-my-openagent",
-    "opencode-failover/tui"
+    "opencode-failover/tui",
+    [
+      "/home/coma/.config/opencode/tui-plugins/context-status.tsx",
+      {
+        "cells": 10,
+        "showModel": true,
+        "showCost": true,
+        "intervalMs": 1000
+      }
+    ]
   ]
 }

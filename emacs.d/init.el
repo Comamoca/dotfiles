@@ -920,6 +920,7 @@ file so dashboards are up to date on every project switch."
 (global-set-key (kbd "C-c n p") #'my/open-project-notes)
 (global-set-key (kbd "C-c n t") #'my/capture-project-todo)
 (global-set-key (kbd "C-c n a") #'my/project-notes-agenda)
+(evil-define-key 'normal 'global (kbd "SPC n") #'my/open-project-notes)
 
 (leaf ddskk
   :custom ((default-input-method . "japanease-skk")
@@ -3219,6 +3220,12 @@ Emacs for seconds right after each save."
 (evil-define-key 'normal 'global (kbd "SPC l") #'toggle-truncate-lines)
 
 (global-set-key (kbd "C-c C-r") 'window-resizer)
+
+;; Zen mode — distraction free editing
+;; C-c C-> / C-c C-< でエディタ幅を調整
+(leaf zen-mode
+  :require t
+  :bind (("C-M-z" . zen-mode)))
 
 (define-key global-map (kbd "C-x s") 'blackening-region)
 (define-key global-map (kbd "C-;") 'comment-dwim)

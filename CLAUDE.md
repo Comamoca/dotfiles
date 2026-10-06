@@ -104,3 +104,14 @@ running daemon.
 
 See the `emacsclient-driven-elisp` skill for detailed commands and verification
 steps.
+
+### sudo / Askpass
+
+- `SUDO_ASKPASS` is wired to `ksshaskpass` in `home.nix`
+  (`home.sessionVariables` and `systemd.user.sessionVariables`), so privileged
+  commands ask the user for the password through a GUI dialog instead of
+  requiring a terminal.
+- An agent shell usually has no TTY, so plain `sudo <cmd>` automatically falls
+  back to that dialog. Use `sudo -A <cmd>` to force it when a TTY is present.
+- Never capture, store, or pipe the password yourself — let the askpass helper
+  read it. Do not add `NOPASSWD` rules to skip the prompt.
