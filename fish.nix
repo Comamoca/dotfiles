@@ -179,7 +179,8 @@
     abbr --add cc claude
     abbr --add e $EDITOR
     abbr --add a emacsclient -s main -c
-    abbr --add oc opencode
+    # oc は systemd 常駐の OpenCode Server へ接続する関数に移行
+    # (config/fish/functions/oc.fish)
     abbr --add cmd "cmd --yolo"
 
     set -x ELIXIR_ERL_OPTIONS "+fnu"

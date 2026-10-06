@@ -31,4 +31,9 @@ with pkgs;
   vscode-extensions.vadimcn.vscode-lldb  # codelldb for Rust debugging
 
   opensrc
+
+  # kakehashi: Tree-sitterハイライトと埋め込みコードへのLSPブリッジ
+  # (ランタイムでのTree-sitterパーサーコンパイルにCコンパイラが必要)
+  kakehashi
+  gcc
 ]

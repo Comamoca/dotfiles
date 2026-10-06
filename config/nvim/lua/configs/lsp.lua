@@ -155,6 +155,24 @@ vim.lsp.config("denols", {
 })
 vim.lsp.enable("denols")
 
+-- kakehashi: Markdown埋め込みコードのハイライトとLSPブリッジ
+vim.lsp.config("kakehashi", {
+  cmd = { "kakehashi" },
+  filetypes = { "markdown" },
+  on_attach = function(_, bufnr)
+    -- kakehashiがハイライトを持つため、初回トークン受信時に内蔵ハイライトを停止 (上流README準拠)
+    vim.api.nvim_create_autocmd("LspTokenUpdate", {
+      buffer = bufnr,
+      once = true,
+      callback = function()
+        vim.opt_local.syntax = "OFF"
+        vim.treesitter.stop(bufnr)
+      end,
+    })
+  end,
+})
+vim.lsp.enable("kakehashi")
+
 -- lsp keymaps
 vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
 vim.keymap.set("n", "gf", "<cmd>lua vim.lsp.buf.formatting()<CR>")

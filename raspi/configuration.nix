@@ -19,19 +19,23 @@ in
   nixpkgs.hostPlatform = "aarch64-linux";
   nixpkgs.config.allowUnfree = true;
 
-  boot.kernelPackages = pkgs.linuxPackages_rpi3;
   nixpkgs.config.permittedInsecurePackages = [ "olm-3.2.16" ];
 
   imports = [
-    "${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
+    # raspberry-pi-nixが独自のSD imageモジュールを提供するため、
+    # nixpkgs標準のsd-image-aarch64.nixは使用しない
+    # "${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
     "${modulesPath}/profiles/minimal.nix"
-    # inputs.nixos-hardware.nixosModules.raspberry-pi-3
   ];
+
+  # raspberry-pi-nix設定
+  raspberry-pi-nix = {
+    board = "bcm2711"; # Raspberry Pi 3/4用
+    # pin-inputs.enable = true; # オプション: キャッシュ互換性を最大化
+  };
 
   boot = {
     initrd = {
-      # dw-hdmiモジュールが存在しない問題を回避するため、デフォルトモジュールを無効化
-      includeDefaultModules = false;
       availableKernelModules = [
         "xhci_pci"
         "usbhid"
@@ -43,7 +47,8 @@ in
     };
     loader = {
       grub.enable = false;
-      generic-extlinux-compatible.enable = true;
+      # raspberry-pi-nixが独自のブートローダーを提供するため無効化
+      generic-extlinux-compatible.enable = lib.mkForce false;
     };
   };
 

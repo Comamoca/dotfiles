@@ -213,7 +213,7 @@ let
 
 in
 rec {
-  imports = [./forgejo.nix];
+  imports = [./forgejo.nix ./maestro.nix ./weave-os.nix];
   nixpkgs.config = {
     allowUnfree = true;
     permittedInsecurePackages = [
@@ -243,6 +243,30 @@ rec {
         sopsFile = ./secrets/aider-opencode-go.env;
         path = "/run/user/1000/aider-opencode-go.env";
         format = "dotenv";
+      };
+      # maestro と agent (opencode) がローカル Forgejo へ push/PR/issue 操作する
+      # ためのトークン。maestro.service の EnvironmentFile として読まれる。
+      "forgejo" = {
+        sopsFile = ./secrets/forgejo.env;
+        path = "/run/user/1000/forgejo.env";
+        format = "dotenv";
+      };
+      # weave-os router の上流プロバイダ (opencode-go) 認証情報。
+      # weave-os.service の compose env_file として読まれる。
+      "weave-os" = {
+        sopsFile = ./secrets/weave-os.env;
+        path = "/run/user/1000/weave-os.env";
+        format = "dotenv";
+      };
+      # Cloudflare Tunnel (opencode.comamoca.dev) のトンネルトークン。
+      # cloudflared は --token-file でこのファイルを読む (ps に露出しない)。
+      # 0600 で ~/.config/cloudflared/opencode-token に復号される。
+      "opencode-cloudflared-token" = {
+        sopsFile = ./secrets/opencode-cloudflared-token.yaml;
+        key = "opencode-cloudflared-token";
+        path = "${home.homeDirectory}/.config/cloudflared/opencode-token";
+        format = "yaml";
+        mode = "0600";
       };
     };
   };
@@ -1138,6 +1162,55 @@ PY
 
     Install = {
       WantedBy = [ "timers.target" ];
+    };
+  };
+
+  # OpenCode Server 常駐プロセス (127.0.0.1:4096 のみで待ち受け)。
+  # 外部アクセスは必ず Cloudflare Tunnel (cloudflared-opencode.service) 経由。
+  # X-SwitchMethod = "keep-old": セッション/作業状態を保持するため
+  # home-manager switch 時は再起動しない (変更適用は手動再起動時)。
+  systemd.user.services.opencode-server = {
+    Unit = {
+      Description = "OpenCode Server (127.0.0.1:4096)";
+      After = [ "network-online.target" ];
+      Wants = [ "network-online.target" ];
+      X-SwitchMethod = "keep-old";
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.llm-agents.opencode}/bin/opencode serve --hostname 127.0.0.1 --port 4096";
+      # ghq 管理下のリポジトリ (~/.ghq) をサーバーのデフォルト作業ディレクトリにする。
+      WorkingDirectory = "%h/.ghq";
+      Restart = "on-failure";
+      RestartSec = 3;
+    };
+    Install = {
+      WantedBy = [ "default.target" ];
+    };
+  };
+
+  # opencode.comamoca.dev → OpenCode Server への Cloudflare Tunnel。
+  # トークンは sops で復号された ~/.config/cloudflared/opencode-token (0600) を
+  # --token-file で読み込むため、ps / プロセスリストにトークンが露出しない。
+  systemd.user.services.cloudflared-opencode = {
+    Unit = {
+      Description = "Cloudflare Tunnel for opencode.comamoca.dev";
+      After = [
+        "network-online.target"
+        "sops-nix.service"
+        "opencode-server.service"
+      ];
+      Wants = [ "network-online.target" ];
+      X-SwitchMethod = "keep-old";
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate run --token-file ${config.sops.secrets.opencode-cloudflared-token.path}";
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
+    Install = {
+      WantedBy = [ "default.target" ];
     };
   };
 

@@ -40,4 +40,5 @@ with pkgs;
 
   # takt
   hunk
+  forgejo-cli
 ]

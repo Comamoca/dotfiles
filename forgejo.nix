@@ -41,7 +41,7 @@
     LEVEL = Info
 
     [migrations]
-    ALLOWED_DOMAINS = localhost,127.0.0.1
+    ALLOWED_DOMAINS = localhost,127.0.0.1,github.com
   '';
 in {
   # systemd の switch 時に新規/更新ユニットを起動する

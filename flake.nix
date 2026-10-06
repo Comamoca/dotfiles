@@ -83,17 +83,43 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # weave-os router (LLM モデルルーター)。flake ではないので flake = false。
+    # 公開コンテナイメージが無いため、同梱の docker-compose でソースからビルドする。
+    # 実体は weave-os.nix が参照する。リリースタグにピン留めする。
+    weave-router = {
+      url = "github:weave-os/router/router-v0.2.28";
+      flake = false;
+    };
+
     # main の vendorHash が go.mod と同期切れしている (2026-08-24 時点) ため
     # セルフコンシステントな v0.18.0 タグにピン留めする。
     hister = {
       url = "github:asciimoo/hister/v0.18.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Tree-sitterハイライトと埋め込みコードへのLSPブリッジを提供するlanguage server。
+    # v1.0.0 タグにピン留めする。
+    kakehashi = {
+      url = "github:atusy/kakehashi/v1.0.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    raspberry-pi-nix = {
+      url = "github:nix-community/raspberry-pi-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   nixConfig = {
-    extra-substituters = [ "https://cache.numtide.com" ];
-    extra-trusted-public-keys = [ "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=" ];
+    extra-substituters = [
+      "https://cache.numtide.com"
+      "https://nix-community.cachix.org"
+    ];
+    extra-trusted-public-keys = [
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+    ];
   };
 
   outputs =
@@ -192,6 +218,8 @@
           system = "aarch64-linux";
           specialArgs = { inherit inputs; };
           modules = [
+            inputs.raspberry-pi-nix.nixosModules.raspberry-pi
+            inputs.raspberry-pi-nix.nixosModules.sd-image
             inputs.sops-nix.nixosModules.sops
             inputs.hermes-agent.nixosModules.default
             ./raspi/configuration.nix
@@ -276,6 +304,7 @@
                     worktrunk = inputs.worktrunk.packages.${system}.default;
                     herdr = inputs.herdr.packages.${system}.default;
                     hunk = inputs.hunk.packages.${system}.default;
+                    kakehashi = inputs.kakehashi.packages.${system}.default;
                     shinycolors-jacket = import ./pkgs/shinycolors-jacket { pkgs = final; };
                   })
                 ];

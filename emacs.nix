@@ -93,7 +93,7 @@ let
     pname = "claudemacs";
     version = "main";
     src = sources.claudemacs.src;
-    buildInputs = with pkgs.emacsPackages; [ ];
+    buildInputs = with pkgs.emacsPackages; [ eat ghostel ];
   };
 
   claude-code = pkgs.emacsPackages.trivialBuild {
@@ -448,6 +448,7 @@ in
     org-project-capture
     org-projectile
     org-transclusion
+    org-kanban
 
     calfw
     calfw-org

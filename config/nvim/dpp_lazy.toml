@@ -1304,3 +1304,9 @@ on_event = ['BufRead', 'CursorHold']
 lua_source = """
 require("toggleterm").setup()
 """
+
+[[plugins]]
+repo = "https://github.com/bgwdotdev/gleam-theme-nvim"
+on_event = ['BufRead', 'CursorHold']
+hook_add = '''
+'''
