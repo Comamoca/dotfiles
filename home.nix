@@ -11,7 +11,7 @@ let
   homeDirectory = "/home/${username}";
   system = "x86_64-linux";
   nurpkgs = inputs.nur-packages.legacyPackages.${system};
-  dotfiles = "/home/${username}/.ghq/localhost/comamoca/dotfiles";
+  dotfiles = "/home/${username}/.ghq/github.com/Comamoca/dotfiles";
 
   generated = import ./_sources/generated.nix;
   sources = generated {
@@ -433,7 +433,7 @@ rec {
   home.file =
     let
       symlink = config.lib.file.mkOutOfStoreSymlink;
-      dotfiles = /${home.homeDirectory}/.ghq/localhost/comamoca/dotfiles;
+      dotfiles = /${home.homeDirectory}/.ghq/github.com/Comamoca/dotfiles;
       xdgConfigHome = /${home.homeDirectory}/.config;
       homeBin = /${home.homeDirectory}/.bin;
       base = ".cache/dpp/_generated";
