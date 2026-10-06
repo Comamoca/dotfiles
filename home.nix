@@ -913,10 +913,8 @@ rec {
     enable = true;
     package = pkgs.llm-agents.codex;
 
-    # config.toml を実ファイルとして codex に所有させ、宣言値だけをマージする。
-    # 読み取り専用シンボリックリンクに戻すと codex の書き込みが消えるため false のままにしない。
-    mutableSettings = true;
-
+    # NOTE: mutableSettings は L(localhost) の home-manager 版のみが持つオプション。
+    # G の home-manager には存在しないため除去 (G 側の既定挙動に従う)。
     settings = {
       personality = "pragmatic";
       # モデルとプロバイダは意図的に pin しない。
@@ -939,7 +937,6 @@ rec {
       projects = {
         "${homeDirectory}".trust_level = "trusted";
         "${dotfiles}".trust_level = "trusted";
-        "${homeDirectory}/.ghq/github.com/Comamoca/dotfiles".trust_level = "trusted";
         "${homeDirectory}/.ghq/github.com/Comamoca/glanty".trust_level = "trusted";
         "${homeDirectory}/sandbox/litellm".trust_level = "trusted";
       };
