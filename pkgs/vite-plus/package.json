@@ -4,6 +4,6 @@
   "private": true,
   "packageManager": "pnpm@10.33.0",
   "dependencies": {
-    "vite-plus": "1.0.0"
+    "vite-plus": "1.1.0"
   }
 }
