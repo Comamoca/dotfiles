@@ -9,7 +9,6 @@ vim.opt.runtimepath:prepend(dpp_src)
 local dpp = require("dpp")
 -- end prelude
 
--- local dpp_base = "~/.cache/dpp/"
 local dppBase = "~/.cache/dpp"
 local dpp_config = "~/.config/nvim/dpp.ts"
 local denops_src = "~/.cache/dpp/repos/github.com/vim-denops/denops.vim"
@@ -25,11 +24,6 @@ vim.opt.runtimepath:append(ext_installer)
 vim.opt.runtimepath:append(ext_git)
 vim.opt.runtimepath:prepend(denops_src)
 
--- local fn = vim.fn
-
--- dpp.load_state("~/.cache/dpp")
--- dpp.make_state("~/.cache/dpp", "~/.config/nvim/dpp.ts")
-
 if dpp.load_state(dppBase) then
   vim.api.nvim_create_autocmd("User", {
     pattern = "DenopsReady",
@@ -39,9 +33,6 @@ if dpp.load_state(dppBase) then
     end,
   })
 end
-
--- call dpp#min#load_state("~/.cache/dpp")
--- call dpp#make_state("~/.cache/dpp", "~/.config/nvim/dpp.ts")
 
 vim.api.nvim_create_autocmd("User", {
   pattern = "Dpp:makeStatePost",
@@ -58,7 +49,6 @@ vim.opt.runtimepath:prepend(vim.fn.stdpath("data") .. "/site")
 -- Nix-managed nvim-treesitter: all parsers (326) + queries bundled via symlinkJoin
 vim.opt.runtimepath:prepend(vim.fn.expand("~/.cache/dpp/_generated/nvim-treesitter"))
 
--- autocmd BufRead *.rs let g:rustfmt_autosave = 0
 vim.api.nvim_create_autocmd("BufRead", {
   pattern = "*.ab",
   command = "set filetype=amber",
@@ -119,16 +109,8 @@ vim.api.nvim_create_autocmd({ "BufRead", "CursorHold", "InsertEnter" }, {
   callback = function()
     vim.opt.clipboard = "unnamedplus"
     require("configs/keymap")
-    -- require("configs/cmd")
-
-    -- vim.cmd("colorscheme gruvbox")
-    -- vim.cmd("colorscheme wal")
-    -- vim.cmd("colorscheme nord")
-    -- vim.cmd("SeiyaEnable")
   end,
 })
-
--- vim.g.seiya_auto_enable = 1
 
 vim.cmd("inoremap jj <C-[>")
 vim.cmd("nnoremap <C-[><C-[> <cmd>noh<CR>")
@@ -146,8 +128,6 @@ vim.cmd("au BufRead .denoflare set filetype=json")
 vim.opt.laststatus = 3
 vim.opt.cursorline = true
 
--- vim.opt.relativenumber = true
-
 vim.cmd("set completeopt+=noinsert")
 
 vim.keymap.set("n", "<leader>k", function()
@@ -159,39 +139,16 @@ vim.cmd([[const mapleader = " "]])
 vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/coma/memos.vim"))
 vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/vimskey"))
 
--- vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/fennel_nvim"))
--- vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/calc.nvim"))
--- vim.opt.runtimepath:append(vim.fn.expand("~/ghq/github.com/Comamoca/sandbox/calc.nvim"))
-
 vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/sandbox/ex_gleam_denops"))
 vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-spotify"))
--- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-palette"))
--- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/octagon.nvim"))
--- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-repl"))
--- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-task"))
--- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-codecrop"))
-
--- ddu local
--- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Shougo/ddu-ui-ff"))
 
 vim.opt.virtualedit = "none"
 
 vim.cmd([[let maplocalleader = ' ']])
 
--- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/sandbox/ex_gleam_denops"))
--- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-yasunori"))
-
--- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Comamoca/vim-spotify"))
--- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-moonbit-settings"))
-
 vim.opt.expandtab = true
 
--- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-junky"))
-vim.g.junky_path = "~/.junky"
-
--- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/Shougo/ddt.vim"))
-
--- vim.opt.runtimepath:append(vim.fn.expand("~/.ghq/github.com/coma/vim-morg"))
+vim.opt.foldmethod = "marker"
 
 vim.opt.foldmethod = "marker"
 
@@ -201,10 +158,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
     vim.keymap.set("n", "<leader>er", "<cmd>call morg#run()<CR>")
   end,
 })
-
--- vim.g['denops_server_addr'] = "127.0.0.1:32123"
-
--- require("configs/kastel")
 
 vim.api.nvim_create_user_command("Init", "e $MYVIMRC", {})
 vim.api.nvim_create_user_command("Scratch", function()
@@ -217,10 +170,6 @@ if vim.g.neovide then
   vim.g.neovide_cursor_vfx_mode = "torpedo"
   vim.o.background = "dark"
   vim.g.neovide_theme = "dark"
-
-  -- vim.api.nvim_set_hl(0, "Normal", {
-  --   bg = "#1e1e2e",
-  -- })
 
   local bg = "#1e1e2e"
 
