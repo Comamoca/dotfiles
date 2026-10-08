@@ -463,6 +463,27 @@
         },
         "version": "5fd0ad952e60ee0032688cb7c2d9fd09e79eff62"
     },
+    "herdr": {
+        "cargoLock": null,
+        "date": "2026-09-30",
+        "extract": null,
+        "name": "herdr",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "eddof13",
+            "repo": "herdr.el",
+            "rev": "3800b11af6ead3be350cfd81e87c5fb7b1e4d1ce",
+            "sha256": "sha256-3yv19W1/H2B44nZ6BoKB7U1TWfIBIobuf8X9RgegdsM=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "3800b11af6ead3be350cfd81e87c5fb7b1e4d1ce"
+    },
     "hokura_thumb": {
         "cargoLock": null,
         "date": null,

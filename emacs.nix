@@ -435,6 +435,16 @@ let
       acp
     ];
   };
+
+  herdr = pkgs.emacsPackages.trivialBuild {
+    pname = "herdr";
+    version = "main";
+    src = sources.herdr.src;
+    buildInputs = with pkgs.emacsPackages; [
+      transient
+      ghostel
+    ];
+  };
 in
 {
   packages = with epkgs; [
@@ -752,5 +762,6 @@ in
 
     yaml
     async
+    herdr
   ];
 }

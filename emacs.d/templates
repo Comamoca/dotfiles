@@ -2,26 +2,20 @@ fundamental-mode ;; Available everywhere
 
 (today (format-time-string "%Y-%m-%d"))
 
-markdown-mode
-(diary "---" n
-       "title: '" (format-time-string "%Y-%m-%d") "の日報'" n
-       "description: '" (format-time-string "%-m/%-d") "の日報をお届けいたします。'" n
-       "pubDate: '" (format-time-string "%b %-d %Y")"'" n
-       "emoji: 🦊" n
-       "tags: []" n
-       "draft: false" n
-       "---" n n
-       "## 今日やったこと" n n n
-       "## 明日以降やりたいこと" n)
+org-mode
+(diary "#+TITLE: " (format-time-string "%Y-%m-%d") "の日報" n
+       "#+DESCRIPTION: " (format-time-string "%-m/%-d") "の日報をお届けいたします。" n
+       "#+DATE: [" (format-time-string "%Y-%m-%d %a") "]" n
+       "#+EMOJI: 🦊" n
+       "#+DRAFT: false" n n
+       "** 今日やったこと" n n n
+       "** 明日以降やりたいこと" n)
 
-(article "---" n
-       "title: ''" n
-       "description: ''" n
-       "pubDate: '" (format-time-string "%b %-d %Y") "'" n
-       "emoji: 🦊" n
-       "tags: []" n
-       "draft: true" n
-       "---" n n)
+(article "#+TITLE: " n
+       "#+DESCRIPTION: " n
+       "#+DATE: [" (format-time-string "%Y-%m-%d %a") "]" n
+       "#+EMOJI: 🦊" n
+       "#+DRAFT: true" n n)
 
 emacs-lisp-mode
 

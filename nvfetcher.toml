@@ -1045,3 +1045,7 @@ fetch.git = "https://github.com/pedz/ruby-ts-mode"
 [emacs-taskrunner]
 src.git = "https://github.com/emacs-taskrunner/emacs-taskrunner"
 fetch.git = "https://github.com/emacs-taskrunner/emacs-taskrunner"
+
+[herdr]
+src.git = "https://github.com/eddof13/herdr.el"
+fetch.github = "eddof13/herdr.el"

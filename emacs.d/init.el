@@ -1708,13 +1708,12 @@ Forces re-root even if treemacs was already open on a different project."
 ;; leaf の :hook がパッケージロード済み時に確実に効かないため直接登録する。
 ;; markdown-ts-mode は markdown-mode から派生していないため両方に登録する。
 (defun my/blog-markdown-capf-setup ()
-  "Register blog tag completion for markdown buffers."
+  "Register blog tag completion for org buffers."
   (setq-local completion-at-point-functions
               (cons #'my/blog-tag-capf
                     (cons #'cape-emoji completion-at-point-functions))))
 
-(add-hook 'markdown-mode-hook #'my/blog-markdown-capf-setup)
-(add-hook 'markdown-ts-mode-hook #'my/blog-markdown-capf-setup)
+(add-hook 'org-mode-hook #'my/blog-markdown-capf-setup)
 
 ;; Migemo
 (leaf migemo
@@ -2277,6 +2276,9 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'smudge-oauth-browser)
 
+;; Ghostel 上の Coding Agent へ minibuffer から文字列を注入する
+(require 'my-ghostel-prompt)
+
 (leaf ox-typst
   :after org-mode)
 
@@ -2320,6 +2322,18 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 (leaf dirvish)
 
 (leaf sparql-mode)
+
+;; herdr: herdr ターミナルワークスペースマネージャを Emacs から操作する
+(leaf herdr
+  :bind (("C-x M" . herdr)
+         ("C-c H" . herdr-agents))
+  :custom
+  (herdr-terminal-backend 'session)
+  :config
+  (herdr-agents-mode-line-mode 1)
+  ;; 上流 herdr-agents-visit は既存 buffer の表示のみで生成をしない
+  ;; (buffer 消失後に呼ぶと沈黙する) ため、生成pathを追加したローカル修正
+  (require 'my-herdr-agents-visit))
 
 (leaf claudemacs
   :bind ((:evil-normal-state-map
@@ -2614,50 +2628,35 @@ milliseconds instead of seconds."
 
 ;; ================================================
 ;; Blog tag completion
-;; YAML frontmatter の tags を Corfu で補完する。
-;; 参照: ~/.ghq/github.com/Comamoca/blog/src/blog/*.md
+;; org の #+FILETAGS: を Corfu で補完する。
+;; 参照: ~/.ghq/github.com/Comamoca/blog/src/blog/*.org
 ;; ================================================
-
-(require 'yaml)
 
 (defvar my/blog-tags-dir
   (expand-file-name "~/.ghq/github.com/Comamoca/blog/src/blog/")
-  "Directory containing blog markdown files.")
+  "Directory containing blog org files.")
 
 (defvar my/blog-tag-cache nil
   "Cached list of blog tags in frequency order.")
 
-(defun my/blog-extract-frontmatter (str)
-  "Extract the leading \"---\\n...\\n---\" block from STR.
-Return nil when there is no frontmatter."
-  (when (string-match-p "\\`---[ \t]*\n" str)
-    (let ((end (string-match "\n---[ \t]*\n?" str 3)))
-      (when end
-        (substring str 4 end)))))
-
-(defun my/blog-read-frontmatter (str)
-  "Parse frontmatter string STR into a hash table.
-Return nil on parse errors."
-  (condition-case nil
-      (yaml-parse-string str :object-type 'hash-table :object-key-type 'string)
-    (error nil)))
-
-(defun my/blog-tags-from-string (fm)
-  "Extract the tags list from frontmatter string FM.
-Uses `yaml-parse-string' so both `tags: [\"a\", \"b\"]' and the YAML list
-form (`tags:' followed by `- item' lines) are handled.  Returns nil when
-there are no tags."
-  (when-let* ((table (my/blog-read-frontmatter fm))
-              (tags (gethash "tags" table)))
-    (cl-remove-if-not #'stringp (append tags nil))))
+(defun my/blog-tags-from-string (str)
+  "Extract tags from #+FILETAGS: keyword lines in STR.
+Return a list of tag strings, or nil."
+  (let (tags)
+    (dolist (line (split-string str "\n"))
+      (when (string-match "\\`#\\+FILETAGS:[ \t]*\\(.*\\)\\'" line)
+        (setq tags
+              (append tags
+                      (cl-remove-if #'string-empty-p
+                                    (split-string (match-string 1 line) ":"))))))
+    tags))
 
 (defun my/blog-tags-from-file (file)
-  "Return the list of tags in the frontmatter of FILE."
-  (when-let* ((str (with-temp-buffer
-                     (insert-file-contents file)
-                     (buffer-string)))
-              (fm (my/blog-extract-frontmatter str)))
-    (my/blog-tags-from-string fm)))
+  "Return the list of #+FILETAGS: tags in FILE."
+  (when-let ((str (with-temp-buffer
+                    (insert-file-contents file)
+                    (buffer-string))))
+    (my/blog-tags-from-string str)))
 
 (defvar my/blog-file-tags-cache (make-hash-table :test #'equal)
   "Per-file tag cache mapping blog post paths to their tag lists.")
@@ -2681,7 +2680,7 @@ Pure aggregation over cached data: no file I/O, so it is cheap."
   "Scan all blog posts and rebuild `my/blog-tag-cache' by frequency."
   (interactive)
   (clrhash my/blog-file-tags-cache)
-  (dolist (file (directory-files-recursively my/blog-tags-dir "\\.md\\'"))
+  (dolist (file (directory-files-recursively my/blog-tags-dir "\\.org\\'"))
     (puthash file (my/blog-tags-from-file file) my/blog-file-tags-cache))
   (my/blog-rebuild-tag-cache))
 
@@ -2701,22 +2700,21 @@ Pure aggregation over cached data: no file I/O, so it is cheap."
   "Cached frontmatter end line, invalidated on buffer modification.")
 
 (defun my/blog-frontmatter-end-line ()
-  "Return the line number where the frontmatter ends, or nil.
-Only the first 64 lines are inspected since frontmatter is always at
-the top; the result is cached and invalidated on buffer change."
+  "Return the last line of the leading #+ keyword block, or nil.
+Only the first 64 lines are inspected since keywords are always at the
+top; the result is cached and invalidated on buffer change."
   (or my/blog-frontmatter-end-line-cache
       (setq my/blog-frontmatter-end-line-cache
             (save-excursion
               (goto-char (point-min))
-              (when-let* ((str (buffer-substring
-                                (point-min)
-                                (min (point-max)
-                                     (save-excursion
-                                       (forward-line 64)
-                                       (point))))))
-                (let ((fm (my/blog-extract-frontmatter str)))
-                  (when fm
-                    (+ 1 (cl-count ?\n fm)))))))))
+              (let ((last nil))
+                (while (and (not (eobp))
+                            (< (line-number-at-pos) 64)
+                            (looking-at-p "\\(#\\+\\|\\s-*$\\)"))
+                  (when (looking-at-p "#\\+")
+                    (setq last (line-number-at-pos)))
+                  (forward-line 1))
+                last)))))
 
 (defun my/blog-invalidate-frontmatter-cache (_beg _end _len)
   "Invalidate the cached frontmatter end line in blog buffers."
@@ -2726,18 +2724,23 @@ the top; the result is cached and invalidated on buffer change."
 (add-hook 'after-change-functions #'my/blog-invalidate-frontmatter-cache)
 
 (defun my/blog-in-frontmatter-p ()
-  "Return non-nil when point is inside the frontmatter."
+  "Return non-nil when point is inside the leading keyword block."
   (when-let ((end (my/blog-frontmatter-end-line)))
     (<= (line-number-at-pos) end)))
 
+(defun my/blog-filetags-line-p ()
+  "Return non-nil when the current line is a #+FILETAGS: keyword line."
+  (save-excursion
+    (beginning-of-line)
+    (looking-at-p "#\\+FILETAGS:")))
+
 (defun my/blog-tag-bounds ()
-  "Return (start . end) of the tag symbol at point in the frontmatter."
-  (when (and (my/blog-buffer-p) (my/blog-in-frontmatter-p))
+  "Return (start . end) of the tag at point on a #+FILETAGS: line."
+  (when (and (my/blog-buffer-p) (my/blog-filetags-line-p))
     (save-excursion
       (let ((end (point)))
-        (skip-syntax-backward "-w")
-        (when (> (point) (point-min))
-          (cons (point) end))))))
+        (skip-chars-backward "^:\n")
+        (cons (point) end)))))
 
 (defun my/blog-tag-capf ()
   "Complete blog tags from `my/blog-tag-cache' inside the frontmatter."
@@ -2973,26 +2976,23 @@ Emacs for seconds right after each save."
 (defun date-to-tempalte (year month day)
   (let* ((time (encode-time 0 0 0 day month year))
          (yymmdd (format-time-string "%Y-%m-%d" time))
+         (org-date (format-time-string "[%Y-%m-%d %a]" time))
          (date (format-time-string "%-m/%-d" time))
-         (us-date (format-time-string "%b %-d %Y" time))
-         (tmpl `("---"
-                 ,(format "title: '%sの日報'" yymmdd)
-                 ,(format "description: '%sの日報をお届けいたします。'" date)
-                 ,(format "pubDate: '%s'" us-date)
-                 "emoji: 🦊"
-                 "tags: []"
-                 "draft: false"
-                 "---"
-                 "\n"
-                 "## 今日やったこと"
-                 "\n"
-                 "## 明日以降やりたいこと")))
+         (tmpl `(,(format "#+TITLE: %sの日報" yymmdd)
+                 ,(format "#+DESCRIPTION: %sの日報をお届けいたします。" date)
+                 ,(format "#+DATE: %s" org-date)
+                 "#+EMOJI: 🦊"
+                 "#+DRAFT: false"
+                 ""
+                 "** 今日やったこと"
+                 ""
+                 "** 明日以降やりたいこと")))
     (mapconcat #'identity tmpl "\n")))
 
 (defun create-diary-path (year month day)
   (let* ((time (encode-time 0 0 0 day month year))
          (date-str (format-time-string "%Y-%m-%d" time))
-         (file-name (format "%s-diary.md" date-str))
+         (file-name (format "%s-diary.org" date-str))
          (path (concat (expand-file-name "src/blog/" blog-repo) file-name))) 
     path))
 
@@ -3032,7 +3032,7 @@ Emacs for seconds right after each save."
   (interactive)
   (let* ((date (format-time-string "%Y-%m-%d"))
          (slug (read-string "slug > "))
-         (file-name (format "%s-%s.md" date slug))
+         (file-name (format "%s-%s.org" date slug))
          (path (concat (expand-file-name "src/blog/" blog-repo) file-name)))
     ;; (projectile-switch-project-by-name "blog")
     (find-file path)
@@ -3044,7 +3044,7 @@ Emacs for seconds right after each save."
   (let* ((src-dir (expand-file-name "src/blog" blog-repo))
          (files (directory-files src-dir))
          (articles (cl-remove-if-not (lambda (file)
-				       (string-match "-diary.md$" file))
+				       (string-match "-diary.org$" file))
 				     files))
          (selected (completing-read "blog " articles)))
     (find-file (expand-file-name selected src-dir))))
@@ -3054,7 +3054,7 @@ Emacs for seconds right after each save."
   (let* ((src-dir (expand-file-name "src/blog" blog-repo))
          (files (directory-files src-dir))
          (articles (cl-remove-if (lambda (file)
-                                   (string-match "-diary.md$" file))
+                                   (string-match "-diary.org$" file))
                                  files)) 
          (selected (completing-read "blog " articles)))
     (find-file (expand-file-name selected src-dir)))) 
@@ -3074,7 +3074,7 @@ Emacs for seconds right after each save."
                   (expand-file-name (format-time-string "%Y-%m-%d-%H%M%S")
 				    "~/.ghq/github.com/Comamoca/blog/src/img") ".png"))
   (shell-command (concat  "wl-paste -t image/png > " fullpath))
-  (insert (concat "![](/img/" (file-name-nondirectory fullpath) ")"))
+  (insert (concat "[[/img/" (file-name-nondirectory fullpath) "]]"))
   (org-display-inline-images))
 
 

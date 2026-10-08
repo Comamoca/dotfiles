@@ -277,6 +277,18 @@
     };
     date = "2026-09-02";
   };
+  herdr = {
+    pname = "herdr";
+    version = "3800b11af6ead3be350cfd81e87c5fb7b1e4d1ce";
+    src = fetchFromGitHub {
+      owner = "eddof13";
+      repo = "herdr.el";
+      rev = "3800b11af6ead3be350cfd81e87c5fb7b1e4d1ce";
+      fetchSubmodules = false;
+      sha256 = "sha256-3yv19W1/H2B44nZ6BoKB7U1TWfIBIobuf8X9RgegdsM=";
+    };
+    date = "2026-09-30";
+  };
   hokura_thumb = {
     pname = "hokura_thumb";
     version = "latest";
