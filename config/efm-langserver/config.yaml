@@ -1,0 +1,25 @@
+# efm-langserver の設定。
+# emacs.d/init.el (lsp-mode) から `efm-langserver -c <このファイル>` で起動される。
+version: 2
+
+root-markers:
+  - gleam.toml
+  - .git/
+
+# 変更のたびに license-efm を起動しないよう、変更通知をまとめてから lint する。
+lint-debounce: 500ms
+
+languages:
+  # Gleam のマニフェスト (gleam.toml / manifest.toml) の依存行に、
+  # そのパッケージのライセンスを診断として表示する。
+  # license-efm は build/packages と hex キャッシュのみを読むため、
+  # 未取得の依存は warning になる (`gleam deps download` で解消)。
+  toml:
+    - lint-command: 'license-efm ${INPUT}'
+      lint-formats:
+        - '%f:%l:%c: %t: %m'
+      lint-source: license-efm
+      # license-efm はライセンス不明時に exit 1 を返すため、出力を採用させる。
+      lint-ignore-exit-code: true
+      # ファイルを開いた時点でも診断を表示する。
+      lint-after-open: true
