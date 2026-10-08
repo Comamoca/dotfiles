@@ -18,9 +18,16 @@ curl -s http://127.0.0.1:18080/health    # {"status":"ok"}
 curl -s http://127.0.0.1:18080/readyz    # {"status":"ok"}
 ```
 
+**異常時の挙動 (検証済み)** — サーバプロセスが落ちた場合 (クラッシュ) は
+Docker の `restart: unless-stopped` で **1〜3秒に自動復帰**する。一方
+`docker stop` / `docker kill` で手動停止した場合はポリシーが効かず**復帰しない**
+(service は "active" のままなので見かけ上の稼働になる)。手動で止めたときは
+`systemctl --user restart weave-os.service` で戻すこと。
+
 ログは `journalctl --user -u weave-os.service` と
 `docker logs weave-os-server-1` (リクエストごとの `decision_model` /
-`decision_reason` が入る)。
+`decision_reason` が入る)。non-stream 応答には `X-Router-Cost-Usd` などの
+コスト/決定ヘッダも付く。
 
 ## ルーターキー (rk_...)
 
@@ -109,6 +116,9 @@ jcode login --provider openai-compatible
    スコアラーがこれらを選び400で落ちる。対象はタグ更新時に
    `internal/router/catalog/catalog.go` と
    `https://opencode.ai/zen/go/v1/models` の突き合わせで見直すこと。
+   (効き目はリクエスト時に確認するしかない: 除外モデルへの `x-weave-force-model`
+   は400で拒否される。`npx @weave-os/router models --claude` の一覧は
+   selfhosted では除外を反映せず「ルーターが扱える全モデル」を出すだけ。)
 
 4. **Anthropic ベースラインフェイルオフの認証ゲート**
    ルーティング先 (OpenCode Go) が失敗すると、ルーターは要求モデルを
