@@ -81,6 +81,24 @@ pi の昇格ハンドオフ (`POST /v1/route/handoff`) は
 `ROUTER_PI_HANDOFF_SECRET` (≥32 bytes、`secrets/weave-os.env`) が無いと 503
 になる。設定無いと pi はリクエストを中断するので注意。
 
+### jcode
+
+`jcode login --provider openai-compatible` で配線済み (2026-10-08)。**jcode の
+デフォルトプロバイダ**になっている。
+
+- `~/.config/jcode/openai-compatible.env` に base URL
+  (`JCODE_OPENAI_COMPAT_API_BASE=http://127.0.0.1:18080/v1`) とルーターキー
+- `~/.jcode/config.toml` の `[provider]` で
+  `default_provider = "openai-compatible"`, `default_model = "auto"`
+- ログイン時の検証 (`provider_smoke`) は **失敗するが正常**: ルーターの
+  `/v1/models` がルーターキー (Bearer) を拒否して x-api-key を要求するため
+  モデル一覧が取得できないだけ。推論 (`/v1/chat/completions`) は正常に
+  動作し、`auto` 指定でリクエストごとのモデル選択が効く (検証済み)
+- 直結 (OpenCode Go) に戻す場合は `default_provider` を `opencode-go` へ
+  戻すか、セッション内で `/model` で切り替える
+- jcode は Anthropic 資格を持たないので、OpenCode Go が落ちると
+  Anthropic ベースラインフェイルオフは効かずエラーになる
+
 ## 未配線のクライアント (任意)
 
 いずれも有効化するか切り離すかは自由。無効化は
@@ -92,11 +110,6 @@ npx @weave-os/router --codex --base-url http://127.0.0.1:18080
 
 # opencode (インストーラは v2 必須。この環境は v1 なので未配線)
 npx @weave-os/router --opencode --base-url http://127.0.0.1:18080
-
-# jcode (OpenAI 互換プロバイダとして追加)
-jcode login --provider openai-compatible
-#   base URL: http://127.0.0.1:18080/v1
-#   API key : rk_...
 ```
 
 ## ルーター側のローカル設定 (`weave-os.nix`)
