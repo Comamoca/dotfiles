@@ -81,3 +81,6 @@ emacs.d/test-file
 # Vim runtime artifacts
 config/vim/.netrwhist
 config/nvim/state.vim
+
+# AGENTS.md への symlink (flake devShell の shellHook で生成)
+CLAUDE.md

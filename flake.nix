@@ -396,9 +396,12 @@
         inputsFrom = [
         ];
 
-        # shellHook = ''
-        #   export DEBUG=1
-        # '';
+        shellHook = ''
+          # CLAUDE.md は AGENTS.md への symlink として生成する。指示ファイルを
+          # 実体で二重管理すると必ず乖離するため、追跡対象は AGENTS.md のみ。
+          repo_root="$(git rev-parse --show-toplevel 2>/dev/null || echo "$PWD")"
+          ln -sfn AGENTS.md "$repo_root/CLAUDE.md"
+        '';
       };
     };
 }
