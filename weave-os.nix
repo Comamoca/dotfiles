@@ -93,6 +93,14 @@ let
         volumes:
           - router_postgres_data:/var/lib/postgresql/data
           - ${routerSrc}/db/init:/docker-entrypoint-initdb.d:ro
+        # クラッシュ時に自動復帰 (上流 compose はポリシー未設定のまま落ちっぱなしだった)。
+        restart: unless-stopped
+        # docker の json ログは上限が無いため回転をかける (全サービス共通)。
+        logging: &weave-logging
+          driver: json-file
+          options:
+            max-size: "10m"
+            max-file: "3"
 
       pubsub-emulator:
         image: gcr.io/google.com/cloudsdktool/google-cloud-cli:emulators
@@ -107,6 +115,8 @@ let
           interval: 2s
           timeout: 3s
           retries: 30
+        restart: unless-stopped
+        logging: *weave-logging
 
       migrate:
         image: migrate/migrate:v4.17.1
@@ -160,6 +170,7 @@ let
           # host 側は 18080 (web 開発で 8080 が衝突しやすいため)。コンテナ内 PORT=8080 のまま。
           - "127.0.0.1:18080:8080"
         restart: unless-stopped
+        logging: *weave-logging
 
       seed:
         image: router-seed

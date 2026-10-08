@@ -18,11 +18,15 @@ curl -s http://127.0.0.1:18080/health    # {"status":"ok"}
 curl -s http://127.0.0.1:18080/readyz    # {"status":"ok"}
 ```
 
-**異常時の挙動 (検証済み)** — サーバプロセスが落ちた場合 (クラッシュ) は
-Docker の `restart: unless-stopped` で **1〜3秒に自動復帰**する。一方
-`docker stop` / `docker kill` で手動停止した場合はポリシーが効かず**復帰しない**
-(service は "active" のままなので見かけ上の稼働になる)。手動で止めたときは
+**異常時の挙動 (検証済み)** — サーバ・postgres・pubsub-emulator のいずれも
+クラッシュ (プロセス強制終了) で **1〜3秒に自動復帰**する
+(`restart: unless-stopped`。postgres はボリューム `weave-os_router_postgres_data`
+にデータが残るためキー等も無傷)。一方 `docker stop` / `docker kill` で**手動**停止
+した場合はポリシーが効かず**復帰しない** (service は "active" のままなので
+見かけ上の稼働になる)。手動で止めたときは
 `systemctl --user restart weave-os.service` で戻すこと。
+コンテナの docker ログは `json-file` で **10m×3ファイルに回転**する
+(無制限に増えない)。
 
 ログは `journalctl --user -u weave-os.service` と
 `docker logs weave-os-server-1` (リクエストごとの `decision_model` /
