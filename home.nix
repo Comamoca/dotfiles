@@ -97,8 +97,6 @@ let
     sha256 = "sha256:0rd6hfd88bsprjg68saxxlgf2c2lv1ldyr6a8i7m4lgg6nahbrw7";
   };
 
-  wallpaper = "${wallpapers}/misc/cat-sound.png";
-
   gitmoji = pkgs.fetchurl {
     url = "https://gitmoji.dev/api/gitmojis";
     hash = "sha256-KrK2YWthwkuNalREJ+X4B/z6W3CFzfsP+ptqg3tfuIc=";
@@ -557,11 +555,6 @@ rec {
       #   recursive = true;
       # };
 
-      # ".config/hypr" = {
-      #   source = (symlink /${dotfiles}/config/hypr);
-      #   recursive = true;
-      # };
-
       ".config/swaylock" = {
         source = (symlink /${dotfiles}/config/swaylock);
         recursive = true;
@@ -643,11 +636,6 @@ rec {
 
       ".config/nyxt" = {
         source = (symlink /${dotfiles}/config/nyxt);
-        recursive = true;
-      };
-
-      ".config/sway" = {
-        source = (symlink /${dotfiles}/config/sway);
         recursive = true;
       };
 
@@ -953,18 +941,6 @@ rec {
     };
   };
 
-  # Hyprland
-  wayland.windowManager.hyprland.enable = true;
-  wayland.windowManager.hyprland.configType = "hyprlang";
-  wayland.windowManager.hyprland.settings = import ./hyprland.nix {
-    inherit
-      pkgs
-      wallpaper
-      home
-      config
-      ;
-  };
-
   # systemd.user.services.claude-code-provider-proxy = {
   # Unit = {
   #   Description = "Claude Code Provider Proxy";
@@ -991,8 +967,6 @@ rec {
       nix-direnv.enable = true;
     };
     fish = import ./fish.nix { inherit pkgs; };
-    hyprlock.settings = import ./hyprlock.nix { inherit wallpaper; };
-    hyprlock.enable = true;
     delta = {
       enable = true;
       enableGitIntegration = true;
@@ -1436,9 +1410,7 @@ PY
     enable = true;
     autoEnable = true;
     flavor = "mocha";
-    hyprland.enable = true;
     bat.enable = true;
-    sway.enable = true;
     alacritty.enable = true;
     delta.enable = true;
   };

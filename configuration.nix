@@ -15,17 +15,10 @@ let
 
   containers = import ./containers.nix { inherit pkgs; };
 
-  old-pkgs = import (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/e89cf1c932006531f454de7d652163a9a5c86668.tar.gz";
-    sha256 = "sha256:09cbqscrvsd6p0q8rswwxy7pz1p1qbcc8cdkr6p6q8sx0la9r12c";
-  }) { };
-
   # flake input 経由 (flake.lock で固定)。以前は可動タグ nixos-unstable.tar.gz を
   # 固定 sha256 で fetchTarball しており、上流が進むたびに hash mismatch で
   # 評価全体が壊れていた。更新は `nix flake update nixpkgs-unstable` で行う。
   unstable-pkgs = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-
-  hyprland-0-35-0 = old-pkgs.hyprland;
 in
 {
   imports = [
@@ -565,7 +558,8 @@ in
   xdg.portal = {
     enable = true;
     xdgOpenUsePortal = true;
-    wlr.enable = true;
+    # Hyprland/Sway を廃止したため wlr ポータルも不要。niri は gnome ポータルを使う。
+    wlr.enable = false;
     extraPortals = with pkgs; [
       xdg-desktop-portal-gtk
       xdg-desktop-portal-gnome
@@ -573,14 +567,6 @@ in
       # xdg-desktop-portal-hyprland — REMOVED: Hyprland 用。Niri には不要。
     ];
     config = {
-      hyprland.default = [
-        "hyprland"
-        "gtk"
-      ];
-      sway.default = pkgs.lib.mkForce [
-        "wlr"
-        "gtk"
-      ];
       niri.default = [
         "gnome"
         "gtk"
@@ -659,8 +645,6 @@ in
     swaynotificationcenter
     swaylock
 
-    hyprlock
-    hyprpaper
     rofi
     # deno
     wlogout
@@ -718,16 +702,6 @@ in
   programs.waybar.enable = false;
 
   programs.xwayland.enable = pkgs.lib.mkForce false;
-
-  programs.sway = {
-    enable = true;
-    wrapperFeatures.gtk = false;
-    # package = pkgs.swayfx;
-  };
-
-  programs.hyprland = {
-    enable = true;
-  };
 
   programs.niri = {
     enable = true;
