@@ -185,6 +185,7 @@
     # oc は systemd 常駐の OpenCode Server へ接続する関数に移行
     # (config/fish/functions/oc.fish)
     abbr --add cmd "cmd --yolo"
+    abbr --add jc jcode
 
     set -x ELIXIR_ERL_OPTIONS "+fnu"
     set -x SSH_ASKPASS ${pkgs.kdePackages.ksshaskpass}

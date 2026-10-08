@@ -459,6 +459,21 @@ rec {
       # docker-sbx を追記した DB に差し替える。
       "${config.xdg.cacheHome}/nix-index/files".source = lib.mkForce nix-index-docker-sbx-db.full;
 
+      # rootless docker (rootlesskit の --copy-up=/etc) は namespace 内の /etc/ssl の
+      # CA シンボリックを壊し、レジストリへの TLS 検証が失敗する (weave-os 等の
+      # docker pull が "certificate signed by unknown authority" で落ちる)。
+      # CA を Nix ストアから直接指定して回避する。
+      ".config/systemd/user/docker.service.d/ca.conf".text = ''
+        [Service]
+        Environment=SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt
+        Environment=SSL_CERT_DIR=${pkgs.cacert}/etc/ssl/certs
+      '';
+
+      # docker compose のイメージビルドが BuildKit (TARGETARCH) を必要とするため
+      # buildx プラグインを配置 (無いと classic builder にフォールバックして
+      # weave-os の router-server ビルドが "TARGETARCH: parameter not set" で失敗)。
+      ".docker/cli-plugins/docker-buildx".source = "${pkgs.docker-buildx}/bin/docker-buildx";
+
       "${base}/nvim-treesitter" =
         let
           ts = pkgs.vimPlugins.nvim-treesitter;
