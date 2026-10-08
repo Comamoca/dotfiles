@@ -53,6 +53,11 @@ sudo nixos-rebuild switch --flake .#Home
 home-manager switch --flake .#Home
 ```
 
+## 🧭 Local services
+
+- [weave-os router](docs/weave-router.md) — ローカル LLM モデルルーター
+  (`http://127.0.0.1:18080`、Claude Code / pi を配線済み)
+
 ## 📖 License
 
 Unlicense
