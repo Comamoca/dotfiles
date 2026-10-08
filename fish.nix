@@ -285,7 +285,7 @@
         end
     end
 
-    set -gx NH_HOME_FLAKE (ghq root)/localhost/comamoca/dotfiles
+    set -gx NH_HOME_FLAKE (ghq root)/github.com/Comamoca/dotfiles
     function nh --wraps nh
       switch "$argv[1] $argv[2]"
         case "home switch"
