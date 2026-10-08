@@ -200,6 +200,20 @@ DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock \
 systemctl --user restart weave-os.service
 ```
 
+## Web ダッシュボード (ログイン)
+
+`http://127.0.0.1:18080/ui` (ルート `/` はここへ 302)。管理パスワードは
+`ROUTER_ADMIN_PASSWORD` が無いとログイン自体が 503 (`admin_login_disabled`)
+になる。当方は `secrets/weave-os.env` (sops) に設定済みで、値の参照は:
+
+```sh
+nix shell nixpkgs#sops -c sops -d secrets/weave-os.env | grep ROUTER_ADMIN_PASSWORD
+```
+
+ログイン後はセッション Cookie (HttpOnly、7日) が付く。パスワードを変更したら
+sops へ書き戻して `home-manager switch` + `systemctl --user restart weave-os.service`
+(新しいパスワードで署名鍵が変わるため全セッションが無効化される)。
+
 ## 動作確認 (curl)
 
 ```sh
