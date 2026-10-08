@@ -117,6 +117,49 @@ jcode login --provider openai-compatible
    「Anthropic へ出せる資格情報が在る」条件を足してある。Claude Code は
    OAuth 資格を持つので従来どおりフォールバックできる。
 
+5. **`WV_CAPTURE_CONTENT=hashed`** (原因調査時だけ入れる一時設定)
+   上流エラーの本文 (`body_preview`) をログに出すための設定。`hashed` でも
+   `... start` 系ログ行の `prompt_preview` に先頭約200文字が入るので、
+   調査が終わったら設定を削除して `off` に戻すこと (container 再作成で
+   これまでのログも捨てられる)。調査に使った手順は下の節を参照。
+
+## 既知の問題: Claude Code の Threads とルーターの衝突
+
+**症状** — Claude Code をルーター経由で使うと、まれに Anthropic 上流から
+400 / 404 が返る (2026-10-08 の約90分で6件、うち2件は Claude Code 側に
+「selected model ... may not exist」という合成エラーとして表示)。以降のターンは
+続行できる (再試行で通る)。
+
+**原因 (WV_CAPTURE_CONTENT=hashed で本文を取得して特定)** — Claude Code は
+Anthropic の **Threads** 機能 (`previous_message_id`) を使うが、ルーターは
+ターンごとに `model` / `system` / `thinking` / `anthropic-beta` /
+`cache_control` を書き換える (モデル選択・planner のスイッチ・beta の自動付与)。
+結果、Anthropic 側のスレッド指紋と一致しなくなり:
+
+```json
+{"type":"invalid_request_error","message":"thread: the request does not match
+the stored Thread for the requested `previous_message_id`; differing field(s):
+anthropic-beta, cache_control, ..., model, ..., system, thinking. ...",
+ "details":{"error_code":"thread_fingerprint_mismatch"}}
+```
+
+`previous_message_id` が参照するスレッドが無い場合は404で返る。
+ルーター v0.2.28 には Threads 概念自体が無い (`previous_message_id` の参照ゼロ)
+ので、設定では解消できない。当方のパッチ (OpenCode Go 経路・フェイルオフの
+ゲート) は Anthropic 経路に触れていない。
+
+**影響範囲** — 対話セッションの一部ターンのみ。単発の `claude -p` では発生しない
+(スレッドが作られないため)。pi / OpenCode Go 経路は無関係。
+
+**回避** — 影響が大きいときは Claude Code の配線を切り外す (設定は残る):
+
+```sh
+npx @weave-os/router off --claude    # Claude Code を直結に戻す
+npx @weave-os/router on --claude     # 再開
+```
+
+上流で Threads 対応が入ったらタグを上げてパッチ4つを再確認すると解消見込み。
+
 設定変更後はイメージ再ビルドと再起動が必要:
 
 ```sh
