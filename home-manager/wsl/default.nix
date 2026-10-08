@@ -600,9 +600,6 @@ rec {
 
     hyperfine
 
-    hyprpaper
-    hyprshade
-
     # wqy-microhei
     # wxwidgets-gtk3
     # xclip
@@ -698,11 +695,6 @@ rec {
 
       # ".config/home-manager" = {
       #   source = (symlink /${dotfiles}/config/home-manager);
-      #   recursive = true;
-      # };
-
-      # ".config/hypr" = {
-      #   source = (symlink /${dotfiles}/config/hypr);
       #   recursive = true;
       # };
 

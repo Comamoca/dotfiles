@@ -13,12 +13,9 @@ Cycle)
 ### Current Environment
 
 - **Desktop**: [niri](https://github.com/YaLTeR/niri) (Wayland compositor)
-- The repository contains legacy Hyprland/Sway config files (`config/hypr/`,
-  `hyprland.nix`, `hyprlock.nix`, `config/sway/`) for reference, but Hyprland and
-  Sway are no longer enabled in the NixOS or home-manager configuration. The
-  active environment is niri.
-- Do not assume Hyprland is the current desktop environment based on the
-  presence of these files.
+- Hyprland and Sway are retired. Their configuration files have been deleted and
+  neither compositor is enabled in the NixOS or home-manager configuration. Do
+  not reintroduce them or assume either is available on this machine.
 
 ### Steering vs Specification
 
