@@ -39,7 +39,6 @@
     treefmt-nix.url = "github:numtide/treefmt-nix";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     emacs-overlay.url = "github:nix-community/emacs-overlay";
-    emacs.url = "github:cmacrae/emacs";
     nak.url = "github:comamoca/flake-nak";
     nur-packages.url = "github:Comamoca/nur-packages";
     eqsh = {
@@ -179,7 +178,6 @@
         (import inputs.emacs-overlay)
         inputs.nak.overlays.default
         inputs.deno-overlay.overlays.deno-overlay
-        # (import emacs.overlay)
         inputs.mozilla-overlay.overlays.firefox
         inputs.niri.overlays.niri
         # WORKAROUND(sodiboo/niri-flake#1851): nixpkgs removed libdisplay-info_0_2
