@@ -35,8 +35,8 @@ let
   #   通らない。internal/providers/openaicompat/client.go の上流リクエスト
   #   構築直後に、元リクエストから会話セッション ID を取り直して注入している。
   #
-  # 両方とも --replace-fail なので、タグを上げて置換対象が変わるとビルドが
-  # 落ちる (= パッチの再確認を促す)。タグ更新時はこの2つの置換を必ず見直す。
+  # 4つの置換はすべて --replace-fail なので、タグを上げて置換対象が変わると
+  # ビルドが落ちる (= パッチの再確認を促す)。タグ更新時は必ず全置換を見直す。
   routerSrc = pkgs.runCommand "weave-router-src" { } ''
     cp -r ${inputs.weave-router} $out
     chmod -R u+w $out
