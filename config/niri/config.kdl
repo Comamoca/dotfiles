@@ -63,6 +63,7 @@ input {
     trackpoint {
         // off
         // natural-scroll
+        // HHKB Studio のスティック速度は本体側 (Fn2+B/G) で管理。
         // accel-speed 0.2
         // accel-profile "flat"
         // scroll-method "on-button-down"
@@ -397,6 +398,11 @@ window-rule {
 }
 
 binds {
+    // >>> jcode launch hotkeys (managed) >>>
+    Super+Semicolon hotkey-overlay-title="jcode: blog" { spawn "sh" "-c" "if [ \"$(niri msg -j focused-window 2>/dev/null | jq -r '.app_id // empty' 2>/dev/null)\" = 'jcode-desktop' ]; then exec wtype -M ctrl -M alt -k Return -m alt -m ctrl; fi; if [ -d '/home/coma/.ghq/github.com/Comamoca/blog' ]; then cd '/home/coma/.ghq/github.com/Comamoca/blog'; else cd \"$HOME\"; fi; exec 'kitty' '/nix/store/9f7qdxcs79dls6kynb6g0kp0w3x9v4bl-jcode-0.92.0/bin/jcode' --spawn-hotkey 'cmd+;'"; }
+    Super+Apostrophe hotkey-overlay-title="jcode: home" { spawn "sh" "-c" "if [ \"$(niri msg -j focused-window 2>/dev/null | jq -r '.app_id // empty' 2>/dev/null)\" = 'jcode-desktop' ]; then exec wtype -M ctrl -k t -m ctrl; fi; if [ -d '/home/coma' ]; then cd '/home/coma'; else cd \"$HOME\"; fi; exec 'kitty' '/nix/store/9f7qdxcs79dls6kynb6g0kp0w3x9v4bl-jcode-0.92.0/bin/jcode' --spawn-hotkey 'cmd+'\\'''"; }
+    Super+bracketleft hotkey-overlay-title="jcode: lython" { spawn "sh" "-c" "if [ -d '/home/coma/.ghq/github.com/t3tra-dev/lython' ]; then cd '/home/coma/.ghq/github.com/t3tra-dev/lython'; else cd \"$HOME\"; fi; exec 'kitty' '/nix/store/9f7qdxcs79dls6kynb6g0kp0w3x9v4bl-jcode-0.92.0/bin/jcode' --spawn-hotkey 'cmd+['"; }
+    // <<< jcode launch hotkeys (managed) <<<
     // Keys consist of modifiers separated by + signs, followed by an XKB key name
     // in the end. To find an XKB name for a particular key, you may use a program
     // like wev.
