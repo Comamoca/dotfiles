@@ -51,8 +51,10 @@ curl -s -H 'Authorization: Bearer rk_...' http://127.0.0.1:18080/validate
 
 Claude のプラン認証はそのままクライアント側に残っているので、ルーターが
 Anthropic を選んだときはプランの利用枠がそのまま使われる。既存の
-ステータスライン (`~/.claude/statusline.sh`) と `attribution` (空) は
-インストーラが上書きしない/した後に元に戻してある。
+ステータスライン (`~/.claude/statusline.sh`) はインストーラが自動で守るが、
+**`attribution` (commit/PR クレジット) は install / update のたびに Weave Router
+付きへ書き換わる**ので、空にしたい場合は毎回あとで空へ戻す必要がある
+(`update --claude` で確認済み・非冪等)。env (base URL / ヘッダ) は冪等。
 
 ### pi
 
