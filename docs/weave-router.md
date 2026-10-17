@@ -115,6 +115,13 @@ Anthropic を選んだときはプランの利用枠がそのまま使われる�
 - `~/.pi/agent/.weave_router_key` にルーターキー
 - 拡張機能 `npm:@weave-os/router` (Loom 表示、`/fm`、subagent dispatch 等)
 
+`pi -p` (非対話モード) は **モデル解決 (`GET /v1/models`) で止まって
+進まない** (2026-10-18 時点、`--no-extensions` / 明示 `--model` 指定でも再現)。
+上流キーの期限切れとは無関係で、ルーターがルーターキー (Bearer) の
+`/v1/models` を拒否して x-api-key を要求する既知の癖が原因。pi がチャット
+リクエストを1件も送らないままハングする。対話 (TUI) と
+`pi auth check --provider weave` (→ `{"status":"ready"}`) は正常に使える。
+
 pi の昇格ハンドオフ (`POST /v1/route/handoff`) は
 `ROUTER_PI_HANDOFF_SECRET` (≥32 bytes、`secrets/weave-os.env`) が無いと 503
 になる。設定無いと pi はリクエストを中断するので注意。
