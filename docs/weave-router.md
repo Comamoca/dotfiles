@@ -86,6 +86,16 @@ systemctl --user restart weave-os.service
 `sops -d secrets/weave-os.env > ~/.config/sops-nix/secrets/weave-os`
 (権限 400) で手動復号してからサービスを再起動する。
 
+**ロールバックの罠** — `home-manager rollback` でローテーション前の
+generation へ戻すと、その generation が持つ暗号ファイル (期限切れキー) を
+sops-nix が復号し直し、ルーターが再び `api_key_expired` になる。
+ロールバックした場合は generation を戻すか、ローテーション手順をやり直すこと。
+
+**クライアント側の注意** — `docker kill weave-os-server-1` は
+`restart: unless-stopped` の保護対象外で、**自動復帰しない**
+(`docker stop` と同様、ドキュメント冒頭の既知の挙動)。
+`systemctl --user restart weave-os.service` で戻すこと。
+
 ## 配線済みのクライアント
 
 ### Claude Code
