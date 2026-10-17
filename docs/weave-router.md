@@ -48,6 +48,44 @@ curl -s http://127.0.0.1:18080/readyz    # {"status":"ok"}
 curl -s -H 'Authorization: Bearer rk_...' http://127.0.0.1:18080/validate
 ```
 
+## 上流キー (OpenCode Go) の期限切れとローテーション
+
+`secrets/weave-os.env` の `OPENROUTER_API_KEY` は変数名が紛らわしいが中身は
+OpenCode Go の API キー (`oc_sk_...`) で、これが切れる (無効化される) と
+**ルーターキーは無傷なのに全クライアントが 401 で落ちる**。
+
+**症状** — `/v1/chat/completions` も `/v1/messages` も次を返す。
+クライアント側の `rk_...` は有効 (`/validate` で `valid: true`) なので、
+pi / Claude Code / jcode の配線を疑わないこと。
+
+```json
+{"error":{"type":"authentication_error","code":"api_key_expired",
+ "message":"This API key has expired. Create a new API key in OpenCode Console ..."}}
+```
+
+**ローテーション手順** — OpenCode Console で新しいキーを発行して
+`~/.config/jcode/opencode-go.env` の `OPENCODE_GO_API_KEY` に入れておき、
+それをルーターへ回す (2026-10-18 にこの手順で解消済み)。
+
+```sh
+cd ~/.ghq/github.com/Comamoca/dotfiles
+KEY=$(grep '^OPENCODE_GO_API_KEY=' ~/.config/jcode/opencode-go.env | cut -d= -f2-)
+printf '%s' "\"$KEY\"" > "$JCODE_SCRATCH_DIR/newkey.json"
+# sops set は in-place で書き換える (stdout への出力は無い)
+nix shell nixpkgs#sops -c sops set --value-file secrets/weave-os.env \
+  '["OPENROUTER_API_KEY"]' "$JCODE_SCRATCH_DIR/newkey.json"
+rm -f "$JCODE_SCRATCH_DIR/newkey.json"
+home-manager switch --flake .#Home --impure   # sops-nix の格納コピーを更新
+systemctl --user restart weave-os.service
+```
+
+**注意** — sops-nix は **switch 時の Nix ストアへ取り込んだ暗号ファイル**を
+復号する。`systemctl --user start sops-nix.service` を実行しても格納コピーは
+変わらず、再起動すると古いキーに戻ってしまう。必ず `home-manager switch` を
+通すこと。緊急時に即時反映したいときは
+`sops -d secrets/weave-os.env > ~/.config/sops-nix/secrets/weave-os`
+(権限 400) で手動復号してからサービスを再起動する。
+
 ## 配線済みのクライアント
 
 ### Claude Code
