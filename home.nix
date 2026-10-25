@@ -325,11 +325,6 @@ rec {
         path = "/run/user/1000/claude-code.env";
         format = "dotenv";
       };
-      "opencode-failover" = {
-        sopsFile = ./secrets/opencode-failover.env;
-        path = "/run/user/1000/opencode-failover.env";
-        format = "dotenv";
-      };
       "aider-opencode-go" = {
         sopsFile = ./secrets/aider-opencode-go.env;
         path = "/run/user/1000/aider-opencode-go.env";
@@ -530,9 +525,6 @@ rec {
         source = (symlink /${dotfiles}/bin/scripts/flake-lock-save);
       };
 
-      ".bin/scripts/verify-opencode-failover.fish" = {
-        source = (symlink /${dotfiles}/bin/scripts/verify-opencode-failover.fish);
-      };
 
       # ========== SKK ==========
       ".skk-dict/SKK-JISYO.L".source = "${pkgs.skkDictionaries.l}/share/skk/SKK-JISYO.L";
@@ -817,8 +809,6 @@ rec {
     # TTY が無い (coding agent など) 状況の sudo で GUI パスワードプロンプトを出す
     SUDO_ASKPASS = "${pkgs.kdePackages.ksshaskpass}/bin/ksshaskpass";
 
-    # opencode-failover reads API keys from this file at startup
-    OPENCODE_FAILOVER_ENV_FILE = config.sops.secrets.opencode-failover.path;
   };
 
   # Systemd user session variables
@@ -839,8 +829,6 @@ rec {
     # sudo の askpass (サービスから GUI パスワードプロンプトを出す)
     SUDO_ASKPASS = "${pkgs.kdePackages.ksshaskpass}/bin/ksshaskpass";
 
-    # opencode-failover reads API keys from this file at startup
-    OPENCODE_FAILOVER_ENV_FILE = config.sops.secrets.opencode-failover.path;
   };
 
   # PATH management centralized here to avoid duplications
