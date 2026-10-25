@@ -4,9 +4,9 @@
   "[opencode]": {
     "agents": {
       "sisyphus": {
-        "model": "opencode-go/deepseek-v4-flash",
+        "model": "omniroute/static-thrifty",
         "ultrawork": {
-          "model": "opencode-go/deepseek-v4-flash"
+          "model": "omniroute/static-thrifty"
         },
         "fallback_models": [
           {
@@ -22,7 +22,7 @@
       },
 
       "oracle": {
-        "model": "opencode-go/glm-5.2",
+        "model": "omniroute/static-thrifty",
         "fallback_models": [
           {
             "model": "opencode-go/kimi-k3"
@@ -34,7 +34,7 @@
       },
 
       "librarian": {
-        "model": "opencode-go/deepseek-v4-flash",
+        "model": "omniroute/static-thrifty",
         "fallback_models": [
           {
             "model": "opencode-go/qwen3.7-plus"
@@ -49,7 +49,7 @@
       },
 
       "explore": {
-        "model": "opencode-go/deepseek-v4-flash",
+        "model": "omniroute/static-thrifty",
         "fallback_models": [
           {
             "model": "opencode-go/qwen3.7-plus"
@@ -64,7 +64,7 @@
       },
 
       "multimodal-looker": {
-        "model": "opencode-go/deepseek-v4-flash-vision-exp",
+        "model": "omniroute/static-thrifty",
         "fallback_models": [
           {
             "model": "opencode-go/mimo-v2.5"
@@ -76,7 +76,7 @@
       },
 
       "prometheus": {
-        "model": "opencode-go/glm-5.3-flash",
+        "model": "omniroute/static-thrifty",
         "fallback_models": [
           {
             "model": "opencode-go/glm-5.2"
@@ -88,7 +88,7 @@
       },
 
       "metis": {
-        "model": "opencode-go/glm-5.3-flash",
+        "model": "omniroute/static-thrifty",
         "fallback_models": [
           {
             "model": "opencode-go/glm-5.2"
@@ -100,7 +100,7 @@
       },
 
       "momus": {
-        "model": "opencode-go/glm-5.2",
+        "model": "omniroute/static-thrifty",
         "fallback_models": [
           {
             "model": "opencode-go/kimi-k3"
@@ -112,7 +112,7 @@
       },
 
       "atlas": {
-        "model": "opencode-go/glm-5.3-flash",
+        "model": "omniroute/static-thrifty",
         "fallback_models": [
           {
             "model": "opencode-go/kimi-k3"
@@ -130,7 +130,7 @@
       },
 
       "sisyphus-junior": {
-        "model": "opencode-go/glm-5.3-flash",
+        "model": "omniroute/static-thrifty",
         "fallback_models": [
           {
             "model": "opencode-go/deepseek-v4-flash"
@@ -145,7 +145,7 @@
       },
       "codex-sol": {
         "description": "Hard-problem consultation advisor. Shells out to Codex CLI running gpt-6-sol.",
-        "model": "opencode-go/glm-5.3-flash",
+        "model": "omniroute/static-thrifty",
         "prompt": "You are a design-consultation advisor for difficult implementation questions. Your own model is cheap on purpose: the real reasoning is delegated to gpt-6-sol via the Codex CLI.\n\nWhen consulted:\n1. Formulate the consultation as a fully self-contained brief: goal, relevant decisions/constraints, and the specific question. Include any code snippets or facts needed to answer without repo access.\n2. Run: codex exec --skip-git-repo-check -m gpt-6-sol \"<brief>\" (auth is the ChatGPT subscription in ~/.codex/auth.json — pass NO -c provider overrides and NO OPENCODE_API_KEY; long context goes via stdin: printf '%s' \"$BRIEF\" | codex exec --skip-git-repo-check -m gpt-6-sol). Also see the consult-gpt6-sol skill.\n3. Report Codex's answer back verbatim where useful, then add your own short summary of concrete next steps.\n\nRules: read-only consultant. Never edit files, never run mutating commands. If codex exec fails, retry once, then report the failure with the exact command so the caller can debug.",
         "prompt_append": "Always answer in Japanese unless the caller writes in English.",
         "reasoning": "low",
@@ -156,7 +156,7 @@
 
     "categories": {
       "visual-engineering": {
-        "model": "opencode-go/kimi-k3",
+        "model": "omniroute/static-thrifty",
         "variant": "max",
         "fallback_models": [
           {
@@ -169,7 +169,7 @@
       },
 
       "ultrabrain": {
-        "model": "opencode-go/kimi-k3",
+        "model": "omniroute/static-thrifty",
         "variant": "max",
         "fallback_models": [
           {
@@ -179,7 +179,7 @@
       },
 
       "deep": {
-        "model": "opencode-go/deepseek-v4-pro",
+        "model": "omniroute/static-thrifty",
         "variant": "high",
         "fallback_models": [
           {
@@ -192,7 +192,7 @@
       },
 
       "artistry": {
-        "model": "opencode-go/kimi-k3",
+        "model": "omniroute/static-thrifty",
         "variant": "max",
         "fallback_models": [
           {
@@ -205,7 +205,7 @@
       },
 
       "quick": {
-        "model": "opencode-go/deepseek-v4-flash",
+        "model": "omniroute/static-thrifty",
         "fallback_models": [
           {
             "model": "opencode-go/minimax-m3"
@@ -217,7 +217,7 @@
       },
 
       "unspecified-low": {
-        "model": "opencode-go/deepseek-v4-flash",
+        "model": "omniroute/static-thrifty",
         "fallback_models": [
           {
             "model": "opencode-go/glm-5.3-flash"
@@ -232,7 +232,7 @@
       },
 
       "unspecified-high": {
-        "model": "opencode-go/glm-5.3-flash",
+        "model": "omniroute/static-thrifty",
         "variant": "max",
         "fallback_models": [
           {
@@ -245,7 +245,7 @@
       },
 
       "writing": {
-        "model": "opencode-go/deepseek-v4-flash",
+        "model": "omniroute/static-thrifty",
         "fallback_models": [
           {
             "model": "opencode-go/glm-5.3-flash"
