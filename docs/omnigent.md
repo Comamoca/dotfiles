@@ -27,16 +27,16 @@ TCP のポートは 65535 までなので、桁数を増やす方向の「専用
 
 ## 構成要素
 
-| 種別              | パス                                            | 役割                                                                       |
-| ----------------- | ----------------------------------------------- | -------------------------------------------------------------------------- |
-| systemd user unit | `omnigent.service`                              | `omni server --host 127.0.0.1 --port 14197`                                |
-| 設定              | `~/.omnigent/config.yaml`                       | 接続先 URL、`providers.omniroute`、`acp.agents`(activation が書く)         |
-| 状態              | `~/.local/share/omnigent`                       | SQLite(`chat.db`)、artifacts、logs                                         |
-| 秘密              | `/run/user/1000/omniroute.env`                  | sops の `omniroute`(`OMNIROUTE_API_KEY`)                                   |
-| 鍵ストア          | `~/.omnigent/secrets.json`                      | activation が sops から流し込む (0600, `keychain:omniroute`)               |
-| トンネル unit     | `cloudflared-omnigent.service`                  | `omnigent.comamoca.dev` → `http://127.0.0.1:14197`                         |
-| トンネル秘密      | `~/.config/cloudflared/omnigent-token`          | sops の `omnigent-cloudflared-token`(0600)                                 |
-| 端末変数          | `~/.local/state/nix/profiles/home-manager` 由来 | `OMNIGENT_MODEL` / `OPENAI_BASE_URL` / `OMNIGENT_DATABRICKS_EXTRA_HEADERS` |
+| 種別              | パス                                     | 役割                                                               |
+| ----------------- | ---------------------------------------- | ------------------------------------------------------------------ |
+| systemd user unit | `omnigent.service`                       | `omni server --host 127.0.0.1 --port 14197`                        |
+| 設定              | `~/.omnigent/config.yaml`                | 接続先 URL、`providers.omniroute`、`acp.agents`(activation が書く) |
+| 状態              | `~/.local/share/omnigent`                | SQLite(`chat.db`)、artifacts、logs                                 |
+| 秘密              | `/run/user/1000/omniroute.env`           | sops の `omniroute`(`OMNIROUTE_API_KEY`)                           |
+| 鍵ストア          | `~/.omnigent/secrets.json`               | activation が sops から流し込む (0600, `keychain:omniroute`)       |
+| トンネル unit     | `cloudflared-omnigent.service`           | `omnigent.comamoca.dev` → `http://127.0.0.1:14197`                 |
+| トンネル秘密      | `~/.config/cloudflared/omnigent-token`   | sops の `omnigent-cloudflared-token`(0600)                         |
+| CLI ラッパー      | `~/.nix-profile/bin/omni`(`makeWrapper`) | `OMNIGENT_DATABRICKS_EXTRA_HEADERS`(Access ヘッダ)を起動時に注入   |
 
 `~/.omnigent/config.yaml` は Omnigent 自身も書き換える (host の `host_id` /
 `name` を追記する)。Nix ストアへの symlink にすると
@@ -179,10 +179,12 @@ ACP エージェントには Omnigent の MCP サーバーが
 - `omni` は `python -m omnigent` を呼ぶラッパーで、`PYTHONPATH` に 自分 +
   workspace パッケージ + 依存を並べる。`python3.withPackages` の
   解法器は通さない(nixpkgs の Python 依存木を引き込まないため)。
-- 実行ファイルは 2 段構えである。`$out/bin/omni-bin` が
+- 実行ファイルは 3 段構えである。`$out/bin/omni-bin` が
   `$out/libexec/python3.14`(`_pth` 付き)をラップし、`$out/bin/omni` がその前に
   `omniroute.env` から鍵を読むシェルスクリプトとして挟まる。MCP 中継の `-I`
-  起動を成立させるには前者が、端末起動時の鍵解決には後者が要る。
+  起動を成立させるには前者が、端末起動時の鍵解決には後者が要る。さらに
+  `omnigent.nix` が `makeWrapper` で包んだ `omnigent-cli` が
+  `~/.nix-profile/bin/omni` に入り、認証ヘッダの環境変数を足す(「認証」の節)。
 
 ### 上流へのパッチ
 
@@ -235,9 +237,19 @@ CLI(`omni`)は `~/.omnigent/config.yaml` の `server` を見て既存のサー�
 ヘッダを付ける。
 
 Access を通らないローカルの `omni` CLI は、このヘッダを自分で送らないと `401`
-になる。`omnigent.nix` が `OMNIGENT_DATABRICKS_EXTRA_HEADERS`(JSON オブジェクト)
-に同じヘッダを入れ、`cli_auth.databricks_request_headers` がリクエストに
-折り込む。
+になる。`omnigent.nix` は `makeWrapper` で `omni` を包み、起動時に
+`OMNIGENT_DATABRICKS_EXTRA_HEADERS`(JSON オブジェクト)へ同じヘッダを入れる。
+`cli_auth.databricks_request_headers` がこれをリクエストに折り込む。
+
+この値は `home.sessionVariables` ではなくラッパーが持つ。home-manager は
+`export NAME="VALUE"` を素で書き出すので JSON の `"` がシェルの引用符として
+食われ、`{Cf-...:...}` という壊れた値が残る。上流の `_databricks_extra_headers`
+は壊れた JSON を例外にせず黙って `{}` に落とす。 そのため CLI からは原因不明の
+`401` に見える。`makeWrapper` は値を単一引用符で 囲むので、bash / fish /
+非対話シェルのどれから起動しても JSON がそのまま渡る。
+ホストデーモンとランナーは `omni` から起動されて env を引き継ぎ、
+`host/connect.py` の allowlist がこの名前を通すので、ランナーのトンネルも同じ
+ヘッダを載せる。
 
 ただし上流の `_server_headers` はこの値を読まずに空 dict を返していた。そのため
 `databricks_request_headers` を通る経路だけが認証に成功し、SDK クライアント
