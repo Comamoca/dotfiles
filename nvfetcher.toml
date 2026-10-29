@@ -13,6 +13,11 @@ fetch.github = "thefrontside/lspx"
 src.github = "mattn/efm-langserver"
 fetch.github = "mattn/efm-langserver"
 
+# leaf (Rust 製ターミナル Markdown プレビュワー)
+[leaf]
+src.github = "RivoLink/leaf"
+fetch.github = "RivoLink/leaf"
+
 # vite-plus (vp) CLI のネイティブバイナリ (npm のプラットフォーム別パッケージ)。
 # src.manual でバージョンを固定する。更新時は src.manual と fetch.url 内の
 # バージョンを 4 箇所揃えて変更し、`nvfetcher -f '^vite-plus-cli'` で hash を再計算する。

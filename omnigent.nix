@@ -126,9 +126,40 @@ let
       command = "${home}/.local/bin/jcode acp";
     }
   ];
+
+  # `omni` CLI に Cloudflare Access のメールヘッダを渡す。
+  #
+  # 上流は `OMNIGENT_DATABRICKS_EXTRA_HEADERS` を **JSON オブジェクト**として
+  # 読む (`omnigent/cli_auth.py` の `_databricks_extra_headers`)。壊れた JSON は
+  # 例外にせず黙って `{}` に落ちるので、値が壊れるとヘッダ無しで送られて 401 に
+  # なる。この値は `home.sessionVariables` に置けない。home-manager は
+  # `export NAME="VALUE"` を **素で** 書き出すので、JSON の `"` がシェルの
+  # 引用符として食われ、`{Cf-...:...}` という不正な JSON が残る (fish 側も
+  # 同じ値なので直らない)。makeWrapper は値を単一引用符で囲むため、内側の
+  # `"` がそのまま残り、bash / fish / 非対話シェルのどれから起動しても正しい
+  # JSON が渡る。よって `omni` だけを makeWrapper で包み、他のバイナリ
+  # (`omni-config` / `omni-secret` / `omnigent`) は素通しする。
+  #
+  # 包んだ `omni` から起動したホストデーモン / ランナーは env を引き継ぎ、
+  # `host/connect.py` の allowlist がこの名前を明示的に通すので、ランナーの
+  # トンネルも同じヘッダを載せる。
+  accessHeadersJson = builtins.toJSON {
+    "Cf-Access-Authenticated-User-Email" = localUserId;
+  };
+
+  omnigentCli = pkgs.runCommand "omnigent-cli"
+    { nativeBuildInputs = [ pkgs.makeWrapper ]; }
+    ''
+      mkdir -p $out/bin
+      makeWrapper ${pkgs.omnigent}/bin/omni $out/bin/omni \
+        --set OMNIGENT_DATABRICKS_EXTRA_HEADERS ${lib.escapeShellArg accessHeadersJson}
+      ln -s ${pkgs.omnigent}/bin/omni-config $out/bin/omni-config
+      ln -s ${pkgs.omnigent}/bin/omni-secret $out/bin/omni-secret
+      ln -s omni $out/bin/omnigent
+    '';
 in
 {
-  home.packages = [ pkgs.omnigent ];
+  home.packages = [ omnigentCli ];
 
   # DB / artifacts / logs の置き場。中身は実行時に作られる。
   home.file."${dataDir}/.keep".text = "";
@@ -198,13 +229,9 @@ in
     # `keychain:` 参照をファイルバックエンドで解決する (上のコメント参照)。
     # 端末から起動したランナーもこの設定で同じストアを読む。
     OMNIGENT_DISABLE_KEYRING = "1";
-    # サーバーのヘッダ認証を CLI 側から満たす。Omnigent は
-    # `OMNIGENT_DATABRICKS_EXTRA_HEADERS` (JSON オブジェクト) の中身を
-    # リクエストヘッダに折り込む (`omnigent/cli_auth.py`)。PKG 側の
-    # `chat-server-headers.patch` がこの値を `OmnigentClient` にも通す。
-    OMNIGENT_DATABRICKS_EXTRA_HEADERS = builtins.toJSON {
-      "Cf-Access-Authenticated-User-Email" = localUserId;
-    };
+    # サーバーのヘッダ認証を CLI 側から満たす値は、ここではなく `omnigentCli`
+    # (上の makeWrapper) が `omni` の起動時に env へ入れる。JSON を
+    # `home.sessionVariables` に置くと引用符が壊れるため。
   };
 
   systemd.user.services.omnigent = {

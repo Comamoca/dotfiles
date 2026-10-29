@@ -304,7 +304,13 @@ let
 
 in
 rec {
-  imports = [./forgejo.nix ./maestro.nix ./weave-os.nix];
+  imports = [
+    ./forgejo.nix
+    ./maestro.nix
+    ./omniroute.nix
+    ./omnigent.nix
+    ./cloudflare-os-service.nix
+  ];
   nixpkgs.config = {
     allowUnfree = true;
     permittedInsecurePackages = [
@@ -312,6 +318,25 @@ rec {
     ];
     android_sdk.accept_license = true;
   };
+
+  # python3.14-typecode 30.2.0 の test 2 件が nixpkgs で落ち、それを引く
+  # scancode-toolkit → ort がビルドできない。テストだけスキップする。
+  nixpkgs.overlays = [
+    (final: prev: {
+      python3Packages = prev.python3Packages.overrideScope (
+        pfinal: pprev: {
+          typecode = pprev.typecode.overridePythonAttrs (old: {
+            doCheck = false;
+          });
+          scancode-toolkit = pprev.scancode-toolkit.overridePythonAttrs (old: {
+            dependencies = map (d: if (d.pname or "") == "typecode" then pfinal.typecode else d) (
+              old.dependencies or [ ]
+            );
+          });
+        }
+      );
+    })
+  ];
 
   sops = {
     age.keyFile = "${home.homeDirectory}/.config/sops/age/keys.txt";
@@ -337,11 +362,11 @@ rec {
         path = "/run/user/1000/forgejo.env";
         format = "dotenv";
       };
-      # weave-os router の上流プロバイダ (opencode-go) 認証情報。
-      # weave-os.service の compose env_file として読まれる。
-      "weave-os" = {
-        sopsFile = ./secrets/weave-os.env;
-        path = "/run/user/1000/weave-os.env";
+      # OmniRoute の管理 API キー (/v1 の Bearer) と dashboard 初期パスワード。
+      # omniroute.service の env_file として読まれる。
+      "omniroute" = {
+        sopsFile = ./secrets/omniroute.env;
+        path = "/run/user/1000/omniroute.env";
         format = "dotenv";
       };
       # Cloudflare Tunnel (opencode.comamoca.dev) のトンネルトークン。
@@ -351,6 +376,45 @@ rec {
         sopsFile = ./secrets/opencode-cloudflared-token.yaml;
         key = "opencode-cloudflared-token";
         path = "${home.homeDirectory}/.config/cloudflared/opencode-token";
+        format = "yaml";
+        mode = "0600";
+      };
+      # Cloudflare Tunnel (dsh.comamoca.dev) のトンネルトークン。
+      # opencode 用と同じ流儀で --token-file から読み、ps に露出させない。
+      # 0600 で ~/.config/cloudflared/dsh-token に復号される。
+      #
+      # 値は Cloudflare でトンネルを作成した後に取得する (手順は下の
+      # cloudflared-dsh サービス付近のコメントを参照)。現在はプレースホルダが
+      # 入っているだけなので、トンネル作成までは cloudflared-dsh が再起動を
+      # 繰り返す。sops で値を差し替えるには:
+      #   sops secrets/dsh-cloudflared-token.yaml
+      "dsh-cloudflared-token" = {
+        sopsFile = ./secrets/dsh-cloudflared-token.yaml;
+        key = "dsh-cloudflared-token";
+        path = "${home.homeDirectory}/.config/cloudflared/dsh-token";
+        format = "yaml";
+        mode = "0600";
+      };
+      # Cloudflare Tunnel (omniroute.comamoca.dev) のトンネルトークン。
+      # トンネル名 "omniroute" (id: cffdea8c-4266-407c-b9d4-694f5d6aaf73) は
+      # `cf zero-trust tunnels cloudflared create --config-src cloudflare` で作成。
+      # 0600 で ~/.config/cloudflared/omniroute-token に復号される。
+      "omniroute-cloudflared-token" = {
+        sopsFile = ./secrets/omniroute-cloudflared-token.yaml;
+        key = "omniroute-cloudflared-token";
+        path = "${home.homeDirectory}/.config/cloudflared/omniroute-token";
+        format = "yaml";
+        mode = "0600";
+      };
+      # Cloudflare Tunnel (omnigent.comamoca.dev) のトンネルトークン。
+      # トンネル名 "omnigent" (id: af3ac346-6175-4e95-a6f9-e6ef582a9320) は
+      # `cf zero-trust tunnels cloudflared create --name omnigent` で作成し、
+      # ingress は omnigent.comamoca.dev → http://127.0.0.1:14197。
+      # 0600 で ~/.config/cloudflared/omnigent-token に復号される。
+      "omnigent-cloudflared-token" = {
+        sopsFile = ./secrets/omnigent-cloudflared-token.yaml;
+        key = "omnigent-cloudflared-token";
+        path = "${home.homeDirectory}/.config/cloudflared/omnigent-token";
         format = "yaml";
         mode = "0600";
       };
@@ -395,7 +459,7 @@ rec {
       nak
       vim-startuptime
       spotify
-      input-remapper  # Wacom ペンタブの ExpressKeys を Krita 用キーに変換
+      input-remapper # Wacom ペンタブの ExpressKeys を Krita 用キーに変換
 
       # NOTE: 2025/06/22 hashまわりで壊れたので一旦無効化
       # (import ./pkgs/lspx { inherit pkgs; })
@@ -453,8 +517,8 @@ rec {
       "${config.xdg.cacheHome}/nix-index/files".source = lib.mkForce nix-index-docker-sbx-db.full;
 
       # rootless docker (rootlesskit の --copy-up=/etc) は namespace 内の /etc/ssl の
-      # CA シンボリックを壊し、レジストリへの TLS 検証が失敗する (weave-os 等の
-      # docker pull が "certificate signed by unknown authority" で落ちる)。
+      # CA シンボリックを壊し、レジストリへの TLS 検証が失敗する (docker pull が
+      # "certificate signed by unknown authority" で落ちる)。
       # CA を Nix ストアから直接指定して回避する。
       ".config/systemd/user/docker.service.d/ca.conf".text = ''
         [Service]
@@ -464,7 +528,7 @@ rec {
 
       # docker compose のイメージビルドが BuildKit (TARGETARCH) を必要とするため
       # buildx プラグインを配置 (無いと classic builder にフォールバックして
-      # weave-os の router-server ビルドが "TARGETARCH: parameter not set" で失敗)。
+      # イメージビルドが "TARGETARCH: parameter not set" で失敗する)。
       ".docker/cli-plugins/docker-buildx".source = "${pkgs.docker-buildx}/bin/docker-buildx";
 
       "${base}/nvim-treesitter" =
@@ -521,10 +585,12 @@ rec {
       ".bin/scripts/niri-workspace-layout.sh" = {
         source = (symlink /${dotfiles}/bin/scripts/niri-workspace-layout.sh);
       };
+      ".bin/scripts/cursor-switch.sh" = {
+        source = (symlink /${dotfiles}/bin/scripts/cursor-switch.sh);
+      };
       ".bin/scripts/flake-lock-save" = {
         source = (symlink /${dotfiles}/bin/scripts/flake-lock-save);
       };
-
 
       # ========== SKK ==========
       ".skk-dict/SKK-JISYO.L".source = "${pkgs.skkDictionaries.l}/share/skk/SKK-JISYO.L";
@@ -708,11 +774,29 @@ rec {
 
       ".config/opencode/plugins/btw.ts".source = (symlink /${dotfiles}/config/opencode/plugins/btw.ts);
 
+      # OmniRoute で追加した combo を opencode のモデル一覧に自動で載せる。
+      # 一覧の生成は omniroute.nix の omniroute-combos.timer が行う。
+      ".config/opencode/plugins/omniroute-combos.ts".source = (
+        symlink /${dotfiles}/config/opencode/plugins/omniroute-combos.ts
+      );
+
+      # combo の推定単価。プラグインがプラグインと同じディレクトリから読む。
+      ".config/opencode/plugins/omniroute-combo-cost.json".source = (
+        symlink /${dotfiles}/config/opencode/omniroute-combo-cost.json
+      );
+
+      # combo の推定単価 (メンバー料金の重み付き平均)。
+      # プラグインが combo をモデル登録するときに cost として付ける。
+      ".config/opencode/omniroute-combo-cost.json".source = (
+        symlink /${dotfiles}/config/opencode/omniroute-combo-cost.json
+      );
+
       # input-remapper: Wacom ペンタブ ExpressKeys → Krita 用キー(F13-F16)変換
       # デバイス別プリセットディレクトリは activation スクリプト(setupWacomInputRemapper)で
       # デバイス名を検出して配置する。ここではテンプレートとして symlink を張る。
-      ".config/input-remapper-2/presets/_wacom-krita-template/wacom-krita.json".source =
-        (symlink /${dotfiles}/config/input-remapper/wacom-krita.json);
+      ".config/input-remapper-2/presets/_wacom-krita-template/wacom-krita.json".source = (
+        symlink /${dotfiles}/config/input-remapper/wacom-krita.json
+      );
 
       ".omo/omo.jsonc".source = (symlink /${dotfiles}/config/omo/omo.jsonc);
 
@@ -806,9 +890,15 @@ rec {
     # Affects: Signal, Slack, Discord, Teams, Chrome, etc.
     NIXOS_OZONE_WL = "1";
 
+    # カーソルテーマ - niri config と同期すること
+    XCURSOR_THEME = "Morino Rinze";
+    XCURSOR_SIZE = "86";
+
     # TTY が無い (coding agent など) 状況の sudo で GUI パスワードプロンプトを出す
     SUDO_ASKPASS = "${pkgs.kdePackages.ksshaskpass}/bin/ksshaskpass";
 
+    # sccache: Rust compilation cache
+    RUSTC_WRAPPER = "sccache";
   };
 
   # Systemd user session variables
@@ -829,6 +919,9 @@ rec {
     # sudo の askpass (サービスから GUI パスワードプロンプトを出す)
     SUDO_ASKPASS = "${pkgs.kdePackages.ksshaskpass}/bin/ksshaskpass";
 
+    # カーソルテーマ - niri config と同期すること
+    XCURSOR_THEME = "Morino Rinze";
+    XCURSOR_SIZE = "86";
   };
 
   # PATH management centralized here to avoid duplications
@@ -879,7 +972,69 @@ rec {
     sources.remote.path = import ./skills/remote.nix { inherit pkgs lib; };
     sources.local.path = ./skills/local;
     skills.enableAll = true;
-    targets.claude.enable = true;
+
+    # 同期は rsync --delete なので、ここに無いエントリは各配布先から消える。
+    # /synced は外部の skill 同期ツールが ~/.agents/skills/synced に置いている
+    # managed tree なので、消さないよう除外する (既定は "/.system" のみ)。
+    excludePatterns = [
+      "/.system"
+      "/synced"
+    ];
+
+    # 配布先ごとの skill ディレクトリ。既定で有効なのは claude のみなので、
+    # 使っているエージェントを明示的に有効化する。
+    # opencode / claude / pi は agent-skills-nix 組み込みの target 名。
+    # 既定値は上流 lib/targets.nix の defaultTargets と対応しており、
+    # ここでは意図を読めるよう dest も明示している (path は実機で確認済み)。
+    targets = {
+      # Claude Code: ~/.claude/skills
+      # (CLAUDE_CONFIG_DIR を設定している場合も既定の ~/.claude に揃える)
+      claude = {
+        enable = true;
+        dest = "$HOME/.claude/skills";
+      };
+
+      # opencode: ~/.config/opencode/skills
+      # opencode は global として <config>/opencode/skill(s)/ を走査する
+      # (実機で `opencode debug skill` により discovery を確認済み)。
+      opencode = {
+        enable = true;
+        dest = "$HOME/.config/opencode/skills";
+      };
+
+      # pi: ~/.pi/agent/skills
+      # pi は <agentDir>/skills を読み、既定 agentDir は ~/.pi/agent。
+      pi = {
+        enable = true;
+        dest = "$HOME/.pi/agent/skills";
+      };
+
+      # jcode: ~/.jcode/skills
+      # jcode は ~/.jcode/skills/<name>/SKILL.md を global skill として読む。
+      # 組み込み target が無いので独自 target として定義する。
+      jcode = {
+        enable = true;
+        dest = "$HOME/.jcode/skills";
+      };
+
+      # omp (oh-my-pi): ~/.omp/agent/skills
+      # omp は pi 系で <agentDir>/skills を読み、omp の agentDir は ~/.omp/agent。
+      # 組み込み target が無いので独自 target として定義する。
+      omp = {
+        enable = true;
+        dest = "$HOME/.omp/agent/skills";
+      };
+
+      # DeepSeek Harness: ~/.agents/skills
+      # dsh は共有 root の ~/.agents/skills を rank 500 (user-agents) で走査する。
+      # omp / pi / opencode も同じ ~/.agents/skills を読むため、ここに入れておくと
+      # これらにも同時に届く (dsh 専用ディレクトリは用意されていない)。
+      # 組み込み target が無いので独自 target として定義する。
+      agents = {
+        enable = true;
+        dest = "$HOME/.agents/skills";
+      };
+    };
   };
 
   # codex (OpenAI Codex CLI) の設定を宣言的に管理する。
@@ -1012,7 +1167,12 @@ rec {
   };
 
   programs = {
-    dank-material-shell.enable = true;
+    dank-material-shell = {
+      enable = true;
+      # khal 0.14.1 は nixpkgs の sphinxHook が man 出力を作れずビルドできない。
+      # カレンダー連携だけを外して home-manager のビルドを通す。
+      enableCalendarEvents = false;
+    };
     # spawn-at-startup "au" "run"
   };
 
@@ -1198,47 +1358,47 @@ rec {
   # デバイス名に応じたディレクトリへ配置し、autoload を有効化する。
   # デバイス名は実行時に input-remapper-control で検出するため、ハードウェア依存の値は Nix に持たない。
   home.activation.setupWacomInputRemapper = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-    PRESET_SRC="${home.homeDirectory}/.config/input-remapper-2/presets/_wacom-krita-template/wacom-krita.json"
-    CONFIG_DIR="${home.homeDirectory}/.config/input-remapper-2"
+        PRESET_SRC="${home.homeDirectory}/.config/input-remapper-2/presets/_wacom-krita-template/wacom-krita.json"
+        CONFIG_DIR="${home.homeDirectory}/.config/input-remapper-2"
 
-    # Wacom Pad デバイス名を検出する (例: "Wacom Intuos S Pad")
-    DEVICE_NAME=$(${pkgs.input-remapper}/bin/input-remapper-control --list-devices 2>/dev/null | \
-      ${pkgs.gnugrep}/bin/grep -i "pad" | ${pkgs.gnugrep}/bin/grep -i wacom | \
-      ${pkgs.coreutils}/bin/head -n 1 | ${pkgs.coreutils}/bin/cut -d: -f2 | ${pkgs.findutils}/bin/xargs || true)
+        # Wacom Pad デバイス名を検出する (例: "Wacom Intuos S Pad")
+        DEVICE_NAME=$(${pkgs.input-remapper}/bin/input-remapper-control --list-devices 2>/dev/null | \
+          ${pkgs.gnugrep}/bin/grep -i "pad" | ${pkgs.gnugrep}/bin/grep -i wacom | \
+          ${pkgs.coreutils}/bin/head -n 1 | ${pkgs.coreutils}/bin/cut -d: -f2 | ${pkgs.findutils}/bin/xargs || true)
 
-    if [ -z "$DEVICE_NAME" ]; then
-      echo "No Wacom Pad device found for input-remapper preset."
-    else
-      echo "Setting up input-remapper preset for: $DEVICE_NAME"
+        if [ -z "$DEVICE_NAME" ]; then
+          echo "No Wacom Pad device found for input-remapper preset."
+        else
+          echo "Setting up input-remapper preset for: $DEVICE_NAME"
 
-      # デバイス別 preset ディレクトリを作成し、テンプレートをコピーする
-      ${pkgs.coreutils}/bin/mkdir -p "$CONFIG_DIR/presets/$DEVICE_NAME"
-      ${pkgs.coreutils}/bin/cp -f "$PRESET_SRC" "$CONFIG_DIR/presets/$DEVICE_NAME/wacom-krita.json"
+          # デバイス別 preset ディレクトリを作成し、テンプレートをコピーする
+          ${pkgs.coreutils}/bin/mkdir -p "$CONFIG_DIR/presets/$DEVICE_NAME"
+          ${pkgs.coreutils}/bin/cp -f "$PRESET_SRC" "$CONFIG_DIR/presets/$DEVICE_NAME/wacom-krita.json"
 
-      # autoload 設定を更新する（既存設定は保持）
-      ${pkgs.coreutils}/bin/mkdir -p "$CONFIG_DIR"
-      ${pkgs.python3}/bin/python3 - "$CONFIG_DIR/config.json" "$DEVICE_NAME" <<'PY'
-import json
-import sys
+          # autoload 設定を更新する（既存設定は保持）
+          ${pkgs.coreutils}/bin/mkdir -p "$CONFIG_DIR"
+          ${pkgs.python3}/bin/python3 - "$CONFIG_DIR/config.json" "$DEVICE_NAME" <<'PY'
+    import json
+    import sys
 
-config_path = sys.argv[1]
-device_name = sys.argv[2]
+    config_path = sys.argv[1]
+    device_name = sys.argv[2]
 
-try:
-    with open(config_path) as f:
-        config = json.load(f)
-except FileNotFoundError:
-    config = {}
+    try:
+        with open(config_path) as f:
+            config = json.load(f)
+    except FileNotFoundError:
+        config = {}
 
-config.setdefault("version", "2.2.0")
-config.setdefault("autoload", {})
-config["autoload"][device_name] = "wacom-krita"
+    config.setdefault("version", "2.2.0")
+    config.setdefault("autoload", {})
+    config["autoload"][device_name] = "wacom-krita"
 
-with open(config_path, "w") as f:
-    json.dump(config, f, indent=4)
-    f.write("\n")
-PY
-    fi
+    with open(config_path, "w") as f:
+        json.dump(config, f, indent=4)
+        f.write("\n")
+    PY
+        fi
   '';
 
   # Krita のショートカット設定に Wacom ペンタブ用の F13-F16 割当を追記する。
@@ -1246,39 +1406,39 @@ PY
   # symlink にはせず、[Shortcuts] セクション内に割当が無い場合のみ挿入する。
   # Krita 側でショートカットを変更した場合はこの追記はスキップされ、Krita の設定が優先される。
   home.activation.setupKritaShortcuts = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-    SHORTCUTS_FILE="${home.homeDirectory}/.config/kritashortcutsrc"
-    ADDITIONS="${dotfiles}/config/krita/kritashortcutsrc"
+        SHORTCUTS_FILE="${home.homeDirectory}/.config/kritashortcutsrc"
+        ADDITIONS="${dotfiles}/config/krita/kritashortcutsrc"
 
-    if [ -f "$SHORTCUTS_FILE" ]; then
-      # 既に F13 割当があればスキップ (exit ではなく else で分岐。exit は activation 全体を止める)
-      if ! ${pkgs.gnugrep}/bin/grep -q "rotate_canvas_left=F13" "$SHORTCUTS_FILE" 2>/dev/null; then
-        echo "Adding Wacom tablet shortcuts to kritashortcutsrc..."
-        # [Shortcuts] セクションの直後に割当を挿入する
-        ${pkgs.python3}/bin/python3 - "$SHORTCUTS_FILE" "$ADDITIONS" <<'PY'
-import sys
+        if [ -f "$SHORTCUTS_FILE" ]; then
+          # 既に F13 割当があればスキップ (exit ではなく else で分岐。exit は activation 全体を止める)
+          if ! ${pkgs.gnugrep}/bin/grep -q "rotate_canvas_left=F13" "$SHORTCUTS_FILE" 2>/dev/null; then
+            echo "Adding Wacom tablet shortcuts to kritashortcutsrc..."
+            # [Shortcuts] セクションの直後に割当を挿入する
+            ${pkgs.python3}/bin/python3 - "$SHORTCUTS_FILE" "$ADDITIONS" <<'PY'
+    import sys
 
-shortcuts_file = sys.argv[1]
-additions_file = sys.argv[2]
+    shortcuts_file = sys.argv[1]
+    additions_file = sys.argv[2]
 
-with open(additions_file) as f:
-    additions = f.read()
+    with open(additions_file) as f:
+        additions = f.read()
 
-with open(shortcuts_file) as f:
-    content = f.read()
+    with open(shortcuts_file) as f:
+        content = f.read()
 
-marker = "[Shortcuts]"
-if marker in content:
-    content = content.replace(marker, marker + "\n" + additions.rstrip("\n"), 1)
-else:
-    content = content.rstrip("\n") + "\n\n" + marker + "\n" + additions.rstrip("\n") + "\n"
+    marker = "[Shortcuts]"
+    if marker in content:
+        content = content.replace(marker, marker + "\n" + additions.rstrip("\n"), 1)
+    else:
+        content = content.rstrip("\n") + "\n\n" + marker + "\n" + additions.rstrip("\n") + "\n"
 
-with open(shortcuts_file, "w") as f:
-    f.write(content)
-PY
-      else
-        echo "Krita shortcuts already configured, skipping."
-      fi
-    fi
+    with open(shortcuts_file, "w") as f:
+        f.write(content)
+    PY
+          else
+            echo "Krita shortcuts already configured, skipping."
+          fi
+        fi
   '';
 
   systemd.user.services.niri-scratchpad-daemon = {
@@ -1343,6 +1503,68 @@ PY
     };
   };
 
+  # DSH Web をログイン時に常駐させる。待ち受け自体はループバックのみで、
+  # 外部アクセスは Cloudflare Tunnel (cloudflared-dsh.service) 経由。
+  # 起動URL（認証トークン付き）は journalctl --user -u dsh-web で確認する。
+  # 同一ホストへのアタッチは dsh-tui の dsh-remote バックエンドが担う
+  # (docs/dsh-tui-attach-research.md、fish の dta 略語)。
+  #
+  # dsh web はトンネル越しに使うために 2 つの指定が要る:
+  #   --public-url  : 印字・起動される URL を公開ホスト名にする。信頼は付与しない。
+  #   --trusted-host: /api の Host/Origin フェンスが受け入れる authority。
+  #                   これが無いとトンネル経由のリクエストは 403 で拒否される
+  #                   (ループバックと待ち受けIPは既定で許可、それ以外は拒否)。
+  # 認証は launch token のまま: トークン付き ?token= で / にアクセスすると
+  # 30 日有効の署名 Cookie が発行され、以後 https://dsh.comamoca.dev/ で入れる。
+  # 新しいトークンは再起動時に発行されるので journalctl のログから取り直す。
+  #
+  # ポート 14198: omniroute (20128 = 20 + 128) と同じく
+  # 「頭の 0 を除いた 1xxxx + 末尾 4 桁」に D-S-H のアルファベット順位
+  # (4, 19, 8 → 04198) を埋めた専用番号。一般的な Web 開発ポート
+  # (3000/4200/5173/8000/8080 など) や 10000 未満の開発用帯域を避ける。
+  systemd.user.services.dsh-web = {
+    Unit = {
+      Description = "DSH Web (127.0.0.1:14198)";
+      After = [ "network-online.target" ];
+      Wants = [ "network-online.target" ];
+      # switch による実行中セッションの中断を避ける。
+      X-SwitchMethod = "keep-old";
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = ''
+        ${pkgs.llm-agents.dsh}/bin/dsh web --no-open \
+          --host 127.0.0.1 --port 14198 \
+          --public-url https://dsh.comamoca.dev \
+          --trusted-host dsh.comamoca.dev
+      '';
+      WorkingDirectory = "%h";
+      # yolo 常駐: sandbox=danger-full-access, approval=never。
+      # dsh-base の cordis.patch.yml が DSH_PERMISSION_MODE を見て
+      # sandbox モードと承認ポリシーを同時に切り替える (--yolo フラグは無い)。
+      # 注意: dsh.comamoca.dev のトンネル経由で外部から到達できるため、
+      # ここでエージェントは全操作を無承認で実行する。
+      #
+      # 外部到達の守りは Cloudflare Access アプリ "dsh" (IdP: Cloudflare,
+      # 許可: comamoca.dev@gmail.com, セッション 24h) が担う。
+      # DSH 自身の launch token 認証は意図的に残している (二重防御)。認証は
+      # dsh-client-connection に埋め込まれており無効化オプションが無いため、
+      # 消すにはモンキーパッチが要る。このエージェントは無承認で任意コードを
+      # 実行できるので、認証を外すと同ホストの任意プロセスに owner 権限の
+      # RCE を渡すことになる。bind は必ず 127.0.0.1 のままにする。
+      # 初回のみ ?token= 付き URL で入り、以後 30 日は Cookie で通る。
+      # トークンは journalctl --user -u dsh-web から取得する。
+      Environment = [
+        "DSH_HOME=%h/.dsh"
+        "DSH_PERMISSION_MODE=danger-full-access"
+      ];
+      Restart = "on-failure";
+      RestartSec = 3;
+      UMask = "0077";
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
+
   # OpenCode Server 常駐プロセス (127.0.0.1:4096 のみで待ち受け)。
   # 外部アクセスは必ず Cloudflare Tunnel (cloudflared-opencode.service) 経由。
   # X-SwitchMethod = "keep-old": セッション/作業状態を保持するため
@@ -1358,8 +1580,9 @@ PY
       Type = "simple";
       ExecStart = "${pkgs.llm-agents.opencode}/bin/opencode serve --hostname 127.0.0.1 --port 4096";
       # ghq 管理下のリポジトリ (~/.ghq) をサーバーのデフォルト作業ディレクトリにする。
-      # クライアント側は oc 関数が --dir "$PWD" を渡すため、これは主に
-      # --dir 指定なしで attach した際のデフォルトプロジェクトに効く。
+      # クライアント側は oc / opencode 関数 (config/fish/functions/) が
+      # --dir "$PWD" を渡すため、これは主に --dir 指定なしで attach した際の
+      # デフォルトプロジェクトに効く。
       WorkingDirectory = "%h/.ghq";
       Restart = "on-failure";
       RestartSec = 3;
@@ -1386,6 +1609,100 @@ PY
     Service = {
       Type = "simple";
       ExecStart = "${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate run --token-file ${config.sops.secrets.opencode-cloudflared-token.path}";
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
+    Install = {
+      WantedBy = [ "default.target" ];
+    };
+  };
+
+  # dsh.comamoca.dev → DSH Web (127.0.0.1:14198) への Cloudflare Tunnel。
+  # cloudflared-opencode と同構成: トークンは sops で復号された
+  # ~/.config/cloudflared/dsh-token (0600) を --token-file で読む。
+  #
+  # 事前に Cloudflare 側で次を済ませておく (ダッシュボードでも CLI でも可):
+  #   1. Zero Trust → Tunnels で dsh 用トンネルを新規作成
+  #   2. Public Hostname: dsh.comamoca.dev → http://127.0.0.1:14198
+  #   3. 発行されたトンネルトークンを secrets/dsh-cloudflared-token.yaml に sops で格納
+  # トンネルが未作成のまま起動すると cloudflared は再起動を繰り返す。
+  systemd.user.services.cloudflared-dsh = {
+    Unit = {
+      Description = "Cloudflare Tunnel for dsh.comamoca.dev";
+      After = [
+        "network-online.target"
+        "sops-nix.service"
+        "dsh-web.service"
+      ];
+      Wants = [ "network-online.target" ];
+      X-SwitchMethod = "keep-old";
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate run --token-file ${config.sops.secrets.dsh-cloudflared-token.path}";
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
+    Install = {
+      WantedBy = [ "default.target" ];
+    };
+  };
+
+  # omnigent.comamoca.dev → Omnigent server (127.0.0.1:14197) への
+  # Cloudflare Tunnel。omniroute と同構成 (トンネルは remotely-managed なので
+  # ingress は Cloudflare 側の設定が正本)。
+  #
+  # 守りは Cloudflare Access アプリ "omnigent"
+  # (id: a201ed2a-a2b5-4168-ba5f-c710175c282c, IdP: Cloudflare,
+  #  許可: comamoca.dev@gmail.com, セッション 24h) が担う。Access は
+  # Cf-Access-Authenticated-User-Email を注入するので、Omnigent 側は
+  # header 認証モードでそのヘッダを信頼する (omnigent.nix の
+  # OMNIGENT_AUTH_HEADER を参照)。待ち受けは 127.0.0.1 のまま。
+  systemd.user.services.cloudflared-omnigent = {
+    Unit = {
+      Description = "Cloudflare Tunnel for omnigent.comamoca.dev";
+      After = [
+        "network-online.target"
+        "sops-nix.service"
+        "omnigent.service"
+      ];
+      Wants = [ "network-online.target" ];
+      X-SwitchMethod = "keep-old";
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate run --token-file ${config.sops.secrets.omnigent-cloudflared-token.path}";
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
+    Install = {
+      WantedBy = [ "default.target" ];
+    };
+  };
+
+  # omniroute.comamoca.dev → OmniRoute dashboard (127.0.0.1:20128) への
+  # Cloudflare Tunnel。dsh と同構成 (トンネルは remotely-managed なので
+  # ingress は Cloudflare 側の設定が正本)。
+  #
+  # 守りは Cloudflare Access アプリ "omniroute"
+  # (id: 636aa554-8ec1-466a-88e1-06f4c1ed3f7c, IdP: Cloudflare,
+  #  許可: comamoca.dev@gmail.com, セッション 24h) が担う。
+  # OmniRoute の dashboard は管理 API キーや provider の鍵に届くため、
+  # /v1 も含めて Access の外に出さない。待ち受けは 127.0.0.1 のまま。
+  systemd.user.services.cloudflared-omniroute = {
+    Unit = {
+      Description = "Cloudflare Tunnel for omniroute.comamoca.dev";
+      After = [
+        "network-online.target"
+        "sops-nix.service"
+        "omniroute.service"
+      ];
+      Wants = [ "network-online.target" ];
+      X-SwitchMethod = "keep-old";
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.cloudflared}/bin/cloudflared tunnel --no-autoupdate run --token-file ${config.sops.secrets.omniroute-cloudflared-token.path}";
       Restart = "on-failure";
       RestartSec = 5;
     };

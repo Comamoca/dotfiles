@@ -1,6 +1,7 @@
 { pkgs }:
 let
   takt = import ../pkgs/takt { inherit pkgs; };
+  leaf = import ../pkgs/leaf { inherit pkgs; };
 
 in
 with pkgs;
@@ -17,6 +18,7 @@ with pkgs;
   zellij
   tmux
   herdr
+  leaf
 
   # File managers
   felix-fm
@@ -36,6 +38,7 @@ with pkgs;
   llm-agents.agent-browser
   llm-agents.fence
   llm-agents.jcode
+  llm-agents.dsh
   # llm-agents.codex は programs.codex.package (home.nix) 経由で入る
 
   (import ../pkgs/terminal-browser { inherit pkgs; })

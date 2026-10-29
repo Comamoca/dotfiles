@@ -340,6 +340,17 @@
     };
     date = "2026-07-26";
   };
+  leaf = {
+    pname = "leaf";
+    version = "1.29.1";
+    src = fetchFromGitHub {
+      owner = "RivoLink";
+      repo = "leaf";
+      rev = "1.29.1";
+      fetchSubmodules = false;
+      sha256 = "sha256-+J8c6aoM2GqZMJe2XUiY4A6T1qqw1s1+kVMhdHKSt8o=";
+    };
+  };
   lspx = {
     pname = "lspx";
     version = "1b9649fa5567ef482dc54519943737922ef291dd";

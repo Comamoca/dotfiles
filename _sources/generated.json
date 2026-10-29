@@ -570,6 +570,27 @@
         },
         "version": "30a4ff96bdde62c789f42a443766632e8c379873"
     },
+    "leaf": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "leaf",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "RivoLink",
+            "repo": "leaf",
+            "rev": "1.29.1",
+            "sha256": "sha256-+J8c6aoM2GqZMJe2XUiY4A6T1qqw1s1+kVMhdHKSt8o=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "1.29.1"
+    },
     "lspx": {
         "cargoLock": null,
         "date": "2025-11-08",
