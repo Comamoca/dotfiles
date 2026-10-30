@@ -301,6 +301,10 @@ curl -sS -H 'accept: application/dns-json' \
 `Status: 0` を返していても端末側はまだ NXDOMAIN のことがある。端末側の
 最終確認は `getent hosts omnigent.comamoca.dev` で行う。
 
+2026-10-30 の復旧では、A レコードを戻してから約 28 分後にローカルでも
+解決するようになり、`curl -I https://omnigent.comamoca.dev/` が Access の
+ログインへ `302` を返すところまで確認できた。
+
 ### ACP エージェントの起動
 
 `omni run` の位置引数はエージェント YAML かディレクトリで、ハーネス名は
