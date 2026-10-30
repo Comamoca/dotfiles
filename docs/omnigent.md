@@ -272,3 +272,54 @@ omni run --harness codex -p 'Reply with exactly OK.'
 このリポジトリでは `cloudflared-omnigent.service` が `omnigent.comamoca.dev` を
 `127.0.0.1:14197` に繋ぎ、ingress と Access の ポリシーは Cloudflare
 側で設定する。
+
+### DNS レコード
+
+ingress と Access が Cloudflare 側に残っていても、DNS レコードが無いと
+`omnigent.comamoca.dev` は解決できない。ブラウザでは「サーバーが見つかりません」
+になり、`curl` は `Could not resolve host` で落ちる。
+
+必要なのは `<tunnel-id>.cfargotunnel.com` への proxied CNAME 1 本だけで、
+このトンネルの id は `af3ac346-6175-4e95-a6f9-e6ef582a9320`(トンネルトークンの
+`t`)。レコードが消えていたら Cloudflare の DNS で作り直すと、トンネルや
+Access の設定を触らずに復旧する。
+
+修正直後は手元のリゾルバが NXDOMAIN を SOA の 1800 秒ぶんキャッシュして
+いるため、最大 30 分は解決に失敗し続ける。このキャッシュは NextDNS の
+デバイス単位のもので、`tailscaled` を再起動しても消えない(2026-10-30 に
+再起動して、`100.100.100.100` が依然 NXDOMAIN を返すことを確認)。
+キャッシュを待たずに反映を確かめるなら、`/resolve` はキャッシュを通らない
+のでこちらを使う。
+
+```sh
+curl -sS -H 'accept: application/dns-json' \
+  'https://dns.nextdns.io/f23b72/resolve?name=omnigent.comamoca.dev&type=A'
+```
+
+`Status: 0` と Cloudflare の A レコードが返れば直っている。同じ NextDNS でも
+デバイス指定なしの `?name=...&type=A` は別のキャッシュを見るため、こちらが
+`Status: 0` を返していても端末側はまだ NXDOMAIN のことがある。端末側の
+最終確認は `getent hosts omnigent.comamoca.dev` で行う。
+
+### ACP エージェントの起動
+
+`omni run` の位置引数はエージェント YAML かディレクトリで、ハーネス名は
+`--harness` に渡す。`omni run jcode` は `Agent path not found: jcode`、
+`omni jcode` は `No such command: 'jcode'` で落ちる。正しくは次のどちらか。
+
+```sh
+omni run --harness acp:jcode -p 'Reply with just: OK'   # CLI
+omni run --server http://127.0.0.1:14197                # ピッカーから選ぶ
+```
+
+`--server local` は「ローカルにサーバーを起動する」指定なので、稼働中の
+サーバー(`omnigent.service`)に繋ぎたいときは URL をそのまま渡す。この形で
+引数なしにすると、サーバーが持つエージェントのピッカーが出る。
+
+`--harness` のヘルプ一覧には ACP 行が載っていないが、`acp:<name>` は
+`acp.agents` の宣言をそのまま引くので指定できる。Web UI の新規セッション
+ピッカーでは `acp-jcode` という名前で出る。
+
+ヘッダ認証のため、ブラウザで `127.0.0.1:14197` を直接開くと `401` になる。
+ローカルの UI を見たい場合も `https://omnigent.comamoca.dev`(Access 通過後)
+を使う。
