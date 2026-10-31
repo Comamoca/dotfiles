@@ -33,8 +33,14 @@ nix eval --impure --raw .#nixosConfigurations.raspi.config.system.build.toplevel
 nix build .#nixosConfigurations.raspi.config.system.build.toplevel --no-link -L
 
 # SD イメージ (nixos-image-sd-card-*.img.zst)
-nix build .#nixosConfigurations.raspi.config.system.build.sdImage -L
+# --out-link で result とは別の名前にする。home-manager の build が result を
+# 取り違えるのを避けるため。
+nix build .#nixosConfigurations.raspi.config.system.build.sdImage -L --out-link result-raspi
 ```
+
+`sdImage` の成果物は `result-raspi` (`/nix/store/...-nixos-image-sd-card-*.img.zst`)
+に置かれる。`readlink -f result-raspi` で store path を確認してから書き込む。
+実体は `sd-image/nixos-image-sd-card-*.img.zst` として store に並ぶ。
 
 Pi 3 のカーネルは nixos-hardware の `raspberry-pi-3` が選ぶ vendor カーネル
 (`linux-rpi`) をそのまま使う。mainline に上げると HDMI 無出力や U-Boot での停止を
@@ -52,7 +58,7 @@ Tailscale の認証キーも復号できず、ネットワークに出られな�
 
 ```bash
 lsblk                       # 書き込み先を確認する (以下 /dev/sdX とする)
-zstd -dc result/sd-image/*.img.zst | sudo dd of=/dev/sdX bs=4M conv=fsync status=progress
+zstd -dc result-raspi/sd-image/*.img.zst | sudo dd of=/dev/sdX bs=4M conv=fsync status=progress
 sync
 ```
 
@@ -73,10 +79,48 @@ sudo umount /mnt/rootfs
 nix run nixpkgs#ssh-to-age -- -i ~/.config/raspi/ssh_host_ed25519_key.pub
 ```
 
+## SSH アクセス
+
+tailnet 経由の SSH は `services.tailscale.extraUpFlags = [ "--ssh" ]` により、
+tailscaled が持つ SSH サーバーが受け持つ。接続を試すと追加チェック用の URL が
+表示され、ブラウザで承認するまでセッションは開かない。
+
+```text
+# Tailscale SSH requires an additional check.
+# To authenticate, visit: https://login.tailscale.com/a/<nonce>
+```
+
+`services.openssh` も有効だが `PasswordAuthentication = false` なので、
+パスワードでの SSH ログインはできない。`openssh.authorizedKeys.keys` の
+`coma@comabook` が Tailscale SSH の鍵認証に使われる。
+
+接続元の `~/.ssh/known_hosts` に古い Raspberry Pi のエントリが残っていると、
+`REMOTE HOST IDENTIFICATION HAS CHANGED` で接続が拒まれる。焼き直したイメージの
+ホスト鍵指紋は次の値で照合する。
+
+```bash
+ssh-keygen -lf ~/.config/raspi/ssh_host_ed25519_key.pub
+# 256 SHA256:u6N6JFoOuKiddlpgByHHU6EbSG/1V7E9lPjq3v8imJU raspi (ED25519)
+```
+
+```bash
+ssh-keygen -R raspi
+ssh-keygen -R raspi.tailbd3ca7.ts.net
+ssh-keygen -R 100.96.42.88
+```
+
 ## 初回起動の確認
 
 シリアルか HDMI でコンソールに入る。`users.users.coma.initialPassword` は
-`changeme` なので、初回ログイン後に `passwd` で変更する。
+`changeme` なので、初回ログイン後に `passwd` で変更する。このパスワードは
+コンソール専用で、SSH のパスワード認証は `PasswordAuthentication = false` の
+ため効かない (`initialPassword` は初回起動時にだけ適用される)。
+
+なお `secrets/raspi/omniroute.yaml` の `INITIAL_PASSWORD` は
+`/run/secrets/rendered/omniroute-env` に描画されるだけで、ユーザアカウントの
+パスワードには使われていない。コンソールのパスワードも sops 側に寄せたい場合は
+`users.users.coma.initialPassword` を `sops.placeholder` に置き換える必要が
+ある (現状は未対応)。
 
 ```bash
 # 秘密の復号と配置
@@ -117,17 +161,45 @@ curl -sS -H "Authorization: Bearer $OMNIROUTE_API_KEY" \
 
 Pi の OmniRoute は comabook のインスタンスと同じ API 形状 (`/v1`,
 OpenAI 互換, `OMNIROUTE_API_KEY`) なので、クライアントの `baseURL` を
-`http://raspi:20128/v1` (MagicDNS) か `http://100.x.y.z:20128/v1` に変えるだけで
+`http://raspi:20128/v1` (MagicDNS) か `http://100.96.42.88:20128/v1` に変えるだけで
 切り替わる。認証キーは Pi 側の `OMNIROUTE_API_KEY` を使う。
 
-- dsh: `~/.dsh/profiles/*/cordis.patch.yml` の `provider.omniroute.baseURL`
-- OpenCode: `~/.config/opencode/opencode.json` の `provider.omniroute`
-- combos の生成: `omniroute-combos` は `OMNIROUTE_URL` と
-  `OMNIROUTE_ENV_FILE` で参照先を差し替えられる
+### 現状 (2026-11-01)
+
+すべてのクライアントは comabook ローカルの OmniRoute (`http://127.0.0.1:20128/v1`)
+を指している。Pi のインスタンスは build 済みだが、クライアントはまだそちらを
+参照していない。
+
+| 利用者 | 参照先 | 変更方法 |
+| --- | --- | --- |
+| dsh (`tui` / `headless` / `web` / `acp`) | `~/.dsh/profiles/<profile>/cordis.patch.yml` の `provider.omniroute.baseURL` | ファイルを編集 |
+| OpenCode | `~/.config/opencode/opencode.json` の `provider.omniroute.options.baseURL` | ファイルを編集 |
+| OpenCode の combos プラグイン | `config/opencode/plugins/omniroute-combos.ts` の `BASE_URL` | `OMNIROUTE_BASE_URL` 環境変数で上書き可 |
+| OmniGent | `omnigent.nix` の `omnirouteBase` | `home-manager switch --flake .#Home --impure` |
+| combos の生成 (`omniroute-combos`) | `bin/scripts/omniroute-combos/omniroute-combos` | `OMNIROUTE_URL` / `OMNIROUTE_ENV_FILE` |
+
+`dsh` の `acp` / `web` / `headless` プロファイルは `provider.omniroute` を
+持っているが、`tui` は既定の provider (OmniRoute ではない) を使う。
+
+### Pi へ切り替える手順
+
+1. Pi の API キーを comabook 側で環境変数へ読み込む。
 
 ```bash
-# Pi 側の一覧を読む (認証は Pi の OMNIROUTE_API_KEY)
-OMNIROUTE_URL=http://raspi:20128 OMNIROUTE_API_KEY=... omniroute-combos --check
+cd /home/coma/.ghq/github.com/Comamoca/dotfiles
+export OMNIROUTE_API_KEY="$(nix run nixpkgs#sops -- -d secrets/raspi/omniroute.yaml 2>/dev/null \
+  | awk -F': ' '/^OMNIROUTE_API_KEY/ {print $2}')"
+# 値を標準出力に出さないこと
+```
+
+2. 上の表の接続先を `http://raspi:20128/v1` に変更する。
+3. OpenCode の combos プラグインは `OMNIROUTE_BASE_URL=http://raspi:20128/v1` を
+   付けて起動する (プラグインは環境変数を優先する)。
+4. 疎通を確認する。
+
+```bash
+curl -sS -H "Authorization: Bearer $OMNIROUTE_API_KEY" \
+  http://raspi:20128/v1/models | jq '.data | length'
 ```
 
 Pi 側のモデル一覧は comabook と独立している。combo を増やす場合は Pi の
@@ -146,11 +218,35 @@ Pi 側のモデル一覧は comabook と独立している。combo を増やす�
 
 | 症状 | 見る場所 |
 | --- | --- |
+| `Tailscale SSH requires an additional check` | 表示された URL をブラウザで承認する (承認前はセッション確立しない) |
+| `REMOTE HOST IDENTIFICATION HAS CHANGED` | `ssh-keygen -R <host>` で古い known_hosts エントリを削除する |
 | `ExecStartPre` が 3 分で失敗 | `systemctl status sops-install-secrets`、ホスト鍵の指紋 |
 | unit が `activating` のまま | `journalctl --user -u omniroute`、`docker-compose logs` |
-| OOM で落ちる | `journalctl -k | rg -i 'out of memory'`、`NODE_OPTIONS` と zram |
+| OOM で落ちる | `journalctl -k` の OOM killer ログ、`NODE_OPTIONS` と zram |
 | 20128 に外から届かない | `tailscale status`、`nft list ruleset` の `tailscale0` |
 | compose が起動しない | `docker-compose -f /etc/omniroute/docker-compose.yml config` |
+
+## チェックリスト
+
+実機投入時に順に確認する。
+
+- [ ] SD イメージの build が完了し、`result-raspi` が正しい store path を指している。
+- [ ] SD カードへ書き込み後、`ssh_host_ed25519_key` と `.pub` を
+      `/etc/ssh/` に配置した。
+- [ ] Pi を起動し、コンソールまたは Tailscale SSH で到達できる。
+- [ ] Tailscale SSH の追加 Web 認証を完了し、`ssh raspi` が通る。
+- [ ] `sudo ls -l /run/secrets/rendered/omniroute-env` の権限を確認し、
+      `systemctl status sops-install-secrets` が成功している。
+- [ ] `systemctl --user status omniroute omniroute-pricing` が active になっている。
+- [ ] `DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock docker ps` でコンテナが
+      Up している。
+- [ ] `127.0.0.1:20128/v1/models` は 401、`OMNIROUTE_API_KEY` 付きではモデル一覧が
+      返る。
+- [ ] `ss -tlnp` で `20128` が `0.0.0.0`、`20129` が `127.0.0.1` のみ listen して
+      いる。
+- [ ] OpenCode / dsh / OmniGent の `baseURL` を `http://raspi:20128/v1` に変更する。
+- [ ] クライアントから実際にリクエストが飛び、応答が返る。
+- [ ] ロールバック用に、動作していた SD カードまたは store path を保管する。
 
 ## ロールバック
 
