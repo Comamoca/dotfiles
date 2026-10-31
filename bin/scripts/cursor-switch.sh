@@ -93,6 +93,140 @@ update_niri_environment() {
     mv "$tmp" "$NIRI_CONFIG"
 }
 
+# home.nix の sessionVariables ブロック（home / systemd.user の 2 か所）に
+# XCURSOR_* を反映する。
+# sed だけだと「キーがブロックに無い」「片方だけ無い」で反映されないまま残り、
+# check が drift を報告してもスクリプトでは直せない状態になる。
+# ブロック単位で行を読み書きし、書き込み後に検証してから差し替える。
+update_home_nix() {
+    local theme="$1"
+    local size="$2"
+
+    local tmp
+    tmp=$(mktemp "$(dirname "$HOME_NIX")/.home.nix.XXXXXX")
+
+    awk -v theme="$theme" -v size="$size" '
+        BEGIN { in_block = 0; has_theme = 0; has_size = 0 }
+        /^[[:space:]]*(home|systemd\.user)\.sessionVariables[[:space:]]*=/ {
+            in_block = 1
+            has_theme = 0
+            has_size = 0
+            print
+            next
+        }
+        in_block {
+            if ($0 ~ /^[[:space:]]*XCURSOR_THEME[[:space:]]*=/) {
+                print "    XCURSOR_THEME = \"" theme "\";"
+                has_theme = 1
+                next
+            }
+            if ($0 ~ /^[[:space:]]*XCURSOR_SIZE[[:space:]]*=/) {
+                print "    XCURSOR_SIZE = \"" size "\";"
+                has_size = 1
+                next
+            }
+            if ($0 ~ /^[[:space:]]*\};[[:space:]]*$/) {
+                if (!has_theme) print "    XCURSOR_THEME = \"" theme "\";"
+                if (!has_size) print "    XCURSOR_SIZE = \"" size "\";"
+                in_block = 0
+                print
+                next
+            }
+            print
+            next
+        }
+        { print }
+    ' "$HOME_NIX" > "$tmp"
+
+    # 検証: ブロック 1 つにつきテーマとサイズが 1 つずつあること
+    local n_blocks n_themes n_sizes
+    n_blocks=$(grep -cE '^[[:space:]]*(home|systemd\.user)\.sessionVariables[[:space:]]*=' "$tmp" || true)
+    n_themes=$(grep -c "XCURSOR_THEME = \"$theme\";" "$tmp" || true)
+    n_sizes=$(grep -c "XCURSOR_SIZE = \"$size\";" "$tmp" || true)
+    if [ "$n_blocks" -lt 1 ] || [ "$n_themes" -ne "$n_blocks" ] || [ "$n_sizes" -ne "$n_blocks" ]; then
+        rm -f "$tmp"
+        echo "home.nix の環境変数を更新できませんでした（sessionVariables ブロックが見つからない、または XCURSOR_* が想定どおり反映されない）" >&2
+        return 1
+    fi
+
+    chmod "$(stat -c '%a' "$HOME_NIX")" "$tmp"
+    mv "$tmp" "$HOME_NIX"
+}
+
+# systemd の user セッション用 environment.d を更新する。
+# ディレクトリが無い環境（初回セットアップなど）では cat が失敗して
+# set -e でスクリプトが中断するので、先に作る。
+update_environment_d() {
+    local theme="$1"
+    local size="$2"
+
+    mkdir -p "$(dirname "$ENV_CONF")"
+    cat > "$ENV_CONF" <<EOF
+XCURSOR_THEME=$theme
+XCURSOR_SIZE=$size
+EOF
+}
+
+# GTK の settings.ini を更新する。
+# ファイルが無い場合は [Settings] グループを作ってカーソル設定だけ書き込む。
+# check は「ファイル無し」を drift として報告するため、スクリプト側でも
+# 解消できるようにしておく。
+update_gtk_settings() {
+    local settings_file="$1"
+    local theme="$2"
+    local size="$3"
+
+    local mode tmp need_theme need_size
+    mkdir -p "$(dirname "$settings_file")"
+    if [ -f "$settings_file" ]; then
+        mode=$(stat -c '%a' "$settings_file")
+    else
+        mode=600
+        printf '[Settings]\n' > "$settings_file"
+    fi
+
+    need_theme=1
+    need_size=1
+    if grep -q '^gtk-cursor-theme-name=' "$settings_file"; then need_theme=0; fi
+    if grep -q '^gtk-cursor-theme-size=' "$settings_file"; then need_size=0; fi
+
+    tmp=$(mktemp "$(dirname "$settings_file")/.settings.ini.XXXXXX")
+    awk -v theme="$theme" -v size="$size" -v need_theme="$need_theme" -v need_size="$need_size" '
+        BEGIN { in_settings = 0 }
+        {
+            if ($0 ~ /^gtk-cursor-theme-name=/) {
+                print "gtk-cursor-theme-name=" theme
+                need_theme = 0
+                next
+            }
+            if ($0 ~ /^gtk-cursor-theme-size=/) {
+                print "gtk-cursor-theme-size=" size
+                need_size = 0
+                next
+            }
+            if ($0 ~ /^\[Settings\]/) {
+                print
+                in_settings = 1
+                if (need_theme) { print "gtk-cursor-theme-name=" theme; need_theme = 0 }
+                if (need_size) { print "gtk-cursor-theme-size=" size; need_size = 0 }
+                next
+            }
+            if (in_settings && $0 ~ /^\[/) { in_settings = 0 }
+            print
+        }
+        END {
+            # [Settings] グループが無いファイル用の保険
+            if (need_theme || need_size) {
+                print "[Settings]"
+                if (need_theme) print "gtk-cursor-theme-name=" theme
+                if (need_size) print "gtk-cursor-theme-size=" size
+            }
+        }
+    ' "$settings_file" > "$tmp"
+    chmod "$mode" "$tmp"
+    mv "$tmp" "$settings_file"
+}
+
 switch_theme() {
     local theme="$1"
     local size="$2"
@@ -104,22 +238,14 @@ switch_theme() {
     update_niri_environment "$theme" "$size"
 
     # home.nix の sessionVariables を更新
-    sed -i "s|XCURSOR_THEME = \".*\";|XCURSOR_THEME = \"$theme\";|" "$HOME_NIX"
-    sed -i "s|XCURSOR_SIZE = \".*\";|XCURSOR_SIZE = \"$size\";|" "$HOME_NIX"
+    update_home_nix "$theme" "$size"
 
     # environment.d を更新 (systemd ユーザーサービス用)
-    cat > "$ENV_CONF" <<EOF
-XCURSOR_THEME=$theme
-XCURSOR_SIZE=$size
-EOF
+    update_environment_d "$theme" "$size"
 
     # GTK settings を更新
-    for settings_file in "$GTK3_SETTINGS" "$GTK4_SETTINGS"; do
-        if [ -f "$settings_file" ]; then
-            sed -i "s|gtk-cursor-theme-name=.*|gtk-cursor-theme-name=$theme|" "$settings_file"
-            sed -i "s|gtk-cursor-theme-size=.*|gtk-cursor-theme-size=$size|" "$settings_file"
-        fi
-    done
+    update_gtk_settings "$GTK3_SETTINGS" "$theme" "$size"
+    update_gtk_settings "$GTK4_SETTINGS" "$theme" "$size"
 
     echo "✓ カーソルテーマを $label に変更しました"
     echo "  テーマ: $theme"
@@ -168,7 +294,8 @@ check_drift() {
     nix_sizes=$(grep -c "XCURSOR_SIZE = \"$NIRI_SIZE\";" "$HOME_NIX" || true)
     local nix_total
     nix_total=$(grep -c 'XCURSOR_SIZE = ' "$HOME_NIX" || true)
-    if [ "$nix_themes" = "$nix_total" ] && [ "$nix_sizes" = "$nix_total" ]; then
+    # 0 件（= 定義が無い）は 0 == 0 で一致してしまうため、必ずずれとして扱う。
+    if [ "$nix_total" -ge 1 ] && [ "$nix_themes" = "$nix_total" ] && [ "$nix_sizes" = "$nix_total" ]; then
         report ok "home.nix ($nix_total か所)" "$NIRI_THEME / $NIRI_SIZE"
     else
         local actual
