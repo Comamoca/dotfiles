@@ -124,6 +124,13 @@ only from the `DSH_PERMISSION_MODE` environment variable in
 - `config/niri/` は `mkOutOfStoreSymlink` で `~/.config/niri` にリンクしている。DMS は
   `~/.config/niri/dms/*.kdl`（= リポジトリの `config/niri/dms/`、トラッキング済み）を
   自動生成する。ヘッダに `DO NOT EDIT` がある通り手で編集しても上書きされる。
+  連鎖は `~/.config/niri` → `/nix/store/<hash>-home-manager-files/.config/niri` →
+  `/nix/store/<hash>-hm_niri` → **リポジトリの `config/niri/` ディレクトリ**（最後の 1 段が
+  ディレクトリ symlink）。つまり store は read-only ではなく、DMS の `cp` / `touch` は
+  リポジトリの作業ツリーに直接落ちる（`test -w ~/.config/niri/dms` が真、`readlink -f`
+  がリポジトリを返す）。そのため DMS の `.backup<epoch>` もリポジトリ側に出る。
+  `config.kdl.backup` と `config.kdl.backup1789124269` は過去に生成されたまま
+  **git 追跡されている**ので、`git status` には出てこない。
 - `config/niri/config.kdl` 末尾の include ブロックは**必須**。niri が `dms/*.kdl` を
   読まないと `ConfigLoaded` が発火せず、DMS の `FrameTransitionState` が
   「レイアウト適用待ち」のままラッチして、通常バーの代わりに画面全周の角丸フレームを
@@ -133,9 +140,15 @@ only from the `DSH_PERMISSION_MODE` environment variable in
   config.kdl 末尾の include ブロックに入れると DMS 生成値が `config.kdl` の
   `input` / `cursor` / `outputs` / `binds` を上書きしてしまう。**エラーにはならず
   黙って上書きされる**（26.04 で実測: 4 本とも include しても `config is valid`）。
-- niri の `include` は glob 非対応（`include "dms/*.kdl"` は exit 1）。パスは
-  `config.kdl` からの相対、または絶対で 1 ファイルずつ書く。宣言は niri 26.04 で
-  実測した 5 本（`colors` `alttab` `windowrules` `wpblur` `layout`）で固定。
+- niri の `include` は glob 非対応（`include "dms/*.kdl"` は exit 1、`optional=true`
+  付きなら `optional include not found: ".../dms/*.kdl"` の WARN だけで exit 0 =
+  `*` はリテラル文字として扱われる）。パスは `config.kdl` からの相対、または絶対で
+  1 ファイルずつ書く。宣言は niri 26.04 で実測した 5 本
+  （`colors` `alttab` `windowrules` `wpblur` `layout`）で固定。
+- include のネストは **9 段まで**。10 段で
+  `reached the recursion limit; includes cannot be 10 levels deep` になり、
+  `niri validate` は exit 1（26.04 実測: 9 段は exit 0、10 段と 20 段は失敗）。
+  現構成は 1 段なので余裕があるが、include を連鎖させる仕組みを足すときは注意する。
 - すべての include に `optional=true` を付けている。`include "x.kdl" optional=true`
   はファイル欠落時 `optional include not found` の WARN を出して続行する（niri
   26.04 で確認）。これが無いと 1 ファイル欠落で `niri validate` が exit 1 になり
@@ -163,6 +176,9 @@ only from the `DSH_PERMISSION_MODE` environment variable in
 - `include` はトップレベル専用。ブロック内に書くと `unexpected node \`include\``。
 - 自己 include・相互 include は `recursive include (file includes itself)` でエラーに
   なる（ハングしない）。パスは trim されないので末尾スペースは別ファイル扱い。
+- 自分自身を指す symlink を include すると `Too many levels of symbolic links
+  (os error 40)` でエラー（`optional` では救えない）。壊れた symlink（リンク先が
+  存在しない）は ENOENT なので optional で WARN 済み、と挙動が分かれる。
 - optional が救えるのは ENOENT だけ。権限エラーは `Permission denied (os error 13)`、
   非 UTF-8 は `stream did not contain valid UTF-8` でどちらもエラーになる。
   空ファイル・コメントのみ・CRLF 改行は valid。
@@ -184,7 +200,11 @@ only from the `DSH_PERMISSION_MODE` environment variable in
   （1390px）。指定しなかったプロパティは上書きされず残る（`merge_with` は `Some`
   のフィールドだけコピーする）。
 - 同一ファイル内で同じ単一セクションを 2 回書くと `duplicate node` でエラーになる。
-  別ファイル（include 先）ならエラーにならずマージされる。
+  別ファイル（include 先）ならエラーにならずマージされる。同じファイルを 2 回
+  include してもエラーにならない（重複検出は無く、単に 2 回評価されて後勝ち）。
+  違うファイルから同じプロパティ（例 `layout { gaps }`）を与えても同様に exit 0 で、
+  後に include した方が勝つ。**include の重複は niri では検出できない**ので、
+  気付くには `grep -n '^include'` で一覧を目視するしかない。
 - **`output` だけは例外**。multipart として `Vec` に積まれ、検索が
   `Outputs::find`（`iter().find()`）なので **最初にマッチしたブロックだけが有効**で
   マージされない。実測: `output "winit" { scale 4.0 }` の次に
@@ -211,6 +231,12 @@ only from the `DSH_PERMISSION_MODE` environment variable in
   `included` を判定し、欠けている kind があるとバナーを出す。kind は 6 個
   （`outputs` `layout` `input` `windowrules` `cursor` `binds`）。2026-10 時点の実測は
   `layout` と `windowrules` が `true`、`outputs` `input` `cursor` `binds` が `false`。
+  DMS が生成する 9 kind（上記 + `colors` `alttab` `wpblur`）で現在の値を引くと
+  `alttab` `colors` `layout` `windowrules` `wpblur` が `included:true`、
+  `binds` `cursor` `input` `outputs` が `included:false`（= 意図通り）。
+  このコマンドは 1 行 JSON（`{"exists":true,"included":true}`）を返すので
+  スクリプトからも判定できる。**`exists:true` でも `included:false` なら設定は
+  効いていない**（`dms/input.kdl` は DMS に書かれても include していないので無効）。
 - バナーの「fix」を押すと `ConfigInclude.fix()` が
   `Common/ConfigIncludeResolve.js` の repair script を `sh -c` で実行し、
   `config.kdl` を `.backup<epoch>` に `cp` したうえで **include 行をファイル末尾に
@@ -239,6 +265,10 @@ only from the `DSH_PERMISSION_MODE` environment variable in
 
 #### include とマージ仕様の再検証手順
 
+- 検証用の config を手で書くときは KDL v2 の構文に注意。**1 行ブロックは不可**で
+  `layout { gaps 3 }` は `found `}`, expected ...` で exit 1 になる。`}` の前に改行が
+  必要（`layout {\n    gaps 3\n}\n`）。include 先でこれをやると
+  `failed to parse included config` になり、原因が include 側に見えて紛らわしい。
 - ネスト niri を `WAYLAND_DISPLAY=wayland-1 niri -c /tmp/x/config.kdl` で起動すると
   次の空き socket 名（`wayland-2`）を取り、IPC は `niri.wayland-2.<pid>.sock` になる。
   クライアントは `WAYLAND_DISPLAY=wayland-2` で接続する。起動ログの
