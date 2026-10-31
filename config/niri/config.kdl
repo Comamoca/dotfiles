@@ -120,9 +120,11 @@ input {
 // カーソルテーマとサイズ。
 // Emacs だけテーマが反映されない既知の問題は CURSOR-THEME-ISSUE.md を参照。
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Miscellaneous
+// スイッチ: `cursor-switch.sh morino|temari`（Temari Tsukimura = 旧 / Morino Rinze = 新）。
+// 変更後: home-manager switch --flake .#Home --impure && niri msg action quit
 cursor {
-    xcursor-theme "Temari Tsukimura"
-    xcursor-size 43
+    xcursor-theme "Morino Rinze"
+    xcursor-size 75
 }
 
 // Settings that influence how windows are positioned and sized.
@@ -421,9 +423,9 @@ binds {
     Mod+D { spawn "rofi" "-show" "combi"; }
     Mod+Space { spawn "rofi" "-show" "drun"; }
     Mod+E { spawn "emacsclient" "-s" "main" "-c"; }
-    Mod+B { spawn "bash" "-c" "/home/coma/.ghq/localhost/comamoca/dotfiles/bin/scripts/browser-focus-niri.sh"; }
+    Mod+B { spawn "bash" "-c" "/home/coma/.bin/scripts/browser-focus-niri.sh"; }
     // Window switcher: rofi検索→フォーカス
-    Mod+W { spawn "bash" "-c" "/home/coma/.ghq/localhost/comamoca/dotfiles/bin/scripts/niri-window-switch.sh"; }
+    Mod+W { spawn "bash" "-c" "/home/coma/.bin/scripts/niri-window-switch.sh"; }
     // Scratchpad: alacritty 端末をトグル (niri-scratchpad)
     Mod+T { spawn "niri-scratchpad" "target" "--spawn" "alacritty --class foot-scratch" "appid" "foot-scratch"; }
     // Scratchpad: Emacs をトグル (niri-scratchpad) - 名前付きデーモン(main)に接続、タイトルで識別
