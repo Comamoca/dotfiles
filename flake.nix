@@ -100,14 +100,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # weave-os router (LLM モデルルーター)。flake ではないので flake = false。
-    # 公開コンテナイメージが無いため、同梱の docker-compose でソースからビルドする。
-    # 実体は weave-os.nix が参照する。リリースタグにピン留めする。
-    weave-router = {
-      url = "github:weave-os/router/router-v0.2.28";
-      flake = false;
-    };
-
     # main の vendorHash が go.mod と同期切れしている (2026-08-24 時点) ため
     # セルフコンシステントな v0.18.0 タグにピン留めする。
     hister = {
@@ -119,11 +111,6 @@
     # v1.0.0 タグにピン留めする。
     kakehashi = {
       url = "github:atusy/kakehashi/v1.0.0";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    raspberry-pi-nix = {
-      url = "github:nix-community/raspberry-pi-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
