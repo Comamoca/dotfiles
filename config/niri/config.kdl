@@ -661,9 +661,12 @@ binds {
 // 適用待ち」のまま固まって、通常のバーではなく全周フレームが描画され続ける。
 // dms/input.kdl, dms/binds.kdl, dms/outputs.kdl, dms/cursor.kdl は下の設定と
 // 衝突するため意図的に include しない。
-include "dms/colors.kdl"
-include "dms/alttab.kdl"
-include "dms/windowrules.kdl"
-include "dms/wpblur.kdl"
-include "dms/layout.kdl"
+// `optional=true` が無いと、生成前・削除後の 1 ファイル欠落で niri の設定全体が
+// parse error になる（niri は include に glob を使えない）。optional でも
+// 内容が壊れている場合はエラーになるので、生成ミスは検出できる。
+include "dms/colors.kdl" optional=true
+include "dms/alttab.kdl" optional=true
+include "dms/windowrules.kdl" optional=true
+include "dms/wpblur.kdl" optional=true
+include "dms/layout.kdl" optional=true
 // <<< DMS include <<<

@@ -130,11 +130,15 @@ only from the `DSH_PERMISSION_MODE` environment variable in
   描画し続ける。削除・整理しないこと。
 - `dms/input.kdl` `binds.kdl` `outputs.kdl` `cursor.kdl` は `config.kdl` 側の設定と
   衝突するため意図的に include しない。
-- niri の `include` は glob 非対応で、include 先が 1 つでも欠けると**設定全体**が
-  parse error になる（niri 26.04 で `niri validate` が exit 1 を返すことを確認済み。
-  `include "dms/*.kdl"` も不可）。したがって `config/niri/dms/*.kdl` は git 管理から
-  外さない。これらのファイルは DMS が自動生成するが、リポジトリ側にも実体を置くことで
-  include 先の存在を保証している。
+- niri の `include` は glob 非対応（`include "dms/*.kdl"` は exit 1）。パスは
+  `config.kdl` からの相対、または絶対で 1 ファイルずつ書く。宣言は niri 26.04 で
+  実測した 5 本（`colors` `alttab` `windowrules` `wpblur` `layout`）で固定。
+- すべての include に `optional=true` を付けている。`include "x.kdl" optional=true`
+  はファイル欠落時 `optional include not found` の WARN を出して続行する（niri
+  26.04 で確認）。これが無いと 1 ファイル欠落で `niri validate` が exit 1 になり
+  **設定全体**が parse error になる。include を足すときは `optional=true` を忘れない。
+  optional でも補間先の内容が壊れていれば `failed to parse included config` で
+  エラーになるため、生成ミスの検出は効いたまま。
 - gaps は DMS の `niriLayoutGapsOverride` が制御する。`-2` = Off で layout.kdl に
   `gaps` を書かず `config.kdl` の値が有効。`0` 以上だと `gaps N` で上書きされる。
   `border` / `focus-ring` の幅は `niriLayoutBorderSize` 由来（layout.kdl に反映）。
