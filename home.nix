@@ -892,7 +892,7 @@ rec {
 
     # カーソルテーマ - niri config と同期すること
     XCURSOR_THEME = "Morino Rinze";
-    XCURSOR_SIZE = "86";
+    XCURSOR_SIZE = "75";
 
     # TTY が無い (coding agent など) 状況の sudo で GUI パスワードプロンプトを出す
     SUDO_ASKPASS = "${pkgs.kdePackages.ksshaskpass}/bin/ksshaskpass";
@@ -921,7 +921,7 @@ rec {
 
     # カーソルテーマ - niri config と同期すること
     XCURSOR_THEME = "Morino Rinze";
-    XCURSOR_SIZE = "86";
+    XCURSOR_SIZE = "75";
   };
 
   # PATH management centralized here to avoid duplications
