@@ -175,6 +175,82 @@ only from the `DSH_PERMISSION_MODE` environment variable in
   frameEnabled true/false` で `dms:frame` ⇄ `dms:bar` が入れ替わること。負値の設定は
   `dms ipc call settings set niriLayoutGapsOverride -- -2` のように `--` を挟む。
 
+#### niri include のマージ仕様（26.04 実測）
+
+- 単一セクション（`layout` `input` `cursor` `binds` `animations` など）は
+  **プロパティ単位でマージ**され、後から現れた指定が勝つ（位置依存）。実測:
+  `config.kdl` に `layout { gaps 0 }` を書いて末尾で include した `gaps 40` が勝ち
+  （`layout.tile_size` の高さ 1306px）、2 行の順序を入れ替えると `gaps 0` が勝った
+  （1390px）。指定しなかったプロパティは上書きされず残る（`merge_with` は `Some`
+  のフィールドだけコピーする）。
+- 同一ファイル内で同じ単一セクションを 2 回書くと `duplicate node` でエラーになる。
+  別ファイル（include 先）ならエラーにならずマージされる。
+- **`output` だけは例外**。multipart として `Vec` に積まれ、検索が
+  `Outputs::find`（`iter().find()`）なので **最初にマッチしたブロックだけが有効**で
+  マージされない。実測: `output "winit" { scale 4.0 }` の次に
+  `output "winit" { position x=30 y=40 }` を書くと scale=4.0、position は既定の 0,0。
+  同一ファイル内の重複も許容され、2 個目以降は黙って無視される。したがって
+  `output` の設定は 1 か所にまとめ、include より前に置く。
+  `window-rule` `workspace` `spawn-at-startup` も multipart だが、こちらは全件が
+  適用され、include の位置が評価順になる。
+- `binds` は「新しい定義が競合する既存定義を置き換える」実装なので、include を
+  後ろに置くと include 側の bind が勝つ。だから `dms/binds.kdl` は include しない。
+- `layout` の `border` / `focus-ring` は `off` と `on` が独立したフラグで、
+  `off |= part.off`、`on` が来たら `off = false` という単調なマージ。include 先の
+  `layout { border { width 4 } }` は `off` も `on` も書かないので、こちらの
+  `border { off }` は保持される（border は描かれない。focus-ring は別セクションなので
+  `width 4` のリングはそのまま出る）。なお `layout { border {} }` が
+  border を有効化するのは最上位ファイル（`recursion == 0`）だけで、include 先では
+  その特別扱いが効かない。
+- 前段の「include した設定はそれより前の設定を上書きする」は単一セクションの話で、
+  `output` には当てはまらない。混同しないこと。
+
+#### DMS の include 自動修復（`ConfigInclude.fix()`）の危険
+
+- DMS 設定 UI は `dms config resolve-include niri <kind>.kdl`（Go 側）の結果で
+  `included` を判定し、欠けている kind があるとバナーを出す。kind は 6 個
+  （`outputs` `layout` `input` `windowrules` `cursor` `binds`）。2026-10 時点の実測は
+  `layout` と `windowrules` が `true`、`outputs` `input` `cursor` `binds` が `false`。
+- バナーの「fix」を押すと `ConfigInclude.fix()` が
+  `Common/ConfigIncludeResolve.js` の repair script を `sh -c` で実行し、
+  `config.kdl` を `.backup<epoch>` に `cp` したうえで **include 行をファイル末尾に
+  追記**する（`mkdir -p dms` と `touch dms/*.kdl` も同時に行う）。
+- 追記される行は `include "dms/<name>.kdl"` で、**`optional=true` が付かない**。
+  我々の手書き行と違い、対応する `dms/*.kdl` が後で消えると `niri validate` が
+  exit 1 になり設定全体が parse error になる（niri はデフォルト設定で起動を続ける）。
+- 追記前の重複判定は「コメント行を除いた本文に `include.*"dms/<name>.kdl"` があるか」
+  の grep。我々の `include "dms/layout.kdl" optional=true` も一致するので
+  `layout` と `windowrules` は追記されない。残り 4 本が追記される。
+- `// DMS Include Configs` のバナー行が付くのは「`dms/` への include が 1 本も無い」
+  ときだけ。既に 5 本あるのでバナーは付かず、**末尾に 4 行だけ静かに増える**。
+  そのため diff を見るまで追記に気付きにくい。
+- 末尾追記 = 後勝ちなので、追記された `dms/input.kdl` などの値が `config.kdl` の
+  `input` / `cursor` を黙って上書きする。後勝ちのマージ順自体は `layout.gaps` で
+  実測済み。`dms/input.kdl` は `mouse.accel-speed 0.0` と
+  `touchpad.accel-speed 0.0` を書くので、末尾に追記されると `config.kdl` の
+  `0.5` / `0.4` は `0.0` になる（accel-speed は IPC に出ないため値の変化は
+  ファイルと実装から判断する）。エラーも通知も出ない。
+- `binds` `cursor` `outputs` は現在 0 バイトなので追記されても実害は出ないが、
+  DMS の設定 UI を触って値が書き込まれた時点で上書きが始まる。
+- **結論: DMS の include バナーでは fix を押さない。** include は `config.kdl` の
+  ブロックを唯一の正とする。追記された場合はその行を消して戻す（消すとバナーが
+  再び出るだけで実害はない）。検出は `dms config resolve-include niri <kind>.kdl`
+  （Go 側の実装）で、grep を使うのは repair script の重複判定だけ。
+
+#### include とマージ仕様の再検証手順
+
+- ネスト niri を `WAYLAND_DISPLAY=wayland-1 niri -c /tmp/x/config.kdl` で起動すると
+  次の空き socket 名（`wayland-2`）を取り、IPC は `niri.wayland-2.<pid>.sock` になる。
+  クライアントは `WAYLAND_DISPLAY=wayland-2` で接続する。起動ログの
+  `IPC listening on:` 行から socket を特定できる。
+- 設定の反映は `touch <config>`（`reload-config` action は 26.04 に存在しない）。
+  反映は journal の `loaded config from` で確認する。
+- `layout` の値は `foot` を `WAYLAND_DISPLAY=wayland-2` で起動し、
+  `niri msg --json windows` の `layout.tile_size` で読める（gaps 差が高さにそのまま出る）。
+- `output` の scale / position は `niri msg --json outputs` で読める。ただし winit
+  バックエンドは `transform` を反映しない（実測: `transform "90"` を書いても
+  `Flipped180` のまま）ので、transform を観測値に使わない。
+
 ### Emacs Lisp Evaluation
 
 This dotfiles setup runs multiple Emacs daemons as systemd units
