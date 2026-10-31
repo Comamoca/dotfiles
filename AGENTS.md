@@ -143,6 +143,19 @@ only from the `DSH_PERMISSION_MODE` environment variable in
   仕様: https://niri-wm.github.io/niri/Configuration:-Include.html （`Since: 26.04`）。
   ドキュメント表記は `include optional=true "x.kdl"` だが、KDL として正しい
   `include "x.kdl" optional=true` でも同じように動く（実測）。
+- `optional` は **boolean プロパティ必須**。`include "x.kdl" optional`（値なし）は
+  `identifiers cannot be used as arguments`、`optional="true"`（文字列）は
+  `expected boolean scalar, found string` でどちらもエラー（26.04 実測）。
+  `optional=false` は通常 include と同じ扱い。
+- optional が許すのは「ファイルが無い」場合だけ。ディレクトリを指すと
+  `Is a directory (os error 21)` でエラーになる。
+- 相対パスは **config.kdl に渡したパスのディレクトリ**基準で解決される
+  （realpath 基準ではない）。`~/.config/niri` ディレクトリごと symlink して
+  いる現構成なら問題ないが、`config.kdl` だけを別ディレクトリへ symlink すると
+  include が壊れるので、ファイル単体の symlink 化はしない。
+- 起動時に設定が壊れていると niri は WARN を出して**デフォルト設定で起動を続ける**
+  （プロセスは落ちない）。reload 時は旧設定を維持したまま同じ WARN を出す。
+- `include` はトップレベル専用。ブロック内に書くと `unexpected node \`include\``。
 - gaps は DMS の `niriLayoutGapsOverride` が制御する。`-2` = Off で layout.kdl に
   `gaps` を書かず `config.kdl` の値が有効。`0` 以上だと `gaps N` で上書きされる。
   `border` / `focus-ring` の幅は `niriLayoutBorderSize` 由来（layout.kdl に反映）。
