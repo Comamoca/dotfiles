@@ -37,30 +37,59 @@ update_niri_environment() {
     local theme="$1"
     local size="$2"
 
-    if grep -qE '^[[:space:]]*XCURSOR_THEME "' "$NIRI_CONFIG"; then
-        sed -i -E "s|^([[:space:]]*)XCURSOR_THEME \".*\"|\1XCURSOR_THEME \"$theme\"|" "$NIRI_CONFIG"
-        sed -i -E "s|^([[:space:]]*)XCURSOR_SIZE \".*\"|\1XCURSOR_SIZE \"$size\"|" "$NIRI_CONFIG"
-        return
-    fi
+    local mode tmp
+    mode=$(stat -c '%a' "$NIRI_CONFIG")
+    # 同じディレクトリに作る（同一ファイルシステムなので mv が rename になり、
+    # niri の watch が中途半端な内容を読まない）。mktemp の 600 を引き継がないよう
+    # 元ファイルのモードをコピーする。
+    tmp=$(mktemp "$(dirname "$NIRI_CONFIG")/.config.kdl.XXXXXX")
 
-    local env_lines
-    env_lines=$(printf '    XCURSOR_THEME "%s"\n    XCURSOR_SIZE "%s"' "$theme" "$size")
-
-    local tmp
-    tmp=$(mktemp)
     if grep -qE '^environment \{' "$NIRI_CONFIG"; then
-        # 既存の environment ブロックの先頭に挿入する
-        awk -v lines="$env_lines" '
-            /^environment \{/ && !done { print; print lines; done = 1; next }
+        # 既存 environment ブロックの値を差し替える。
+        # sed の置換だけだと「片方のキーだけ書いた config」で値が反映されないまま
+        # 素通りするので、欠けているキーはブロック末尾に足す。
+        awk -v theme="$theme" -v size="$size" '
+            BEGIN { in_env = 0; has_theme = 0; has_size = 0 }
+            /^environment \{/ && !in_env { in_env = 1; print; next }
+            in_env {
+                if ($0 ~ /^[[:space:]]*XCURSOR_THEME[[:space:]]+"/) {
+                    print "    XCURSOR_THEME \"" theme "\""; has_theme = 1; next
+                }
+                if ($0 ~ /^[[:space:]]*XCURSOR_SIZE[[:space:]]+"/) {
+                    print "    XCURSOR_SIZE \"" size "\""; has_size = 1; next
+                }
+                if ($0 ~ /^[[:space:]]*\}/) {
+                    if (!has_theme) print "    XCURSOR_THEME \"" theme "\""
+                    if (!has_size) print "    XCURSOR_SIZE \"" size "\""
+                    print; in_env = 0; next
+                }
+                print; next
+            }
             { print }
         ' "$NIRI_CONFIG" > "$tmp"
     else
         # cursor ブロックの直前に environment ブロックを作る
-        awk -v lines="$env_lines" '
-            /^cursor \{/ && !done { print "environment {"; print lines; print "}"; print ""; done = 1 }
+        awk -v theme="$theme" -v size="$size" '
+            BEGIN { done = 0 }
+            /^cursor \{/ && !done {
+                print "environment {"
+                print "    XCURSOR_THEME \"" theme "\""
+                print "    XCURSOR_SIZE \"" size "\""
+                print "}"
+                print ""
+                done = 1
+            }
             { print }
         ' "$NIRI_CONFIG" > "$tmp"
     fi
+
+    # 書き込み前に値を検証する。失敗したら元ファイルには触れない。
+    if ! grep -qF "XCURSOR_THEME \"$theme\"" "$tmp" || ! grep -qF "XCURSOR_SIZE \"$size\"" "$tmp"; then
+        rm -f "$tmp"
+        echo "環境変数ブロックを更新できませんでした（niri の cursor ブロックが見つからない）" >&2
+        return 1
+    fi
+    chmod "$mode" "$tmp"
     mv "$tmp" "$NIRI_CONFIG"
 }
 
@@ -143,7 +172,7 @@ check_drift() {
         report ok "home.nix ($nix_total か所)" "$NIRI_THEME / $NIRI_SIZE"
     else
         local actual
-        actual=$(grep -o 'XCURSOR_SIZE = "[^"]*"' "$HOME_NIX" | sort -u | tr '\n' ' ')
+        actual=$( { grep -o 'XCURSOR_THEME = "[^"]*"' "$HOME_NIX"; grep -o 'XCURSOR_SIZE = "[^"]*"' "$HOME_NIX"; } | sort -u | tr '\n' ' ')
         report ng "home.nix ($nix_total か所)" "$NIRI_THEME / $NIRI_SIZE 期待, 実際: $actual"
     fi
 
