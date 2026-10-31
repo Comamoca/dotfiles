@@ -653,3 +653,17 @@ binds {
     // moving the mouse or pressing any other key.
     // Mod+Shift+P { power-off-monitors; }  // Removed: conflicts with workspace movement
 }
+
+// >>> DMS (DankMaterialShell) include >>>
+// DMS は ~/.config/niri/dms/*.kdl を自動生成する。niri 側でこれらを include して
+// いないと、DMS が layout.kdl を書き換えても niri は設定を再読み込みしない。
+// その結果 ConfigLoaded イベントが発生せず、DMS の Frame トグルが「レイアウト
+// 適用待ち」のまま固まって、通常のバーではなく全周フレームが描画され続ける。
+// dms/input.kdl, dms/binds.kdl, dms/outputs.kdl, dms/cursor.kdl は下の設定と
+// 衝突するため意図的に include しない。
+include "dms/colors.kdl"
+include "dms/alttab.kdl"
+include "dms/windowrules.kdl"
+include "dms/wpblur.kdl"
+include "dms/layout.kdl"
+// <<< DMS include <<<
