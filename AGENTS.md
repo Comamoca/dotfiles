@@ -128,8 +128,11 @@ only from the `DSH_PERMISSION_MODE` environment variable in
   読まないと `ConfigLoaded` が発火せず、DMS の `FrameTransitionState` が
   「レイアウト適用待ち」のままラッチして、通常バーの代わりに画面全周の角丸フレームを
   描画し続ける。削除・整理しないこと。
-- `dms/input.kdl` `binds.kdl` `outputs.kdl` `cursor.kdl` は `config.kdl` 側の設定と
-  衝突するため意図的に include しない。
+- `dms/input.kdl` `binds.kdl` `outputs.kdl` `cursor.kdl` は意図的に include しない。
+  公式仕様では include した設定は「それより前に書かれた設定を上書きする」ため、
+  config.kdl 末尾の include ブロックに入れると DMS 生成値が `config.kdl` の
+  `input` / `cursor` / `outputs` / `binds` を上書きしてしまう。**エラーにはならず
+  黙って上書きされる**（26.04 で実測: 4 本とも include しても `config is valid`）。
 - niri の `include` は glob 非対応（`include "dms/*.kdl"` は exit 1）。パスは
   `config.kdl` からの相対、または絶対で 1 ファイルずつ書く。宣言は niri 26.04 で
   実測した 5 本（`colors` `alttab` `windowrules` `wpblur` `layout`）で固定。
@@ -149,13 +152,22 @@ only from the `DSH_PERMISSION_MODE` environment variable in
   `optional=false` は通常 include と同じ扱い。
 - optional が許すのは「ファイルが無い」場合だけ。ディレクトリを指すと
   `Is a directory (os error 21)` でエラーになる。
-- 相対パスは **config.kdl に渡したパスのディレクトリ**基準で解決される
-  （realpath 基準ではない）。`~/.config/niri` ディレクトリごと symlink して
-  いる現構成なら問題ないが、`config.kdl` だけを別ディレクトリへ symlink すると
-  include が壊れるので、ファイル単体の symlink 化はしない。
+- 相対パスは **その include を書いたファイルのディレクトリ**基準で解決される
+  （realpath 基準でも cwd 基準でもない）。ネストした include も同じ規則
+  （`a.kdl` が `include "b.kdl"` と書けば `a.kdl` と同じディレクトリの `b.kdl` を読む）。
+  `~/.config/niri` ディレクトリごと symlink している現構成なら問題ないが、
+  `config.kdl` だけを別ディレクトリへ symlink すると include が壊れるので、
+  ファイル単体の symlink 化はしない。
 - 起動時に設定が壊れていると niri は WARN を出して**デフォルト設定で起動を続ける**
   （プロセスは落ちない）。reload 時は旧設定を維持したまま同じ WARN を出す。
 - `include` はトップレベル専用。ブロック内に書くと `unexpected node \`include\``。
+- 自己 include・相互 include は `recursive include (file includes itself)` でエラーに
+  なる（ハングしない）。パスは trim されないので末尾スペースは別ファイル扱い。
+- optional が救えるのは ENOENT だけ。権限エラーは `Permission denied (os error 13)`、
+  非 UTF-8 は `stream did not contain valid UTF-8` でどちらもエラーになる。
+  空ファイル・コメントのみ・CRLF 改行は valid。
+- 欠落ディレクトリや壊れた symlink を指す場合も ENOENT なので optional で WARN 済み。
+  rename による原子的置換や「削除 → 再作成」でも reload される（DMS の書き方に追随できる）。
 - gaps は DMS の `niriLayoutGapsOverride` が制御する。`-2` = Off で layout.kdl に
   `gaps` を書かず `config.kdl` の値が有効。`0` 以上だと `gaps N` で上書きされる。
   `border` / `focus-ring` の幅は `niriLayoutBorderSize` 由来（layout.kdl に反映）。
