@@ -122,6 +122,11 @@ input {
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Miscellaneous
 // スイッチ: `cursor-switch.sh morino|temari`（Temari Tsukimura = 旧 / Morino Rinze = 新）。
 // 変更後: home-manager switch --flake .#Home --impure && niri msg action quit
+environment {
+    XCURSOR_THEME "Morino Rinze"
+    XCURSOR_SIZE "75"
+}
+
 cursor {
     xcursor-theme "Morino Rinze"
     xcursor-size 75
