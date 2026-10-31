@@ -517,6 +517,11 @@ in
       "ja"
       "en-US"
     ];
+    # 外部サイドロードした拡張 (Browser Agent Bridge XPI) が起動時に
+    # 自動無効化されないようにする。about:config からは変更できないよう
+    # locked に固定する (preferencesStatus の既定も locked)。
+    preferences."extensions.autoDisableScopes" = 0;
+    preferencesStatus = "locked";
     # profiles = {
     #   myprofile = {
     #     settings = {
