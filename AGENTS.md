@@ -138,7 +138,11 @@ only from the `DSH_PERMISSION_MODE` environment variable in
   26.04 で確認）。これが無いと 1 ファイル欠落で `niri validate` が exit 1 になり
   **設定全体**が parse error になる。include を足すときは `optional=true` を忘れない。
   optional でも補間先の内容が壊れていれば `failed to parse included config` で
-  エラーになるため、生成ミスの検出は効いたまま。
+  エラーになるため、生成ミスの検出は効いたまま。欠落した optional ファイルも
+  watch 対象なので、後から生成されれば自動 reload される。
+  仕様: https://niri-wm.github.io/niri/Configuration:-Include.html （`Since: 26.04`）。
+  ドキュメント表記は `include optional=true "x.kdl"` だが、KDL として正しい
+  `include "x.kdl" optional=true` でも同じように動く（実測）。
 - gaps は DMS の `niriLayoutGapsOverride` が制御する。`-2` = Off で layout.kdl に
   `gaps` を書かず `config.kdl` の値が有効。`0` 以上だと `gaps N` で上書きされる。
   `border` / `focus-ring` の幅は `niriLayoutBorderSize` 由来（layout.kdl に反映）。
