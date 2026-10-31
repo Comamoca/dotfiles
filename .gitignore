@@ -70,6 +70,10 @@ emacs.d/*.eln
 /.omo/
 /.sisyphus/
 /.commandcode/
+# agent の作業ディレクトリ配下に残る実行時状態 (playwright MCP の
+# snapshot/console ログ等)。作業内容と無関係な生成物なので追跡しない。
+.playwright-mcp/
+**/.omo/
 /data/
 # bernstein のテンプレート一式 (upstream からコピーされる生成物)
 /templates/
@@ -84,3 +88,8 @@ config/nvim/state.vim
 
 # AGENTS.md への symlink (flake devShell の shellHook で生成)
 CLAUDE.md
+
+# DMS の include repair が config.kdl の隣に作るバックアップ。
+# config/niri は mkOutOfStoreSymlink でリポジトリ直結なので、DMS の cp は
+# 作業ツリーに落ちる。設定ではない生成物なので追跡しない。
+config/niri/config.kdl.backup*
