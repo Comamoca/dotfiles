@@ -77,10 +77,65 @@ features
   unification. **Do not edit it for model changes** — edit
   `config/omo/omo.jsonc` instead, otherwise changes will not take effect.
 - Agent models are overridden per-harness under the `"[opencode]"` section of
-  `omo.jsonc`. `agents.<name>.model` sets the primary model;
-  `fallback_models` is only the runtime failover chain and does **not**
-  determine the primary model.
+  `omo.jsonc`. `agents.<name>.model` sets the primary model; `fallback_models`
+  is only the runtime failover chain and does **not** determine the primary
+  model.
 - Model changes require restarting opencode (new session) to take effect.
+
+### DeepSeek Harness (dsh) Permission Mode
+
+dsh has **no `--yolo` CLI flag**. Sandbox mode and approval policy are derived
+only from the `DSH_PERMISSION_MODE` environment variable in
+`@deepseek-ai/dsh-base/cordis.patch.yml`:
+
+| `DSH_PERMISSION_MODE` | sandbox              | approval | meaning   |
+| --------------------- | -------------------- | -------- | --------- |
+| unset                 | `workspace-write`    | `ask`    | default   |
+| `read-only`           | `read-only`          | `ask`    | read-only |
+| `danger-full-access`  | `danger-full-access` | `never`  | yolo      |
+
+- **Always yolo**: `dsh-web` (`systemd.user.services.dsh-web` in `home.nix`) and
+  the `dty` fish abbreviation export `DSH_PERMISSION_MODE=danger-full-access`.
+  The Web instance is reachable via the `dsh.comamoca.dev` Cloudflare Tunnel, so
+  it is effectively an unauthenticated-by-policy, fully privileged shell.
+- Plain `dsh tui` (abbrev `dt`) keeps the defaults.
+- Mid-session switching uses `/permission danger-full-access`; that changes only
+  the current session, not the default for new ones.
+- An explicit `sandbox-policy.mode` / `approval.policy` in a profile's
+  `cordis.patch.yml` wins over the environment variable (the profile layer is
+  applied after the bundle layer).
+
+### OmniRoute Model Lists (opencode / dsh)
+
+- **Do not hand-edit model lists** in `~/.config/opencode/opencode.json`
+  (`provider.omniroute.models`) or in `~/.dsh/profiles/*/cordis.patch.yml` to
+  add a combo. Combos are generated from OmniRoute's `GET /v1/models` by
+  `bin/scripts/omniroute-combos/omniroute-combos` and consumed by
+  `config/opencode/plugins/omniroute-combos.ts` (opencode) and the
+  `models: !!js ...` expression in the dsh profiles.
+- The generator runs from `omniroute-combos.timer` (`omniroute.nix`). Run
+  `omniroute-combos --check` to see whether the client lists are stale.
+- dsh evaluates `!!js` with `new Function(... "with(ctx) { eval(expr) }")` under
+  YAML `JSON_SCHEMA`: no `require` (use `process.getBuiltinModule`), no object
+  literals, and no colon-followed-by-space inside the expression.
+
+### DMS (DankMaterialShell) + niri の自動生成 kdl
+
+- `config/niri/` は `mkOutOfStoreSymlink` で `~/.config/niri` にリンクしている。DMS は
+  `~/.config/niri/dms/*.kdl`（= リポジトリの `config/niri/dms/`、トラッキング済み）を
+  自動生成する。ヘッダに `DO NOT EDIT` がある通り手で編集しても上書きされる。
+- `config/niri/config.kdl` 末尾の include ブロックは**必須**。niri が `dms/*.kdl` を
+  読まないと `ConfigLoaded` が発火せず、DMS の `FrameTransitionState` が
+  「レイアウト適用待ち」のままラッチして、通常バーの代わりに画面全周の角丸フレームを
+  描画し続ける。削除・整理しないこと。
+- `dms/input.kdl` `binds.kdl` `outputs.kdl` `cursor.kdl` は `config.kdl` 側の設定と
+  衝突するため意図的に include しない。
+- gaps は DMS の `niriLayoutGapsOverride` が制御する。`-2` = Off で layout.kdl に
+  `gaps` を書かず `config.kdl` の値が有効。`0` 以上だと `gaps N` で上書きされる。
+  `border` / `focus-ring` の幅は `niriLayoutBorderSize` 由来（layout.kdl に反映）。
+- 検証は `niri msg layers` に `dms:bar` が出ること、`dms ipc call settings set
+  frameEnabled true/false` で `dms:frame` ⇄ `dms:bar` が入れ替わること。負値の設定は
+  `dms ipc call settings set niriLayoutGapsOverride -- -2` のように `--` を挟む。
 
 ### Emacs Lisp Evaluation
 
