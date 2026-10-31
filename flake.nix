@@ -235,8 +235,7 @@
           system = "aarch64-linux";
           specialArgs = { inherit inputs; };
           modules = [
-            inputs.raspberry-pi-nix.nixosModules.raspberry-pi
-            inputs.raspberry-pi-nix.nixosModules.sd-image
+            inputs.nixos-hardware.nixosModules.raspberry-pi-3
             inputs.sops-nix.nixosModules.sops
             inputs.hermes-agent.nixosModules.default
             ./raspi/configuration.nix
