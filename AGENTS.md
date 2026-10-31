@@ -281,6 +281,32 @@ only from the `DSH_PERMISSION_MODE` environment variable in
   バックエンドは `transform` を反映しない（実測: `transform "90"` を書いても
   `Flipped180` のまま）ので、transform を観測値に使わない。
 
+### Firefox enterprise policy（Browser Agent Bridge の自動無効化防止）
+
+- Browser Agent Bridge（外部サイドロードの XPI）を起動時に自動無効化させないため、
+  `configuration.nix` の `programs.firefox` で enterprise policy を locked で宣言する。
+
+  ```nix
+  preferences."extensions.autoDisableScopes" = 0;
+  preferencesStatus = "locked";
+  ```
+
+  NixOS の activation がこれを `/etc/firefox/policies/policies.json` に配置する。
+  `/etc` 配下は store への symlink なので**このファイルを手で編集しない**。
+- `extensions.autoDisableScopes` の既定値は 15（すべての scope）。サイドロードされた
+  アドオンは scope 1 (sideload) に該当するため、既定だと起動時に
+  `Disabling foreign installed add-on` で無効化される。0 で自動無効化を止める。
+- locked ポリシー（`lockPref()`）は `user.js` の `user_pref()` より優先される
+  （実測: user.js が 15 を書いても locked の 0 が勝つ）。
+- **実プロファイル (`~/.mozilla/firefox/<profile>`) の `prefs.js` / `user.js` を
+  ツールで触らない。** 変更は `configuration.nix` 側だけで行う。実プロファイルには
+  ユーザー自身の回避策として `user.js` の `extensions.autoDisableScopes = 0` がある。
+- `DisableAppUpdate: true` と英語・日本語言語パックの `ExtensionSettings` は
+  必ず保持する（欠けると update が再開され、言語パックが外れる）。
+- 反映の確認は `jq .policies.Preferences /etc/firefox/policies/policies.json` が
+  `{"Status":"locked","Value":0}` であること。反映には `nixos-rebuild switch` が必要で、
+  稼働中の Firefox は再起動するまで旧ポリシーのまま動作する。
+
 ### Emacs Lisp Evaluation
 
 This dotfiles setup runs multiple Emacs daemons as systemd units
