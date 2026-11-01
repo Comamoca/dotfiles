@@ -1032,7 +1032,10 @@ file so dashboards are up to date on every project switch."
   "Gleam のマニフェストを訪れているバッファでのみ `lsp-deferred' を呼ぶ。"
   (when-let ((file (buffer-file-name)))
     (when (member (file-name-nondirectory file) my/gleam-manifest-files)
-      (lsp-deferred))))
+      (lsp-deferred)
+      ;; ライセンス診断をホバーなしで行の下に常時インライン表示する。
+      (require 'flycheck-inline)
+      (flycheck-inline-mode 1))))
 
 (leaf lsp-mode
   :hook
