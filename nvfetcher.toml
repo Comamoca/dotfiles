@@ -1058,7 +1058,9 @@ fetch.github = "eddof13/herdr.el"
 # efm-license-lint (Gleam マニフェストのライセンス診断)
 # private リポジトリのため tarball は token 必須。`git ls-remote` と
 # `nix-prefetch-git` は HTTPS 経由の git 認証 (~/.gitconfig / credential helper)
-# を使うので fetch.git で取得する。
+# を使うので fetch.git で取得する。credential helper は、~/.gitconfig の内容と
+# 同じものを home.sessionVariables の GIT_CONFIG_COUNT でも渡している
+# (nvfetcher は HOME を差し替えるため ~/.gitconfig が読めない)。
 [efm-license-lint]
 src.git = "https://github.com/Comamoca/efm-license-lint"
 fetch.git = "https://github.com/Comamoca/efm-license-lint"

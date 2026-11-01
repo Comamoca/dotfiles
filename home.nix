@@ -903,6 +903,13 @@ rec {
 
     # sccache: Rust compilation cache
     RUSTC_WRAPPER = "sccache";
+
+    # git 認証を HOME 差し替えするプロセス (nix-prefetch-git / nvfetcher による
+    # private repo 取得) のための credential helper。gitconfig と同じ内容を
+    # 環境変数経由でも渡す。nvfetcher.toml の efm-license-lint のコメント参照。
+    GIT_CONFIG_COUNT = "1";
+    GIT_CONFIG_KEY_0 = "credential.https://github.com.helper";
+    GIT_CONFIG_VALUE_0 = "!/home/coma/.nix-profile/bin/gh auth git-credential";
   };
 
   # Systemd user session variables
