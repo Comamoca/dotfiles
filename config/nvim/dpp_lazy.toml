@@ -504,7 +504,6 @@ let g:lightline = {
 			\	},
       \ 'component_function': {
       \   'bufchar': 'Bufchar',
-      \   'nowplaying': 'NowPlaying',
       \   'pomodoro': 'Pomodoro'
       \ }
     \ }
@@ -515,13 +514,6 @@ let g:lightline.component = {
 
 function! Bufchar() abort
 	return wordcount()['chars'] 
-endfunction
-
-function! NowPlaying() abort
-  let status = $"󰓇 {spotify#nowplaying()}"
-  call lightline#update()  
-
-	return status
 endfunction
 '''
 
@@ -1117,4 +1109,15 @@ require("toggleterm").setup()
 repo = "https://github.com/bgwdotdev/gleam-theme-nvim"
 on_event = ['BufRead', 'CursorHold']
 hook_add = '''
+'''
+
+[[plugins]]
+repo = "https://github.com/Shougo/goda.vim"
+on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = "https://github.com/Shougo/goda-fi.vim"
+on_event = ['BufRead', 'CursorHold']
+lua_source = '''
+require("configs/goda_fi")
 '''
