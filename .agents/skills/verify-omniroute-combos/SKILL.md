@@ -191,6 +191,29 @@ of never writing. It is in scope and it is not currently a live problem (all
 three destinations parse, and are byte-identical), but it means a corrupted
 cache is self-healing only after it is deleted by hand.
 
+## Fetch-side guard: what counts as a usable body
+
+The guard around line 97 is
+`jq -e 'type == "object" and (.data | type == "array")'`, and it is deliberately
+stricter than `jq -e .`. Validity alone is not enough: `[1,2,3]`, `"string"`,
+`{"no_models_key":true}`, `{"data":null}`, `{"data":{}}` and two concatenated
+JSON documents are all *valid* JSON, so `jq -e .` accepts them, and the
+`.data[]` in the extraction then dies with a raw jq message and **exit 5**
+instead of the intended diagnostic.
+
+Observed on 2026-11-01 with a padded local server and every writable root
+redirected (`HOME`, `XDG_CONFIG_HOME`, `XDG_CACHE_HOME`, `DSH_HOME`,
+`OMNIROUTE_URL`): before the fix, four of those shapes exited `5` with
+`Cannot index array with string ("data")` and similar; after the fix, all
+eleven abnormal shapes exit `1` with one message, and no destination file is
+touched. The extraction also pipes through `objects`, so a body like
+`{"data":[1,null,"x",{...valid combo...}]}` yields the one real combo and
+still exits `0`. Treat "exit 5 with a bare jq error" as a regression of this
+guard.
+
+HTTP-level failures are separate: `curl -fsS` already fails on 5xx, retries
+three times, and then reports `cannot reach ...`, which is also exit `1`.
+
 ## Proving the check can fail
 
 Both variants live in scratch copies; the real script is never edited.

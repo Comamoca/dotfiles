@@ -88,8 +88,15 @@ raw="$(fetch_models)" || die "cannot reach $OMNIROUTE_URL/v1/models (existing li
 # HTML がそのまま返ることがある)。ここで弾かないと jq が
 # "Invalid numeric literal" で落ち、原因が API 側だと分からないまま
 # exit 5 になる (2026-11-01 23:08 に実機で発生)。
-if ! jq -e . >/dev/null 2>&1 <<<"$raw"; then
-  die "$OMNIROUTE_URL/v1/models returned a non-JSON body (existing lists left untouched)"
+#
+# 「JSON として妥当か」だけでは足りない。配列・文字列・{"data":null} や
+# JSON を 2 つ連結した本文は jq -e . を通ってしまい、下の .data[] で
+# "Cannot index array with string" などの生の jq エラー + exit 5 になる
+# (2026-11-01 に検証で 4 パターン確認)。必要な形は「.data が配列」なので、
+# 形まで見て弾く。
+if ! jq -e 'type == "object" and (.data | type == "array")' \
+  >/dev/null 2>&1 <<<"$raw"; then
+  die "$OMNIROUTE_URL/v1/models did not return an OpenAI-style {data: [...]} body (existing lists left untouched)"
 fi
 
 # combo だけを、id 昇順で正規化する。改名・削除で差分が出ないよう
@@ -101,6 +108,7 @@ jq -S '{
   source: "omniroute",
   combos: [
     .data[]
+    | objects
     | select(.owned_by == "combo")
     | {
         id: .id,
@@ -109,7 +117,12 @@ jq -S '{
         maxTokens: (.max_output_tokens // null)
       }
   ] | sort_by(.id)
-}' <<<"$raw" >"$tmp"
+}' <<<"$raw" >"$tmp" \
+  || die "failed to extract combos from $OMNIROUTE_URL/v1/models (existing lists left untouched)"
+
+# objects で非オブジェクト要素 (数値・null など) を落とし、jq が
+# "Cannot index number with string" で落ちないようにする。形状は上の
+# ガードで確認済みなので、ここでの失敗は予期しないものとして die する。
 
 count="$(jq '.combos | length' "$tmp")"
 [[ $count -gt 0 ]] || die "OmniRoute returned no combos; refusing to write empty lists"
