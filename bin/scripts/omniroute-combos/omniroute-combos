@@ -175,8 +175,15 @@ meaningful_change() {
   # 壊れた生成物 (途中で切れた JSON など) は「差分なし」ではなく「必ず書き直す」。
   # jq の失敗を握り潰すと --check が exit 0、apply が "already up to date" になり、
   # 壊れたまま残る (2026-11-01 に検証で確認)。読めない時点で正常とは言えない。
-  if ! jq -e . "$old" >/dev/null 2>&1; then
-    echo "omniroute-combos: $old is not valid JSON; rewriting it" >&2
+  #
+  # 形も同時に要求する。「読めるが .combos が配列でない」(= {} / string / key 無し /
+  # トップレベルが配列) を通すと、下の比較 jq が map の時点で落ちて exit 5 を返す。
+  # `jq -e` の exit 5 は「フィルタが例外で死んだ」であって「false」ではないが、
+  # シェルの if から見ると両方とも非 0 なので keep に化ける。つまり
+  # 壊れた .combos を持つ生成物が永久に書き直されない (2026-11-01 に検証で確認)。
+  # 比較側で判定不能を検出するより、ここで弾いて比較には必ず配列を渡す方が単純。
+  if ! jq -e 'type == "object" and (.combos | type) == "array"' "$old" >/dev/null 2>&1; then
+    echo "omniroute-combos: $old is not a combo list; rewriting it" >&2
     return 0
   fi
   jq -e --slurpfile new "$tmp" '

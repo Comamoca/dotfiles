@@ -283,6 +283,64 @@ compare_file() { # <cases-file>
 compare_file "$tier1_cases"
 if ((deep)); then compare_file "$tier2_cases"; fi
 
+# --- property 4: unreadable installed file must be rewritten ----------------
+# The spec cannot judge these, because spec.jq reads `.combos // []` and would
+# happily call a truncated file "no ids changed". The product instead bails out
+# of the comparison and answers "rewrite". That divergence is intentional and
+# is the fix for the 2026-11-01 bug, so it is asserted here directly rather
+# than differentially, with the expected answer written out by hand.
+#
+# `null` belongs in this list and not in the valid cases: `jq -e .` exits
+# non-zero on a null document, so the guard, not the comparison, handles it.
+assert_corrupt() {
+  local label=$1 content=$2 want=$3 got
+  printf '%s' "$content" >"$old"
+  emit_snapshot "$new" "a:1000:1000"
+  tmp=$new
+  # Mirror compare_file exactly: ask the shell `if`, not the raw exit code.
+  # `jq -e` exits 1 for false AND non-zero for a crashed filter, so the exit
+  # code alone cannot name the verdict; `if` is the same reading the script's
+  # own callers use, and that reading is the contract under test.
+  if meaningful_change "$old" 2>/dev/null; then got=rewrite; else got=keep; fi
+  checked=$((checked + 1))
+  if [[ $got != "$want" ]]; then
+    failures=$((failures + 1))
+    printf 'MISMATCH  %s\n  expected: %s   product: %s\n  old: %q\n' \
+      "$label" "$want" "$got" "$content" >>"$fail_log"
+  elif ((verbose)); then
+    printf 'ok  %-58s %s\n' "$label" "$got"
+  fi
+}
+
+assert_corrupt "corrupt: truncated JSON"    '{"source":"omniroute","combos":[{"id":"a"' rewrite
+assert_corrupt "corrupt: empty file"        ''                                          rewrite
+assert_corrupt "corrupt: whitespace only"   '   '                                         rewrite
+assert_corrupt "corrupt: HTML body"         '<html><body>502</body></html>'              rewrite
+assert_corrupt "corrupt: two JSON values"   '{"combos":[]}{"combos":[]}'                rewrite
+assert_corrupt "corrupt: null document"     'null'                                       rewrite
+# A readable document with a non-array `combos` (and a bare top-level array) is
+# handled by the guard too, and must be: with a bare `jq -e .` these all pass the
+# guard. `{"combos":"x"}`, a missing `combos`, and `[]` then die inside the
+# comparison's map(..) with jq exit 5, and the shell's `if` reads that crash as
+# "keep", so the broken file is never rewritten. Verified by reverting the guard
+# to `jq -e .`: exactly those three go red.
+#
+# `{"combos":{}}` is the odd one out. It stays green under the mutant, but by
+# luck, not by design: `map(.id)` over an object yields `[]` rather than an
+# error, so the id sets differ and the comparison exits true on its own. It is
+# listed anyway so the guard's coverage is stated completely; do not read its
+# passing as evidence the guard is unnecessary.
+assert_corrupt "shape: combos is a string"  '{"combos":"x"}'                            rewrite
+assert_corrupt "shape: combos is an object" '{"combos":{}}'                              rewrite
+assert_corrupt "shape: combos missing"      '{"source":"omniroute"}'                    rewrite
+assert_corrupt "shape: bare array"          '[]'                                         rewrite
+
+# The control: a readable, shape-correct file whose ids match must be kept.
+# Without this the block above would pass even if meaningful_change always
+# returned "rewrite".
+assert_corrupt "control: readable and in sync" \
+  '{"source":"omniroute","combos":[{"id":"a","name":"a","contextWindow":1000,"maxTokens":1000}]}' keep
+
 echo "verify-omniroute-combos: $checked cases enumerated, $failures mismatch(es)"
 echo "  product: ${product#"$repo_root"/}"
 echo "  spec   : ${spec#"$repo_root"/} (independent statement of the intent)"

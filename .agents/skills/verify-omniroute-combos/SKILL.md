@@ -92,9 +92,17 @@ section below separates the two.
   loads it with `eval`, and calls it with `$tmp`/`$old` pointing at scratch
   files. The generator itself is never executed: it contacts OmniRoute and
   writes into `~/.cache/omniroute`, `~/.dsh` and `~/.config/opencode`.
-- **The verdict is the exit status.** `jq -e` exits `0` on a true result and
-  non-zero otherwise, and the function passes that status through, so
-  `exit 0 == rewrite, exit != 0 == keep`.
+- **The verdict is how the shell's `if` reads the function, not the exit code.**
+  `meaningful_change` is called as `if meaningful_change "$f"; then rewrite`,
+  so *rewrite* means the shell's success and *keep* means failure. In the
+  function body, `jq -e` returning **true** (ids differ or a field moved beyond
+  the band) makes the last command succeed and the function reports *rewrite*;
+  `jq -e` returning **false** reports *keep*.
+  Do not map raw exit numbers: `jq -e` uses `1` for a false result and `5` for
+  a filter that crashed, and both are non-zero, so the exit code alone cannot
+  name the verdict. Exit `5` in particular reads as *keep*, which is precisely
+  how the fail-open below hid. Always assert through `if`, as both
+  `compare_file` and `assert_corrupt` do.
 - **The domain is enumerated, not sampled.** `CTX` holds eleven values per
   field: `0 1 2 3 1000 2001 4001 2000 1000000 1048576 -5 -10 9007199254740993`
   plus JSON `null`. Every contextWindow pair (old x new) is run with maxTokens
@@ -169,14 +177,19 @@ Before reporting anything as a product bug, decide which side is wrong:
    ids sorted, and `source: "omniroute"`. If your case needs a shape the
    generator cannot emit (missing `name`, unsorted ids, a `combos` key that is
    not an array), you have found a modelling error.
-3. **Check for a fail-open.** The function ends in
-   `jq -e ... "$old" >/dev/null 2>&1`. If jq fails to parse the installed file,
-   the status is non-zero and that is read as "no change", so the rewrite is
-   suppressed. Malformed, empty or wrong-shape installed JSON therefore keeps a
-   stale list forever instead of regenerating it. This is a genuine finding, and
-   it is reported below rather than being modelled as a violation. To confirm it
-   by hand, pass a truncated file as `--product`'s counterpart: an invalid
-   `$old` and a completely different `$new` will still print `keep`.
+3. **Check for a fail-open.** The function used to end in
+   `jq -e ... "$old" >/dev/null 2>&1`, so a jq *crash* on the installed file was
+   read as "no change" and the rewrite was suppressed. That was a genuine
+   finding and has since been fixed: `meaningful_change` now validates `$old`
+   first (`type == "object" and (.combos | type) == "array"`) and returns
+   "must rewrite" when that fails. Do not re-model it as a violation; the
+   cases live in `assert_corrupt` at the end of `run-checks.sh`. If you add a
+   case, the rule to keep in mind is that any non-zero result from `jq -e` must
+   be classified by `if`, never by comparing the number.
+   Note that a shape the generator cannot emit (a `combos` key that is not an
+   array, a missing `combos`) no longer belongs in the differential cases:
+   `spec.jq` reads `.combos // []` and would disagree by design. Those go in
+   `assert_corrupt` with an explicitly written expected answer.
 4. **Then check the spec.** Run the same case through `spec.jq` alone and by
    hand. If the spec disagrees with the comment, the spec is wrong and must be
    fixed toward the comment, never toward the product's behaviour.
@@ -212,11 +225,58 @@ unparseable JSON (jq exit 5), empty file (4), and valid JSON with no `combos`
 about corrupt content, not absence.
 
 `meaningful_change()` now validates `$old` first and returns "must rewrite" on
-parse failure, printing `<path> is not valid JSON; rewriting it` to stderr.
+parse failure, printing `<path> is not a combo list; rewriting it` to stderr.
 Re-measured after the fix: a truncated cache and a truncated dsh list each give
 `--check` exit 2 and an apply that rewrites the file and exits 0, and the file
 parses afterwards. Keep this behavior if you touch the function; the guard must
 stay ahead of the hysteresis comparison, not inside it.
+
+The guard is
+`jq -e 'type == "object" and (.combos | type) == "array"'`, i.e. shape-checking,
+not the bare `jq -e .` it started as. The shape half is not optional. Measured
+2026-11-01 with the bare `.` guard: `{"combos":"x"}` (a string), `{}` with no
+`combos` key at all, and `[]` all *pass* `jq -e .`, then die inside the
+comparison's `.combos | map(...)` with **exit 5**. `jq -e` exit 5 means "the
+filter crashed", but the shell's `if` cannot tell that from "verdict false", so
+all three were read as **keep** and the broken file survived forever. Only
+`{"combos":[]}` is supposed to be kept, and it must reach the comparison as a
+real array to earn that.
+
+So do not reason "the comparison's own map() failure covers the shapes". It does
+not: it fails in a way the caller reads as the opposite answer. One guard,
+ahead of the comparison, covering both validity and shape, is the design.
+
+Coverage of the two paths, measured per destination (opencode, dsh, cache) with
+the other files left healthy, one bad file at a time:
+
+| Installed content | Caught by | `--check` | apply |
+| --- | --- | --- | --- |
+| truncated / empty / whitespace-only / html | guard (shape+validity) | 2 + `is not a combo list` | rewrites, exit 0 |
+| `null` | guard (shape+validity) | 2 + `is not a combo list` | rewrites, exit 0 |
+| `[]`, `{}`, `{"other":1}`, `{"combos":"str"}`, `5`, `true` | guard (shape+validity); `{}` would also fall out of the comparison | 2 + `is not a combo list` | rewrites, exit 0 |
+| `{"combos":[]}` | neither (matches an empty fetch) | 0 | no write |
+| all three truncated at once | guard (shape+validity) | 2 | rewrites all three, exit 0 |
+
+Everything except `{"combos":[]}` goes through the one guard. `{"combos":[]}` is
+the deliberate exception: it parses, is shaped correctly, the id sets match an
+empty current list, and nothing is written. An apply immediately after rewrites
+is a no-op (`already up to date`).
+
+These are pinned as `assert_corrupt` cases at the end of `run-checks.sh`, next to
+the differential cases but asserted against hand-written expected answers
+rather than against `spec.jq`. `spec.jq` cannot judge them: it reads
+`.combos // []`, so it would call a `{"combos":"x"}` file "no ids changed" and
+disagree with the product by design. One control case (a readable, in-sync file
+must be kept) sits in the same block so that "always rewrite" cannot pass it.
+Verified by mutation: reverting the guard to `jq -e .` makes exactly these
+three fail (`{"combos":"x"}`, a document with no `combos`, and `[]`), and no
+other case changes. `{"combos":{}}` survives that mutant, but only by accident:
+`map(.id)` over an object yields `[]` instead of erroring, so the comparison
+reaches a real "ids differ" verdict. Do not use its passing as an argument that
+the shape check is unnecessary; it is a coincidence of jq's stream semantics for
+objects, not a guarantee. If you change the guard, run
+`.agents/skills/verify-omniroute-combos/run-checks.sh` and expect 821 cases,
+0 mismatches.
 
 ## Fetch-side guard: what counts as a usable body
 
