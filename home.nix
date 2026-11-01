@@ -1152,6 +1152,9 @@ rec {
     settings = {
       font = {
         size = 13.5;
+        normal = {
+          family = "UDEV Gothic NF";
+        };
       };
       window = {
         opacity = 0.8;
