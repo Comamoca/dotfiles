@@ -229,6 +229,18 @@
           ];
         };
 
+        # Orange Pi 5 (RK3588S)。nixos-hardware にモジュールが無いので
+        # 汎用 aarch64 として構成し、ブートローダ (mainline U-Boot) と
+        # GPT イメージは orangepi5/image.nix で自前で組む。
+        orangepi5 = nixpkgs.lib.nixosSystem {
+          system = "aarch64-linux";
+          specialArgs = { inherit inputs; };
+          modules = [
+            inputs.sops-nix.nixosModules.sops
+            ./orangepi5/configuration.nix
+          ];
+        };
+
         WSL = inputs.nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
           modules = [
@@ -364,6 +376,24 @@
             "/home/coma/.ssh/id_ed25519"
           ];
           path = deploy-rs.lib.aarch64-linux.activate.nixos self.nixosConfigurations.raspi;
+        };
+      };
+
+      # Orange Pi 5。実機の Tailscale 名が確定するまでは hostname を
+      # Tailscale MagicDNS の短縮名にしておく。sd-image を焼いて起動し
+      # `tailscale status` で名前を確認したらここを更新する。
+      deploy.nodes.orangepi5 = {
+        hostname = "orangepi5";
+        profiles.system = {
+          user = "root";
+          sshUser = "coma";
+          sshOpts = [
+            "-o"
+            "IdentitiesOnly=yes"
+            "-i"
+            "/home/coma/.ssh/id_ed25519"
+          ];
+          path = deploy-rs.lib.aarch64-linux.activate.nixos self.nixosConfigurations.orangepi5;
         };
       };
 
