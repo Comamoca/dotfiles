@@ -1,0 +1,35 @@
+== agent-skills: not a home.file, installed by programs.agent-skills (rsync)
+-- home.file entries matching agents/skills: 0  (expected 0)
+-- declared in home.nix:
+958:  programs.agent-skills = {
+959-    enable = true;
+960-    sources.remote.path = import ./skills/remote.nix { inherit pkgs lib; };
+961-    sources.local.path = ./skills/local;
+962-    skills.enableAll = true;
+963-
+964-    # 同期は rsync --delete なので、ここに無いエントリは各配布先から消える。
+965-    # /synced は外部の skill 同期ツールが ~/.agents/skills/synced に置いている
+966-    # managed tree なので、消さないよう除外する (既定は "/.system" のみ)。
+967-    excludePatterns = [
+968-      "/.system"
+969-      "/synced"
+970-    ];
+-- live directory:
+total 268
+drwxr-xr-x 3 coma users 4096 Jan  1  1970 .
+drwxr-xr-x 3 coma users 4096 Oct 27 19:30 ..
+-rw-r--r-- 1 coma users  212 Oct 27 21:01 .agent-skills-managed.json
+lrwxrwxrwx 1 coma users  111 Jan  1  1970 architect -> /nix/store/lajvpgmv29na1n4vz22i7b8gr63pnhfp-agent-skills-source-5d6247caf10673677b06aaca7f4bbf74-safe/architect
+ls: write error: Broken pipe
+-- managed marker content:
+{
+  "schemaVersion": 1,
+  "managedBy": "agent-skills-nix",
+  "mode": "global",
+  "bundle": "/nix/store/m3mz1fd0sihlcvxycnah716vkk3a2dpy-agent-skills-bundle",
+  "target": "agents",
+  "structure": "symlink-tree"
+}
+-- resolvable skills: 64
+-- one skill resolves to a store path:
+/nix/store/lajvpgmv29na1n4vz22i7b8gr63pnhfp-agent-skills-source-5d6247caf10673677b06aaca7f4bbf74-safe/architect

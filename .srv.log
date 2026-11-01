@@ -1,0 +1,4 @@
+Starting omnigent server on 127.0.0.1:14197
+  database:  sqlite:////home/coma/.omnigent/chat.db
+  artifacts: /home/coma/.omnigent/artifacts
+  log:       ~/.omnigent/logs/server/server-20261027-210738-377603.log

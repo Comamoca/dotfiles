@@ -14,6 +14,7 @@ org-mode
 (article "#+TITLE: " n
        "#+DESCRIPTION: " n
        "#+DATE: [" (format-time-string "%Y-%m-%d %a") "]" n
+       "#+FILETAGS: :" n
        "#+EMOJI: 🦊" n
        "#+DRAFT: true" n n)
 

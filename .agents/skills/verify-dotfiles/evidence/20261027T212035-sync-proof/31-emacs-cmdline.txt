@@ -1,0 +1,7 @@
+== check the one Sentence in emacs-daemons gotcha about init dir
+MainPID=2864523
+/nix/store/qrf6l6a5plxwygw5ap7z5p5rg5rlgjkp-emacs-git-pgtk-20261022.0/bin/emacs
+--fg-daemon=coding
+--init-directory=/tmp/emacsd-coding
+--eval
+(load "/home/coma/.emacs.d/init-loader.el")

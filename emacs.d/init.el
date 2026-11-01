@@ -1506,6 +1506,29 @@ _/_: Playlist Search     _s_  : Shuffle           _q_: Quit
 ;; ================================================
 ;; magit
 ;; ================================================
+(leaf magit
+  :bind ("C-x g" . magit-status)
+  :custom
+  (magit-display-buffer-function . #'my/magit-display-buffer))
+
+;; normal ステートでは grugru が C-x を占有するため、SPC g で magit を起動する。
+;; leaf の :bind は eval-after-load でラップされ、magit ロード前は無効になるので
+;; evil-define-key で直接束縛する（magit-status は autoload 済み）。
+(evil-define-key 'normal 'global (kbd "SPC g") #'magit-status)
+
+(defun my/magit-display-buffer (buffer)
+  "Display Magit status in the right side window."
+  (if (with-current-buffer buffer
+        (derived-mode-p 'magit-status-mode))
+      (let ((window
+             (display-buffer-in-side-window
+              buffer
+              '((side . right)
+                (slot . 0)
+                (window-width . 0.5)))))
+        (select-window window)
+        window)
+    (magit-display-buffer-traditional buffer)))
 
 (defun my/magit-status-after-commit ()
   "Commit 完了後に magit-status バッファへ戻る。
@@ -1678,6 +1701,12 @@ Forces re-root even if treemacs was already open on a different project."
 (leaf kdl-ts-mode)
 
 ;; Gleam support
+;; nixpkgs の tree-sitter-gleam 1.1.0 は echo 対応済みだがノード名が
+;; bit_string_* のまま。ABI バージョンで "main" 扱いされると
+;; bit_array_* を要求して font-lock-rules-mismatch になる。
+;; "1.1.0" を明示すると bit_string_* が使われつつ echo も維持される。
+(setq gleam-ts--grammar-revision "1.1.0")
+
 (leaf gleam-ts-mode
   :hook gleam-on-save-mode)
 
@@ -2279,6 +2308,30 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
 ;; Ghostel 上の Coding Agent へ minibuffer から文字列を注入する
 (require 'my-ghostel-prompt)
 
+;; /dev/null へ commit を投稿する非同期クライアント
+;; (本体は ghq 管理の別リポジトリ: ~/.ghq/github.com/Comamoca/devnull.el)
+;; キーバインドは設けない (M-x devnull-log / devnull-commit / devnull-reply など)。
+;; 認証は SSH 鍵署名: ssh-agent または ~/.ssh/*.pub から GitHub 登録鍵を
+;; 自動検出し、ssh-keygen -Y sign で署名する。事前のログイン操作は不要。
+;; パスフレーズ付き鍵を使う場合は ssh-agent に先に登録しておくと
+;; Emacs 側ではダイアログが出ない。
+;; plz.el (curl) を要求するため、実際に使う時まで lazy load する。
+;; plz は emacs.nix の emacsPackages に含まれているので追加インストール不要。
+(add-to-list 'load-path (expand-file-name "~/.ghq/github.com/Comamoca/devnull.el"))
+(autoload 'devnull-log "devnull" "Show the /dev/null log." t)
+(autoload 'devnull-user-commits "devnull" "Show a user's commits." t)
+(autoload 'devnull-commit "devnull" "Post a commit." t)
+(autoload 'devnull-commit-region "devnull" "Post the region." t)
+(autoload 'devnull-reply "devnull" "Reply to a commit." t)
+
+(with-eval-after-load 'devnull
+  (setq devnull-signing-key nil)
+  ;; hydra を使っている人向けのオプション。t にすると devnull-mode で
+  ;; C-c C-h に devnull-hydra を割り当てる (hydra 未導入なら黙って無効)。
+  ;; 既定では ssh-agent を優先し、見つからなければ ~/.ssh の鍵を使う。
+  (setq devnull-hydra-enabled t)
+  (devnull-hydra-setup))
+
 (leaf ox-typst
   :after org-mode)
 
@@ -2295,7 +2348,7 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
                              (setq bidi-inhibit-bpa t)
                              (setq bidi-display-reordering nil)))
   :config
-  (setq agent-shell-opencode-default-model-id "opencode-go/deepseek-v4-pro")
+  (setq agent-shell-opencode-default-model-id "opencode-go/deepseek-v4.1-flash")
   (setq agent-shell-anthropic-authentication
 	(agent-shell-anthropic-make-authentication :login t))
   (setq agent-shell-anthropic-claude-acp-command
@@ -2303,14 +2356,37 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
   (setq agent-shell-anthropic-claude-environment
 	`(,(format "CLAUDE_CODE_EXECUTABLE=%s"
 		   (expand-file-name "~/.nix-profile/bin/.claude-wrapped"))))
+  ;; jcode: `jcode acp' を ACP エージェントとして登録する。
+  ;; 認証とモデルは jcode 自身が ~/.jcode/config.toml (env_file = "omniroute.env")
+  ;; から読むので、ここで環境変数を渡す必要はない。
+  (defun my/agent-shell-jcode-make-config ()
+    "jcode 用の agent-shell 設定を返す。"
+    (agent-shell-make-agent-config
+     :identifier 'jcode
+     :mode-line-name "jcode"
+     :buffer-name "jcode"
+     :shell-prompt "jcode> "
+     :shell-prompt-regexp "jcode> "
+     :client-maker (lambda (buffer)
+                     (agent-shell--make-acp-client
+                      :command "jcode"
+                      :command-params '("acp")
+                      :environment-variables nil
+                      :context-buffer buffer))
+     :install-instructions "jcode を PATH に置く (llm-agents.jcode)。"))
+  (add-to-list 'agent-shell-agent-configs #'my/agent-shell-jcode-make-config)
+
   ;; evil に奪われるので evil-define-key で設定
-  ;; RET で改行、C-j で送信
+  ;; RET で改行、C-c C-c で送信、C-x c で取消
   (evil-define-key 'insert agent-shell-mode-map
     (kbd "RET") #'newline
-    (kbd "C-j") #'shell-maker-submit)
+    (kbd "C-c C-c") #'shell-maker-submit
+    (kbd "C-x c") #'agent-shell-interrupt)
 
   (evil-define-key 'normal agent-shell-mode-map
-    (kbd "C-h") #'agent-shell-help-menu))
+    (kbd "C-h") #'agent-shell-help-menu
+    (kbd "C-c C-c") #'shell-maker-submit
+    (kbd "C-x c") #'agent-shell-interrupt))
 
 ;; Claude code
 (leaf claude-code
@@ -2370,6 +2446,9 @@ VALUE can be nil (skip), t (flag only), or a non-empty string (flag + value)."
   :hook ((inferior-scheme-mode-hook . gambit-inferior-mode)))
 
 (leaf tramps3)
+
+(leaf consult-gh
+  :custom ((consult-gh-prioritize-local-folder . t)))
 
 (leaf consult-ghq)
 

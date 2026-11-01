@@ -40,3 +40,7 @@
 			    ("z " nil "　")
 			    ("z~" nil "〜"))))
 	    ))
+
+;; C-l で英数字(ASCII)モードへ切替
+;; （C-j は既定で skk-kakutei に割り当てられており、英数字モードから かなモードへ復帰する）
+(define-key skk-j-mode-map (kbd "C-l") #'skk-latin-mode)

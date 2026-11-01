@@ -1,0 +1,8 @@
+== cleanup check
+git status for driven file:  M config/fish/functions/oc.fish
+?? config/fish/functions/dt.fish
+?? config/fish/functions/dtl.fish
+?? config/fish/functions/dty.fish
+?? config/fish/functions/opencode.fish
+untracked check for probe files: 20
+~/.config/fish/functions/dty.fish tail: end

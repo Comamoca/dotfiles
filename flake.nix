@@ -243,10 +243,9 @@
           specialArgs = { inherit inputs; };
           modules = [
             inputs.sops-nix.nixosModules.sops
-            # 救援モード (HDMI 自動ログイン + 自動診断)。普段は読まない。
-            # 有効化するとき: 下の 2 行を外して焼き直す。
-            # ./orangepi5/rescue.nix
-            # ({ ... }: { orangepi5.rescue.enable = true; })
+            # 救援モード (HDMI 自動ログイン + 自動診断)。
+            ./orangepi5/rescue.nix
+            ({ ... }: { orangepi5.rescue.enable = true; })
             ./orangepi5/configuration.nix
           ];
         };

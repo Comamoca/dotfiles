@@ -1,0 +1,232 @@
+#!/usr/bin/env bash
+# hmcheck: read-only inspection helper for the verify-dotfiles skill.
+#
+# It never switches, activates, or writes anything. Every subcommand reads
+# either the Nix store, the repo, or the live user state and prints a table or
+# a JSON object so an agent can assert on it.
+#
+#   hmcheck doctor                      # is this checkout worth verifying?
+#   hmcheck build [ATTR]                # nix build ATTR into proof/result-<slug>
+#   hmcheck files [--json]              # home-files tree of the built generation
+#   hmcheck units [--json]              # systemd user units it would install
+#   hmcheck live-vs-proof               # what the live home differs in
+#   hmcheck resolve REL                 # store path the build puts at ~/REL (safe drive)
+#   hmcheck fresh                       # is the build what ~/ currently uses?
+#   hmcheck cleanup                     # remove GC roots this skill created
+#
+# All nix work runs with XDG_CACHE_HOME=/tmp/nixcache because ~/.cache/nix is on
+# a read-only filesystem in this environment.
+set -euo pipefail
+
+SKILL_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
+# `pwd -P` matters twice over: the repo itself may be reached through a symlink,
+# and dotfiles repos frequently symlink skill directories elsewhere.
+REPO="$(git -C "$SKILL_DIR" rev-parse --show-toplevel 2>/dev/null || true)"
+[[ -n $REPO ]] || { echo "hmcheck: $SKILL_DIR is not inside a git checkout" >&2; exit 1; }
+PROOF="$SKILL_DIR/proof"
+ATTR_DEFAULT=".#homeConfigurations.Home.activationPackage"
+export XDG_CACHE_HOME="${HMCHECK_CACHE:-/tmp/nixcache}"
+
+die() { echo "hmcheck: $*" >&2; exit 1; }
+
+# NOTE: always call `nix` directly inside $(...); `nix` cannot exec a shell
+# function, and `nixq` only works for plain (non-substituted) invocations.
+nixq() {
+  mkdir -p "$XDG_CACHE_HOME"
+  ( cd "$REPO" && exec nix --extra-experimental-features 'nix-command flakes' "$@" )
+}
+
+slug() { printf '%s' "$1" | sed 's/.*#//; s/[^A-Za-z0-9._-]/-/g; s/^-*//'; }
+
+link_for() { # link_for ATTR -> proof/result-<slug>
+  mkdir -p "$PROOF"
+  printf '%s/result-%s' "$PROOF" "$(slug "$1")"
+}
+
+cmd_doctor() {
+  local rc=0
+  cd "$REPO"
+
+  echo "== checkout"
+  echo "repo:     $REPO"
+  echo "head:     $(git rev-parse --short HEAD 2>/dev/null || echo none)$(git diff --quiet 2>/dev/null || echo '-dirty')"
+  echo "nix:      $(nix --version 2>/dev/null || echo MISSING)"
+  echo "cache:    $XDG_CACHE_HOME"
+
+  case "$XDG_CACHE_HOME" in
+    /tmp/*) : ;;
+    *) echo "FAIL: XDG_CACHE_HOME is not under /tmp; ~/.cache/nix is read-only here" >&2; rc=1 ;;
+  esac
+  command -v nix >/dev/null || { echo "FAIL: nix not on PATH" >&2; rc=1; }
+  command -v jq >/dev/null || { echo "FAIL: jq not on PATH" >&2; rc=1; }
+  [[ -f flake.nix ]] || { echo "FAIL: no flake.nix in $REPO" >&2; rc=1; }
+
+  echo
+  echo "== flake"
+  local meta=""
+  if ! meta="$(timeout 300 nix flake metadata --json 2>/dev/null)"; then
+    echo "FAIL: nix flake metadata failed (run it by hand to see the error)" >&2
+    return 1
+  fi
+  jq -r '"path:          \(.path)\ndirty:         \(.locked.dirtyShortRev // "clean")\nlast_modified: \(.locked.lastModified | todate)"' <<<"$meta"
+
+  echo
+  echo "== configuration attrs (evaluation only, no build)"
+  local user home sv
+  if attrs="$(timeout 300 nix eval --raw "$ATTR_DEFAULT.drvPath" 2>/dev/null)" \
+     && user="$(timeout 300 nix eval --raw .#homeConfigurations.Home.config.home.username 2>/dev/null)" \
+     && home="$(timeout 300 nix eval --raw .#homeConfigurations.Home.config.home.homeDirectory 2>/dev/null)" \
+     && sv="$(timeout 300 nix eval --raw .#homeConfigurations.Home.config.home.stateVersion 2>/dev/null)"; then
+    echo "activation:    $attrs"
+    echo "username:      $user"
+    echo "homeDirectory: $home"
+    echo "stateVersion:  $sv"
+  else
+    echo "FAIL: homeConfigurations.Home does not evaluate" >&2
+    return 1
+  fi
+
+  echo
+  echo "== live state"
+  local live_gen live_root live_files
+  # Both links are relative chains (profile -> home-manager-NNN-link -> store),
+  # so they must be canonicalised before comparing.
+  live_gen="$(readlink -f "$HOME/.local/state/nix/profiles/home-manager" 2>/dev/null || echo none)"
+  live_root="$(readlink -f "$HOME/.local/state/home-manager/gcroots/current-home" 2>/dev/null || echo none)"
+  live_files="$(readlink -f "$live_root/home-files" 2>/dev/null || echo none)"
+  echo "profile link:  $(basename "$live_gen")"
+  echo "gcroots:       $(basename "$live_root")"
+  if [[ "$live_gen" != "$live_root" ]]; then
+    echo "WARN: current-home gcroots and home-manager profile point at different generations"
+  fi
+  echo "emacs@coding:  $(systemctl --user is-active emacs@coding.service 2>/dev/null || echo unknown)"
+
+  if [[ -e "$(link_for "$ATTR_DEFAULT")" ]]; then
+    local built built_files
+    built="$(readlink -f "$(link_for "$ATTR_DEFAULT")")"
+    built_files="$(readlink -f "$built/home-files" 2>/dev/null || echo none)"
+    echo "proof result:  $(basename "$built")"
+    echo
+    echo "== proof results vs live"
+    echo "  live home-files:  $(basename "$live_files")"
+    echo "  built home-files: $(basename "$built_files")"
+    if [[ "$built_files" == "$live_files" ]]; then
+      echo "MATCH: the built generation's home-files IS what the live $HOME already points at."
+      echo "       Everything observable under ~/ therefore proves this checkout's home.nix."
+    else
+      echo "DIFFER: the built generation is not activated yet. Files under ~/ still"
+      echo "        reflect the live generation, so a drive must use proof/result-*/home-files"
+      echo "        and 'hmcheck live-vs-proof' output must be recorded as diverged state."
+    fi
+  else
+    echo "proof result:  (absent - run 'hmcheck build' before driving a feature)"
+  fi
+
+  echo
+  [[ $rc == 0 ]] && echo "DOCTOR: OK" || echo "DOCTOR: FAIL"
+  return $rc
+}
+
+cmd_build() {
+  local attr="${1:-$ATTR_DEFAULT}" link out
+  link="$(link_for "$attr")"
+  mkdir -p "$PROOF"
+  echo "building $attr -> $link"
+  if out="$(cd "$REPO" && nix build "$attr" --out-link "$link" --print-out-paths 2>&1)"; then
+    printf '%s\n' "$(tail -n1 <<<"$out")"
+  else
+    printf '%s\n' "$out" >&2
+    return 1
+  fi
+}
+
+cmd_files() {
+  local link
+  link="$(link_for "$ATTR_DEFAULT")"
+  [[ -d "$link" ]] || die "no built generation at $link (run: hmcheck build)"
+  if [[ "${1:-}" == --json ]]; then
+    (cd "$link/home-files" && find . -type l -printf '%p\t%l\n' | sort | jq -R -n '[inputs | split("\t") | {path: .[0][1:], target: .[1]}]')
+  else
+    (cd "$link/home-files" && find . \( -type l -o -type f \) -printf '%y %p -> %l\n' | sort)
+  fi
+}
+
+cmd_units() {
+  local link units_dir
+  link="$(link_for "$ATTR_DEFAULT")"
+  [[ -d "$link/home-files/.config/systemd/user" ]] || die "no systemd user dir in $link (run: hmcheck build)"
+  units_dir="$link/home-files/.config/systemd/user"
+  if [[ "${1:-}" == --json ]]; then
+    (cd "$units_dir" && find . -maxdepth 1 \( -name '*.service' -o -name '*.timer' \) -printf '%f\n' \
+      | sed -E 's/\.(service|timer)$//' | sort -u | jq -R -n '[inputs | {unit: .}]')
+  else
+    (cd "$units_dir" && find . -maxdepth 1 \( -name '*.service' -o -name '*.timer' \) -printf '%f\n' | sort)
+  fi
+}
+
+cmd_live_vs_proof() {
+  local link live_root built_root
+  link="$(link_for "$ATTR_DEFAULT")"
+  [[ -d "$link" ]] || die "no built generation at $link (run: hmcheck build)"
+  built_root="$(readlink -f "$link/home-files")"
+  live_root="$(readlink -f "$HOME/.local/state/home-manager/gcroots/current-home" 2>/dev/null || true)"
+  [[ -n "$live_root" ]] || die "no live home-manager generation"
+  echo "built: $built_root"
+  echo "live:  $live_root"
+  diff <(cd "$built_root" && find . -type l -printf '%p\t%l\n' | sort) \
+       <(cd "$live_root/home-files" && find . -type l -printf '%p\t%l\n' | sort) \
+       < /dev/null \
+    && echo "IDENTICAL: no home-files symlink differs" || echo "(diff lines above: '<' built only, '>' live only)"
+}
+
+# Resolve a $HOME-relative path through the BUILT generation, never the live
+# home. `hmcheck resolve .config/niri` -> the store path home-manager would put
+# there. Use this to drive a feature safely when the live $HOME is stale.
+cmd_resolve() {
+  local rel="${1:?usage: hmcheck resolve REL}" link p res
+  link="$(link_for "$ATTR_DEFAULT")"
+  [[ -d "$link" ]] || die "no built generation at $link (run: hmcheck build)"
+  p="${rel#/}"; p="${p#home-files/}"
+  res="$(readlink -f "$link/home-files/$p" 2>/dev/null || true)"
+  [[ -n $res ]] || { echo "UNRESOLVED: home-files does not produce '$p'" >&2; return 1; }
+  echo "$res"
+}
+
+# Is the built generation the one $HOME is actually using?
+cmd_fresh() {
+  local link built live
+  link="$(link_for "$ATTR_DEFAULT")"
+  [[ -d "$link" ]] || { echo "STALE: nothing built yet (run: hmcheck build)"; return 1; }
+  built="$(readlink -f "$link/home-files")"
+  live="$(readlink -f "$HOME/.local/state/home-manager/gcroots/current-home/home-files" 2>/dev/null || echo none)"
+  if [[ "$built" == "$live" ]]; then
+    echo "FRESH: built home-files == live home-files ($(basename "$built"))"
+    return 0
+  fi
+  echo "STALE: built=$(basename "$built") live=$(basename "$live")"
+  echo "       Paths under ~/ still show the OLD configuration; drive proof/ instead."
+  return 1
+}
+
+cmd_cleanup() {
+  local removed=0 f
+  for f in "$PROOF"/result-*; do
+    [[ -L $f ]] || continue
+    rm -f "$f"; echo "removed root $f"; removed=1
+  done
+  # Point '.' fallback: keep the directory itself (it holds ev-*/ evidence).
+  echo "cleanup: removed $removed gc root(s); proof/ and ev-*/ evidence left in place"
+}
+
+case "${1:-}" in
+  doctor)        shift; cmd_doctor "$@" ;;
+  build)         shift; cmd_build "$@" ;;
+  files)         shift; cmd_files "$@" ;;
+  units)         shift; cmd_units "$@" ;;
+  live-vs-proof) shift; cmd_live_vs_proof "$@" ;;
+  resolve)       shift; cmd_resolve "$@" ;;
+  fresh)         shift; cmd_fresh "$@" ;;
+  cleanup)       shift; cmd_cleanup "$@" ;;
+  -h|--help)     sed -n "2,16p" "$0" | sed 's/^# \{0,1\}//' ;;
+  *) echo "hmcheck: unknown subcommand: ${1:-}" >&2; exit 64 ;;
+esac

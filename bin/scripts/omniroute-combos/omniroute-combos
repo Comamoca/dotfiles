@@ -1,0 +1,163 @@
+#!/usr/bin/env bash
+# omniroute-combos: OmniRoute の combo 一覧をクライアント設定用に書き出す。
+#
+# OmniRoute は combo (`owned_by: "combo"`) を /v1/models に載せるだけで、
+# クライアント側のモデル一覧は自動では増えない。本スクリプトは /v1/models を
+# 正本として combo の一覧を生成し、次のクライアントへ配る:
+#
+#   ~/.cache/omniroute/combos.json               (正本スナップショット)
+#   ~/.dsh/omniroute-combos.json                 (dsh: cordis.patch.yml が参照)
+#   ~/.config/opencode/omniroute-combos.json     (opencode: プラグインが参照)
+#
+# 再起動なしで反映されるのは opencode だけ (プラグインがセッション開始時に
+# 読む)。dsh は読み込み済みプロファイルの再起動が必要。
+#
+# 使い方:
+#   omniroute-combos            # 生成 + 適用
+#   omniroute-combos --check    # 差分があれば終了コード 2 (書き込みしない)
+#   omniroute-combos --print    # 生成結果を表示するだけ
+#
+# systemd: omniroute-combos.timer (omniroute.nix) が 30 分ごとに実行する。
+set -euo pipefail
+
+# systemd の oneshot は PATH が最小構成になるので、自分でプロファイルを読み直す。
+# (対話シェルから実行したときは既存 PATH をそのまま使う)
+export PATH="$HOME/.nix-profile/bin:/etc/profiles/per-user/$(id -un)/bin:/run/current-system/sw/bin:$PATH"
+
+OMNIROUTE_URL="${OMNIROUTE_URL:-http://127.0.0.1:20128}"
+ENV_FILE="${OMNIROUTE_ENV_FILE:-/run/user/$(id -u)/omniroute.env}"
+
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/omniroute"
+CACHE_JSON="$CACHE_DIR/combos.json"
+DSH_JSON="${DSH_HOME:-$HOME/.dsh}/omniroute-combos.json"
+OPENCODE_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/opencode"
+OPENCODE_JSON="$OPENCODE_DIR/omniroute-combos.json"
+
+mode=apply
+case "${1:-}" in
+  --check) mode=check ;;
+  --print) mode=print ;;
+  -h|--help) sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+  "") ;;
+  *) echo "omniroute-combos: unknown option: $1" >&2; exit 64 ;;
+esac
+
+die() {
+  echo "omniroute-combos: $*" >&2
+  exit 1
+}
+
+# --- API キー ---------------------------------------------------------------
+# dsh / opencode から見えるのは環境変数か、sops が復号した env ファイル。
+key="${OMNIROUTE_API_KEY:-}"
+if [[ -z $key && -r $ENV_FILE ]]; then
+  key="$(sed -n 's/^OMNIROUTE_API_KEY=//p' "$ENV_FILE" | head -n 1)"
+fi
+
+# --- /v1/models の取得 ------------------------------------------------------
+# 429 / 503 などの一過性エラーは 3 回まで試す。失敗したら既存の生成物を
+# 残したまま異常終了する (古い一覧でも「全滅」よりはマシなので)。
+fetch_models() {
+  local attempt
+  for attempt in 1 2 3; do
+    if [[ -n $key ]]; then
+      curl -fsS --max-time 30 -H "Authorization: Bearer $key" \
+        "$OMNIROUTE_URL/v1/models" && return 0
+    else
+      curl -fsS --max-time 30 "$OMNIROUTE_URL/v1/models" && return 0
+    fi
+    sleep $((attempt * 2))
+  done
+  return 1
+}
+
+raw="$(fetch_models)" || die "cannot reach $OMNIROUTE_URL/v1/models (existing lists left untouched)"
+
+# combo だけを、id 昇順で正規化する。改名・削除で差分が出ないよう
+# 要素のキー順と並びを固定する。
+tmp="$(mktemp)"
+trap 'rm -f "$tmp" "$tmp".*' EXIT
+
+jq -S '{
+  source: "omniroute",
+  combos: [
+    .data[]
+    | select(.owned_by == "combo")
+    | {
+        id: .id,
+        name: .id,
+        contextWindow: (.context_length // .max_input_tokens // null),
+        maxTokens: (.max_output_tokens // null)
+      }
+  ] | sort_by(.id)
+}' <<<"$raw" >"$tmp"
+
+count="$(jq '.combos | length' "$tmp")"
+[[ $count -gt 0 ]] || die "OmniRoute returned no combos; refusing to write empty lists"
+
+if [[ $mode == print ]]; then
+  cat "$tmp"
+  exit 0
+fi
+
+# 全出力先は同じ内容。0 件でない限り一気に差し替える。
+#
+# OmniRoute の context_length は combo を構成するメンバーの変化で
+# 1000000 と 1048576 の間を行き来する (同じ combo でも取得時刻で変わる)。
+# これを厳密な差分として扱うと 30 分ごとに生成物が書き換わり、opencode の
+# モデル定義も毎回作り直されてしまう。そこで「実質的な変化」だけを更新の
+# 条件にする:
+#
+#   - combo の id 集合が変わった (追加・削除)
+#   - contextWindow / maxTokens が 2 倍超、または半分未満に変わった
+#
+# それ未満の揺れは差分とみなさず、既存の生成物をそのまま残す。
+# (既存の値の方が「正常時」の値である可能性が高いため、上書きしない)
+meaningful_change() {
+  local old=$1
+  [[ -f $old ]] || return 0 # 生成物が無ければ必ず書く
+  jq -e --slurpfile new "$tmp" '
+    def changed($a; $b):
+      if ($a | type) != "number" or ($b | type) != "number" then ($a != $b)
+      else ($b > $a * 2) or ($b * 2 < $a)
+      end;
+    (.combos | map({ key: .id, value: . }) | from_entries) as $prev
+    | ($new[0].combos) as $next
+    | ([ $next[]
+         | . as $m
+         | $prev[$m.id] as $p
+         | select($p != null)
+         | select(changed($p.contextWindow; $m.contextWindow) or changed($p.maxTokens; $m.maxTokens))
+         | $m.id
+       ]) as $resized
+    | (($prev | keys) != ($next | map(.id) | sort)) or (($resized | length) > 0)
+  ' "$old" >/dev/null 2>&1
+}
+
+diff_found=0
+for target in "$CACHE_JSON" "$DSH_JSON" "$OPENCODE_JSON"; do
+  if meaningful_change "$target"; then
+    diff_found=1
+  fi
+done
+
+if [[ $mode == check ]]; then
+  if [[ $diff_found == 1 ]]; then
+    echo "omniroute-combos: client lists are stale ($count combos available)" >&2
+    exit 2
+  fi
+  exit 0
+fi
+
+if [[ $diff_found == 0 ]]; then
+  echo "omniroute-combos: $count combos, already up to date"
+  exit 0
+fi
+
+for target in "$CACHE_JSON" "$DSH_JSON" "$OPENCODE_JSON"; do
+  mkdir -p "$(dirname "$target")"
+  install -m 0644 "$tmp" "$target.new"
+  mv -f "$target.new" "$target"
+done
+
+echo "omniroute-combos: updated $count combos -> $OPENCODE_JSON (opencode は再起動で反映)"

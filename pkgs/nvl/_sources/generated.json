@@ -1,0 +1,149 @@
+{
+    "kanagawa-nvim": {
+        "cargoLock": null,
+        "date": "2026-05-10",
+        "extract": null,
+        "name": "kanagawa-nvim",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "rebelot",
+            "repo": "kanagawa.nvim",
+            "rev": "bb85e4bfc8d89b0e62c8fa53ccdd13d12e2f77b3",
+            "sha256": "sha256-fMP4NUCKD1ZcNkaHy6SuNm020ECXpBOihGv2n1wyTN4=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "bb85e4bfc8d89b0e62c8fa53ccdd13d12e2f77b3"
+    },
+    "mini-nvim": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "mini-nvim",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "echasnovski",
+            "repo": "mini.nvim",
+            "rev": "v0.18.0",
+            "sha256": "sha256-kCcyl4KUEY51UeGYmvuLD1hswWbwKhHGUt/0XLbPuUw=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v0.18.0"
+    },
+    "nvim-lspconfig": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "nvim-lspconfig",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "neovim",
+            "repo": "nvim-lspconfig",
+            "rev": "v2.12.0",
+            "sha256": "sha256-FPk6fSdp13byZBp4pAPng1WefLEGoeauNcw62s/+i2Y=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v2.12.0"
+    },
+    "oil-nvim": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "oil-nvim",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "stevearc",
+            "repo": "oil.nvim",
+            "rev": "v2.16.0",
+            "sha256": "sha256-6ztzdwyVHovqiPCnqkqqwAh/72D5aWPucr7N3NVuN14=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v2.16.0"
+    },
+    "snacks-nvim": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "snacks-nvim",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "folke",
+            "repo": "snacks.nvim",
+            "rev": "v2.31.0",
+            "sha256": "sha256-NSoZQajyYFGIUCLD1m6FRPgKRsyJSM0IWygg1ofZZBs=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v2.31.0"
+    },
+    "telescope-nvim": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "telescope-nvim",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "nvim-telescope",
+            "repo": "telescope.nvim",
+            "rev": "v0.2.1",
+            "sha256": "sha256-QwhFgTRh4h+8QjZMkXkoxgr7bv27HCp2TG2HAjI8VVg=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v0.2.1"
+    },
+    "vim-fern": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "vim-fern",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "lambdalisue",
+            "repo": "vim-fern",
+            "rev": "v1.59.3",
+            "sha256": "sha256-eFk53nR9K6oK3+CaHXNRC7p8cjNEIHiGL0WtPZRTGYc=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v1.59.3"
+    }
+}

@@ -1,0 +1,17 @@
+-- bundle count (/nix/store/m3mz1fd0sihlcvxycnah716vkk3a2dpy-agent-skills-bundle):
+63
+-- live ~/.agents/skills entries:
+65
+-- live non-hidden entries:
+64
+-- difference (live minus bundle):
+   synced
+-- bundle minus live:
+-- other declared dests exist?
+/home/coma/.claude/skills 63 entries
+/home/coma/.jcode/skills 63 entries
+/home/coma/.omp/agent/skills 63 entries
+-- repo skills/local:
+ast-grep-gleam
+consult-gpt6-sol
+grill-me

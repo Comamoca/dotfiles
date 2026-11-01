@@ -1,0 +1,2 @@
+IDENTICAL: live config.kdl bytes == repo config/niri/config.kdl
+29225

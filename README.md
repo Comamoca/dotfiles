@@ -55,8 +55,16 @@ home-manager switch --flake .#Home
 
 ## 🧭 Local services
 
-- [weave-os router](docs/weave-router.md) — ローカル LLM モデルルーター
-  (`http://127.0.0.1:18080`、Claude Code / pi を配線済み)
+- [OmniRoute](omniroute.nix) — LLM ゲートウェイ / dashboard
+  (`http://127.0.0.1:20128`)。外部からは `https://omniroute.comamoca.dev`
+  (Cloudflare Tunnel `cloudflared-omniroute` + Access アプリ `omniroute`。
+  許可は `comamoca.dev@gmail.com` のみ)
+  - combo は dashboard で追加するだけでよい。`omniroute-combos.timer` (30
+    分間隔) が `GET /v1/models` から一覧を生成し、opencode
+    (`omniroute-combos.ts` プラグイン) と dsh (`cordis.patch.yml` の
+    `models: !!js ...`) に配る。手で回すなら
+    `~/.bin/scripts/omniroute-combos/omniroute-combos`（`--check` で差分確認）。
+    opencode は次回起動、dsh は再起動で反映。
 
 ## 📖 License
 

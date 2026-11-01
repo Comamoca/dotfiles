@@ -7,17 +7,29 @@
   pkgs,
   neovim,
   configSrc ? ./config,
-  optPlugins ? with pkgs.vimPlugins; [
-    telescope-nvim
-    oil-nvim
-    vim-fern
-    snacks-nvim
-    mini-nvim
-    nvim-lspconfig
-    kanagawa-nvim
-  ],
 }:
 let
+  sources = import ./_sources/generated.nix {
+    inherit (pkgs) fetchgit fetchurl fetchFromGitHub dockerTools;
+  };
+
+  optPlugins = map (name:
+    pkgs.vimUtils.buildVimPlugin {
+      pname = name;
+      version = sources.${name}.version;
+      src = sources.${name}.src;
+      doCheck = false;
+    }
+  ) [
+    "telescope-nvim"
+    "oil-nvim"
+    "vim-fern"
+    "snacks-nvim"
+    "mini-nvim"
+    "nvim-lspconfig"
+    "kanagawa-nvim"
+  ];
+
   packDir = pkgs.neovimUtils.packDir {
     nix = {
       start = with pkgs.vimPlugins; [

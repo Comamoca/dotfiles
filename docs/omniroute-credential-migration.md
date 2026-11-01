@@ -10,7 +10,7 @@
 - 同期スクリプト、旧 failover 秘密ファイルと配布・環境変数定義を撤去した。
 - OpenCode の設定から旧 failover プラグインを外した。
 - 撤去分を `9f61fda` と `e60abeb` に記録した。既存変更と混在する
-  OmniRoute 導入設定と `docs/weave-router.md` の全体はコミットしていない。
+  OmniRoute 導入設定の全体はコミットしていない。
 
 ## 確認結果と未適用事項
 

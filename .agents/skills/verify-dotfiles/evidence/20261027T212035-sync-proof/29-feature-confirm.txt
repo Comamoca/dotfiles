@@ -1,0 +1,16 @@
+== A: bare eval of username (cited in features)
+warning: Git tree '/home/coma/.ghq/github.com/Comamoca/dotfiles' is dirty
+Using saved setting for 'extra-substituters = https://cache.numtide.com https://nix-community.cachix.org' from ~/.local/share/nix/trusted-settings.json.
+Using saved setting for 'extra-trusted-public-keys = niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=' from ~/.local/share/nix/trusted-settings.json.
+coma
+== B: Treefmt attr build
+building .#packages.x86_64-linux.treefmt-toml -> /home/coma/.ghq/github.com/Comamoca/dotfiles/.agents/skills/verify-dotfiles/proof/result-packages.x86_64-linux.treefmt-toml
+/nix/store/w2lwwbf3ymkkvm95df851nwjh2pqa14z-treefmt.toml
+== C: FragmentPath (which file systemd actually loads)
+emacs@coding.service     /home/coma/.config/systemd/user/emacs@coding.service
+emacs@.service           Failed to get properties: Unit name emacs@.service is neither a valid invocation ID nor unit name.
+rclone-sync.timer        /home/coma/.config/systemd/user/rclone-sync.timer
+== D: which units systemd knows
+emacs@canary.service
+emacs@coding.service
+emacs@main.service

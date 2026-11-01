@@ -1,0 +1,7 @@
+# /nix/store/w897d9mmhk72qczfpdm40331ph221m3n-hm_functions/dty.fish の 1 行目で定義されています
+function dty --description 'dt + yolo (DSH_PERMISSION_MODE=danger-full-access)'
+    # dt.fish と同じだが、TUI 側の権限も yolo に揃える。
+    # アタッチ先 (dsh web) は既に danger-full-access で動いているが、
+    # この env はローカル起動へフォールバックしたときにも効く。
+    env DSH_PERMISSION_MODE=danger-full-access dt $argv
+end

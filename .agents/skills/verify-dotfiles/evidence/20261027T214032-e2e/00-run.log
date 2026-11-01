@@ -1,0 +1,10 @@
+########## 0. preconditions (fresh shell, no XDG_CACHE_HOME set)
+doctor exit=0
+
+== proof results vs live
+  live home-files:  balmh45pyflg4a9p46z40ml66y0vl4s7-home-manager-files
+  built home-files: balmh45pyflg4a9p46z40ml66y0vl4s7-home-manager-files
+MATCH: the built generation's home-files IS what the live /home/coma already points at.
+       Everything observable under ~/ therefore proves this checkout's home.nix.
+
+DOCTOR: OK

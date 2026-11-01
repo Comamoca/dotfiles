@@ -6,6 +6,9 @@
 #
 # データ永続化: ~/.local/share/cloudflare-os/ (git clone + node_modules + .wrangler)
 # ポート: 18787 (通常の web 開発ポートと衝突回避)
+#
+# OAuth クレデンシャル: ~/.config/cloudflare-os/env から EnvironmentFile で読み込む。
+# テンプレートは env.template を参照。未設定でもサービスは起動するが Gatekeeper は未接続になる。
 {
   config,
   pkgs,
@@ -28,9 +31,9 @@ in
       Wants = [ "network-online.target" ];
     };
     Service = {
-      WorkingDirectory = dataDir;
-      ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p ${dataDir}";
       ExecStart = "${cloudflareOsPkg}/bin/cloudflare-os";
+      # OAuth クレデンシャルを外部ファイルから読む（"-" プレフィックスでファイル不在でも起動する）
+      EnvironmentFile = "-${homeDirectory}/.config/cloudflare-os/env";
       Environment = [
         "CLOUDFLARE_OS_DATA_DIR=${dataDir}"
         "CLOUDFLARE_OS_PORT=18787"

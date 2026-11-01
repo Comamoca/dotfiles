@@ -62,6 +62,17 @@ in
   };
 
   nix = {
+    # システムレジストリの nixpkgs は既定で「このシステムをビルドした
+    # nixpkgs」(nixpkgs.flake.setFlakeRegistry) に固定される。そのため
+    # `nix run nixpkgs#ollama` は再ビルドするまで古い世代のパッケージ
+    # (例: 0.34.0) を引き続ける。ここではグローバルレジストリと同じ
+    # nixpkgs-unstable の先端を指し、常に最新の nixpkgs を使う。
+    registry.nixpkgs.to = {
+      type = "github";
+      owner = "NixOS";
+      repo = "nixpkgs";
+      ref = "nixpkgs-unstable";
+    };
     distributedBuilds = true;
     buildMachines = [
       {
@@ -359,6 +370,9 @@ in
     enable = true;
   };
 
+  # Removable media (SD card, USB drive) auto-mount without root
+  services.udisks2.enable = true;
+
   # NextDNS
   services.nextdns = {
     enable = true;
@@ -438,8 +452,19 @@ in
   services.printing.enable = true;
 
   # Bluetooth
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
+  hardware.bluetooth = {
+    enable = true;
+    # 起動時にコントローラを powered にする (main.conf の [Policy] AutoEnable)。
+    # nixpkgs の既定値も true だが、意図を残すため明示する。
+    powerOnBoot = true;
+    settings = {
+      Policy = {
+        # AutoEnable が拾い損ねた場合の保険。bluetoothd 終了時に電源状態を保存し、
+        # 次回起動時に復元する (On/Off/Always)。
+        SaveOnQuit = "On";
+      };
+    };
+  };
 
   services.blueman.enable = true;
 
@@ -497,6 +522,7 @@ in
       "plugdev"
       "input" # input-remapper が /dev/input を読むために必要
       "video" # Fix: Add video group for DRM device access (niri display hotplug)
+      "dialout"
     ];
     packages = with pkgs; [
       #  thunderbird

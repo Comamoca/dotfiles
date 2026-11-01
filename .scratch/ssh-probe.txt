@@ -1,0 +1,2 @@
+# Tailscale SSH requires an additional check.
+# To authenticate, visit: https://login.tailscale.com/a/l4f7ea4f2f6a84

@@ -8,8 +8,6 @@
 }:
 
 let
-  user = "guest";
-  password = "guest";
   hostname = "raspi";
 
   opensrc = import ../packages/opensrc.nix { inherit pkgs; };
@@ -109,12 +107,19 @@ in
       "networkmanager"
       "hermes"
     ];
-    initialPassword = "changeme";
+    # 平文パスワードは設定しない。SSH は公開鍵認証のみ
+    # (PasswordAuthentication = false) で、コンソール用パスワードは
+    # 初回 SSH ログイン後に `sudo passwd coma` で設定する。
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGHn646g17wEv7rZoSKQCFNGGyLqVJnQ9mlEn7aQuOLj coma@comabook"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHPL4pgOxCwPRIGRDuIt7KeExLZqNdQ3VsbAqgGeaLNV u0_a588@localhost"
     ];
   };
+
+  # hermes-agent を後から有効化したときの所属グループ。
+  # users.users.<name>.extraGroups は文字列リストで、groups 側の定義が
+  # 無いと静かに捨てられるため、先にグループを用意する。
+  users.groups.hermes = { };
 
   security.sudo.wheelNeedsPassword = false;
   time.timeZone = "Asia/Tokyo";

@@ -1,0 +1,19 @@
+== emacs daemon drive (read-only, coding daemon only)
+"32.0.50"
+*ERROR*: Symbol’s function definition is void: server-name
+total 0
+drwx------  2 coma users  100 Oct 26 18:55 .
+drwx------ 32 coma users 1420 Oct 27 21:30 ..
+srwx------  1 coma users    0 Oct 26 04:01 canary
+srwx------  1 coma users    0 Oct 26 08:23 coding
+srwx------  1 coma users    0 Oct 26 18:55 main
+-- unit template ExecStart:
+5:ExecStart=/nix/store/sinf9bl7k7f7zhzyh6db04khidd8r72z-emacs-daemon coding
+-- template from the BUILT generation:
+2:ExecStart=/nix/store/sinf9bl7k7f7zhzyh6db04khidd8r72z-emacs-daemon %I
+-- the wrapper script content:
+2:NAME="${1:-main}"
+3:INIT_DIR="/tmp/emacsd-${NAME}"
+5:exec /nix/store/kl2j4adlxfh5mjh0plzl4f75kgmz030g-emacs-git-pgtk-with-packages-20261022.0/bin/emacs --fg-daemon="${NAME}" \
+-- daemon-level check through emacsclient:
+"F1 1"

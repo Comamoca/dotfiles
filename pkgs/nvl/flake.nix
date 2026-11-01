@@ -3,26 +3,26 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
   };
 
   outputs =
-    { nixpkgs, ... }:
+    { nixpkgs, neovim-nightly-overlay, ... }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
+        overlays = [ neovim-nightly-overlay.overlays.default ];
       };
     in
     {
-      packages.${system}.default = import ./default.nix {
-        inherit pkgs;
-        neovim = pkgs.neovim;
-      };
-
-      packages.${system}.nvl = import ./default.nix {
-        inherit pkgs;
-        neovim = pkgs.neovim;
+      packages.${system} = rec {
+        default = nvl;
+        nvl = import ./default.nix {
+          inherit pkgs;
+          neovim = pkgs.neovim;
+        };
       };
     };
 }

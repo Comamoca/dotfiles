@@ -1,0 +1,1394 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <title>jcode web</title>
+    <style>
+      :root {
+        --bg: #11111b;
+        --base: #1e1e2e;
+        --surface: #313244;
+        --overlay0: #6c7086;
+        --subtext: #a6adc8;
+        --text: #cdd6f4;
+        --blue: #89b4fa;
+        --teal: #94e2d5;
+        --green: #a6e3a1;
+        --yellow: #f9e2af;
+        --red: #f38ba8;
+        --mauve: #cba6f7;
+        --radius: 12px;
+        --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; margin: 0; }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", sans-serif;
+        overscroll-behavior-y: contain;
+      }
+      #app { display: flex; flex-direction: column; height: 100%; }
+
+      /* ---------- header ---------- */
+      #top {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        padding-top: max(8px, env(safe-area-inset-top));
+        background: var(--base);
+        border-bottom: 1px solid var(--surface);
+        flex: 0 0 auto;
+      }
+      .brand { font-weight: 700; letter-spacing: 0.02em; color: var(--mauve); }
+      .status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--subtext); }
+      .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--overlay0); }
+      .dot.open { background: var(--green); }
+      .dot.connecting { background: var(--yellow); animation: pulse 1.2s infinite; }
+      .dot.down { background: var(--red); }
+      .dot.blocked { background: var(--red); }
+      @keyframes pulse { 50% { opacity: 0.3; } }
+      .meta { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--overlay0); }
+      .meta select {
+        background: var(--surface);
+        color: var(--text);
+        border: 0;
+        border-radius: 6px;
+        font-size: 11px;
+        padding: 3px 6px;
+        max-width: 40vw;
+      }
+
+      /* ---------- stream ---------- */
+      #stream {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        padding: 14px 12px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        -webkit-overflow-scrolling: touch;
+      }
+      .blk { max-width: 100%; overflow-wrap: anywhere; }
+      .blk-user {
+        align-self: flex-end;
+        background: var(--surface);
+        border-radius: var(--radius) var(--radius) 4px var(--radius);
+        padding: 8px 12px;
+        max-width: min(85%, 720px);
+        white-space: pre-wrap;
+      }
+      .blk-assistant { align-self: stretch; }
+      .blk-assistant .body > :first-child { margin-top: 0; }
+      .blk-assistant .body > :last-child { margin-bottom: 0; }
+      .blk-assistant p { margin: 0.5em 0; }
+      .blk-assistant h1 { font-size: 1.25em; }
+      .blk-assistant h2 { font-size: 1.15em; }
+      .blk-assistant h3 { font-size: 1.05em; }
+      .blk-assistant blockquote {
+        margin: 0.5em 0;
+        padding-left: 10px;
+        border-left: 3px solid var(--surface);
+        color: var(--subtext);
+      }
+      .blk-assistant ul, .blk-assistant ol { margin: 0.4em 0; padding-left: 1.4em; }
+      a { color: var(--blue); }
+      code {
+        font-family: var(--mono);
+        font-size: 0.9em;
+        background: var(--surface);
+        padding: 1px 5px;
+        border-radius: 5px;
+      }
+      .codeblock { margin: 0.6em 0; border-radius: 10px; overflow: hidden; background: #181825; border: 1px solid var(--surface); }
+      .codeblock header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 4px 8px;
+        font-size: 11px;
+        color: var(--overlay0);
+        background: #181825;
+      }
+      .codeblock pre { margin: 0; padding: 10px; overflow-x: auto; }
+      .codeblock code { background: none; padding: 0; font-size: 12.5px; }
+      .copy {
+        background: none;
+        border: 0;
+        color: var(--overlay0);
+        font-size: 11px;
+        cursor: pointer;
+      }
+      .copy:hover { color: var(--text); }
+
+      details.reasoning {
+        margin: 0 0 6px;
+        font-size: 12.5px;
+        color: var(--overlay0);
+      }
+      details.reasoning summary { cursor: pointer; user-select: none; }
+      details.reasoning .reasoning-body {
+        white-space: pre-wrap;
+        border-left: 2px solid var(--surface);
+        padding-left: 8px;
+        margin-top: 4px;
+        color: var(--overlay0);
+        max-height: 40vh;
+        overflow-y: auto;
+      }
+
+      .tool {
+        align-self: stretch;
+        border: 1px solid var(--surface);
+        border-left: 3px solid var(--teal);
+        border-radius: 8px;
+        padding: 6px 10px;
+        background: #181825;
+        font-size: 13px;
+      }
+      .tool.err { border-left-color: var(--red); }
+      .tool-head { display: flex; align-items: center; gap: 8px; }
+      .tool-name { font-family: var(--mono); font-size: 12.5px; color: var(--teal); }
+      .tool.err .tool-name { color: var(--red); }
+      .tool-state { margin-left: auto; font-size: 11px; color: var(--overlay0); }
+      .tool details { margin-top: 4px; }
+      .tool summary { cursor: pointer; font-size: 11px; color: var(--overlay0); }
+      .tool pre {
+        margin: 4px 0 0;
+        max-height: 30vh;
+        overflow: auto;
+        font-family: var(--mono);
+        font-size: 12px;
+        white-space: pre-wrap;
+        color: var(--subtext);
+      }
+
+      .blk-notice { align-self: center; font-size: 12px; color: var(--overlay0); text-align: center; }
+      .blk-notice.err { color: var(--red); }
+      .blk-session { align-self: center; font-size: 11px; color: var(--overlay0); }
+
+      /* ---------- composer ---------- */
+      #composer {
+        flex: 0 0 auto;
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+        padding: 8px 12px;
+        padding-bottom: max(8px, env(safe-area-inset-bottom));
+        background: var(--base);
+        border-top: 1px solid var(--surface);
+      }
+      #input {
+        flex: 1 1 auto;
+        resize: none;
+        max-height: 40vh;
+        min-height: 40px;
+        padding: 9px 12px;
+        border-radius: var(--radius);
+        border: 1px solid var(--surface);
+        background: var(--bg);
+        color: var(--text);
+        font: inherit;
+        line-height: 1.5;
+      }
+      #input:focus { outline: none; border-color: var(--blue); }
+      button {
+        font: inherit;
+        border-radius: 10px;
+        border: 1px solid var(--surface);
+        background: var(--surface);
+        color: var(--text);
+        padding: 9px 14px;
+        cursor: pointer;
+        min-height: 40px;
+      }
+      button.primary { background: var(--blue); border-color: var(--blue); color: #11111b; font-weight: 600; }
+      button.danger { background: transparent; border-color: var(--red); color: var(--red); }
+      button.icon { padding: 6px 10px; min-height: 32px; font-size: 14px; }
+      button:disabled { opacity: 0.4; cursor: default; }
+
+      #jump {
+        position: fixed;
+        right: 16px;
+        bottom: 92px;
+        background: var(--surface);
+        border: 1px solid var(--overlay0);
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      /* ---------- setup ---------- */
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(17, 17, 27, 0.92);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        z-index: 20;
+        overflow-y: auto;
+      }
+      .overlay[hidden] { display: none; }
+      .card {
+        width: 100%;
+        max-width: 460px;
+        background: var(--base);
+        border: 1px solid var(--surface);
+        border-radius: 16px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .card h1 { margin: 0; font-size: 17px; }
+      .card label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--subtext); }
+      .card input {
+        font: inherit;
+        padding: 9px 10px;
+        border-radius: 8px;
+        border: 1px solid var(--surface);
+        background: var(--bg);
+        color: var(--text);
+      }
+      .card input:focus { outline: none; border-color: var(--blue); }
+      .row { display: flex; gap: 8px; }
+      .row button { flex: 1 1 0; }
+      .hint { font-size: 12px; color: var(--overlay0); margin: 0; min-height: 1em; }
+      .hint.err { color: var(--red); }
+      .hint.ok { color: var(--green); }
+      .hint.url { word-break: break-all; user-select: all; color: var(--text); }
+      .spacer { flex: 1 1 auto; }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <header id="top">
+        <button id="btn-settings" class="icon" title="設定">&#9881;</button>
+        <div class="brand">jcode</div>
+        <div class="status"><span class="dot" id="dot"></span><span id="status-text">未接続</span></div>
+        <div class="meta">
+          <span id="session-label" title=""></span>
+          <span id="token-label"></span>
+          <select id="model-select" hidden></select>
+        </div>
+      </header>
+
+      <main id="stream"></main>
+      <div id="jump" hidden>&#8595; 最新へ</div>
+
+      <footer id="composer">
+        <textarea id="input" rows="1" placeholder="メッセージ（Enter 送信 / Shift+Enter 改行）" autocomplete="off"></textarea>
+        <button id="btn-send" class="primary">送信</button>
+        <button id="btn-stop" class="danger" hidden>停止</button>
+      </footer>
+    </div>
+
+    <div id="setup" class="overlay">
+      <form id="setup-form" class="card">
+        <h1>jcode gateway に接続</h1>
+        <p class="hint" id="health-hint">サーバーに接続していません。</p>
+        <label>ホスト<input id="f-host" placeholder="localhost / tailscale 名" autocomplete="off" /></label>
+        <label>ポート<input id="f-port" inputmode="numeric" autocomplete="off" /></label>
+        <label>ペアリングコード（初回のみ）<input id="f-code" inputmode="numeric" placeholder="123456" autocomplete="off" /></label>
+        <label>セッションID（空なら前回の続きを再開）<input id="f-session" placeholder="session_..." autocomplete="off" /></label>
+        <label>作業ディレクトリ（新規セッションでは必須）<input id="f-dir" placeholder="/home/coma/.ghq/..." autocomplete="off" /></label>
+        <div class="row">
+          <button type="submit" class="primary" id="btn-pair">ペアリングして接続</button>
+          <button type="button" id="btn-connect">接続のみ</button>
+        </div>
+        <div class="row">
+          <button type="button" id="btn-health">ヘルスチェック</button>
+          <button type="button" id="btn-new-session">新しいセッション</button>
+          <button type="button" id="btn-forget">トークン破棄</button>
+        </div>
+        <div class="row">
+          <button type="button" id="btn-bookmark">接続URLを作る</button>
+        </div>
+        <p class="hint url" id="url-msg" hidden></p>
+        <p class="hint" id="setup-msg"></p>
+      </form>
+    </div>
+
+    <script>
+      "use strict";
+
+      /* ------------------------------------------------------------------ *
+       * storage / settings
+       * ------------------------------------------------------------------ */
+      const store = {
+        get(key, fallback) {
+          try {
+            const raw = localStorage.getItem("jc." + key);
+            return raw === null ? fallback : JSON.parse(raw);
+          } catch (_) {
+            return fallback;
+          }
+        },
+        set(key, value) {
+          try {
+            localStorage.setItem("jc." + key, JSON.stringify(value));
+          } catch (_) {}
+        },
+        del(key) {
+          try {
+            localStorage.removeItem("jc." + key);
+          } catch (_) {}
+        },
+      };
+
+      const settings = {
+        host: store.get("host", location.protocol.startsWith("http") ? location.hostname : "localhost"),
+        port: String(store.get("port", 7643)),
+        token: store.get("token", ""),
+        deviceId: store.get("deviceId", ""),
+        session: store.get("session", ""),
+        workingDir: store.get("workingDir", ""),
+      };
+      if (!settings.deviceId) {
+        settings.deviceId = "web-" + Math.random().toString(16).slice(2, 10) + Date.now().toString(16);
+        store.set("deviceId", settings.deviceId);
+      }
+
+      // A link may carry the connection details, so an ad-hoc gateway is
+      // reachable without typing host, port and token by hand:
+      //   /?host=127.0.0.1&port=7644&token=...&session=...
+      // Values are stored like form input, then removed from the address bar so
+      // the token does not linger in history or screenshots.
+      (() => {
+        const params = new URLSearchParams(location.search);
+        let changed = false;
+        for (const key of ["host", "port", "token", "session", "workingDir"]) {
+          const value = params.get(key);
+          if (!value) continue;
+          params.delete(key);
+          changed = true;
+          settings[key] = key === "session" && !value.startsWith("session_") ? "session_" + value : value;
+          store.set(key, settings[key]);
+        }
+        if (changed) {
+          const rest = params.toString();
+          history.replaceState(null, "", location.pathname + (rest ? "?" + rest : "") + location.hash);
+        }
+      })();
+
+      const $ = (sel) => document.querySelector(sel);
+      const streamEl = $("#stream");
+      const inputEl = $("#input");
+      const sendBtn = $("#btn-send");
+      const stopBtn = $("#btn-stop");
+      const dotEl = $("#dot");
+      const statusTextEl = $("#status-text");
+      const sessionLabelEl = $("#session-label");
+      const tokenLabelEl = $("#token-label");
+      const modelSelectEl = $("#model-select");
+      const setupEl = $("#setup");
+      const setupMsgEl = $("#setup-msg");
+      const urlMsgEl = $("#url-msg");
+      const healthHintEl = $("#health-hint");
+      const jumpEl = $("#jump");
+
+      function el(tag, cls, text) {
+        const node = document.createElement(tag);
+        if (cls) node.className = cls;
+        if (text != null) node.textContent = text;
+        return node;
+      }
+
+      function hhmm() {
+        const d = new Date();
+        return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
+      }
+
+      /* ------------------------------------------------------------------ *
+       * markdown (small, escape-first renderer)
+       * ------------------------------------------------------------------ */
+      function escapeHtml(text) {
+        return text.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      }
+
+      function inline(text) {
+        return text
+          .replace(/`([^`\n]+)`/g, (_, code) => "<code>" + code + "</code>")
+          .replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>")
+          .replace(/(^|[\s(])\*([^*\n]+)\*/g, "$1<em>$2</em>")
+          .replace(/~~([^~\n]+)~~/g, "<del>$1</del>")
+          .replace(/\[([^\]\n]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+          .replace(/(^|[\s(])(https?:\/\/[^\s<)]+)/g, '$1<a href="$2" target="_blank" rel="noopener noreferrer">$2</a>');
+      }
+
+      function codeBlock(lang, code) {
+        const wrap = el("div", "codeblock");
+        const head = el("header");
+        head.appendChild(el("span", null, lang || "code"));
+        const copy = el("button", "copy", "コピー");
+        copy.type = "button";
+        copy.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(code);
+            copy.textContent = "コピー済み";
+            setTimeout(() => (copy.textContent = "コピー"), 1200);
+          } catch (_) {}
+        });
+        head.appendChild(copy);
+        const pre = el("pre");
+        pre.appendChild(el("code", null, code));
+        wrap.appendChild(head);
+        wrap.appendChild(pre);
+        return wrap;
+      }
+
+      function renderMarkdown(text) {
+        const frag = document.createDocumentFragment();
+        const fence = /```([^\n`]*)\n([\s\S]*?)```/g;
+        let last = 0;
+        let match;
+        while ((match = fence.exec(text)) !== null) {
+          if (match.index > last) {
+            appendBlocks(frag, text.slice(last, match.index));
+          }
+          frag.appendChild(codeBlock(match[1].trim(), match[2]));
+          last = match.index + match[0].length;
+        }
+        if (last < text.length) appendBlocks(frag, text.slice(last));
+        return frag;
+      }
+
+      function appendBlocks(frag, raw) {
+        const lines = escapeHtml(raw).split("\n");
+        let para = [];
+        let list = null;
+        const flushPara = () => {
+          if (!para.length) return;
+          const p = el("p");
+          p.innerHTML = para.map(inline).join("<br>");
+          frag.appendChild(p);
+          para = [];
+        };
+        const flushList = () => {
+          if (!list) return;
+          const node = el(list.tag);
+          for (const item of list.items) {
+            const li = el("li");
+            li.innerHTML = inline(item);
+            node.appendChild(li);
+          }
+          frag.appendChild(node);
+          list = null;
+        };
+        for (const rawLine of lines) {
+          const line = rawLine.replace(/\s+$/, "");
+          if (!line.trim()) {
+            flushPara();
+            flushList();
+            continue;
+          }
+          let m;
+          if ((m = line.match(/^(#{1,6})\s+(.*)$/))) {
+            flushPara();
+            flushList();
+            const h = el("h" + m[1].length);
+            h.innerHTML = inline(m[2]);
+            frag.appendChild(h);
+            continue;
+          }
+          if (/^(---|\*\*\*|___)\s*$/.test(line)) {
+            flushPara();
+            flushList();
+            frag.appendChild(el("hr"));
+            continue;
+          }
+          if ((m = line.match(/^&gt;\s?(.*)$/))) {
+            flushPara();
+            flushList();
+            const q = el("blockquote");
+            q.innerHTML = inline(m[1]);
+            frag.appendChild(q);
+            continue;
+          }
+          if ((m = line.match(/^\s*[-*+]\s+(.*)$/))) {
+            flushPara();
+            if (!list || list.tag !== "ul") {
+              flushList();
+              list = { tag: "ul", items: [] };
+            }
+            list.items.push(m[1]);
+            continue;
+          }
+          if ((m = line.match(/^\s*\d+[.)]\s+(.*)$/))) {
+            flushPara();
+            if (!list || list.tag !== "ol") {
+              flushList();
+              list = { tag: "ol", items: [] };
+            }
+            list.items.push(m[1]);
+            continue;
+          }
+          flushList();
+          para.push(line);
+        }
+        flushPara();
+        flushList();
+      }
+
+      /* ------------------------------------------------------------------ *
+       * transcript blocks
+       * ------------------------------------------------------------------ */
+      const ui = {
+        blocks: [],
+        streamBlock: null, // currently streaming assistant block
+        running: false,
+        atBottom: true,
+        tokens: { input: 0, output: 0 },
+        model: "",
+        sessionId: "",
+        allSessions: [],
+      };
+
+      function scrollToBottom(force) {
+        if (force || ui.atBottom) {
+          streamEl.scrollTop = streamEl.scrollHeight;
+        }
+      }
+
+      streamEl.addEventListener("scroll", () => {
+        const gap = streamEl.scrollHeight - streamEl.scrollTop - streamEl.clientHeight;
+        ui.atBottom = gap < 80;
+        jumpEl.hidden = ui.atBottom;
+      });
+      jumpEl.addEventListener("click", () => {
+        ui.atBottom = true;
+        scrollToBottom(true);
+        jumpEl.hidden = true;
+      });
+
+      function addNotice(text, kind) {
+        const node = el("div", "blk blk-notice" + (kind ? " " + kind : ""), text);
+        streamEl.appendChild(node);
+        scrollToBottom();
+        return node;
+      }
+
+      function addUser(text) {
+        const node = el("div", "blk blk-user", text);
+        streamEl.appendChild(node);
+        scrollToBottom(true);
+        return node;
+      }
+
+      function addAssistant(text) {
+        const node = el("div", "blk blk-assistant");
+        const reasoning = el("details", "reasoning");
+        reasoning.hidden = true;
+        const summary = el("summary", null, "思考");
+        const reasoningBody = el("div", "reasoning-body");
+        reasoning.appendChild(summary);
+        reasoning.appendChild(reasoningBody);
+        const body = el("div", "body");
+        node.appendChild(reasoning);
+        node.appendChild(body);
+        const block = {
+          kind: "assistant",
+          node,
+          body,
+          text: text || "",
+          reasoning: "",
+          reasoningNode: reasoning,
+          reasoningBody,
+          dirty: true,
+          reasoningDirty: false,
+        };
+        body.innerHTML = "";
+        if (block.text) body.appendChild(renderMarkdown(block.text));
+        block.dirty = false;
+        streamEl.appendChild(node);
+        ui.blocks.push(block);
+        scrollToBottom();
+        return block;
+      }
+
+      let rafPending = false;
+      function scheduleFlush() {
+        if (rafPending) return;
+        rafPending = true;
+        requestAnimationFrame(() => {
+          rafPending = false;
+          const block = ui.streamBlock;
+          if (!block) return;
+          if (block.dirty) {
+            block.dirty = false;
+            const frag = renderMarkdown(block.text);
+            block.body.replaceChildren(frag);
+          }
+          if (block.reasoningDirty) {
+            block.reasoningDirty = false;
+            block.reasoningBody.textContent = block.reasoning;
+          }
+          scrollToBottom();
+        });
+      }
+
+      function ensureStreamBlock() {
+        if (ui.streamBlock) return ui.streamBlock;
+        const block = addAssistant("");
+        ui.streamBlock = block;
+        return block;
+      }
+
+      function appendAssistantText(delta) {
+        const block = ensureStreamBlock();
+        block.text += delta;
+        block.dirty = true;
+        scheduleFlush();
+      }
+
+      function appendReasoning(delta) {
+        const block = ensureStreamBlock();
+        block.reasoning += delta;
+        block.reasoningDirty = true;
+        block.reasoningNode.hidden = false;
+        scheduleFlush();
+      }
+
+      function addTool(name, toolId) {
+        const node = el("div", "tool");
+        const head = el("div", "tool-head");
+        head.appendChild(el("span", "tool-name", name || "tool"));
+        const state = el("span", "tool-state", "実行中…");
+        head.appendChild(state);
+        node.appendChild(head);
+
+        const inputBox = el("details");
+        inputBox.appendChild(el("summary", null, "入力"));
+        const inputPre = el("pre", null, "");
+        inputBox.appendChild(inputPre);
+        inputBox.hidden = true;
+        node.appendChild(inputBox);
+
+        const outputBox = el("details");
+        outputBox.appendChild(el("summary", null, "出力"));
+        const outputPre = el("pre", null, "");
+        outputBox.appendChild(outputPre);
+        outputBox.hidden = true;
+        node.appendChild(outputBox);
+
+        const block = {
+          kind: "tool",
+          node,
+          toolId,
+          name,
+          inputText: "",
+          inputBox,
+          inputPre,
+          outputBox,
+          outputPre,
+          state,
+          done: false,
+        };
+        streamEl.appendChild(node);
+        ui.blocks.push(block);
+        ui.streamBlock = null; // next text goes into a fresh assistant block
+        scrollToBottom();
+        return block;
+      }
+
+      function findTool(toolId) {
+        for (let i = ui.blocks.length - 1; i >= 0; i--) {
+          const b = ui.blocks[i];
+          if (b.kind === "tool" && !b.done && (toolId == null || b.toolId === toolId)) return b;
+        }
+        return null;
+      }
+
+      function appendToolInput(toolId, delta) {
+        const block = findTool(toolId) || addTool("tool", toolId);
+        block.inputText += delta;
+        block.inputPre.textContent = block.inputText;
+        block.inputBox.hidden = false;
+        scrollToBottom();
+      }
+
+      function finishTool(toolId, name, output, error) {
+        const block = findTool(toolId) || addTool(name || "tool", toolId);
+        block.done = true;
+        block.state.textContent = error ? "失敗" : "完了";
+        if (error) block.node.classList.add("err");
+        const text = error ? output ? output + "\n\n" + error : error : output || "";
+        block.outputPre.textContent = text || "(出力なし)";
+        block.outputBox.hidden = false;
+        scrollToBottom();
+      }
+
+      function resetTranscript() {
+        ui.blocks = [];
+        ui.streamBlock = null;
+        streamEl.replaceChildren();
+        ui.atBottom = true;
+      }
+
+      /* ------------------------------------------------------------------ *
+       * header / status
+       * ------------------------------------------------------------------ */
+      function setState(state) {
+        net.state = state;
+        dotEl.className = "dot " + state;
+        statusTextEl.textContent =
+          { idle: "未接続", connecting: "接続中…", open: "接続済み", down: "切断 / 再接続中", blocked: "設定が必要" }[state] || state;
+        const usable = state === "open";
+        sendBtn.disabled = !usable;
+      }
+
+      function updateMeta() {
+        sessionLabelEl.textContent = ui.sessionId ? ui.sessionId.replace(/^session_/, "").slice(0, 12) : "";
+        sessionLabelEl.title = ui.sessionId || "";
+        const t = ui.tokens;
+        tokenLabelEl.textContent = t.input || t.output ? `↑${t.input} ↓${t.output}` : "";
+        tokenLabelEl.title = "入力 / 出力トークン";
+      }
+
+      function setModelOptions(models, current) {
+        if (!models || !models.length) {
+          modelSelectEl.hidden = true;
+          return;
+        }
+        modelSelectEl.replaceChildren();
+        const names = models.slice();
+        if (current && !names.includes(current)) names.unshift(current);
+        for (const name of names) {
+          const option = el("option", null, name.replace(/^[a-z-]+\//, ""));
+          option.value = name;
+          if (name === current) option.selected = true;
+          modelSelectEl.appendChild(option);
+        }
+        modelSelectEl.hidden = false;
+      }
+
+      modelSelectEl.addEventListener("change", () => {
+        const model = modelSelectEl.value;
+        if (!model) return;
+        net.send({ type: "set_model", id: net.nextId(), model });
+      });
+
+      /* ------------------------------------------------------------------ *
+       * gateway connection
+       * ------------------------------------------------------------------ */
+      const net = {
+        ws: null,
+        state: "idle",
+        want: false,
+        retry: 0,
+        timer: null,
+        pingTimer: null,
+        reqId: 0,
+        subscribeId: 0,
+        nextId() {
+          return ++this.reqId;
+        },
+        baseUrl() {
+          const host = settings.host || "localhost";
+          return "http://" + host + ":" + settings.port;
+        },
+        wsUrl() {
+          const host = settings.host || "localhost";
+          return "ws://" + host + ":" + settings.port + "/ws?token=" + encodeURIComponent(settings.token);
+        },
+        connect() {
+          this.want = true;
+          clearTimeout(this.timer);
+          if (!settings.token) {
+            showSetup("ペアリングコードを入力して接続してください。");
+            setState("idle");
+            return;
+          }
+          if (this.ws && (this.ws.readyState === WebSocket.CONNECTING || this.ws.readyState === WebSocket.OPEN)) return;
+          setState("connecting");
+          let ws;
+          try {
+            ws = new WebSocket(this.wsUrl());
+          } catch (error) {
+            setState("down");
+            this.scheduleReconnect();
+            return;
+          }
+          this.ws = ws;
+          // Events from a socket that has already been replaced (reload, reconnect,
+          // "new session") must not touch shared state: the old socket's onclose
+          // would otherwise null out this.ws and trigger a needless reconnect.
+          const isCurrent = () => this.ws === ws;
+          ws.onopen = () => {
+            if (!isCurrent()) return;
+            this.retry = 0;
+            setState("open");
+            hideSetup();
+            this.subscribe();
+            this.startPing();
+          };
+          ws.onmessage = (event) => {
+            if (!isCurrent()) return;
+            let msg;
+            try {
+              msg = JSON.parse(event.data);
+            } catch (_) {
+              return;
+            }
+            try {
+              handleEvent(msg);
+            } catch (error) {
+              console.error("event handler failed", msg, error);
+            }
+          };
+          ws.onclose = () => {
+            if (!isCurrent()) return;
+            this.ws = null;
+            this.stopPing();
+            stopBtn.hidden = true;
+            if (!this.want) {
+              setState("idle");
+              return;
+            }
+            setState("down");
+            this.scheduleReconnect();
+          };
+          ws.onerror = () => {};
+        },
+        scheduleReconnect() {
+          this.retry += 1;
+          const delay = Math.min(1000 * Math.pow(1.8, this.retry), 15000);
+          if (this.retry === 4) {
+            showSetup("接続できません。ホスト・ポート・トークンを確認してください。");
+          }
+          clearTimeout(this.timer);
+          this.timer = setTimeout(() => this.connect(), delay);
+        },
+        disconnect() {
+          this.want = false;
+          clearTimeout(this.timer);
+          this.stopPing();
+          if (this.ws) {
+            const ws = this.ws;
+            this.ws = null;
+            try {
+              ws.close();
+            } catch (_) {}
+          }
+          setState("idle");
+        },
+        // A rejected subscribe (missing working directory, bad session, revoked
+        // token) will be rejected again on every retry, so stop reconnecting and
+        // hand the reason to the setup form instead of spinning 切断 / 再接続中.
+        stopForSetup(message) {
+          this.want = false;
+          this.retry = 0;
+          clearTimeout(this.timer);
+          this.stopPing();
+          if (this.ws) {
+            const ws = this.ws;
+            this.ws = null;
+            try {
+              ws.close();
+            } catch (_) {}
+          }
+          // A session the daemon no longer knows will be rejected forever, so drop
+          // it and let the next connect start a fresh one.
+          if (/^unknown session/i.test(message) && settings.session) {
+            settings.session = "";
+            store.set("session", "");
+            ui.sessionId = "";
+            updateMeta();
+          }
+          setState("blocked");
+          showSetup(explainRejection(message), true);
+          if (/working directory/i.test(message)) $("#f-dir").focus();
+        },
+        send(payload) {
+          if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return false;
+          this.ws.send(JSON.stringify(payload));
+          return true;
+        },
+        subscribe() {
+          const id = this.nextId();
+          this.subscribeId = id;
+          const payload = {
+            type: "subscribe",
+            id,
+            client_instance_id: settings.deviceId,
+            continue_on_disconnect: true,
+            client_has_local_history: false,
+          };
+          if (settings.workingDir) payload.working_dir = settings.workingDir;
+          // Reattach to the session this browser was last on. The daemon answers
+          // with that session plus its history, and falls back to a fresh session
+          // when the id is no longer known, so this is safe on every connect.
+          if (settings.session) payload.target_session_id = settings.session;
+          this.send(payload);
+        },
+        startPing() {
+          this.stopPing();
+          this.pingTimer = setInterval(() => this.send({ type: "ping", id: this.nextId() }), 25000);
+        },
+        stopPing() {
+          clearInterval(this.pingTimer);
+          this.pingTimer = null;
+        },
+      };
+
+      /* ------------------------------------------------------------------ *
+       * server events
+       * ------------------------------------------------------------------ */
+      function handleEvent(msg) {
+        switch (msg.type) {
+          case "session":
+            onSession(msg.session_id);
+            break;
+          case "history":
+            onHistory(msg);
+            break;
+          case "text_delta":
+            ui.running = true;
+            appendAssistantText(msg.text || "");
+            break;
+          case "text_replace": {
+            const block = ensureStreamBlock();
+            block.text = msg.text || "";
+            block.dirty = true;
+            scheduleFlush();
+            break;
+          }
+          case "text_suffix_replace": {
+            const block = ensureStreamBlock();
+            if (block.text.endsWith(msg.old_text || "")) {
+              block.text = block.text.slice(0, block.text.length - (msg.old_text || "").length) + (msg.new_text || "");
+              block.dirty = true;
+              scheduleFlush();
+            }
+            break;
+          }
+          case "reasoning_delta":
+            ui.running = true;
+            appendReasoning(msg.delta || msg.reasoning || "");
+            break;
+          case "tool_start":
+            addTool(msg.name, msg.id);
+            break;
+          case "tool_input":
+            appendToolInput(msg.id, msg.delta || "");
+            break;
+          case "tool_exec": {
+            const block = findTool(msg.id) || addTool(msg.name, msg.id);
+            block.state.textContent = "実行中…";
+            break;
+          }
+          case "tool_done":
+            finishTool(msg.id, msg.name, msg.output, msg.error);
+            break;
+          case "tokens":
+            ui.tokens = { input: msg.input || 0, output: msg.output || 0 };
+            updateMeta();
+            break;
+          case "model_changed":
+            ui.model = msg.model || msg.provider_model || "";
+            setModelOptions(currentModels(), ui.model);
+            break;
+          case "done":
+            onTurnEnd();
+            break;
+          case "interrupted":
+          case "turn_stopped":
+            onTurnEnd(true);
+            break;
+          case "error":
+            // Subscribe rejections repeat on every reconnect. Report them in the
+            // setup form, where the user can actually fix them, and stop retrying.
+            // No copy in the stream: it would sit there in English after the user
+            // has already fixed the cause.
+            if (msg.id === net.subscribeId) {
+              net.stopForSetup(msg.message || "購読に失敗しました。");
+              break;
+            }
+            addNotice(msg.message || "エラーが発生しました", "err");
+            onTurnEnd(true);
+            break;
+          case "peer_user_message":
+            addUser(msg.content || "");
+            break;
+          case "notification":
+            // The server announces coordinator hand-over to the session that takes
+            // the slot, and a reconnect makes a solo session re-take its own slot.
+            // Self-addressed notices tell the user nothing, so drop them.
+            if (msg.from_session && msg.from_session === ui.sessionId) break;
+            addNotice((msg.from_name ? msg.from_name + ": " : "") + (msg.message || ""), null);
+            break;
+          case "session_renamed":
+            break;
+          case "pong":
+          case "ack":
+            break;
+          default:
+            break;
+        }
+      }
+
+      let models = [];
+      function currentModels() {
+        return models;
+      }
+
+      function onTurnEnd(stopped) {
+        ui.running = false;
+        if (ui.streamBlock) {
+          const block = ui.streamBlock;
+          if (!block.text.trim() && !block.reasoning.trim()) {
+            block.node.remove();
+            ui.blocks = ui.blocks.filter((b) => b !== block);
+          }
+        }
+        ui.streamBlock = null;
+        for (const block of ui.blocks) {
+          if (block.kind === "tool" && !block.done) {
+            block.done = true;
+            block.state.textContent = stopped ? "中断" : "不明";
+          }
+        }
+        toggleComposer();
+        scrollToBottom();
+      }
+
+      function onSession(sessionId) {
+        if (!sessionId) return;
+        const previous = ui.sessionId;
+        ui.sessionId = sessionId;
+        settings.session = sessionId;
+        store.set("session", sessionId);
+        updateMeta();
+        if (previous && previous !== sessionId) addNotice("セッション: " + sessionId);
+      }
+
+      function onHistory(msg) {
+        if (msg.session_id && msg.session_id !== ui.sessionId) {
+          ui.sessionId = msg.session_id;
+          settings.session = msg.session_id;
+          store.set("session", msg.session_id);
+        }
+        resetTranscript();
+        if (msg.provider_model) {
+          ui.model = msg.provider_model;
+        }
+        if (Array.isArray(msg.available_models)) {
+          models = msg.available_models;
+          setModelOptions(models, ui.model);
+        }
+        if (msg.total_tokens && Array.isArray(msg.total_tokens)) {
+          ui.tokens = { input: msg.total_tokens[0] || 0, output: msg.total_tokens[1] || 0 };
+        }
+        if (Array.isArray(msg.all_sessions)) {
+          ui.allSessions = msg.all_sessions;
+        }
+        const messages = msg.messages || [];
+        if (!messages.length) {
+          const title = el("div", "blk blk-session", "新しいセッション · " + hhmm());
+          streamEl.appendChild(title);
+        }
+        for (const message of messages) {
+          renderHistoryMessage(message);
+        }
+        updateMeta();
+        ui.atBottom = true;
+        scrollToBottom(true);
+      }
+
+      function renderHistoryMessage(message) {
+        const role = message.role;
+        const content = message.content || "";
+        if (role === "user") {
+          if (content.trim()) addUser(content);
+          return;
+        }
+        if (role === "assistant") {
+          const block = addAssistant(content);
+          if (Array.isArray(message.tool_calls)) {
+            for (const call of message.tool_calls) {
+              const name = typeof call === "string" ? call : call.name || "tool";
+              const toolBlock = addTool(name, null);
+              toolBlock.done = true;
+              toolBlock.state.textContent = "履歴";
+            }
+          }
+          ui.streamBlock = null;
+          return;
+        }
+        if (role === "tool") {
+          const name = (message.tool_data && message.tool_data.name) || "tool";
+          const block = addTool(name, null);
+          block.done = true;
+          block.state.textContent = "履歴";
+          block.outputPre.textContent = content || "(出力なし)";
+          block.outputBox.hidden = false;
+          ui.streamBlock = null;
+          return;
+        }
+      }
+
+      /* ------------------------------------------------------------------ *
+       * composer
+       * ------------------------------------------------------------------ */
+      function toggleComposer() {
+        stopBtn.hidden = !ui.running;
+        sendBtn.hidden = ui.running;
+        inputEl.disabled = ui.running;
+      }
+
+      function autoGrow() {
+        inputEl.style.height = "auto";
+        inputEl.style.height = Math.min(inputEl.scrollHeight, window.innerHeight * 0.4) + "px";
+      }
+
+      inputEl.addEventListener("input", autoGrow);
+      inputEl.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
+          event.preventDefault();
+          sendMessage();
+        }
+      });
+      sendBtn.addEventListener("click", sendMessage);
+      stopBtn.addEventListener("click", () => {
+        net.send({ type: "cancel", id: net.nextId() });
+      });
+
+      function sendMessage() {
+        const text = inputEl.value.trim();
+        if (!text) return;
+        if (net.state !== "open") {
+          addNotice("未接続です。設定から接続してください。", "err");
+          return;
+        }
+        if (ui.running) return;
+        addUser(text);
+        inputEl.value = "";
+        autoGrow();
+        if (!net.send({ type: "message", id: net.nextId(), content: text })) {
+          addNotice("送信に失敗しました（切断中）。", "err");
+          return;
+        }
+        ui.running = true;
+        ui.streamBlock = null;
+        toggleComposer();
+      }
+
+      /* ------------------------------------------------------------------ *
+       * setup / pairing
+       * ------------------------------------------------------------------ */
+      // The gateway's rejections are precise but terse and in English. Say what
+      // the user has to do about them, and keep the original text for diagnosis.
+      function explainRejection(message) {
+        if (/requires the client's working directory/i.test(message)) {
+          return (
+            "新規セッションには作業ディレクトリが必要です。" +
+            "下の「作業ディレクトリ」に絶対パスを入れて「接続のみ」を押してください。" +
+            " (" + message + ")"
+          );
+        }
+        if (/^unknown session/i.test(message)) {
+          return "そのセッションは読み込めませんでした。保存していたIDを消したので、もう一度接続すると新規セッションで始まります。";
+        }
+        if (/token|unauthor|forbidden/i.test(message)) {
+          return "トークンが拒否されました。`jcode pair` でコードを発行し直してください。 (" + message + ")";
+        }
+        return message;
+      }
+
+      function showSetup(message, isError) {
+        $("#f-host").value = settings.host || "localhost";
+        $("#f-port").value = settings.port;
+        $("#f-session").value = settings.session || "";
+        $("#f-dir").value = settings.workingDir || "";
+        setupMsgEl.textContent = message || "";
+        setupMsgEl.className = isError ? "hint err" : "hint";
+        urlMsgEl.hidden = true;
+        urlMsgEl.textContent = "";
+        setupEl.hidden = false;
+      }
+
+      function hideSetup() {
+        setupEl.hidden = true;
+      }
+
+      const FIRST_RUN_HINT = "`jcode pair` でペアリングコードを発行し、下に入力してください。";
+      const REOPEN_HINT = "接続先やトークンを変えるときは、ここで入れ直して「接続」を押してください。";
+
+      $("#btn-settings").addEventListener("click", () => showSetup(REOPEN_HINT));
+
+      async function pair(code) {
+        const deviceId = settings.deviceId;
+        const response = await fetch(net.baseUrl() + "/pair", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code, device_id: deviceId, device_name: "jcode web (" + navigator.platform + ")" }),
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(explainPairFailure(data.error || "ペアリングに失敗しました (HTTP " + response.status + ")"));
+        if (!data.token) throw new Error("トークンが返りませんでした");
+        return data.token;
+      }
+
+      // Codes are single use and expire after five minutes, but the gateway
+      // reports every one of those cases as "invalid or expired". Say what the
+      // user can actually do, then keep the original text.
+      function explainPairFailure(message) {
+        if (/invalid or expired pairing code/i.test(message)) {
+          return (
+            "コードが違うか、期限切れ、または使用済みです。" +
+            "この画面を開いたまま `jcode pair` で新しいコードを発行し、入れ直してください。" +
+            " (" + message + ")"
+          );
+        }
+        return message;
+      }
+
+      async function health() {
+        const response = await fetch(net.baseUrl() + "/health", { cache: "no-store" });
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        return response.json();
+      }
+
+      $("#btn-health").addEventListener("click", async () => {
+        readSetupFields();
+        healthHintEl.className = "hint";
+        healthHintEl.textContent = "確認中…";
+        try {
+          const data = await health();
+          healthHintEl.className = "hint ok";
+          healthHintEl.textContent = "OK: jcode " + (data.version || "?") + " (gateway)";
+        } catch (error) {
+          healthHintEl.className = "hint err";
+          healthHintEl.textContent = "到達できません: " + error.message;
+        }
+      });
+
+      // Drop the stored session id so the next subscribe gets a fresh session.
+      $("#btn-new-session").addEventListener("click", () => {
+        settings.session = "";
+        store.set("session", "");
+        ui.sessionId = "";
+        $("#f-session").value = "";
+        resetTranscript();
+        updateMeta();
+        hideSetup();
+        net.disconnect();
+        net.connect();
+      });
+
+      $("#btn-forget").addEventListener("click", () => {
+        settings.token = "";
+        store.del("token");
+        net.disconnect();
+        setupMsgEl.className = "hint ok";
+        setupMsgEl.textContent = "トークンを破棄しました。";
+      });
+
+      function readSetupFields() {
+        settings.host = $("#f-host").value.trim() || "localhost";
+        settings.port = String($("#f-port").value.trim() || 7643);
+        settings.workingDir = $("#f-dir").value.trim();
+        store.set("host", settings.host);
+        store.set("port", settings.port);
+        store.set("workingDir", settings.workingDir);
+      }
+
+      // A browser cannot know the daemon's working directory, and the gateway
+      // rejects a new session without one. Hand back a URL that carries the whole
+      // config so a bookmark reopens the client already pointed at the gateway.
+      $("#btn-bookmark").addEventListener("click", () => {
+        readSetupFields();
+        const url = new URL(location.href);
+        url.search = "";
+        url.hash = "";
+        const params = {
+          host: settings.host,
+          port: settings.port,
+          token: settings.token,
+          workingDir: settings.workingDir,
+        };
+        for (const key of Object.keys(params)) {
+          if (params[key]) url.searchParams.set(key, params[key]);
+        }
+        const text = url.toString();
+        urlMsgEl.hidden = false;
+        urlMsgEl.textContent = text;
+        if (navigator.clipboard) navigator.clipboard.writeText(text).catch(() => {});
+      });
+
+      $("#btn-connect").addEventListener("click", () => {
+        readSetupFields();
+        const target = $("#f-session").value.trim();
+        applyTarget(target);
+        hideSetup();
+        net.retry = 0;
+        net.disconnect();
+        net.connect();
+      });
+
+      // The daemon attaches to settings.session on subscribe, so "switching" a
+      // session just means updating the stored id and reconnecting.
+      function applyTarget(target) {
+        if (!target) return;
+        const normalized = target.startsWith("session_") ? target : "session_" + target;
+        settings.session = normalized;
+        store.set("session", normalized);
+        ui.sessionId = "";
+      }
+
+      $("#setup-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        readSetupFields();
+        const code = $("#f-code").value.replace(/\D/g, "");
+        const target = $("#f-session").value.trim();
+        applyTarget(target);
+        setupMsgEl.className = "hint";
+        if (code) {
+          setupMsgEl.textContent = "ペアリング中…";
+          try {
+            settings.token = await pair(code);
+            store.set("token", settings.token);
+          } catch (error) {
+            setupMsgEl.className = "hint err";
+            setupMsgEl.textContent = error.message;
+            return;
+          }
+        }
+        if (!settings.token) {
+          setupMsgEl.className = "hint err";
+          setupMsgEl.textContent = "ペアリングコードを入力してください（`jcode pair` で発行）。";
+          return;
+        }
+        $("#f-code").value = "";
+        hideSetup();
+        net.retry = 0;
+        net.disconnect();
+        net.connect();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !setupEl.hidden && settings.token) hideSetup();
+      });
+
+      /* ------------------------------------------------------------------ *
+       * boot
+       * ------------------------------------------------------------------ */
+      autoGrow();
+      updateMeta();
+      toggleComposer();
+      setState("idle");
+      if (settings.token) {
+        hideSetup();
+        net.connect();
+      } else {
+        showSetup(FIRST_RUN_HINT);
+      }
+    </script>
+  </body>
+</html>

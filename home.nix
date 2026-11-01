@@ -313,6 +313,10 @@ rec {
   ];
   nixpkgs.config = {
     allowUnfree = true;
+    # python3.14-posthog 7.71.0 は mcp >= 2 で meta.broken = true になっており、
+    # 依存しているだけで評価が Refusing to evaluate で落ちる (aider-chat 経由)。
+    # 実行時に壊れているわけではないので warn に落として通す。
+    problems.handlers.posthog.broken = "warn";
     permittedInsecurePackages = [
       "electron-29.4.6"
     ];
@@ -1153,7 +1157,7 @@ rec {
       font = {
         size = 13.5;
         normal = {
-          family = "UDEV Gothic NF";
+          family = "UDEV Gothic NFLG";
         };
       };
       window = {

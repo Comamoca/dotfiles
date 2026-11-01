@@ -30,6 +30,9 @@ repo = "Shougo/dpp-protocol-git"
 repo = "https://github.com/folke/snacks.nvim"
 
 [[plugins]]
+repo = "https://github.com/Shougo/goda.vim"
+
+[[plugins]]
 repo = 'https://github.com/tkmpypy/chowcho.nvim'
 lua_add = '''
 require('chowcho').setup {

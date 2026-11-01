@@ -31,6 +31,9 @@ with pkgs;
   efm-langserver
   luau
 
+  # Rust build cache
+  sccache
+
   # Debug Adapter Protocol
   (pkgs.lib.hiPrio elixir-ls)
   lldb

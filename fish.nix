@@ -186,6 +186,12 @@
     # (config/fish/functions/oc.fish)
     abbr --add cmd "cmd --yolo"
     abbr --add jc jcode
+    # dt    : 起動中の dsh web へアタッチ (web が落ちていればローカル起動)
+    # dty   : dt と同じ + DSH_PERMISSION_MODE=danger-full-access
+    # dtl   : attach せず tui profile をローカル起動 (旧 dt の挙動)
+    # 実体は config/fish/functions/{dt,dty,dtl}.fish
+    # dsh の権限は DSH_PERMISSION_MODE でのみ決まる (--yolo フラグは無い)。
+    # danger-full-access = sandbox 無制限 + approval never = yolo。
 
     set -x ELIXIR_ERL_OPTIONS "+fnu"
     set -x SSH_ASKPASS ${pkgs.kdePackages.ksshaskpass}

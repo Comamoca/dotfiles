@@ -1,0 +1,9 @@
+cloudflared-dsh.service
+cloudflared-omniroute.service
+cloudflared-opencode.service
+dsh-web.service
+emacs@canary.service
+emacs@coding.service
+emacs@main.service
+omniroute.service
+opencode-server.service

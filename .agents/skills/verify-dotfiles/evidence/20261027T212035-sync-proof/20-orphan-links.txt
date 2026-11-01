@@ -1,0 +1,9 @@
+== orphaned home-manager links with no owning generation (leftovers from older generations)
+.config/systemd/user/default.target.wants/rclone-sync.service  -> /nix/store/lq99y10q61b9dn34bcbigbjzf3i4xqqg-home-manager-files/.config/systemd/user/default.target.wants/rclone-sync.service
+.config/systemd/user/r2-mount.service                          -> /nix/store/8wvnc8hn3j2l6c092ixa27rzk2kwgq8y-home-manager-files/.config/systemd/user/r2-mount.service
+.config/systemd/user/litellm.service                           -> /nix/store/rzlrrn2ggiqm766pgs2k91rldmgfpq3x-home-manager-files/.config/systemd/user/litellm.service
+.config/kanshi                                                 -> /nix/store/s8x8rh1wmg6jvmc2irqbni7ycfkg0ga4-home-manager-files/.config/kanshi
+
+-- rclone-sync.service in default.target.wants is DANGLING but is-active says:
+active
+inactive

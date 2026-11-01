@@ -1,0 +1,2 @@
+config/niri/verify-dotfiles-probe.md
+/home/coma/.config/niri/verify-dotfiles-probe.md
