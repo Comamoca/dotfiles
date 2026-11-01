@@ -176,7 +176,15 @@ OpenAI 互換, `OMNIROUTE_API_KEY`) なので、クライアントの `baseURL` 
 | OpenCode | `~/.config/opencode/opencode.json` の `provider.omniroute.options.baseURL` | ファイルを編集 |
 | OpenCode の combos プラグイン | `config/opencode/plugins/omniroute-combos.ts` の `BASE_URL` | `OMNIROUTE_BASE_URL` 環境変数で上書き可 |
 | OmniGent | `omnigent.nix` の `omnirouteBase` | `home-manager switch --flake .#Home --impure` |
+| jcode | `~/.jcode/config.toml` の `[[providers.omniroute]]` | ファイルを編集 |
 | combos の生成 (`omniroute-combos`) | `bin/scripts/omniroute-combos/omniroute-combos` | `OMNIROUTE_URL` / `OMNIROUTE_ENV_FILE` |
+
+`~/.jcode/config.toml` の `[[providers.omniroute.models]]` は `omniroute-combos` が
+マーカー区間の中だけ書き換える (`# >>> omniroute-combos (jcode models) >>>` から
+`# <<< omniroute-combos (jcode models) <<<` まで)。jcode には設定の include 機構が
+無いので、区間の外に同じ id を宣言すると TOML の二重定義になって読み込みが失敗する。
+区間の外へ手でモデルを足さないこと。jcode は `config.toml` を監視しないので、
+生成後はデーモンの再起動が要る。
 
 `dsh` の `acp` / `web` / `headless` プロファイルは `provider.omniroute` を
 持っているが、`tui` は既定の provider (OmniRoute ではない) を使う。
