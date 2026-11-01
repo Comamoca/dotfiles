@@ -16,6 +16,7 @@ emacs.d/emojis
 
 # Nix
 result
+result-*
 
 *.raw.yaml
 
