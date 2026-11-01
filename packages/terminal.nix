@@ -6,8 +6,10 @@ let
   # python3.14-posthog 7.71.0 は mcp >= 2 で meta.broken = true かつテストも
   # 1 件落ちてビルドできない状態。aider-chat は posthog を直接 import しない
   # (analytics 送信のみ) ため、依存リストから外してビルドを通す。
-  # posthog を dependencies と propagatedBuildInputs の両方から除去する必要がある
-  # (片方だけだと propagatedBuildInputs 経由でビルドが走る)。
+  # - posthog を dependencies と propagatedBuildInputs の両方から除去する
+  #   (片方だけだと propagatedBuildInputs 経由でビルドが走る)
+  # - wheel の METADATA (requires-dist) は sdist 由来で posthog/mixpanel が残るため
+  #   pythonRuntimeDepsCheckHook が "not installed" で落ちる。これを無効化する。
   aiderChatNoPosthog =
     let
       dropPosthog =
@@ -26,6 +28,11 @@ let
       dependencies = dropPosthog (old.dependencies or [ ]);
       propagatedBuildInputs = dropPosthog (old.propagatedBuildInputs or [ ]);
       doCheck = false;
+      # wheel の METADATA (requires-dist) は sdist 由来で posthog / mixpanel を
+      # 含むため、依存から外すと pythonRuntimeDepsCheckHook が
+      # "<pkg> not installed" で失敗する。フック自体は pythonRuntimeDepsCheck
+      # ではなく dontCheckRuntimeDeps で無効化される。
+      dontCheckRuntimeDeps = true;
     });
 
 in
