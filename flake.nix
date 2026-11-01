@@ -245,7 +245,12 @@
             inputs.sops-nix.nixosModules.sops
             # 救援モード (HDMI 自動ログイン + 自動診断)。
             ./orangepi5/rescue.nix
-            ({ ... }: { orangepi5.rescue.enable = true; })
+            ({ ... }: {
+              orangepi5.rescue.enable = true;
+              # キーボードが無い実機で DHCP が取れないときの保険。
+              # リンクアップ後にこの IP を直接振る。
+              orangepi5.rescue.fallbackAddress = "192.168.10.50/24";
+            })
             ./orangepi5/configuration.nix
           ];
         };
