@@ -308,6 +308,26 @@
         },
         "version": "v0.0.57"
     },
+    "efm-license-lint": {
+        "cargoLock": null,
+        "date": "2026-11-01",
+        "extract": null,
+        "name": "efm-license-lint",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "rev": "ef4cb9baa9c9c3b9d3febbba0ae27fa2ef5319cc",
+            "sha256": "sha256-ERjXKN57N9z4mMcNQn57jcFv3IL/wa00E/ewTlgU5a0=",
+            "sparseCheckout": [],
+            "type": "git",
+            "url": "https://github.com/Comamoca/efm-license-lint"
+        },
+        "version": "ef4cb9baa9c9c3b9d3febbba0ae27fa2ef5319cc"
+    },
     "eglot-booster": {
         "cargoLock": null,
         "date": "2026-06-30",

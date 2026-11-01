@@ -1054,3 +1054,11 @@ fetch.git = "https://github.com/emacs-taskrunner/emacs-taskrunner"
 [herdr]
 src.git = "https://github.com/eddof13/herdr.el"
 fetch.github = "eddof13/herdr.el"
+
+# efm-license-lint (Gleam マニフェストのライセンス診断)
+# private リポジトリのため tarball は token 必須。`git ls-remote` と
+# `nix-prefetch-git` は HTTPS 経由の git 認証 (~/.gitconfig / credential helper)
+# を使うので fetch.git で取得する。
+[efm-license-lint]
+src.git = "https://github.com/Comamoca/efm-license-lint"
+fetch.git = "https://github.com/Comamoca/efm-license-lint"

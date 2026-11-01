@@ -187,6 +187,20 @@
       sha256 = "sha256-LWpm5DyHhrSAGxfwEAM0HABPwfsvWEHZ22U93wdldTw=";
     };
   };
+  efm-license-lint = {
+    pname = "efm-license-lint";
+    version = "ef4cb9baa9c9c3b9d3febbba0ae27fa2ef5319cc";
+    src = fetchgit {
+      url = "https://github.com/Comamoca/efm-license-lint";
+      rev = "ef4cb9baa9c9c3b9d3febbba0ae27fa2ef5319cc";
+      fetchSubmodules = false;
+      deepClone = false;
+      leaveDotGit = false;
+      sparseCheckout = [ ];
+      sha256 = "sha256-ERjXKN57N9z4mMcNQn57jcFv3IL/wa00E/ewTlgU5a0=";
+    };
+    date = "2026-11-01";
+  };
   eglot-booster = {
     pname = "eglot-booster";
     version = "510f579409627c333ef0e9157db713b1004da842";

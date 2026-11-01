@@ -3,8 +3,8 @@ let
   opensrc = import ../pkgs/opensrc { inherit pkgs; };
   vite-plus = import ../pkgs/vite-plus { inherit pkgs; };
   efm-langserver = import ../pkgs/efm-langserver { inherit pkgs; };
+  efm-license-lint = import ../pkgs/efm-license-lint { inherit pkgs; };
   ort = import ../pkgs/ort { inherit pkgs; };
-  license-efm = import ../pkgs/license-efm { inherit pkgs; };
 in
 with pkgs;
 [
@@ -46,6 +46,6 @@ with pkgs;
   kakehashi
   gcc
   ort
-  license-efm
+  efm-license-lint
   docker-sbx
 ]
