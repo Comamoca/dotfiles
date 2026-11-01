@@ -1100,6 +1100,24 @@ file so dashboards are up to date on every project switch."
       :add-on? t
       :server-id 'efm-langserver))))
 
+;; efm 経由の diagnostics はマニフェストの行単位なので、
+;; 依存ライセンスの全体一覧を見たいときはこのコマンドを使う。
+(defun my/license-report ()
+  "現在訪れているマニフェストの依存ライセンスの一覧を表示する。"
+  (interactive)
+  (let ((file (or (buffer-file-name)
+                  (user-error "ファイルを訪れていません")))
+        (buf  (get-buffer-create "*license-report*")))
+    (with-current-buffer buf
+      (let ((inhibit-read-only t))
+        (erase-buffer)
+        (insert (shell-command-to-string
+                 (format "efm-license-lint %s --format pretty --stdout"
+                         (shell-quote-argument file))))
+        (goto-char (point-min))))
+    (pop-to-buffer buf)
+    (special-mode)))
+
 ;; LSP Booster
 (defun lsp-booster--advice-json-parse (old-fn &rest args)
   "Try to parse bytecode instead of json."
