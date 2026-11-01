@@ -150,6 +150,12 @@
       };
       treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
 
+      # Omnigent (omnigent.nix が systemd user unit で常駐させる)。依存は上流
+      # v0.19.1 の uv.lock に固定してある (pkgs/omnigent)。overlay 内の
+      # `prev.python314Packages` は overlays 引数の `pkgs` 由来で後続 overlay の
+      # 影響を受けるため、ビルドに使うパッケージはここで完成させる。
+      omnigent = pkgs.python314Packages.callPackage ./pkgs/omnigent { };
+
       overlays = [
         # Shadow deprecated stdenv.is{Linux,Aarch64,Darwin} with the recommended
         # hostPlatform equivalents. Several external overlays still use the old
@@ -237,6 +243,10 @@
           specialArgs = { inherit inputs; };
           modules = [
             inputs.sops-nix.nixosModules.sops
+            # 救援モード (HDMI 自動ログイン + 自動診断)。普段は読まない。
+            # 有効化するとき: 下の 2 行を外して焼き直す。
+            # ./orangepi5/rescue.nix
+            # ({ ... }: { orangepi5.rescue.enable = true; })
             ./orangepi5/configuration.nix
           ];
         };
@@ -325,6 +335,7 @@
                     hunk = inputs.hunk.packages.${system}.default;
                     kakehashi = inputs.kakehashi.packages.${system}.default;
                     shinycolors-jacket = import ./pkgs/shinycolors-jacket { pkgs = final; };
+                    inherit omnigent;
                   })
                 ];
               }
