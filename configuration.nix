@@ -725,7 +725,17 @@ in
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  # リモートからのログインは Tailscale 経由を想定している。firewall は
+  # tailscale0 からの着信を許可する (下の networking.firewall 側で設定)。
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+      PermitRootLogin = "no";
+    };
+  };
+  users.users.coma.openssh.authorizedKeys.keyFiles = [ /home/coma/.ssh/id_ed25519.pub ];
 
   # Android Debug Bridge
   # programs.adb.enable = true;
@@ -839,6 +849,9 @@ in
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
+  # SSH は Tailscale 経由のみ許可する。tailscale0 からの着信だけを開けるので、
+  # 同一 LAN や公衆網から 22 番を晒さずに済む。
+  networking.firewall.trustedInterfaces = [ "tailscale0" ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
