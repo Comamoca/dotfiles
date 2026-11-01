@@ -43,6 +43,32 @@ bash .agents/skills/verify-omniroute-combos/run-checks.sh --product /tmp/variant
 whether an intended change is actually observed, and to prove the check can
 fail. Never edit the real script to test it.
 
+## If you do run the generator end to end
+
+The paths the generator writes are resolved through several independent
+variables, not just `HOME`: `XDG_CONFIG_HOME` (opencode), `XDG_CACHE_HOME`
+(the cache copy) and `DSH_HOME` (dsh). Setting only `HOME` is **not** isolation:
+a shell with `XDG_CONFIG_HOME` already exported keeps writing to the real
+`~/.config/opencode/omniroute-combos.json`. On 2026-11-01 a test that set only
+`HOME` replaced the real 49-combo list with 2 fake combos this way, silently,
+with exit 0.
+
+Isolate all of them, and drop the rest of the environment so nothing leaks:
+
+```sh
+env -i HOME="$V/home" \
+  XDG_CONFIG_HOME="$V/home/.config" \
+  XDG_CACHE_HOME="$V/home/.cache" \
+  DSH_HOME="$V/home/.dsh" \
+  OMNIROUTE_URL=http://127.0.0.1:20997 \
+  OMNIROUTE_ENV_FILE=/nonexistent \
+  PATH=/home/coma/.nix-profile/bin:/run/current-system/sw/bin:/usr/bin:/bin \
+  bash "$V/gen"
+```
+
+Take a hash of every real target before the run and compare afterwards; check
+the output text too, since it names the paths it wrote.
+
 ## What is verified, and how
 
 Bash plus jq has no verifier, so there is no model to check here. The check

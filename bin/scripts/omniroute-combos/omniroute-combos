@@ -84,6 +84,14 @@ fetch_models() {
 
 raw="$(fetch_models)" || die "cannot reach $OMNIROUTE_URL/v1/models (existing lists left untouched)"
 
+# curl は 200 でも中身が JSON とは限らない (プロキシや captive portal の
+# HTML がそのまま返ることがある)。ここで弾かないと jq が
+# "Invalid numeric literal" で落ち、原因が API 側だと分からないまま
+# exit 5 になる (2026-11-01 23:08 に実機で発生)。
+if ! jq -e . >/dev/null 2>&1 <<<"$raw"; then
+  die "$OMNIROUTE_URL/v1/models returned a non-JSON body (existing lists left untouched)"
+fi
+
 # combo だけを、id 昇順で正規化する。改名・削除で差分が出ないよう
 # 要素のキー順と並びを固定する。
 tmp="$(mktemp)"
