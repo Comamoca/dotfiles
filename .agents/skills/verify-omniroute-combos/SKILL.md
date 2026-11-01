@@ -53,6 +53,16 @@ a shell with `XDG_CONFIG_HOME` already exported keeps writing to the real
 `HOME` replaced the real 49-combo list with 2 fake combos this way, silently,
 with exit 0.
 
+Both directions were re-measured on 2026-11-01. With all four variables pointed
+into the sandbox, the real lists kept their hashes (`9aefe860…`) and the run
+wrote only sandbox paths. With `HOME` sandboxed but `XDG_CONFIG_HOME` left
+pointing outside it, the opencode JSON escaped to that outside path while the
+other three stayed in the sandbox. The generator's own output names the escaped
+path, so compare the printed paths against the sandbox prefix, not just the
+file hashes. Note that `jcode` has no override variable at all: it is always
+`$HOME/.jcode/config.toml`, so `HOME` must be sandboxed even when the XDG
+variables are set.
+
 Isolate all of them, and drop the rest of the environment so nothing leaks:
 
 ```sh
@@ -125,9 +135,13 @@ Deliberately out of scope, each for a reason:
 
 - **Network behaviour** (`curl`, retry, `GET /v1/models`) and the jq
   normalisation at lines 81-93. That code runs against a live server; this check
-  never touches it.
+  never touches it. The observed retry count and stderr shape are recorded under
+  "Fetch-side guard" below, but only as measurements from a local server, not as
+  something `run-checks.sh` asserts.
 - **File installation** at lines 157-161: atomicity, permissions, and whether all
-  three destinations really receive identical bytes.
+  three destinations really receive identical bytes. Measured by hand on
+  2026-11-01 and recorded under "Write side" below; still not automated, so
+  nothing here fails if a future change writes only two of the three.
 - **Consumers**: the opencode plugin `config/opencode/plugins/omniroute-combos.ts`
   and the dsh `models: !!js ...` expression. A correct verdict can still break a
   consumer.
@@ -182,14 +196,27 @@ the id check and this filter cover different cases; the id check covers both.
 Removing it cannot make the check fail, which is why the failure demonstration
 below uses a different mutation.
 
-### Known finding: an unreadable installed list never regenerates
+### Former finding: an unreadable installed list never regenerated (fixed)
 
-If `$old` exists but is not valid JSON, or is JSON without a `combos` array, jq
-exits non-zero, the function returns non-zero, and the caller treats that as
-"already up to date". The stale file is kept. This is fail-open in the direction
-of never writing. It is in scope and it is not currently a live problem (all
-three destinations parse, and are byte-identical), but it means a corrupted
-cache is self-healing only after it is deleted by hand.
+This used to fail open: if `$old` existed but was not valid JSON, or was JSON
+without a `combos` array, jq exited non-zero, the function returned non-zero,
+and the caller treated that as "already up to date". The stale file was kept, so
+a corrupted cache healed only after being deleted by hand.
+
+Confirmed end to end on 2026-11-01, not just by reading the code. Truncating the
+dsh list to its first 20 bytes and running the generator gave
+`1 combos, already up to date` with exit 0, and `--check` also exited 0. The file
+stayed truncated. The three failing shapes were all non-zero at the jq level:
+unparseable JSON (jq exit 5), empty file (4), and valid JSON with no `combos`
+(5). A missing file was already detected (exit 2), so the asymmetry was only
+about corrupt content, not absence.
+
+`meaningful_change()` now validates `$old` first and returns "must rewrite" on
+parse failure, printing `<path> is not valid JSON; rewriting it` to stderr.
+Re-measured after the fix: a truncated cache and a truncated dsh list each give
+`--check` exit 2 and an apply that rewrites the file and exits 0, and the file
+parses afterwards. Keep this behavior if you touch the function; the guard must
+stay ahead of the hysteresis comparison, not inside it.
 
 ## Fetch-side guard: what counts as a usable body
 
@@ -213,6 +240,42 @@ guard.
 
 HTTP-level failures are separate: `curl -fsS` already fails on 5xx, retries
 three times, and then reports `cannot reach ...`, which is also exit `1`.
+Measured 2026-11-01 against a local server returning 502: **three** raw
+`curl: (22) The requested URL returned error: 502` lines reach stderr (one per
+attempt, not suppressed), followed by the single intended
+`cannot reach ... (existing lists left untouched)` line. So stdout is empty, the
+last line is the diagnostic to match on, and the count of `curl:` lines is the
+retry budget. A no-listener run behaves the same with `curl: (7) Failed to
+connect ...` and takes about 12 s (2 + 4 + 6 s of backoff); the 502 path takes
+about 13 s.
+
+## Write side: what an end-to-end run actually guarantees
+
+These were measured on 2026-11-01 with all four roots redirected, so they are
+observations rather than claims derived from reading the code. The automated
+check does not cover them; re-measure by running the recipe above, not by
+editing the real script.
+
+| Situation | Observed |
+| --- | --- |
+| `--print` | prints the JSON, writes no file, exit 0 |
+| First apply into an empty tree | all three JSON lists created, `config.toml` block appended, exit 0 |
+| Apply immediately again | `1 combos, already up to date`, all four files byte-identical |
+| `--check` right after apply | exit 0, no output |
+| Any destination file missing | `--check` exit 2 (`client lists are stale`), apply recreates it |
+| Any destination file truncated | `--check` exit 2 plus `<path> is not valid JSON; rewriting it` on stderr; apply rewrites it (fixed 2026-11-01) |
+| Unknown option | exit 64 with `unknown option: --bogus` |
+
+The success message names only the opencode and jcode paths
+(`updated N combos -> .../omniroute-combos.json, .../config.toml`), but the
+cache copy and the dsh copy are written too. Do not read that message as the
+list of files touched; check the files.
+
+A first apply also rewrites the jcode block and reports, on stderr,
+`二重定義になる models 宣言を削除した` for any `[[providers.omniroute.models]]`
+table that sat outside the block. That is intended deduplication: the block
+becomes the single source, and non-block content must survive verbatim (the
+fixture's trailing `[tail]` section did).
 
 ## Proving the check can fail
 

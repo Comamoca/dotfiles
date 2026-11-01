@@ -172,6 +172,13 @@ fi
 meaningful_change() {
   local old=$1
   [[ -f $old ]] || return 0 # 生成物が無ければ必ず書く
+  # 壊れた生成物 (途中で切れた JSON など) は「差分なし」ではなく「必ず書き直す」。
+  # jq の失敗を握り潰すと --check が exit 0、apply が "already up to date" になり、
+  # 壊れたまま残る (2026-11-01 に検証で確認)。読めない時点で正常とは言えない。
+  if ! jq -e . "$old" >/dev/null 2>&1; then
+    echo "omniroute-combos: $old is not valid JSON; rewriting it" >&2
+    return 0
+  fi
   jq -e --slurpfile new "$tmp" '
     def changed($a; $b):
       if ($a | type) != "number" or ($b | type) != "number" then ($a != $b)
