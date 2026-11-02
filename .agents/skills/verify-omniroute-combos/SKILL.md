@@ -253,7 +253,7 @@ the other files left healthy, one bad file at a time:
 | --- | --- | --- | --- |
 | truncated / empty / whitespace-only / html | guard (shape+validity) | 2 + `is not a combo list` | rewrites, exit 0 |
 | `null` | guard (shape+validity) | 2 + `is not a combo list` | rewrites, exit 0 |
-| `[]`, `{}`, `{"other":1}`, `{"combos":"str"}`, `5`, `true` | guard (shape+validity); `{}` would also fall out of the comparison | 2 + `is not a combo list` | rewrites, exit 0 |
+| `[]`, `{}`, `{"other":1}`, `{"combos":"str"}`, `5`, `true` | guard (shape+validity) | 2 + `is not a combo list` | rewrites, exit 0 |
 | `{"combos":[]}` | neither (matches an empty fetch) | 0 | no write |
 | all three truncated at once | guard (shape+validity) | 2 | rewrites all three, exit 0 |
 
