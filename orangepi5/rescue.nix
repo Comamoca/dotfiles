@@ -203,7 +203,7 @@
     #
     # 対策:
     #   1. シェル初期化では「その場で 1 回出す」だけにして必ず return する。
-    #   2. 継続監視は systemd の oneshot サービスで journal に流す。
+    #   2. 継続監視は systemd の simple サービスで journal に流す。
     #      シェルとは独立なので、端末が固まることはない。
     #   3. Ctrl-C を握り潰す trap は置かない。
     environment.interactiveShellInit = lib.mkIf config.orangepi5.rescue.diagnostics.enable
