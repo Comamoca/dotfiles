@@ -8,8 +8,12 @@
 local keymap = vim.keymap.set
 local keymap_opt = { buffer = true, silent = true }
 
--- Nix がビルドしたバイナリを使う (goda_fi#build() は使わない)。
-vim.g["goda_fi#binary"] = vim.fn.exepath("goda-fi")
+-- バイナリは dpp が config/nvim/goda-fi/build.sh でビルドしたものを使う
+-- (Home Manager は経由しない)。ビルドはプラグインの更新時に走るので、
+-- 設定を変えたあとは :DppUpdate か、build.sh を直接叩けば反映される。
+-- g.goda_fi#binary に届かない場合は goda-fi.vim 側の既定
+-- (~/.cache/nvim/goda-fi/goda-fi) と同じ場所を指す。
+vim.g["goda_fi#binary"] = vim.fn.expand("~/.cache/nvim/goda-fi/goda-fi")
 
 vim.fn["goda_fi#custom#patch_global"]({
   -- sources はここで指定しない。Go 側 (fi/plugin.go の engine.options) は

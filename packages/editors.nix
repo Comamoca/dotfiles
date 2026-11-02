@@ -15,5 +15,4 @@ with pkgs;
   # Editor tools
   emacs-lsp-booster
   tree-sitter
-  (import ../pkgs/goda-fi { inherit pkgs; })
 ]

@@ -1,10 +1,15 @@
 // Command goda-fi-config is coma's goda-fi.vim configuration: an ordinary Go
 // program that links the sources, filters and kinds below into one binary.
 //
-// goda-fi.vim runs the built binary (see g:goda_fi#binary). Rebuild it after
-// every change here:
+// goda-fi.vim runs the built binary (see g:goda_fi#binary, which
+// config/nvim/lua/configs/goda_fi.lua points at ~/.cache/nvim/goda-fi/).
+// Rebuild it after every change here:
 //
-//	go build -o ~/.cache/nvim/goda-fi/goda-fi .
+//	./build.sh
+//
+// dpp runs the same script when it updates goda-fi.vim
+// (extAttrs.installerBuild in dpp_lazy.toml). Go is not installed on this
+// machine, so the script borrows it from nix when it is not in PATH.
 //
 // Option names are ddu.vim's; extension names lose their "_" ("file_rec" is
 // "filerec", "matcher_substring" is "matchersubstring").
