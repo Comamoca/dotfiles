@@ -1012,6 +1012,33 @@ file so dashboards are up to date on every project switch."
               line-end))
     :modes (text-mode markdown-mode gfm-mode org-mode web-mode)))
 
+;; efm-license-lint — Gleam マニフェスト (gleam.toml) の
+;; 依存ライセンスを Flycheck に直接表示する。
+;; lsp-mode 側の flycheck 連携 (lsp-flycheck) は lsp-mode から削除済みのため、
+;; efm-langserver 経由の LSP diagnostics とは別に CLI を直接呼ぶ。
+;; CLI はファイル名 (gleam.toml / manifest.toml) で provider を決めるため、
+;; source-inplace / source の一時ファイルコピーでは動かない。source-original
+;; で元のパスを渡す (バッファ未保存の変更は反映されない)。
+;; efm 出力形式: path:line:col:[EIW]:message
+(with-eval-after-load 'flycheck
+  (flycheck-define-checker efm-license-lint
+    "Gleam マニフェストの依存ライセンス診断 (efm-license-lint)。"
+    :command ("efm-license-lint" "--format" "efm" "--stdout" "--quiet" source-original)
+    :error-patterns
+    ((error   line-start (file-name) ":" line ":" column ":E:" (message) line-end)
+     (warning line-start (file-name) ":" line ":" column ":W:" (message) line-end)
+     (info    line-start (file-name) ":" line ":" column ":I:" (message) line-end))
+    :modes (toml-ts-mode conf-toml-mode))
+  (add-to-list 'flycheck-checkers 'efm-license-lint))
+
+;; flycheck-mode 有効化時に toml バッファなら checker を自動選択する。
+;; flycheck の自動選択は実行されないため、明示的に select する。
+(defun my/efm-license-lint-select-checker ()
+  "toml バッファで efm-license-lint checker を選択する。"
+  (when (memq major-mode '(toml-ts-mode conf-toml-mode))
+    (flycheck-select-checker 'efm-license-lint)))
+(add-hook 'flycheck-mode-hook #'my/efm-license-lint-select-checker)
+
 ;; Copilot
 (leaf copilot
   :bind ((:copilot-completion-map
@@ -1042,8 +1069,10 @@ file so dashboards are up to date on every project switch."
   (csharp-ts-mode . lsp-deferred)
   (elixir-ts-mode . lsp-deferred)
   (gleam-ts-mode . lsp-deferred)
-  (conf-toml-mode . my/lsp-deferred-for-gleam-manifest)
-  (toml-ts-mode . my/lsp-deferred-for-gleam-manifest)
+  ;; leaf の :hook は hook 変数名そのものを要求する (mode 名に -hook を自動付加しない)。
+  ;; そのため conf-toml-mode 等と書くと add-hook 'conf-toml-mode になり、add-hook 'conf-toml-mode は無反応で LSP が起動しない。
+  (conf-toml-mode-hook . my/lsp-deferred-for-gleam-manifest)
+  (toml-ts-mode-hook . my/lsp-deferred-for-gleam-manifest)
   (js-ts-mode . lsp-deferred)
   (typescript-ts-mode . lsp-deferred)
   (tsx-ts-mode . lsp-deferred)
