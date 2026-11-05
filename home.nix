@@ -1617,8 +1617,13 @@ rec {
   #   追加設定なしで vix がこのデーモンに接続する)
   # - Mission Control (Web UI): 127.0.0.1:1337
   # - 設定: ~/.vix (settings.json / agents/ / skills/ / providers.json)
-  # - 認証情報: systemd 経由ではシェルの環境変数が見えないため、
-  #   vix login (OSキーチェイン / ~/.vix/auth.json) で保存したものが使われる
+  # - 認証情報: チャットの LLM 呼び出しは都度 ResolveProviderCredentialFresh
+  #   で解決され ~/.vix/auth.json (vix login の OAuth) も参照される。
+  #   一方、起動時の brain 用認証情報は env → キーチェーン → .env のみで
+  #   auth.json を読まない (vix 0.6.1 の解決順)。systemd 経由だとシェルの
+  #   環境変数が見えないため journal に "No API key found — brain semantic
+  #   analysis will be skipped" が出る (実測)。brain にもキーを渡す場合は
+  #   ANTHROPIC_API_KEY を ~/.config/environment.d か EnvironmentFile で渡す。
   # X-SwitchMethod = "keep-old": 実行中のスレッドを中断しない。
   # vix のバージョン更新は手動再起動 (systemctl --user restart vixd) で反映。
   systemd.user.services.vixd = {
