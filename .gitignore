@@ -90,6 +90,9 @@ config/nvim/state.vim
 # AGENTS.md への symlink (flake devShell の shellHook で生成)
 CLAUDE.md
 
+# maki の実行時ロックファイル (起動時にパッケージ情報で更新される)
+config/maki/pack-lock.json.lock
+
 # DMS の include repair が config.kdl の隣に作るバックアップ。
 # config/niri は mkOutOfStoreSymlink でリポジトリ直結なので、DMS の cp は
 # 作業ツリーに落ちる。設定ではない生成物なので追跡しない。

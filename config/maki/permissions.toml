@@ -1,0 +1,25 @@
+[websearch]
+allow = [
+  "maki background transparent UI",
+  "maki terminal agent transparent background",
+]
+
+[webfetch]
+allow = [
+  "https://maki.sh/docs/configuration/",
+  "https://raw.githubusercontent.com/tontinton/maki/main/maki-ui/src/theme.rs",
+]
+
+[bash]
+allow = [
+  "rg *",
+  "head *",
+  "ls *",
+  "maki *",
+  "sed *",
+  "find *",
+  "cat *",
+  "echo *",
+  "python3 *",
+  "tail *",
+]

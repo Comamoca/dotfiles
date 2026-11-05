@@ -747,6 +747,11 @@ rec {
         recursive = true;
       };
 
+      ".config/maki" = {
+        source = (symlink /${dotfiles}/config/maki);
+        recursive = true;
+      };
+
       ".config/rclone" = {
         source = (symlink /${dotfiles}/config/rclone);
         recursive = true;
