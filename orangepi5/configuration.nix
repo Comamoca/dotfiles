@@ -13,6 +13,33 @@ let
   # /dev/disk/by-label/NIXOS_SD で引けるよう、label と併記しておく。
   # 固定値にしておくと deploy-rs で更新するときも fileSystems が揺れない。
   rootFsUUID = "b6f0e1d3-4a94-4b34-9b6a-2a5c6f7d8e01";
+
+  # 有線 LAN の固定 IP プロファイル。Aterm WX5400HP 配下で DHCP が取れない
+  # 問題を避けるため、DHCP に依存せず 192.168.10.250/24 を直接使う。
+  #
+  # mainline DTS では有線 IF が eth0 / eth1 のどちらにもなり得るので、
+  # 同じ内容を両方の interface-name に用意する。実在する側だけが
+  # NetworkManager に自動接続される。IP は Aterm の LAN
+  # (192.168.10.0/24) の DHCP 配布範囲外を想定している。重複が疑われる
+  # 場合は address1 を変えること。
+  mkWiredProfile = iface: uuid: {
+    connection = {
+      id = "orangepi5-lan-${iface}";
+      inherit uuid;
+      type = "ethernet";
+      interface-name = iface;
+      autoconnect = true;
+      autoconnect-priority = 100;
+    };
+    ipv4 = {
+      method = "manual";
+      address1 = "192.168.10.250/24";
+      gateway = "192.168.10.1";
+      dns = "192.168.10.1;";
+      ignore-auto-dns = true;
+    };
+    ipv6.method = "auto";
+  };
 in
 {
   nixpkgs.hostPlatform = "aarch64-linux";
@@ -82,21 +109,27 @@ in
     # 有線 (stmmac) は NetworkManager に任せる。Wi-Fi (AP6275P, PCIe接続) は
     # モジュールとファームウェアが必要なので、model によっては動かない。
     # まずは有線で到達できる前提にしておく。
+    #
+    # 固定 IP は NetworkManager の宣言的プロファイルで設定する。dhcpcd や
+    # systemd-networkd を追加すると管理方式が競合するため、既存の
+    # NetworkManager から切り替えない。
+    networkmanager.ensureProfiles.profiles = {
+      orangepi5-lan-eth0 = mkWiredProfile "eth0" "b6f0e1d3-4a94-4b34-9b6a-2a5c6f7d8e02";
+      orangepi5-lan-eth1 = mkWiredProfile "eth1" "b6f0e1d3-4a94-4b34-9b6a-2a5c6f7d8e03";
+    };
   };
 
-  environment.systemPackages =
-    with pkgs;
-    [
-      vim
-      networkmanager
-      gh
-      opencode
-      btop
-      pciutils
-      usbutils
-      i2c-tools
-      nvme-cli
-    ];
+  environment.systemPackages = with pkgs; [
+    vim
+    networkmanager
+    gh
+    opencode
+    btop
+    pciutils
+    usbutils
+    i2c-tools
+    nvme-cli
+  ];
 
   services.openssh = {
     enable = true;
