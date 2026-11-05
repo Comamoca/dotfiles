@@ -16,12 +16,10 @@ let
         deps:
         builtins.filter (
           d:
-          !(
-            builtins.elem (d.pname or d.name or "") [
-              "posthog"
-              "mixpanel"
-            ]
-          )
+          !(builtins.elem (d.pname or d.name or "") [
+            "posthog"
+            "mixpanel"
+          ])
         ) deps;
     in
     pkgs.aider-chat.overridePythonAttrs (old: {
@@ -71,6 +69,8 @@ with pkgs;
   llm-agents.fence
   llm-agents.jcode
   llm-agents.dsh
+  llm-agents.maki
+  llm-agents.hax
   # llm-agents.codex は programs.codex.package (home.nix) 経由で入る
 
   (import ../pkgs/terminal-browser { inherit pkgs; })
