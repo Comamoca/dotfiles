@@ -1,0 +1,171 @@
+#!/usr/bin/env bash
+# orangepi5-sd-image: NixOS のルートファイルシステムから、Orange Pi 5 が
+# 起動できる興味深い SD カードイメージを組み立てる。
+#
+# nixpkgs 標準の sd-image.nix は MBR 固定で、u-boot を MBR ポスト MBR の隙間
+# (最初のパーティションより前) に書く前提になっている。RK3588 の BootROM は
+# LBA 64 (32KiB) から idbloader を読み、u-boot.itb を LBA 16384 (8MiB) から
+# 読む。MBR のパーティション開始位置の慣例 (1MiB 境界) では 8MiB に収まらない
+# ため、ここでは GPT で先頭 16MiB を予約する。
+#
+# GPT の予約領域:
+#   LBA 0-33      保護 MBR + GPT ヘッダ + エントリ (17408 byte)
+#   LBA 64        idbloader.img (SPL + TPL, 204KiB)
+#   LBA 16384     u-boot.itb (8MiB)
+#   LBA 32768     (16MiB) ここから先頭パーティション
+# u-boot.itb は 1.2MiB なので 16MiB まで余裕がある。
+#
+# 使い方 (nix/release.nix の runCommand から呼ばれる):
+#   orangepi5-sd-image \
+#     --rootfs ./root-fs.img \
+#     --uboot /nix/store/...-uboot-orangepi-5-... \
+#     --out ./orangepi5.img \
+#     --label NIXOS_SD \
+#     --uuid 14e19a7b-0ae0-484d-9d54-43bd6fdc20c7
+#
+# 出力は非圧縮の raw イメージ。zstd 圧縮は呼び出し側で行う。
+set -euo pipefail
+
+PROG=${0##*/}
+
+die() {
+  echo "$PROG: $*" >&2
+  exit 1
+}
+
+usage() {
+  sed -n '2,30p' "$0" | sed 's/^# \{0,1\}//'
+}
+
+ROOTFS=
+UBOOT_DIR=
+OUT=
+LABEL=NIXOS_SD
+PARTUUID=
+RESERVED_MIB=16
+SLACK_MIB=512
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --rootfs) ROOTFS=$2; shift 2 ;;
+    --uboot) UBOOT_DIR=$2; shift 2 ;;
+    --out) OUT=$2; shift 2 ;;
+    --label) LABEL=$2; shift 2 ;;
+    --uuid) PARTUUID=$2; shift 2 ;;
+    --reserved-mib) RESERVED_MIB=$2; shift 2 ;;
+    --slack-mib) SLACK_MIB=$2; shift 2 ;;
+    -h|--help) usage; exit 0 ;;
+    *) die "unknown argument: $1" ;;
+  esac
+done
+
+[ -n "$ROOTFS" ] || die "--rootfs is required"
+[ -n "$UBOOT_DIR" ] || die "--uboot is required"
+[ -n "$OUT" ] || die "--out is required"
+[ -r "$ROOTFS" ] || die "cannot read rootfs image: $ROOTFS"
+[ -r "$UBOOT_DIR/idbloader.img" ] || die "missing $UBOOT_DIR/idbloader.img"
+[ -r "$UBOOT_DIR/u-boot.itb" ] || die "missing $UBOOT_DIR/u-boot.itb"
+
+# 実際に呼ぶツールだけを検査する。パーティション拡張 (resize2fs / partprobe) は
+# 実機の systemd サービス側の仕事なので、イメージ組み立てには要らない。
+# parted を要求していた頃は、nixpkgs の runCommand に parted が無いせいで
+# 組み立て前に die していた。
+for tool in sfdisk dd truncate awk e2fsck cmp stat mktemp; do
+  command -v "$tool" >/dev/null 2>&1 || die "missing required tool: $tool"
+done
+
+IDBLOADER_LBA=64
+UBOOT_ITB_LBA=16384
+RESERVED_LBA=$((RESERVED_MIB * 2048)) # 512 byte sectors
+
+# u-boot の断片が予約領域に収まることを先に確かめる。はみ出すと GPT の
+# パーティションエントリを壊し、起動もできなくなる。
+idb_bytes=$(stat -c %s "$UBOOT_DIR/idbloader.img")
+itb_bytes=$(stat -c %s "$UBOOT_DIR/u-boot.itb")
+itb_end_lba=$((UBOOT_ITB_LBA + (itb_bytes + 511) / 512))
+[ $((IDBLOADER_LBA * 512 + idb_bytes)) -le $((UBOOT_ITB_LBA * 512)) ] ||
+  die "idbloader.img ($idb_bytes bytes) overlaps u-boot.itb at LBA $UBOOT_ITB_LBA"
+[ "$itb_end_lba" -le "$RESERVED_LBA" ] ||
+  die "u-boot.itb ends at LBA $itb_end_lba, past the reserved region (LBA $RESERVED_LBA); raise --reserved-mib"
+
+root_bytes=$(stat -c %s "$ROOTFS")
+root_lba=$(((root_bytes + 511) / 512))
+root_end_lba=$((RESERVED_LBA + root_lba))
+image_lba=$((root_end_lba + SLACK_MIB * 2048))
+image_bytes=$((image_lba * 512))
+
+echo "$PROG: assembling $OUT ($((image_bytes / 1024 / 1024)) MiB)" >&2
+echo "$PROG:   reserved  LBA $RESERVED_LBA ($RESERVED_MIB MiB)" >&2
+echo "$PROG:   rootfs    LBA $RESERVED_LBA..$root_end_lba" >&2
+echo "$PROG:   slack     LBA $root_end_lba..$image_lba" >&2
+
+truncate -s "$image_bytes" "$OUT"
+
+# GPT を書き、先頭に予約領域を空けた 1 パーティションだけを作る。
+# first-lba=2048 でないので既定の 2048 より後ろから始まる。sgdisk/sfdisk の
+# どちらでも同じ結果になるが、util-linux だけで済む sfdisk を使う。
+#
+# --uuid を渡されたらパーティションエントリの uuid= にも同じ値を入れる。
+# make-ext4-fs.nix はファイルシステムの UUID に同じ値を使うので、PARTUUID と
+# filesystem UUID が一致し、/dev/disk/by-uuid と by-partuuid のどちらでも
+# 同じパーティションを指す。uuid= を省くと sfdisk が毎回ランダムな値を振るため、
+# 再ビルドするたびに PARTUUID が変わってしまう。
+part_uuid_opt=
+[ -z "$PARTUUID" ] || part_uuid_opt=", uuid=$PARTUUID"
+sfdisk --no-reread --no-tell-kernel "$OUT" >/dev/null <<EOF
+label: gpt
+label-id: $(cat /proc/sys/kernel/random/uuid)
+unit: sectors
+
+start=$RESERVED_LBA, size=$root_lba, type=0FC63DAF-8483-4772-8E79-3D69D8477DE4$part_uuid_opt, name="$LABEL"
+EOF
+
+# ルートファイルシステムを流し込む。sfdisk は書いた内容をそのまま -d で
+# 読み返せるので、パーティション開始位置はそこから取る。partx はカーネルに
+# パーティションを登録するためのもので、イメージファイル相手では使えない
+# (--show と --pairs は排他のように、オプションの組み合わせも不安定)。
+part_start=$(sfdisk -d "$OUT" | sed -n 's/^[^:]*1[[:space:]]*:[[:space:]]*start=[[:space:]]*\([0-9][0-9]*\).*/\1/p')
+[ -n "$part_start" ] || die "cannot read partition start LBA from sfdisk -d"
+[ "$part_start" = "$RESERVED_LBA" ] || die "GPT start LBA mismatch: got $part_start, want $RESERVED_LBA"
+
+dd if="$ROOTFS" of="$OUT" bs=512 seek="$part_start" count="$root_lba" conv=notrunc status=none
+
+# 書き込んだルートファイルシステムを検査する。壊れた rootfs を焼くと実機で
+# init が上がらず、シリアルを繋ぐまで原因が分からない。パーティションを
+# 一時ファイルへ切り出して e2fsck に渡す。losetup を使わないのは、Nix の
+# サンドボックスや root 権限の無い環境でも同じ検査を通すため。e2fsck は
+# ブロックデバイスでなくても通常ファイルを検査できる。
+part_copy=$(mktemp "${TMPDIR:-/tmp}/orangepi5-part.XXXXXX")
+cleanup() { rm -f "$part_copy"; }
+trap cleanup EXIT
+dd if="$OUT" bs=512 skip="$part_start" count="$root_lba" of="$part_copy" status=none
+fsck_out=$(e2fsck -fn "$part_copy" 2>&1) || die "root filesystem is corrupt: $fsck_out"
+fs_label=$(printf '%s\n' "$fsck_out" | sed -n 's/^.*volume name <\(.*\)>.*$/\1/p' || true)
+if [ -n "$fs_label" ] && [ "$fs_label" != "$LABEL" ]; then
+  echo "$PROG: warning: rootfs label is '$fs_label', expected '$LABEL'" >&2
+fi
+rm -f "$part_copy"
+trap - EXIT
+
+# 最後に U-Boot を raw で書き込む。GPT を書いた後に dd するので、
+# 予約領域 (LBA 64 / LBA 16384) を壊していないことを必ず検査する。
+dd if="$UBOOT_DIR/idbloader.img" of="$OUT" bs=512 seek=$IDBLOADER_LBA conv=notrunc status=none
+dd if="$UBOOT_DIR/u-boot.itb" of="$OUT" bs=512 seek=$UBOOT_ITB_LBA conv=notrunc status=none
+
+verify_at() {
+  local expect=$1 lba=$2 file=$3 size
+  size=$(stat -c %s "$file")
+  if cmp -s -n "$size" "$file" <(dd if="$OUT" bs=512 skip="$lba" count=$(((size + 511) / 512)) status=none); then
+    echo "$PROG: verified $expect at LBA $lba" >&2
+  else
+    die "$expect not found at LBA $lba"
+  fi
+}
+verify_at idbloader.img "$IDBLOADER_LBA" "$UBOOT_DIR/idbloader.img"
+verify_at u-boot.itb "$UBOOT_ITB_LBA" "$UBOOT_DIR/u-boot.itb"
+
+# sfdisk -d で GPT を読み直し、予約領域とパーティション開始位置が
+# 期待どおりであることを出力しておく。実機で起動しないときの切り分けに使う。
+sfdisk -d "$OUT" >&2
+
+echo "$PROG: done" >&2

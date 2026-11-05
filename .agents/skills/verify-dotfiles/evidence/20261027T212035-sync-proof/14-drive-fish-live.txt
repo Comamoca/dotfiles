@@ -1,0 +1,4 @@
+-- fish loads it from the LIVE path (~/.config), not from the repo by hand:
+    # この env はローカル起動へフォールバックしたときにも効く。
+    env DSH_PERMISSION_MODE=danger-full-access dt $argv
+end

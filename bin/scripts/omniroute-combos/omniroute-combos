@@ -1,0 +1,474 @@
+#!/usr/bin/env bash
+# omniroute-combos: OmniRoute の combo 一覧をクライアント設定用に書き出す。
+#
+# OmniRoute は combo (`owned_by: "combo"`) を /v1/models に載せるだけで、
+# クライアント側のモデル一覧は自動では増えない。本スクリプトは /v1/models を
+# 正本として combo の一覧を生成し、次のクライアントへ配る:
+#
+#   ~/.cache/omniroute/combos.json               (正本スナップショット)
+#   ~/.dsh/omniroute-combos.json                 (dsh: cordis.patch.yml が参照)
+#   ~/.config/opencode/omniroute-combos.json     (opencode: プラグインが参照)
+#   ~/.jcode/config.toml                         (jcode: マーカー区間だけ書き換え)
+#
+# 再起動なしで反映されるのは opencode だけ (プラグインがセッション開始時に
+# 読む)。dsh は読み込み済みプロファイルの再起動が必要。jcode は config.toml を
+# 監視しないので、デーモン (サーバ) の再起動が要る。
+#
+# jcode には config.toml の include 機構が無い (断片ファイルを置いても読まれ
+# ない)。そのため config.toml 本体のマーカー区間を直接書き換える。区間の外は
+# 一切触らない。
+#
+# 使い方:
+#   omniroute-combos            # 生成 + 適用
+#   omniroute-combos --check    # 差分があれば終了コード 2 (書き込みしない)
+#   omniroute-combos --print    # 生成結果を表示するだけ
+#
+# systemd: omniroute-combos.timer (omniroute.nix) が 30 分ごとに実行する。
+set -euo pipefail
+
+# systemd の oneshot は PATH が最小構成になるので、自分でプロファイルを読み直す。
+# (対話シェルから実行したときは既存 PATH をそのまま使う)
+export PATH="$HOME/.nix-profile/bin:/etc/profiles/per-user/$(id -un)/bin:/run/current-system/sw/bin:$PATH"
+
+OMNIROUTE_URL="${OMNIROUTE_URL:-http://127.0.0.1:20128}"
+ENV_FILE="${OMNIROUTE_ENV_FILE:-/run/user/$(id -u)/omniroute.env}"
+
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/omniroute"
+CACHE_JSON="$CACHE_DIR/combos.json"
+DSH_JSON="${DSH_HOME:-$HOME/.dsh}/omniroute-combos.json"
+OPENCODE_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/opencode"
+OPENCODE_JSON="$OPENCODE_DIR/omniroute-combos.json"
+# jcode は設定ファイルの場所を環境変数で差し替えられない (~/.jcode/config.toml
+# 固定。JCODE_HOME はデータディレクトリで、設定の探索には使われない)。
+JCODE_CONFIG="$HOME/.jcode/config.toml"
+JCODE_BEGIN="# >>> omniroute-combos (jcode models) >>>"
+JCODE_END="# <<< omniroute-combos (jcode models) <<<"
+
+mode=apply
+case "${1:-}" in
+  --check) mode=check ;;
+  --print) mode=print ;;
+  -h|--help) sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+  "") ;;
+  *) echo "omniroute-combos: unknown option: $1" >&2; exit 64 ;;
+esac
+
+die() {
+  echo "omniroute-combos: $*" >&2
+  exit 1
+}
+
+# --- API キー ---------------------------------------------------------------
+# dsh / opencode から見えるのは環境変数か、sops が復号した env ファイル。
+key="${OMNIROUTE_API_KEY:-}"
+if [[ -z $key && -r $ENV_FILE ]]; then
+  key="$(sed -n 's/^OMNIROUTE_API_KEY=//p' "$ENV_FILE" | head -n 1)"
+fi
+
+# --- /v1/models の取得 ------------------------------------------------------
+# 429 / 503 などの一過性エラーは 3 回まで試す。失敗したら既存の生成物を
+# 残したまま異常終了する (古い一覧でも「全滅」よりはマシなので)。
+fetch_models() {
+  local attempt
+  for attempt in 1 2 3; do
+    if [[ -n $key ]]; then
+      curl -fsS --max-time 30 -H "Authorization: Bearer $key" \
+        "$OMNIROUTE_URL/v1/models" && return 0
+    else
+      curl -fsS --max-time 30 "$OMNIROUTE_URL/v1/models" && return 0
+    fi
+    sleep $((attempt * 2))
+  done
+  return 1
+}
+
+raw="$(fetch_models)" || die "cannot reach $OMNIROUTE_URL/v1/models (existing lists left untouched)"
+
+# curl は 200 でも中身が JSON とは限らない (プロキシや captive portal の
+# HTML がそのまま返ることがある)。ここで弾かないと jq が
+# "Invalid numeric literal" で落ち、原因が API 側だと分からないまま
+# exit 5 になる (2026-11-01 23:08 に実機で発生)。
+#
+# 「JSON として妥当か」だけでは足りない。配列・文字列・{"data":null} や
+# JSON を 2 つ連結した本文は jq -e . を通ってしまい、下の .data[] で
+# "Cannot index array with string" などの生の jq エラー + exit 5 になる
+# (2026-11-01 に検証で 4 パターン確認)。必要な形は「.data が配列」なので、
+# 形まで見て弾く。
+if ! jq -e 'type == "object" and (.data | type == "array")' \
+  >/dev/null 2>&1 <<<"$raw"; then
+  die "$OMNIROUTE_URL/v1/models did not return an OpenAI-style {data: [...]} body (existing lists left untouched)"
+fi
+
+# combo だけを、id 昇順で正規化する。改名・削除で差分が出ないよう
+# 要素のキー順と並びを固定する。
+tmp="$(mktemp)"
+trap 'rm -f "$tmp" "$tmp".*' EXIT
+
+jq -S '{
+  source: "omniroute",
+  combos: [
+    .data[]
+    | objects
+    | select(.owned_by == "combo")
+    | {
+        id: .id,
+        name: .id,
+        contextWindow: (.context_length // .max_input_tokens // null),
+        maxTokens: (.max_output_tokens // null)
+      }
+  ] | sort_by(.id)
+}' <<<"$raw" >"$tmp" \
+  || die "failed to extract combos from $OMNIROUTE_URL/v1/models (existing lists left untouched)"
+
+# objects で非オブジェクト要素 (数値・null など) を落とし、jq が
+# "Cannot index number with string" で落ちないようにする。形状は上の
+# ガードで確認済みなので、ここでの失敗は予期しないものとして die する。
+
+count="$(jq '.combos | length' "$tmp")"
+[[ $count -gt 0 ]] || die "OmniRoute returned no combos; refusing to write empty lists"
+
+# jcode 用の [[providers.omniroute.models]] を組む。jcode のモデルピッカーは
+# この静的宣言しか並べないので、combo を選べるようにするにはここへ書く。
+#
+# 出すキーは id と context_window だけ。max_tokens などは jcode の設定スキーマ
+# に無く、書いても黙って無視される (実機の config.toml で確認済み)。
+#
+# 注意: この区間は「omniroute の models 全体」になる。区間の外にある
+# [[providers.omniroute.models]] は残すと二重定義になるので、区間へ移すこと。
+jcode_block="$tmp.jcode.toml"
+{
+  echo "$JCODE_BEGIN"
+  echo "# 自動生成 — omniroute-combos が書き込む。この区間は手で編集しない。"
+  echo "# 正本は OmniRoute の GET /v1/models (owned_by == \"combo\")。"
+  # static-thrifty は既定モデルなので、combo 側に無くなっても必ず残す。
+  # ただし contextWindow は live の combo を正とし、$fixed は live に無い
+  # id への補完にだけ使う。$fixed を先頭に置いて group_by の先頭で勝たせると
+  # 固定値がサーバ側の実測値 (例: context_length 1000000) を黙って上書きし、
+  # jcode の context_window が実態より小さいまま固定されてしまう
+  # (2026-11-05 に 65536 固定で発生)。$fixed の値は補完発動時 (combo 消失)
+  # の最後手段で、直近の実測値に合わせて保つ。
+  jq -r --argjson fixed '[{"id":"static-thrifty","contextWindow":1000000}]' '
+    (.combos | map(.id)) as $live
+    | (($fixed | map(select((.id as $i | $live | index($i)) == null))) + .combos)
+      | sort_by(.id) | group_by(.id) | map(.[0])[]
+    | "\n[[providers.omniroute.models]]\nid = \(.id | tojson)"
+      + (if .contextWindow == null then "" else "\ncontext_window = \(.contextWindow)" end)
+  ' "$tmp"
+  echo
+  echo "$JCODE_END"
+} >"$jcode_block"
+
+if [[ $mode == print ]]; then
+  cat "$tmp"
+  exit 0
+fi
+
+# 全出力先は同じ内容。0 件でない限り一気に差し替える。
+#
+# OmniRoute の context_length は combo を構成するメンバーの変化で
+# 1000000 と 1048576 の間を行き来する (同じ combo でも取得時刻で変わる)。
+# これを厳密な差分として扱うと 30 分ごとに生成物が書き換わり、opencode の
+# モデル定義も毎回作り直されてしまう。そこで「実質的な変化」だけを更新の
+# 条件にする:
+#
+#   - combo の id 集合が変わった (追加・削除)
+#   - contextWindow / maxTokens が 2 倍超、または半分未満に変わった
+#
+# それ未満の揺れは差分とみなさず、既存の生成物をそのまま残す。
+# (既存の値の方が「正常時」の値である可能性が高いため、上書きしない)
+meaningful_change() {
+  local old=$1
+  [[ -f $old ]] || return 0 # 生成物が無ければ必ず書く
+  # 壊れた生成物 (途中で切れた JSON など) は「差分なし」ではなく「必ず書き直す」。
+  # jq の失敗を握り潰すと --check が exit 0、apply が "already up to date" になり、
+  # 壊れたまま残る (2026-11-01 に検証で確認)。読めない時点で正常とは言えない。
+  #
+  # 形も同時に要求する。「読めるが .combos が配列でない」(= {} / string / key 無し /
+  # トップレベルが配列) を通すと、下の比較 jq が map の時点で落ちて exit 5 を返す。
+  # `jq -e` の exit 5 は「フィルタが例外で死んだ」であって「false」ではないが、
+  # シェルの if から見ると両方とも非 0 なので keep に化ける。つまり
+  # 壊れた .combos を持つ生成物が永久に書き直されない (2026-11-01 に検証で確認)。
+  # 比較側で判定不能を検出するより、ここで弾いて比較には必ず配列を渡す方が単純。
+  if ! jq -e 'type == "object" and (.combos | type) == "array"' "$old" >/dev/null 2>&1; then
+    echo "omniroute-combos: $old is not a combo list; rewriting it" >&2
+    return 0
+  fi
+  jq -e --slurpfile new "$tmp" '
+    def changed($a; $b):
+      if ($a | type) != "number" or ($b | type) != "number" then ($a != $b)
+      else ($b > $a * 2) or ($b * 2 < $a)
+      end;
+    (.combos | map({ key: .id, value: . }) | from_entries) as $prev
+    | ($new[0].combos) as $next
+    | ([ $next[]
+         | . as $m
+         | $prev[$m.id] as $p
+         | select($p != null)
+         | select(changed($p.contextWindow; $m.contextWindow) or changed($p.maxTokens; $m.maxTokens))
+         | $m.id
+       ]) as $resized
+    | (($prev | keys) != ($next | map(.id) | sort)) or (($resized | length) > 0)
+  ' "$old" >/dev/null 2>&1
+}
+
+diff_found=0
+for target in "$CACHE_JSON" "$DSH_JSON" "$OPENCODE_JSON"; do
+  if meaningful_change "$target"; then
+    diff_found=1
+  fi
+done
+
+# jcode の区間は JSON から導出する別形式なので、内容そのものを比べる
+# (id 集合と桁の揺れの判定は JSON 側で済んでいるが、生成側の不具合で
+#  TOML だけ古いまま残るのを防ぐためここでも見る)。
+#
+# 現在値の取り出しは「開始マーカーの次の行から終了マーカーの手前まで」。
+# マーカーが無い / 順序が壊れている場合は、書くと設定を壊すので die する
+# (初回だけは「区間が無い」= 差分あり、として末尾に足す)。
+extract_block() {
+  awk -v b="$JCODE_BEGIN" -v e="$JCODE_END" '
+    $0 == b { inside = 1; next }
+    $0 == e { inside = 0; seen = 1; next }
+    inside { print }
+    END { if (inside == 1) exit 3 }
+  ' "$1"
+}
+
+# 区間の外だけを取り出す。extract_block の裏返しで、マーカー行とその間を
+# 落として残りを出す。検算 1 で「区間外が変わっていない」ことを見るのに使う。
+extract_outside() {
+  awk -v b="$JCODE_BEGIN" -v e="$JCODE_END" '
+    $0 == b { inside = 1; next }
+    $0 == e { inside = 0; seen = 1; next }
+    inside { next }
+    { print }
+    END { if (inside == 1) exit 3 }
+  ' "$1"
+}
+
+jcode_current="$tmp.jcode.current"
+if [[ -f $JCODE_CONFIG ]] && ! grep -qxF "$JCODE_BEGIN" "$JCODE_CONFIG" \
+  && grep -qxF "$JCODE_END" "$JCODE_CONFIG"; then
+  die "$JCODE_CONFIG has $JCODE_END but no $JCODE_BEGIN; fix it by hand"
+fi
+
+if [[ -f $JCODE_CONFIG ]] && grep -qxF "$JCODE_BEGIN" "$JCODE_CONFIG"; then
+  extract_block "$JCODE_CONFIG" >"$jcode_current" \
+    || die "$JCODE_CONFIG: unterminated omniroute-combos block (no $JCODE_END)"
+  # マーカー行を除いた中身だけを比べる (生成物はマーカー込み)。
+  if [[ $diff_found == 0 ]] && ! diff -q \
+    <(sed '1d;$d' "$jcode_block") "$jcode_current" >/dev/null; then
+    diff_found=1
+  fi
+else
+  diff_found=1
+fi
+
+if [[ $mode == check ]]; then
+  if [[ $diff_found == 1 ]]; then
+    echo "omniroute-combos: client lists are stale ($count combos available)" >&2
+    exit 2
+  fi
+  exit 0
+fi
+
+if [[ $diff_found == 0 ]]; then
+  echo "omniroute-combos: $count combos, already up to date"
+  exit 0
+fi
+
+for target in "$CACHE_JSON" "$DSH_JSON" "$OPENCODE_JSON"; do
+  mkdir -p "$(dirname "$target")"
+  install -m 0644 "$tmp" "$target.new"
+  mv -f "$target.new" "$target"
+done
+
+# jcode の config.toml を書き換える。区間の外は 1 バイトも変えない。
+#
+# 手順: 新しい本文を隣の .new に作り、区間外の行が元と完全に一致することと
+# マーカーの対応を確かめてから mv で差し替える。mv は同一ディレクトリ内なので
+# 原子的 (rename) で、途中で落ちても config.toml が半端な状態にならない。
+mkdir -p "$(dirname "$JCODE_CONFIG")"
+jcode_src="$JCODE_CONFIG"
+[[ -f $jcode_src ]] || jcode_src=/dev/null
+jcode_new="$JCODE_CONFIG.new"
+
+# 区間に入れた id を集める。区間外に同じ id の宣言が残ると二重定義になる。
+jcode_ids="$tmp.jcode.ids"
+sed '1d;$d' "$jcode_block" | sed -n 's/^id = "\(.*\)"$/\1/p' >"$jcode_ids"
+
+# awk の仕事は 2 つ:
+#   1. マーカー区間を新しい内容に置き換える (区間が無ければ末尾に足す)
+#   2. 区間外に残っている [[providers.omniroute.models]] のうち、区間に移した
+#      id と同じものを取り除く (移し忘れると TOML の二重定義で壊れるため)
+#
+# 取り除いた行は $removed に 1 行ずつ書き、ブロックの終わりに "--" を置く。
+# 検算 1 はこの記録と突き合わせて「記録した行しか消えていない」ことを確かめる。
+#
+# models テーブルの範囲は「[[providers.omniroute.models]] の行から、空行または
+# 次のテーブル見出しの直前まで」で切る。空行を buffer に含めると、テーブルを
+# 区間の前後へ出し入れしたときに空行の位置がずれて区間外の diff が出る。
+jcode_removed="$tmp.jcode.removed"
+: >"$jcode_removed"
+awk -v b="$JCODE_BEGIN" -v e="$JCODE_END" -v blk="$jcode_block" \
+  -v ids="$jcode_ids" -v removed="$jcode_removed" '
+  # 区間の中身を出す。区間の直前には必ず空行を 1 つ置き、区間の末尾の空行は
+  # 出さない。こうすると区間の前後がどうなっていても (直前が空行なしで詰まって
+  # いても、後ろに空行が続いていても) 空行の数が 1 つに揃う。
+  function emit_block(   line, n, i) {
+    if (printed) print ""
+    n = 0
+    while ((getline line < blk) > 0) body[n++] = line
+    close(blk)
+    while (n > 0 && body[n-1] == "") n--
+    for (i = 0; i < n; i++) print body[i]
+    printed = 1
+    pend_blank = 1
+  }
+  # 区間外の本文を出す唯一の出口。空行はすぐには出さず、保留しておく。
+  # models テーブルを削除したときに残る空行と、区間を足すときの区切りが
+  # 重なって空行が 2 つ以上続くのを防ぐため。
+  function out(line) {
+    if (line == "") { pend_blank = 1; return }
+    flush_blanks()
+    print line
+    printed = 1
+  }
+  # 保留中の空行を出す。前後に中身があるときだけ 1 行出す。
+  function flush_blanks() {
+    if (pend_blank && printed) print ""
+    pend_blank = 0
+  }
+  # buffer 中のテーブルを確定する。id が区間に移したものと一致したら捨てて
+  # $removed に記録し、そうでなければそのまま出力する。
+  function flush_table(   i, drop) {
+    if (buf_n == 0) return
+    drop = (tbl_id in want)
+    if (drop) {
+      for (i = 0; i < buf_n; i++) print buf[i] > removed
+      print tbl_id > removed
+      print "--" > removed
+    } else {
+      for (i = 0; i < buf_n; i++) out(buf[i])
+    }
+    buf_n = 0
+    tbl_id = ""
+  }
+  BEGIN {
+    while ((getline l < ids) > 0) want[l] = 1
+    close(ids)
+  }
+  # 区間の置き換え。区間に入る直前で保留中のテーブルを確定させる。
+  $0 == b { if (!done) { flush_table(); emit_block(); done = 1 } skip = 1; next }
+  $0 == e { skip = 0; next }
+  skip    { next }
+
+  # ここから下は区間外
+  # 空行はテーブルの終端。保留があれば確定してから空行として扱う。
+  $0 == "" { flush_table(); out(""); next }
+  # models テーブルの見出し。直前のテーブルが空行なしで終わっていても区切れる。
+  $0 == "[[providers.omniroute.models]]" {
+    if (buf_n) flush_table()
+    buf[buf_n++] = $0
+    next
+  }
+  # 見出しを抱えている = models テーブルの中。フィールド行を積む。
+  buf_n > 0 {
+    buf[buf_n++] = $0
+    if ($0 ~ /^id = "/) {
+      s = $0
+      sub(/^id = "/, "", s)
+      sub(/"$/, "", s)
+      tbl_id = s
+    }
+    next
+  }
+  { out($0) }
+  END {
+    flush_table()
+    # 区間が無ければ末尾へ足す。区切りの空行は emit_block が出す。
+    if (!done) emit_block()
+    close(blk)
+    close(removed)
+  }
+' "$jcode_src" >"$jcode_new"
+
+# 検算 1: 区間外の行は「二重定義として取り除いた分」以外すべて元のまま残って
+# いること。$removed の各行を 1 回ずつ消費しながら元から引き、残りが新しい
+# 本文から区間を除いたものと一致することを見る (行の多重度も合う)。
+#
+# 両側とも区間を取り除いてから比べる。区間が無かった場合に区間を末尾へ足す
+# ので、そのまま比べると追加した区間が全部差分として出てしまう。既に区間が
+# あった場合も、古い区間の中身は置き換わるので比較の対象外にする。
+#
+# 元の側は extract_outside で区間を落としてから、$removed の行を 1 回ずつ
+# 消費して引く。順序は「先に区間を落とす」こと (区間の中の行と区間外の行を
+# 取り違えないため)。
+jcode_expect="$tmp.jcode.expect"
+: >"$tmp.jcode.expect.src"
+if [[ $jcode_src != /dev/null ]]; then
+  extract_outside "$jcode_src" >"$tmp.jcode.expect.src" \
+    || die "$JCODE_CONFIG: unterminated omniroute-combos block (no $JCODE_END)"
+fi
+awk -v rm="$jcode_removed" '
+  BEGIN { while ((getline l < rm) > 0) { if (l != "--") drop[l]++ } }
+  { n = ++seen[$0]; if (drop[$0] >= n) next; print }
+' "$tmp.jcode.expect.src" >"$jcode_expect"
+
+# 区間の中身は検算の対象外なので、新しい本文からもマーカー行ごと落とす。
+jcode_outside="$tmp.jcode.outside"
+extract_outside "$jcode_new" >"$jcode_outside"
+
+# 空行の連続と末尾の空行は意味を持たない。区間を差し替えると、区間の前後に
+# あった空行が隣り合って 1 行減ったり増えたりするので、比べる前に揃える。
+# ここで見たいのは「区間外の中身が変わっていないこと」であって空行の数では
+# ないため、空白の揺れは無視する。
+normalize_blanks() {
+  awk '
+    { lines[NR] = $0 }
+    END {
+      last = NR
+      while (last > 0 && lines[last] == "") last--
+      blank = 0
+      for (i = 1; i <= last; i++) {
+        if (lines[i] == "") {
+          if (!blank) print ""
+          blank = 1
+          continue
+        }
+        blank = 0
+        print lines[i]
+      }
+    }
+  ' "$1"
+}
+normalize_blanks "$jcode_expect" >"$jcode_expect.norm"
+normalize_blanks "$jcode_outside" >"$jcode_outside.norm"
+
+if ! diff -q "$jcode_expect.norm" "$jcode_outside.norm" >/dev/null; then
+  rm -f "$jcode_new"
+  die "refusing to write $JCODE_CONFIG: unexpected changes outside the block"
+fi
+
+if [[ -s $jcode_removed ]]; then
+  echo "omniroute-combos: $JCODE_CONFIG から二重定義になる models 宣言を削除した:" >&2
+  while IFS= read -r line; do
+    [[ $line == -- ]] && continue
+    [[ $line == 'id = '* ]] && echo "  - ${line#id = }" >&2
+  done <"$jcode_removed"
+fi
+
+# 検算 2: マーカーがちょうど 1 組あること。
+[[ $(grep -cxF "$JCODE_BEGIN" "$jcode_new") == 1 ]] \
+  && [[ $(grep -cxF "$JCODE_END" "$jcode_new") == 1 ]] || {
+  rm -f "$jcode_new"
+  die "refusing to write $JCODE_CONFIG: block markers are not balanced"
+}
+
+if [[ -f $JCODE_CONFIG ]]; then
+  cp -p "$JCODE_CONFIG" "$JCODE_CONFIG.bak"
+fi
+install -m 0644 "$jcode_new" "$jcode_new.inst" && mv -f "$jcode_new.inst" "$jcode_new"
+mv -f "$jcode_new" "$JCODE_CONFIG"
+
+echo "omniroute-combos: updated $count combos -> $OPENCODE_JSON, $JCODE_CONFIG (opencode / jcode は再起動で反映)"

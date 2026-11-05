@@ -1,0 +1,22 @@
+dty.fish vs pre-drive backup: IDENTICAL (cmp exit 0)
+PROBE count in repo config/: 0
+--- git status for the driven path:
+?? config/fish/functions/dty.fish
+--- git status for all of config/:
+ M config/fish/functions/oc.fish
+ M config/kitty/dank-theme.conf
+ M config/niri/config.kdl
+ A config/omniroute/apply-pricing-backfill.mjs
+ A config/omniroute/pricing-backfill.json
+ M config/omo/omo.jsonc
+ M config/wezterm/colors/dank-theme.toml
+?? config/dsh/omniroute-provider.yml
+?? config/fish/functions/dt.fish
+?? config/fish/functions/dtl.fish
+?? config/fish/functions/dty.fish
+?? config/fish/functions/opencode.fish
+?? config/niri/config.bak
+?? config/niri/config.kdl.bak-jcode-hotkeys-1791465999
+?? config/niri/config.kdl.bak-jcode-hotkeys-1791466270
+?? config/opencode/omniroute-combo-cost.json
+?? config/opencode/plugins/omniroute-combos.ts

@@ -8,6 +8,35 @@ fetch.github = "vercel-labs/opensrc"
 src.git = "https://github.com/thefrontside/lspx"
 fetch.github = "thefrontside/lspx"
 
+# efm-langserver
+[efm-langserver]
+src.github = "mattn/efm-langserver"
+fetch.github = "mattn/efm-langserver"
+
+# leaf (Rust 製ターミナル Markdown プレビュワー)
+[leaf]
+src.github = "RivoLink/leaf"
+fetch.github = "RivoLink/leaf"
+
+# vite-plus (vp) CLI のネイティブバイナリ (npm のプラットフォーム別パッケージ)。
+# src.manual でバージョンを固定する。更新時は src.manual と fetch.url 内の
+# バージョンを 4 箇所揃えて変更し、`nvfetcher -f '^vite-plus-cli'` で hash を再計算する。
+[vite-plus-cli-linux-x64-gnu]
+src.manual = "1.0.0"
+fetch.url = "https://registry.npmjs.org/@voidzero-dev/vite-plus-cli-linux-x64-gnu/-/vite-plus-cli-linux-x64-gnu-1.0.0.tgz"
+
+[vite-plus-cli-linux-arm64-gnu]
+src.manual = "1.0.0"
+fetch.url = "https://registry.npmjs.org/@voidzero-dev/vite-plus-cli-linux-arm64-gnu/-/vite-plus-cli-linux-arm64-gnu-1.0.0.tgz"
+
+[vite-plus-cli-darwin-x64]
+src.manual = "1.0.0"
+fetch.url = "https://registry.npmjs.org/@voidzero-dev/vite-plus-cli-darwin-x64/-/vite-plus-cli-darwin-x64-1.0.0.tgz"
+
+[vite-plus-cli-darwin-arm64]
+src.manual = "1.0.0"
+fetch.url = "https://registry.npmjs.org/@voidzero-dev/vite-plus-cli-darwin-arm64/-/vite-plus-cli-darwin-arm64-1.0.0.tgz"
+
 # Emacs
 [ob-ledger]
 src.git = "https://github.com/tkf/org-mode"
@@ -1021,3 +1050,17 @@ fetch.git = "https://github.com/pedz/ruby-ts-mode"
 [emacs-taskrunner]
 src.git = "https://github.com/emacs-taskrunner/emacs-taskrunner"
 fetch.git = "https://github.com/emacs-taskrunner/emacs-taskrunner"
+
+[herdr]
+src.git = "https://github.com/eddof13/herdr.el"
+fetch.github = "eddof13/herdr.el"
+
+# efm-license-lint (Gleam マニフェストのライセンス診断)
+# private リポジトリのため tarball は token 必須。`git ls-remote` と
+# `nix-prefetch-git` は HTTPS 経由の git 認証 (~/.gitconfig / credential helper)
+# を使うので fetch.git で取得する。credential helper は、~/.gitconfig の内容と
+# 同じものを home.sessionVariables の GIT_CONFIG_COUNT でも渡している
+# (nvfetcher は HOME を差し替えるため ~/.gitconfig が読めない)。
+[efm-license-lint]
+src.git = "https://github.com/Comamoca/efm-license-lint"
+fetch.git = "https://github.com/Comamoca/efm-license-lint"

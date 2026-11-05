@@ -20,7 +20,7 @@ pkgs.buildGoModule {
   src = "${src}";
 
   proxyVendor = true;
-  vendorHash = "sha256-dVXjMzn2ClQJRTuhdpDNHvbzKuHThtfjZ4xiBz56I8E=";
+  vendorHash = "sha256-t4huGDi9snbgUY1l9vjVUAzt6ZAyuYxvb8chdOZuWRE=";
 
   buildInputs = [ pkgs.olm ];
 

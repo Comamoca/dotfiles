@@ -24,6 +24,9 @@ vim.opt.runtimepath:append(ext_installer)
 vim.opt.runtimepath:append(ext_git)
 vim.opt.runtimepath:prepend(denops_src)
 
+vim.opt.runtimepath:prepend("/home/coma/.ghq/github.com/Comamoca/goda-hello")
+vim.opt.runtimepath:prepend("/home/coma/.ghq/github.com/Comamoca/goda-kensaku")
+
 if dpp.load_state(dppBase) then
   vim.api.nvim_create_autocmd("User", {
     pattern = "DenopsReady",

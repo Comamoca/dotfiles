@@ -1,0 +1,41 @@
+{
+  "source": "omniroute",
+  "combos": {
+    "static-thrifty": {
+      "input": 0.3817,
+      "output": 1.53,
+      "cacheRead": 0.0775,
+      "cacheWrite": 0.0775
+    },
+    "static-coding:cheap": {
+      "input": 0.654,
+      "output": 2.1334,
+      "cacheRead": 0.1262,
+      "cacheWrite": 0.1262
+    },
+    "static-best-coding": {
+      "input": 0.654,
+      "output": 2.1334,
+      "cacheRead": 0.1262,
+      "cacheWrite": 0.1262
+    },
+    "static-smart": {
+      "input": 0.654,
+      "output": 2.1334,
+      "cacheRead": 0.1262,
+      "cacheWrite": 0.1262
+    },
+    "static-fast": {
+      "input": 0.654,
+      "output": 2.1334,
+      "cacheRead": 0.1262,
+      "cacheWrite": 0.1262
+    },
+    "static-cheap": {
+      "input": 0.654,
+      "output": 2.1334,
+      "cacheRead": 0.1262,
+      "cacheWrite": 0.1262
+    }
+  }
+}

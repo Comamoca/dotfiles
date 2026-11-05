@@ -1,0 +1,72 @@
+[omniroute]
+display_name = "Custom (omniroute)"
+protocol = "openai"
+base_url = "http://localhost:20128/v1"
+api_key = "sk-0afa500ca4c4f52f-3b3c92-8a1ebabb"
+discover_models = false
+default_model = "omniroute/opencode-go/deepseek-v4.1-flash"
+
+# Tier intended use
+#   weak       everyday implementation (cheap, fast)
+#   medium     medium-to-large implementation; also parallel subagents
+#   strong     investigation and code review
+#   compaction high difficulty work and escalation
+#
+# A subagent cannot exceed its caller's tier, so pick the main session model
+# by what the session itself needs. A weak main session can still dispatch
+# medium subagents, but never strong.
+#
+# maki 0.6.5 notes:
+# - There is no per-row `default` flag. The first row of a tier is that tier's
+#   default, so order matters: keep the intended default first.
+# - Within a tier, the parent session uses the first row and subagents resolve
+#   to the remaining row(s). Verified by swapping the two medium rows: the
+#   parent and its medium subagent traded models both times. So the medium
+#   order below means qwen3.7-plus implements and gpt-6-luna serves subagents.
+# - `id` is the canonical model id used in {slug}/{model_id}.
+# - discover_models = false keeps these rows authoritative. With it true,
+#   discovery registers the same ids a second time and subagents fell back to
+#   the caller's model instead of resolving to the tier row.
+
+[[omniroute.models]]
+id = "opencode-go/deepseek-v4.1-flash"
+tier = "weak"
+context_window = 1000000
+max_output_tokens = 131072
+supports_thinking = true
+pricing_input = 0.30
+pricing_output = 1.20
+
+[[omniroute.models]]
+id = "opencode-go/qwen3.7-plus"
+tier = "medium"
+context_window = 1000000
+max_output_tokens = 131072
+supports_thinking = true
+
+[[omniroute.models]]
+id = "codex/gpt-6-luna"
+tier = "medium"
+context_window = 1050000
+max_output_tokens = 131072
+supports_thinking = true
+pricing_input = 0.10
+pricing_output = 0.50
+
+[[omniroute.models]]
+id = "deepinfra/zai-org/GLM-5.3-Flash"
+tier = "strong"
+context_window = 1000000
+max_output_tokens = 131072
+supports_thinking = true
+pricing_input = 0.15
+pricing_output = 0.50
+
+[[omniroute.models]]
+id = "opencode-go/kimi-k2.7-code"
+tier = "compaction"
+context_window = 200000
+max_output_tokens = 100000
+supports_thinking = true
+pricing_input = 0.95
+pricing_output = 4.00

@@ -1,0 +1,25 @@
+- id: llm-pi-ai
+  name: "@deepseek-ai/dsh-llm-pi-ai"
+  config:
+    providers:
+      omniroute:
+        displayName: OmniRoute
+        apiKeyEnv: OMNIROUTE_API_KEY
+        api: openai-completions
+        baseURL: http://127.0.0.1:20128/v1
+        # OmniRoute で追加した combo を自動で載せる。
+        #
+        # 一覧の正本は `omniroute-combos` (~/.bin/scripts/omniroute-combos/omniroute-combos)
+        # が /v1/models から生成する ~/.dsh/omniroute-combos.json
+        # (systemd user timer `omniroute-combos.timer` が定期更新)。
+        # combo を追加したら timer を待つか手で `omniroute-combos` を実行してから
+        # dsh を再起動すれば、この patch を書き換えずにモデルとして現れる。
+        #
+        # 生成ファイルが無い/壊れている場合は既定モデル static-thrifty だけを返す。
+        #
+        # !!js 式の制約 (dsh は YAML を JSON_SCHEMA + js タグで読む):
+        # - 式は `[` や `{ x: ` で始めない (フロー配列/マップとして解釈される)
+        # - `require` は無い。`process.getBuiltinModule("node:fs")` で読み込む
+        # - オブジェクトリテラルを書かず JSON.parse/JSON.stringify を使う
+        # - `? :` や `x: ` のようなコロン+空白を避ける (マップ区切りになる)
+        models: !!js (() => { const fs = process.getBuiltinModule("node:fs"); const os = process.getBuiltinModule("node:os"); const path = process.getBuiltinModule("node:path"); const home = process.env.DSH_HOME ?? path.join(os.homedir(), ".dsh"); const file = path.join(home, "omniroute-combos.json"); let combos = []; try { combos = JSON.parse(fs.readFileSync(file, "utf8")).combos ?? []; } catch (err) { combos = []; } const picked = combos.map((c) => JSON.parse(JSON.stringify(c))); const hasDefault = picked.some((m) => m.id === "static-thrifty"); if (hasDefault) return picked; picked.unshift(JSON.parse('{"id":"static-thrifty","name":"Static Thrifty"}')); return picked; })()

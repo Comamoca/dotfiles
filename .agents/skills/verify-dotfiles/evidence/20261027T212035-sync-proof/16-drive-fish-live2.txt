@@ -1,0 +1,4 @@
+-- repo:  end # verify-dotfiles probe
+-- via ~: end # verify-dotfiles probe
+-- fish resolved source: /home/coma/.config/fish/functions/dty.fish
+-- fish last line: end

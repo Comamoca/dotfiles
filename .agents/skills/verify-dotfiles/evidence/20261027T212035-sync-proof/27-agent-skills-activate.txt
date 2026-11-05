@@ -1,0 +1,83 @@
+== agent-skills: what the built generation would install
+-- activation script calls:
+/nix/store/w4q7kf6pflbvsg4y34p7l77nsfdnr88c-skills-install/bin/skills-install
+-- exists: yes
+-- bundle it installs:
+-- live marker says bundle:
+/nix/store/m3mz1fd0sihlcvxycnah716vkk3a2dpy-agent-skills-bundle
+-- live bundle dir content count: 63
+-- head of skills-install:
+#!/nix/store/nnm9gdr70ihc6zc9298mzz8jpcgaciql-bash-5.3p20/bin/bash
+set -o errexit
+set -o nounset
+set -o pipefail
+
+export PATH="/nix/store/cb987zkxvsv0490753ilrvn5yk7ylgxi-coreutils-9.12/bin:/nix/store/9l0j15jg8634hkb6d4c9y95mpxl0nhrd-jq-1.8.2-bin/bin:/nix/store/hsv6gv4p5cvlgzqgj0ylszssifr2vh6x-rsync-3.5.0/bin:$PATH"
+
+exec /nix/store/kwyi4bq5s2qgwbhz6cs4gjy57c2zdxws-bash-interactive-5.3p20/bin/bash /nix/store/gpwf32bd6b03sxhq6lgbica02gz1qrkp-sync.sh /nix/store/n9x5738d77xq3vq2rrqmhzn7njqnkcdb-skills-install-config.json "$@"
+
+
+-- store refs in it:
+/nix/store/9l0j15jg8634hkb6d4c9y95mpxl0nhrd-jq-1.8.2-bin
+/nix/store/cb987zkxvsv0490753ilrvn5yk7ylgxi-coreutils-9.12
+/nix/store/gpwf32bd6b03sxhq6lgbica02gz1qrkp-sync.sh
+/nix/store/hsv6gv4p5cvlgzqgj0ylszssifr2vh6x-rsync-3.5.0
+/nix/store/kwyi4bq5s2qgwbhz6cs4gjy57c2zdxws-bash-interactive-5.3p20
+/nix/store/n9x5738d77xq3vq2rrqmhzn7njqnkcdb-skills-install-config.json
+/nix/store/nnm9gdr70ihc6zc9298mzz8jpcgaciql-bash-5.3p20
+-- config the built generation would hand to the sync script:
+{
+  "bundle": "/nix/store/m3mz1fd0sihlcvxycnah716vkk3a2dpy-agent-skills-bundle",
+  "excludePatterns": [
+    "/.system",
+    "/synced"
+  ],
+  "mode": "global",
+  "overrides": {
+    "enabled": false,
+    "envVar": "AGENT_SKILLS_DESTS",
+    "hasTargetRestrictions": false,
+    "structure": "symlink-tree"
+  },
+  "schemaVersion": 2,
+  "targets": [
+    {
+      "bundle": "/nix/store/m3mz1fd0sihlcvxycnah716vkk3a2dpy-agent-skills-bundle",
+      "dest": "$HOME/.agents/skills",
+      "name": "agents",
+      "structure": "symlink-tree"
+    },
+    {
+      "bundle": "/nix/store/m3mz1fd0sihlcvxycnah716vkk3a2dpy-agent-skills-bundle",
+      "dest": "$HOME/.claude/skills",
+      "name": "claude",
+      "structure": "symlink-tree"
+    },
+    {
+      "bundle": "/nix/store/m3mz1fd0sihlcvxycnah716vkk3a2dpy-agent-skills-bundle",
+      "dest": "$HOME/.jcode/skills",
+      "name": "jcode",
+      "structure": "symlink-tree"
+    },
+    {
+      "bundle": "/nix/store/m3mz1fd0sihlcvxycnah716vkk3a2dpy-agent-skills-bundle",
+      "dest": "$HOME/.omp/agent/skills",
+      "name": "omp",
+      "structure": "symlink-tree"
+    },
+    {
+      "bundle": "/nix/store/m3mz1fd0sihlcvxycnah716vkk3a2dpy-agent-skills-bundle",
+      "dest": "$HOME/.config/opencode/skills",
+      "name": "opencode",
+      "structure": "symlink-tree"
+    },
+    {
+      "bundle": "/nix/store/m3mz1fd0sihlcvxycnah716vkk3a2dpy-agent-skills-bundle",
+      "dest": "$HOME/.pi/agent/skills",
+      "name": "pi",
+      "structure": "symlink-tree"
+    }
+  ]
+}
+-- does it match the live marker?
+   built bundle: /nix/store/m3mz1fd0sihlcvxycnah716vkk3a2dpy-agent-skills-bundle

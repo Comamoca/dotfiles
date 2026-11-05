@@ -5,12 +5,11 @@ with pkgs;
   zenn-cli
   nb
   w3m
-  nixVersions.nix_2_31
+  nixVersions.nix_2_34
   godot
   arduino
   meson
   act
-  aider-chat
   algia
   polybarFull
   devenv
@@ -41,4 +40,14 @@ with pkgs;
   pinta
   krita
   nyxt
+
+  # chatgpt-unwrapped 26.1021.22027 は remote-control-device-key.node が
+  # libtss2-* を要求するが、上流の buildInputs に tpm2-tss が無いため
+  # autoPatchelf が失敗する。上流修正までのビルド回避。
+  (llm-agents.chatgpt.override {
+    chatgpt-unwrapped = llm-agents.chatgpt.unwrapped.overrideAttrs (old: {
+      buildInputs = (old.buildInputs or [ ]) ++ [ tpm2-tss ];
+    });
+  })
+  pandoc
 ]

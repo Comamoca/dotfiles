@@ -1,0 +1,16 @@
+cloudflared-dsh
+cloudflared-omniroute
+cloudflared-opencode
+dsh-web
+emacs@
+emacs@canary
+emacs@coding
+niri-scratchpad-daemon
+omniroute
+omniroute-combos
+omniroute-network
+omniroute-pricing
+omniroute-sync-opencode-go
+opencode-server
+rclone-sync
+rclone-sync-watcher

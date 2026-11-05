@@ -1,0 +1,27 @@
+[telescope-nvim]
+src.github = "nvim-telescope/telescope.nvim"
+fetch.github = "nvim-telescope/telescope.nvim"
+
+[oil-nvim]
+src.github = "stevearc/oil.nvim"
+fetch.github = "stevearc/oil.nvim"
+
+[vim-fern]
+src.github = "lambdalisue/vim-fern"
+fetch.github = "lambdalisue/vim-fern"
+
+[snacks-nvim]
+src.github = "folke/snacks.nvim"
+fetch.github = "folke/snacks.nvim"
+
+[mini-nvim]
+src.github = "echasnovski/mini.nvim"
+fetch.github = "echasnovski/mini.nvim"
+
+[nvim-lspconfig]
+src.github = "neovim/nvim-lspconfig"
+fetch.github = "neovim/nvim-lspconfig"
+
+[kanagawa-nvim]
+src.git = "https://github.com/rebelot/kanagawa.nvim.git"
+fetch.github = "rebelot/kanagawa.nvim"

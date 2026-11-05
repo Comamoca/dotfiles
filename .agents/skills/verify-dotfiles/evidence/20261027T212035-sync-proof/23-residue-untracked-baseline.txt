@@ -1,0 +1,19 @@
+tracked by git?
+config/fish/functions/br.fish
+config/fish/functions/fish_prompt.fish
+config/fish/functions/fish_right_prompt.fish
+config/fish/functions/fish_title.fish
+config/fish/functions/fisher.fish
+config/fish/functions/fzf_prev_open.fish
+config/fish/functions/nlr.fish
+config/fish/functions/nvim_tmux.fish
+config/fish/functions/oc.fish
+config/fish/functions/opensrc-switch.fish
+config/fish/functions/run_recker.fish
+config/fish/functions/theme_gruvbox.fish
+config/fish/functions/wt.fish
+--- (empty list above near dty = dty.fish was never committed)
+mtimes of the other files vs dty.fish:
+2026-10-27 21:23:32.624391229 +0900 config/fish/functions/dty.fish
+2026-10-26 08:00:30.702270244 +0900 config/fish/functions/dt.fish
+content IDENTICAL, mtime restored

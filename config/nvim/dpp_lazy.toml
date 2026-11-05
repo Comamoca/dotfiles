@@ -504,7 +504,6 @@ let g:lightline = {
 			\	},
       \ 'component_function': {
       \   'bufchar': 'Bufchar',
-      \   'nowplaying': 'NowPlaying',
       \   'pomodoro': 'Pomodoro'
       \ }
     \ }
@@ -515,13 +514,6 @@ let g:lightline.component = {
 
 function! Bufchar() abort
 	return wordcount()['chars'] 
-endfunction
-
-function! NowPlaying() abort
-  let status = $"󰓇 {spotify#nowplaying()}"
-  call lightline#update()  
-
-	return status
 endfunction
 '''
 
@@ -1112,3 +1104,26 @@ on_event = ['BufRead', 'CursorHold']
 lua_source = """
 require("toggleterm").setup()
 """
+
+[[plugins]]
+repo = "https://github.com/bgwdotdev/gleam-theme-nvim"
+on_event = ['BufRead', 'CursorHold']
+hook_add = '''
+'''
+
+[[plugins]]
+repo = "https://github.com/Shougo/goda.vim"
+on_event = ['BufRead', 'CursorHold']
+
+[[plugins]]
+repo = "https://github.com/Shougo/goda-fi.vim"
+on_event = ['BufRead', 'CursorHold']
+# goda-fi のバイナリは設定 (config/nvim/goda-fi) の Go モジュールから作る。
+# プラグインの更新時にこのビルドを走らせ、手で home-manager switch を
+# 回さなくても設定の変更が反映されるようにする。
+# installerBuild はプラグインの runtimepath から実行されるので、
+# 設定側のスクリプトは $HOME からの絶対パスで指定する。
+extAttrs = { installerBuild = "bash $HOME/.config/nvim/goda-fi/build.sh" }
+lua_source = '''
+require("configs/goda_fi")
+'''

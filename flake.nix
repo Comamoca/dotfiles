@@ -4,6 +4,12 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    # services.ollama.package 専用。可動タグを builtins.fetchTarball + 固定
+    # sha256 で取っていたため、上流が進むたび hash mismatch で評価が壊れていた。
+    # flake input にして flake.lock で固定する。
+    # 既存の nixpkgs とはブランチが異なる (nixpkgs-unstable vs nixos-unstable)
+    # ので、統合せず別 input のままにしてある。
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
@@ -33,7 +39,6 @@
     treefmt-nix.url = "github:numtide/treefmt-nix";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     emacs-overlay.url = "github:nix-community/emacs-overlay";
-    emacs.url = "github:cmacrae/emacs";
     nak.url = "github:comamoca/flake-nak";
     nur-packages.url = "github:Comamoca/nur-packages";
     eqsh = {
@@ -73,6 +78,18 @@
     };
     worktrunk.url = "github:max-sixty/worktrunk";
 
+    # ~/.claude/skills などエージェントの skill ディレクトリを宣言的に管理する。
+    # skill の実体は ./skills/ 配下に置き、home-manager モジュールから同期する。
+    agent-skills = {
+      url = "github:Kyure-A/agent-skills-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    codex-plugin-cc = {
+      url = "github:openai/codex-plugin-cc/db52e28f4d9ded852ab3942cea316258ae4ef346";
+      flake = false;
+    };
+
     herdr = {
       url = "github:ogulcancelik/herdr";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -89,11 +106,24 @@
       url = "github:asciimoo/hister/v0.18.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Tree-sitterハイライトと埋め込みコードへのLSPブリッジを提供するlanguage server。
+    # v1.0.0 タグにピン留めする。
+    kakehashi = {
+      url = "github:atusy/kakehashi/v1.0.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   nixConfig = {
-    extra-substituters = [ "https://cache.numtide.com" ];
-    extra-trusted-public-keys = [ "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=" ];
+    extra-substituters = [
+      "https://cache.numtide.com"
+      "https://nix-community.cachix.org"
+    ];
+    extra-trusted-public-keys = [
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+    ];
   };
 
   outputs =
@@ -120,6 +150,12 @@
       };
       treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
 
+      # Omnigent (omnigent.nix が systemd user unit で常駐させる)。依存は上流
+      # v0.19.1 の uv.lock に固定してある (pkgs/omnigent)。overlay 内の
+      # `prev.python314Packages` は overlays 引数の `pkgs` 由来で後続 overlay の
+      # 影響を受けるため、ビルドに使うパッケージはここで完成させる。
+      omnigent = pkgs.python314Packages.callPackage ./pkgs/omnigent { };
+
       overlays = [
         # Shadow deprecated stdenv.is{Linux,Aarch64,Darwin} with the recommended
         # hostPlatform equivalents. Several external overlays still use the old
@@ -135,7 +171,6 @@
         (import inputs.emacs-overlay)
         inputs.nak.overlays.default
         inputs.deno-overlay.overlays.deno-overlay
-        # (import emacs.overlay)
         inputs.mozilla-overlay.overlays.firefox
         inputs.niri.overlays.niri
         # WORKAROUND(sodiboo/niri-flake#1851): nixpkgs removed libdisplay-info_0_2
@@ -144,12 +179,13 @@
         # generic expression still shipped in nixpkgs.
         # Remove once https://github.com/sodiboo/niri-flake/pull/1853 lands.
         (final: prev: {
-          libdisplay-info_0_2 = final.callPackage
-            (import "${inputs.nixpkgs}/pkgs/by-name/li/libdisplay-info/generic.nix" {
+          libdisplay-info_0_2 = final.callPackage (import
+            "${inputs.nixpkgs}/pkgs/by-name/li/libdisplay-info/generic.nix"
+            {
               version = "0.2.0";
               hash = "sha256-6xmWBrPHghjok43eIDGeshpUEQTuwWLXNHg7CnBUt3Q=";
-            })
-            { };
+            }
+          ) { };
         })
         inputs.gleam-overlay.overlays.default
         inputs.llm-agents.overlays.shared-nixpkgs
@@ -192,9 +228,34 @@
           system = "aarch64-linux";
           specialArgs = { inherit inputs; };
           modules = [
+            inputs.nixos-hardware.nixosModules.raspberry-pi-3
             inputs.sops-nix.nixosModules.sops
             inputs.hermes-agent.nixosModules.default
             ./raspi/configuration.nix
+          ];
+        };
+
+        # Orange Pi 5 (RK3588S)。nixos-hardware にモジュールが無いので
+        # 汎用 aarch64 として構成し、ブートローダ (mainline U-Boot) と
+        # GPT イメージは orangepi5/image.nix で自前で組む。
+        orangepi5 = nixpkgs.lib.nixosSystem {
+          system = "aarch64-linux";
+          specialArgs = { inherit inputs; };
+          modules = [
+            inputs.sops-nix.nixosModules.sops
+            # 救援モード (HDMI 自動ログイン + 自動診断)。
+            ./orangepi5/rescue.nix
+            ({ ... }: {
+              orangepi5.rescue.enable = true;
+              # fallbackAddress は設定しない (既定の null)。
+              # 以前は 192.168.10.50/24 を直接振っていたが、fallback サービスが
+              # `nmcli device set <if> managed no` を実行するため、
+              # NetworkManager の DHCP が走らず、ルータ接続時に IP が取れない
+              # 原因になっていた。有線は NM の DHCP に一本化する。
+              # 復旧用の固定 IP がどうしても必要なときは、コンソールで
+              # 一時的に `ip addr add` する (設定には戻さない)。
+            })
+            ./orangepi5/configuration.nix
           ];
         };
 
@@ -216,6 +277,9 @@
         NixOS = inputs.nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
           modules = [
+            # configuration.nix の sops.* (nixbuild.net トークン) に必要。
+            # raspi は既に読み込んでいるが、こちらには入っていなかった。
+            inputs.sops-nix.nixosModules.sops
             inputs.catppuccin.nixosModules.catppuccin
             inputs.nix-index-database.nixosModules.default
             # home-manager.nixosModules.home-manager
@@ -266,6 +330,7 @@
               inputs.dms.homeModules.dank-material-shell
               inputs.nix-index-database.homeModules.default
               inputs.hister.homeModules.default
+              inputs.agent-skills.homeManagerModules.default
               {
                 nixpkgs.overlays = overlays ++ [
                   inputs.deploy-rs.overlays.default
@@ -276,7 +341,9 @@
                     worktrunk = inputs.worktrunk.packages.${system}.default;
                     herdr = inputs.herdr.packages.${system}.default;
                     hunk = inputs.hunk.packages.${system}.default;
+                    kakehashi = inputs.kakehashi.packages.${system}.default;
                     shinycolors-jacket = import ./pkgs/shinycolors-jacket { pkgs = final; };
+                    inherit omnigent;
                   })
                 ];
               }
@@ -331,6 +398,24 @@
         };
       };
 
+      # Orange Pi 5。実機の Tailscale 名が確定するまでは hostname を
+      # Tailscale MagicDNS の短縮名にしておく。sd-image を焼いて起動し
+      # `tailscale status` で名前を確認したらここを更新する。
+      deploy.nodes.orangepi5 = {
+        hostname = "orangepi5";
+        profiles.system = {
+          user = "root";
+          sshUser = "coma";
+          sshOpts = [
+            "-o"
+            "IdentitiesOnly=yes"
+            "-i"
+            "/home/coma/.ssh/id_ed25519"
+          ];
+          path = deploy-rs.lib.aarch64-linux.activate.nixos self.nixosConfigurations.orangepi5;
+        };
+      };
+
       devShells.x86_64-linux.default = pkgs.mkShell {
         packages = with pkgs; [
           sops
@@ -344,9 +429,12 @@
         inputsFrom = [
         ];
 
-        # shellHook = ''
-        #   export DEBUG=1
-        # '';
+        shellHook = ''
+          # CLAUDE.md は AGENTS.md への symlink として生成する。指示ファイルを
+          # 実体で二重管理すると必ず乖離するため、追跡対象は AGENTS.md のみ。
+          repo_root="$(git rev-parse --show-toplevel 2>/dev/null || echo "$PWD")"
+          ln -sfn AGENTS.md "$repo_root/CLAUDE.md"
+        '';
       };
     };
 }

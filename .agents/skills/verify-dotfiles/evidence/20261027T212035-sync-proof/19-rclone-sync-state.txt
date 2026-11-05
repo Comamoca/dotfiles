@@ -1,0 +1,11 @@
+== a feature the live system is NOT running: rclone-sync timer
+-- declared by home.nix:
+rclone-sync.service
+rclone-sync.timer
+-- actually installed/enabled:
+   enabled
+   enabled
+   rclone-sync-watcher.service bad     ignored
+   rclone-sync.service         enabled ignored
+   rclone-sync.timer           enabled ignored
+--                          active state: active inactive 

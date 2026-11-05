@@ -1,0 +1,5 @@
+== is dty.fish content unchanged from before the drive?
+cmp: IDENTICAL
+
+== was config/fish/functions/dty.fish already untracked BEFORE this skill existed?
+Did you forget to 'git add'?

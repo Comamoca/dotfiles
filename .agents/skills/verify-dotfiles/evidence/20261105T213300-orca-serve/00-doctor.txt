@@ -1,0 +1,31 @@
+== checkout
+repo:     /home/coma/.ghq/github.com/Comamoca/dotfiles
+head:     57b896b-dirty
+nix:      nix (Nix) 2.34.9
+cache:    /tmp/nixcache
+
+== flake
+path:          /nix/store/bdn3b1mp5d8hbh62wa3a7zfpszhk021m-source
+dirty:         57b896b-dirty
+last_modified: 2026-11-05T12:18:46Z
+
+== configuration attrs (evaluation only, no build)
+activation:    /nix/store/f1sanr50g9kj3bwd9hv75glnhkr6dc77-home-manager-generation.drv
+username:      coma
+homeDirectory: /home/coma
+stateVersion:  24.05
+
+== live state
+profile link:  cwxxykcqf86d9zvvv9w0v37c0z8zbq17-home-manager-generation
+gcroots:       cwxxykcqf86d9zvvv9w0v37c0z8zbq17-home-manager-generation
+emacs@coding:  active
+proof result:  a3ddq4z0gcg87iqzk095pkbcksaygiry-home-manager-generation
+
+== proof results vs live
+  live home-files:  qgxnc7dfr711y3fjfrhwdmsq0f0dvgvd-home-manager-files
+  built home-files: 856x9y9pfimw5s2707byjkqh4lwfx2m7-home-manager-files
+DIFFER: the built generation is not activated yet. Files under ~/ still
+        reflect the live generation, so a drive must use proof/result-*/home-files
+        and 'hmcheck live-vs-proof' output must be recorded as diverged state.
+
+DOCTOR: OK

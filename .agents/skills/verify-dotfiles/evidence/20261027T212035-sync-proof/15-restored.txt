@@ -1,0 +1,3 @@
+restored: identical to pre-drive copy
+end
+git status for that file: '?? config/fish/functions/dty.fish'

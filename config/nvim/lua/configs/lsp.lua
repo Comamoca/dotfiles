@@ -23,6 +23,24 @@ vim.lsp.config("denols", {
 })
 vim.lsp.enable("denols")
 
+-- kakehashi: Markdown埋め込みコードのハイライトとLSPブリッジ
+vim.lsp.config("kakehashi", {
+  cmd = { "kakehashi" },
+  filetypes = { "markdown" },
+  on_attach = function(_, bufnr)
+    -- kakehashiがハイライトを持つため、初回トークン受信時に内蔵ハイライトを停止 (上流README準拠)
+    vim.api.nvim_create_autocmd("LspTokenUpdate", {
+      buffer = bufnr,
+      once = true,
+      callback = function()
+        vim.opt_local.syntax = "OFF"
+        vim.treesitter.stop(bufnr)
+      end,
+    })
+  end,
+})
+vim.lsp.enable("kakehashi")
+
 -- devenv などの devshell が古い gleam を PATH の先頭に置くことがあるため、
 -- LSP には home-manager プロファイルの gleam を絶対パスで指定する (issue #6)。
 vim.lsp.config("gleam", {

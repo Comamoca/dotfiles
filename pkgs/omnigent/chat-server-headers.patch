@@ -1,0 +1,69 @@
+--- a/omnigent/chat.py
++++ b/omnigent/chat.py
+@@ -898,6 +898,7 @@
+ 
+ 
+ def _server_headers(
++    server_url: str | None = None,
+     *,
+     runner_id: str | None = None,
+ ) -> dict[str, str]:
+@@ -908,6 +909,18 @@
+     returns an ``httpx.Auth`` that refreshes the Databricks OAuth
+     token on every request.
+ 
++    :param server_url: The server URL, e.g.
++        ``"https://example.databricks.com/api/2.0/omnigent"``. When
++        given, the headers built by
++        :func:`omnigent.cli_auth.databricks_request_headers` are folded
++        in, so an ``OmnigentClient`` carries the same routing and
++        selector headers as the ad-hoc request helpers
++        (:func:`_remote_headers`). Servers that authenticate on a
++        header the operator supplies out of band (a local deployment
++        behind a proxy that injects ``OMNIGENT_AUTH_HEADER``, for
++        example) need this: their header arrives through
++        ``OMNIGENT_DATABRICKS_EXTRA_HEADERS``, which only that helper
++        reads.
+     :param runner_id: Optional runner UUID, e.g.
+         ``"runner_0123456789abcdef"``. Accepted for callers that
+         already threaded the value here; runner affinity is now
+@@ -916,7 +929,11 @@
+     :returns: Static headers for ``httpx`` / ``OmnigentClient``.
+     """
+     del runner_id
+-    return {}
++    if not server_url:
++        return {}
++    from omnigent.cli_auth import databricks_request_headers
++
++    return databricks_request_headers(server_url)
+ 
+ 
+ def _server_auth(
+@@ -2301,7 +2318,7 @@
+     async def _main() -> None:
+         async with OmnigentClient(
+             base_url=base_url,
+-            headers=_server_headers(runner_id=runner_id),
++            headers=_server_headers(base_url, runner_id=runner_id),
+             auth=_server_auth(server_url=base_url, session_id=None),
+         ) as client:
+             # Both a local bundle and a remote registered agent go through
+@@ -4102,7 +4119,7 @@
+         server_auth = _server_auth(server_url=base_url, session_id=resume_conversation_id)
+         async with OmnigentClient(
+             base_url=base_url,
+-            headers=_server_headers(runner_id=runner_id),
++            headers=_server_headers(base_url, runner_id=runner_id),
+             auth=server_auth,
+         ) as client:
+             # When --fork is set, call the fork endpoint before
+@@ -4203,7 +4220,7 @@
+         """Run the one-shot SDK query inside an async client context."""
+         async with OmnigentClient(
+             base_url=base_url,
+-            headers=_server_headers(runner_id=runner_id),
++            headers=_server_headers(base_url, runner_id=runner_id),
+             auth=_server_auth(server_url=base_url, session_id=resume_conversation_id),
+         ) as client:
+             # Both a local bundle and a remote registered agent go through

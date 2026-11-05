@@ -1,0 +1,30 @@
+== checkout
+repo:     /home/coma/.ghq/github.com/Comamoca/dotfiles
+head:     af379bc-dirty
+nix:      nix (Nix) 2.31.6
+cache:    /tmp/nixcache
+
+== flake
+path:          /nix/store/b71riqndhcny26blak4w9d6j1i8nl5ms-source
+dirty:         af379bc-dirty
+last_modified: 2026-10-25T12:41:15Z
+
+== configuration attrs (evaluation only, no build)
+activation:    /nix/store/2l5nw47d8badnvq0fkyflr4shpn0nyw8-home-manager-generation.drv
+username:      coma
+homeDirectory: /home/coma
+stateVersion:  24.05
+
+== live state
+profile link:  sxx4pl2v5rr2ncw8ibzri8ii0r3d3fa7-home-manager-generation
+gcroots:       sxx4pl2v5rr2ncw8ibzri8ii0r3d3fa7-home-manager-generation
+emacs@coding:  active
+proof result:  sxx4pl2v5rr2ncw8ibzri8ii0r3d3fa7-home-manager-generation
+
+== proof results vs live
+  live home-files:  balmh45pyflg4a9p46z40ml66y0vl4s7-home-manager-files
+  built home-files: balmh45pyflg4a9p46z40ml66y0vl4s7-home-manager-files
+MATCH: the built generation's home-files IS what the live /home/coma already points at.
+       Everything observable under ~/ therefore proves this checkout's home.nix.
+
+DOCTOR: OK

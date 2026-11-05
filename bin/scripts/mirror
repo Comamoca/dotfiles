@@ -1,0 +1,215 @@
+#!/usr/bin/env bash
+# mirror - wl-mirror で任意の出力へ画面をミラーリングする TUI
+#
+# ターミナルで実行すると fzf、TTY がない場合 (niri の keybind 等) は rofi で
+# 「どの出力を・どの出力へ」複製するかを選び、wl-mirror を systemd の
+# transient unit (wl-mirror.service) として全画面起動する。
+#
+# 実行中に再度実行すると、停止 / 別の組み合わせへの切り替え / 同じ組み合わせの
+# 再起動を選べる。
+#
+# 使い方: mirror
+#
+# 依存: wl-mirror, wlr-randr, jq, systemd (--user), fzf または rofi
+
+set -euo pipefail
+
+UNIT="wl-mirror"
+
+# --- TTY 判定 ---------------------------------------------------------------
+# コマンド置換 (`$(...)`) の中では stdout がパイプになるため -t 1 では判定できない。
+# 制御端末を開けるかどうかで判断する (niri の keybind から起動した場合は失敗する)。
+has_tty() {
+    [[ -e /dev/tty ]] && { : <>/dev/tty; } 2>/dev/null
+}
+
+# --- 通知 -------------------------------------------------------------------
+notify() {
+    local msg="$1"
+    if [[ -t 1 ]]; then
+        echo "$msg"
+    fi
+    if command -v notify-send >/dev/null 2>&1 && [[ -n "${WAYLAND_DISPLAY:-}${DISPLAY:-}" ]]; then
+        notify-send "Display Mirror" "$msg" 2>/dev/null || true
+    fi
+    if ! [[ -t 1 ]] && ! command -v notify-send >/dev/null 2>&1; then
+        echo "$msg" >&2
+    fi
+}
+
+# --- 出力一覧 ---------------------------------------------------------------
+# 有効な出力を "name<TAB>WxH" で返す。内蔵ディスプレイ (eDP/LVDS/DSI) を先頭にソート。
+list_outputs() {
+    wlr-randr --json 2>/dev/null | jq -r '
+        [ .[] | select(.enabled)
+          | { name,
+              size: ([.modes[] | select(.current) | "\(.width)x\(.height)"][0] // "?") }
+        ]
+        | sort_by(if (.name | test("^(eDP|LVDS|DSI)")) then 0 else 1 end, .name)
+        | .[] | [.name, .size] | @tsv
+    '
+}
+
+# --- 現在の状態 -------------------------------------------------------------
+# 実行中なら "src<TAB>dst" を返す。未実行なら何も返さない。
+# 起動引数はこのスクリプトの形式 ("wl-mirror --fullscreen-output DST SRC") を前提とする。
+current_mirror() {
+    local pid="" cmdline="" src="" dst=""
+
+    if systemctl --user is-active --quiet "$UNIT" 2>/dev/null; then
+        pid=$(systemctl --user show -p MainPID --value "$UNIT" 2>/dev/null || true)
+    fi
+    if [[ -z "$pid" || "$pid" == "0" ]]; then
+        pid=$(pgrep -x wl-mirror 2>/dev/null | head -n1 || true)
+    fi
+    [[ -n "$pid" && -r "/proc/$pid/cmdline" ]] || return 0
+
+    cmdline=$(tr '\0' '\n' < "/proc/$pid/cmdline")
+    dst=$(awk 'p { print; exit } $0 == "--fullscreen-output" { p = 1 }' <<<"$cmdline")
+    src=$(awk 'END { print }' <<<"$cmdline")
+    [[ -n "$src" && -n "$dst" ]] || return 0
+
+    printf '%s\t%s' "$src" "$dst"
+}
+
+# --- 選択 UI ---------------------------------------------------------------
+# 引数: header と "<action><TAB><label>" の行
+# 選択された action を stdout に返す。キャンセル時は何も返さない。
+choose() {
+    local header="$1"
+    shift
+    local -a actions=() labels=()
+    local line sel="" idx=""
+
+    for line in "$@"; do
+        actions+=("${line%%$'\t'*}")
+        labels+=("${line#*$'\t'}")
+    done
+
+    if has_tty && command -v fzf >/dev/null 2>&1; then
+        sel=$(printf '%s\n' "${labels[@]}" \
+            | fzf --height=60% --border --reverse --header-first \
+                  --prompt='ミラーリング> ' --header="$header" \
+            || true)
+        sel="${sel%%$'\n'*}" # --filter 等で複数出た場合は先頭のみ
+    elif command -v rofi >/dev/null 2>&1; then
+        idx=$(printf '%s\n' "${labels[@]}" \
+            | rofi -dmenu -i -p "Mirror" -no-custom -format i || true)
+        [[ "$idx" =~ ^[0-9]+$ ]] || return 0
+        sel="${labels[$idx]}"
+    else
+        echo "fzf も rofi も見つかりません" >&2
+        exit 1
+    fi
+
+    [[ -n "$sel" ]] || return 0
+    for idx in "${!labels[@]}"; do
+        if [[ "${labels[$idx]}" == "$sel" ]]; then
+            printf '%s' "${actions[$idx]}"
+            return 0
+        fi
+    done
+}
+
+# --- 起動・停止 -------------------------------------------------------------
+start_mirror() {
+    local src="$1" dst="$2"
+    systemd-run --user --quiet --unit="$UNIT" --collect \
+        --description="wl-mirror: $src -> $dst" \
+        "$(command -v wl-mirror)" --fullscreen-output "$dst" "$src"
+}
+
+stop_mirror() {
+    if systemctl --user is-active --quiet "$UNIT" 2>/dev/null; then
+        systemctl --user stop "$UNIT"
+        return 0
+    fi
+    local pid
+    pid=$(pgrep -x wl-mirror 2>/dev/null | head -n1 || true)
+    [[ -n "$pid" ]] && kill "$pid"
+}
+
+# --- メイン -----------------------------------------------------------------
+main() {
+    command -v wl-mirror >/dev/null 2>&1 || {
+        notify "wl-mirror が見つかりません"
+        exit 1
+    }
+
+    local -a out_names=() out_sizes=()
+    local name size
+    while IFS=$'\t' read -r name size; do
+        [[ -n "$name" ]] || continue
+        out_names+=("$name")
+        out_sizes+=("$size")
+    done < <(list_outputs)
+
+    if (( ${#out_names[@]} == 0 )); then
+        notify "有効なディスプレイが見つかりません"
+        exit 1
+    fi
+    if (( ${#out_names[@]} < 2 )); then
+        notify "ミラーリング先がありません (出力が1つだけです)"
+        exit 1
+    fi
+
+    local cur cur_src="" cur_dst=""
+    cur=$(current_mirror || true)
+    if [[ -n "$cur" ]]; then
+        cur_src="${cur%%$'\t'*}"
+        cur_dst="${cur##*$'\t'}"
+    fi
+
+    local header
+    if [[ -n "$cur_src" ]]; then
+        header="現在: $cur_src → $cur_dst (実行中)"
+    else
+        header="現在: 停止中"
+    fi
+
+    local -a lines=()
+    [[ -n "$cur_src" ]] && lines+=("stop"$'\t'"■ 停止 ($cur_src → $cur_dst)")
+
+    local i j label
+    for i in "${!out_names[@]}"; do
+        for j in "${!out_names[@]}"; do
+            (( i == j )) && continue
+            label="${out_names[$i]} (${out_sizes[$i]}) → ${out_names[$j]} (${out_sizes[$j]})"
+            [[ "${out_names[$i]}" == "$cur_src" && "${out_names[$j]}" == "$cur_dst" ]] \
+                && label+=" (実行中)"
+            lines+=("start:${out_names[$i]}:${out_names[$j]}"$'\t'"$label")
+        done
+    done
+
+    local action
+    action=$(choose "$header" "${lines[@]}")
+    [[ -n "$action" ]] || exit 0 # キャンセル
+
+    case "$action" in
+        stop)
+            stop_mirror
+            notify "ミラーリングを停止しました ($cur_src → $cur_dst)"
+            ;;
+        start:*)
+            local src dst
+            IFS=: read -r _ src dst <<<"$action"
+            if [[ "$src" == "$cur_src" && "$dst" == "$cur_dst" ]]; then
+                # 同じ組み合わせを再選択 → 再起動
+                stop_mirror
+                start_mirror "$src" "$dst"
+                notify "ミラーリングを再起動しました ($src → $dst)"
+            elif [[ -n "$cur_src" ]]; then
+                stop_mirror
+                start_mirror "$src" "$dst"
+                notify "ミラーリングを切り替えました ($cur_src → $cur_dst から $src → $dst へ)"
+            else
+                start_mirror "$src" "$dst"
+                notify "ミラーリング開始: $src → $dst"
+            fi
+            ;;
+    esac
+}
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    main "$@"
+fi

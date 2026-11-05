@@ -1,0 +1,10 @@
+== drive: does editing config/fish/functions/dty.fish reach the LIVE ~/.config path?
+-- live target of ~/.config/fish/functions/dty.fish:
+/home/coma/.ghq/github.com/Comamoca/dotfiles/config/fish/functions/dty.fish
+-- original last line:
+end
+
+-- after editing config/fish/functions/dty.fish (no switch, no restart):
+   new last line via repo:  # verify-dotfiles probe: 1793103765
+   new last line via ~/:    # verify-dotfiles probe: 1793103765
+   via store target:        # verify-dotfiles probe: 1793103765

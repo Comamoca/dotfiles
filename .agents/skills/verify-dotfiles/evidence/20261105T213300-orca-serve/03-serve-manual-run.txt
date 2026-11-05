@@ -1,0 +1,25 @@
+[serve] using Electron serve: this profile has SSH targets, which orcad cannot serve yet
+[secrets] selected --password-store=gnome-libsecret: the desktop is unrecognised and the secret service is unlocked
+Gtk-Message: 23:22:39.676: Failed to load module "colorreload-gtk-module"
+[daemon] Preserving daemon launched before the current app bundle was installed because it owns 3 live sessions
+[history] durable continuity unproven; using live snapshot: a6e7d114-6a93-4b11-a362-e9fce8034b43::/home/coma/.ghq/github.com/Comamoca/idol-live-db@@480348df
+[serve] orca CLI install: installed (/home/coma/.local/bin/orca-ide)
+[history] durable continuity unproven; using live snapshot: 388fa19b-5893-4175-966b-8bbc479e4349::/home/coma/orca/workspaces/dotfiles/moray@@b7e046e3
+[serve] bare orca dispatcher installed: /home/coma/.local/bin/orca -> /nix/store/rp6d9hb3bg2l2d5hjfrbaldhcfkaivh1-orca-1.4.248/lib/Orca/resources/bin/orca-ide
+Orca server ready
+Bound endpoint: ws://0.0.0.0:6768
+Advertised endpoint: ws://127.0.0.1:6768
+Pairing unavailable: disabled_by_operator
+Pairing guidance: Restart without --no-pairing to create a client pairing offer.
+[agent-state-rules] download failed: HTTP 404
+[history] durable continuity unproven; using live snapshot: 388fa19b-5893-4175-966b-8bbc479e4349::/home/coma/orca/workspaces/dotfiles/moray@@7e1f1d8c
+[auto-branch-rename] skip (branch "Comamoca/vix-home-manager-setup" is not an auto-generated name) for 388fa19b-5893-4175-966b-8bbc479e4349::/home/coma/orca/workspaces/dotfiles/moray
+[3644301:1105/232252.262301:ERROR:content/common/zygote/zygote_communication_linux.cc:291] Failed to send GetTerminationStatus message to zygote
+[3644301:1105/232252.276529:ERROR:content/browser/gpu/gpu_process_host.cc:1102] GPU process launch failed: error_code=1002
+[3644301:1105/232252.277716:ERROR:content/browser/network_service_instance_impl.cc:721] Network service crashed or was terminated, restarting service.
+[3644301:1105/232252.287071:ERROR:content/browser/gpu/gpu_process_host.cc:1102] GPU process launch failed: error_code=1002
+[3644301:1105/232252.289196:ERROR:content/browser/gpu/gpu_process_host.cc:1102] GPU process launch failed: error_code=1002
+[3644301:1105/232252.289258:FATAL:content/browser/gpu/gpu_data_manager_impl_private.cc:416] GPU process isn't usable. Goodbye.
+[1105/232252.303370:ERROR:third_party/crashpad/crashpad/snapshot/elf/elf_dynamic_array_reader.h:64] tag not found
+[1105/232252.303809:ERROR:third_party/crashpad/crashpad/snapshot/elf/elf_dynamic_array_reader.h:64] tag not found
+exit=124

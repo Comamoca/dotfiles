@@ -1,0 +1,4 @@
+-- repo:      env DSH_PERMISSION_MODE=danger-full-access dt $argv # PROBE-1793103802
+-- via ~:     env DSH_PERMISSION_MODE=danger-full-access dt $argv # PROBE-1793103802
+-- fish (loaded through ~/.config):      env DSH_PERMISSION_MODE=danger-full-access dt $argv # PROBE-1793103802
+-- fish source path: /home/coma/.config/fish/functions/dty.fish

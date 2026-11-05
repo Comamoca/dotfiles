@@ -146,6 +146,9 @@
 
     alias vimdiff='nvim -d'
 
+    # nix + lz.n 試用環境 (config/nvim-lzn)
+    alias nvl='NVIM_APPNAME=nvim-lzn nvim'
+
     alias README='cp (ghq root)/github.com/Comamoca/baserepo/README.md (ghq root)/github.com/Comamoca/baserepo/README.ja.md .'
     alias ISSUE='cp (ghq root)/github.com/coma/ask/template.ja.md issue.ja.md'
 
@@ -179,8 +182,16 @@
     abbr --add cc claude
     abbr --add e $EDITOR
     abbr --add a emacsclient -s main -c
-    abbr --add oc opencode
+    # oc は systemd 常駐の OpenCode Server へ接続する関数に移行
+    # (config/fish/functions/oc.fish)
     abbr --add cmd "cmd --yolo"
+    abbr --add jc jcode
+    # dt    : 起動中の dsh web へアタッチ (web が落ちていればローカル起動)
+    # dty   : dt と同じ + DSH_PERMISSION_MODE=danger-full-access
+    # dtl   : attach せず tui profile をローカル起動 (旧 dt の挙動)
+    # 実体は config/fish/functions/{dt,dty,dtl}.fish
+    # dsh の権限は DSH_PERMISSION_MODE でのみ決まる (--yolo フラグは無い)。
+    # danger-full-access = sandbox 無制限 + approval never = yolo。
 
     set -x ELIXIR_ERL_OPTIONS "+fnu"
     set -x SSH_ASKPASS ${pkgs.kdePackages.ksshaskpass}
@@ -267,12 +278,16 @@
     # opam configuration
 
     # nh: nh home switch に --impure -b backup を自動付与
-    # aider: OpenCode Go (OpenAI API compatible) API keys from sops
-    # loaded into env vars (AIDER_OPENAI_API_KEY / AIDER_OPENAI_API_BASE)
+    # aider: OpenCode Go (OpenAI API compatible) の API キーを sops から読む。
+    # sops 側のキー名は OPENAI_API_KEY / OPENAI_API_BASE だが、そのまま素の名前で
+    # export すると codex が ChatGPT サブスク認証 (~/.codex/auth.json) より
+    # OPENAI_API_KEY を優先してしまい、OpenCode Go の鍵で純正 API を叩いて失敗する。
+    # aider は任意の CLI オプションを AIDER_ 接頭辞の環境変数で受けられるので、
+    # 名前を付け替えて aider 専用にスコープする。
     if test -f /run/user/1000/aider-opencode-go.env
         for line in (cat /run/user/1000/aider-opencode-go.env | string match -r '^[A-Z_]+=.*')
             set -l kv (string split -m 1 '=' -- $line)
-            set -gx $kv[1] $kv[2]
+            set -gx AIDER_$kv[1] $kv[2]
         end
     end
 

@@ -42,7 +42,8 @@ input {
         dwt
         // dwtp
         natural-scroll
-        // accel-speed 0.2
+        // カーソル速度。範囲は -1.0 〜 1.0（niri v25.08）。
+        accel-speed 0.4
         // accel-profile "flat"
         // scroll-method "two-finger"
         // disabled-on-external-mouse
@@ -51,7 +52,10 @@ input {
     mouse {
         // off
         // natural-scroll
-        // accel-speed 0.2
+        // カーソル速度。範囲は -1.0 〜 1.0（niri v25.08）。
+        // HHKB Studio のポインティングスティックもこのブロックの設定が効く。
+        // 加速が邪魔な場合は accel-profile "flat" を有効化する。
+        accel-speed 0.5
         // accel-profile "flat"
         // scroll-method "no-scroll"
     }
@@ -59,6 +63,7 @@ input {
     trackpoint {
         // off
         // natural-scroll
+        // HHKB Studio のスティック速度は本体側 (Fn2+B/G) で管理。
         // accel-speed 0.2
         // accel-profile "flat"
         // scroll-method "on-button-down"
@@ -110,6 +115,21 @@ input {
     // If the position is unset or results in an overlap, the output is instead placed
     // automatically.
     position x=1280 y=0
+}
+
+// カーソルテーマとサイズ。
+// Emacs だけテーマが反映されない既知の問題は CURSOR-THEME-ISSUE.md を参照。
+// https://github.com/YaLTeR/niri/wiki/Configuration:-Miscellaneous
+// スイッチ: `cursor-switch.sh morino|temari`（Temari Tsukimura = 旧 / Morino Rinze = 新）。
+// 変更後: home-manager switch --flake .#Home --impure && niri msg action quit
+environment {
+    XCURSOR_THEME "Morino Rinze"
+    XCURSOR_SIZE "75"
+}
+
+cursor {
+    xcursor-theme "Morino Rinze"
+    xcursor-size 75
 }
 
 // Settings that influence how windows are positioned and sized.
@@ -236,8 +256,9 @@ spawn-at-startup "dms" "run"
 // 初期フォーカスを term ワークスペースに設定
 spawn-at-startup "bash" "-c" "sleep 0.5 && niri msg action focus-workspace 'term'"
 spawn-at-startup "fcitx5"
-spawn-at-startup "sandsmark-notificationd"
-spawn-at-startup "swaync"
+// 通知サーバは DMS の NotificationServer が担う。swaync と sandsmark-notificationd は
+// org.freedesktop.Notifications を奪い合うため起動しない。
+// (sandsmark-notificationd は Discord の未読バッジ用に試した名残で、現在は使っていない)
 spawn-at-startup "wlsunset" "-t" "5500"
 // xwayland-satellite — DiscordなどのElectronアプリがX11を必要とするため
 spawn-at-startup "xwayland-satellite"
@@ -385,6 +406,10 @@ window-rule {
 }
 
 binds {
+    // >>> jcode launch hotkeys (managed) >>>
+    Super+Apostrophe hotkey-overlay-title="jcode: home" { spawn "sh" "-c" "if [ \"$(niri msg -j focused-window 2>/dev/null | jq -r '.app_id // empty' 2>/dev/null)\" = 'jcode-desktop' ]; then exec wtype -M ctrl -k t -m ctrl; fi; if [ -d '/home/coma' ]; then cd '/home/coma'; else cd \"$HOME\"; fi; exec 'kitty' '/nix/store/9f7qdxcs79dls6kynb6g0kp0w3x9v4bl-jcode-0.92.0/bin/jcode' --spawn-hotkey 'cmd+'\\'''"; }
+    Super+bracketleft hotkey-overlay-title="jcode: lython" { spawn "sh" "-c" "if [ -d '/home/coma/.ghq/github.com/t3tra-dev/lython' ]; then cd '/home/coma/.ghq/github.com/t3tra-dev/lython'; else cd \"$HOME\"; fi; exec 'kitty' '/nix/store/9f7qdxcs79dls6kynb6g0kp0w3x9v4bl-jcode-0.92.0/bin/jcode' --spawn-hotkey 'cmd+['"; }
+    // <<< jcode launch hotkeys (managed) <<<
     // Keys consist of modifiers separated by + signs, followed by an XKB key name
     // in the end. To find an XKB name for a particular key, you may use a program
     // like wev.
@@ -404,9 +429,9 @@ binds {
     Mod+D { spawn "rofi" "-show" "combi"; }
     Mod+Space { spawn "rofi" "-show" "drun"; }
     Mod+E { spawn "emacsclient" "-s" "main" "-c"; }
-    Mod+B { spawn "bash" "-c" "/home/coma/.ghq/github.com/Comamoca/dotfiles/bin/scripts/browser-focus-niri.sh"; }
+    Mod+B { spawn "bash" "-c" "/home/coma/.bin/scripts/browser-focus-niri.sh"; }
     // Window switcher: rofi検索→フォーカス
-    Mod+W { spawn "bash" "-c" "/home/coma/.ghq/github.com/Comamoca/dotfiles/bin/scripts/niri-window-switch.sh"; }
+    Mod+W { spawn "bash" "-c" "/home/coma/.bin/scripts/niri-window-switch.sh"; }
     // Scratchpad: alacritty 端末をトグル (niri-scratchpad)
     Mod+T { spawn "niri-scratchpad" "target" "--spawn" "alacritty --class foot-scratch" "appid" "foot-scratch"; }
     // Scratchpad: Emacs をトグル (niri-scratchpad) - 名前付きデーモン(main)に接続、タイトルで識別
@@ -636,3 +661,20 @@ binds {
     // moving the mouse or pressing any other key.
     // Mod+Shift+P { power-off-monitors; }  // Removed: conflicts with workspace movement
 }
+
+// >>> DMS (DankMaterialShell) include >>>
+// DMS は ~/.config/niri/dms/*.kdl を自動生成する。niri 側でこれらを include して
+// いないと、DMS が layout.kdl を書き換えても niri は設定を再読み込みしない。
+// その結果 ConfigLoaded イベントが発生せず、DMS の Frame トグルが「レイアウト
+// 適用待ち」のまま固まって、通常のバーではなく全周フレームが描画され続ける。
+// dms/input.kdl, dms/binds.kdl, dms/outputs.kdl, dms/cursor.kdl は下の設定と
+// 衝突するため意図的に include しない。
+// `optional=true` が無いと、生成前・削除後の 1 ファイル欠落で niri の設定全体が
+// parse error になる（niri は include に glob を使えない）。optional でも
+// 内容が壊れている場合はエラーになるので、生成ミスは検出できる。
+include "dms/colors.kdl" optional=true
+include "dms/alttab.kdl" optional=true
+include "dms/windowrules.kdl" optional=true
+include "dms/wpblur.kdl" optional=true
+include "dms/layout.kdl" optional=true
+// <<< DMS include <<<

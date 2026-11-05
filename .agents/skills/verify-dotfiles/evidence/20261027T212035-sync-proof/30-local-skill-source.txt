@@ -1,0 +1,6 @@
+== is the LIVE grill-me skill the same bytes as repo skills/local/grill-me?
+IDENTICAL: ~/.agents/skills/grill-me is served from the repo source (via the bundle)
+
+== BUT editing the repo copy does NOT reach ~/.agents/skills (no out-of-store symlink here)
+   skills/local files are plain repo files: /home/coma/.ghq/github.com/Comamoca/dotfiles/skills/local/grill-me/SKILL.md
+   while config/niri is out-of-store:          /home/coma/.ghq/github.com/Comamoca/dotfiles/config/niri

@@ -7,7 +7,9 @@ with pkgs;
   # Communication
   slack
   teams-for-linux
-  discord
+  # discord — configuration.nix のシステムラッパー (WebRTCPipeWireCapturer 付き) を使う。
+  # ここに生の discord を入れると ~/.nix-profile/bin/discord が PATH で先になり、
+  # ラッパーが効かず Niri (Wayland) での画面共有が壊れる。
   signal-desktop
 
   # Media
