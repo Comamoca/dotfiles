@@ -1,0 +1,3 @@
+building .#homeConfigurations.Home.activationPackage -> /home/coma/.ghq/github.com/Comamoca/dotfiles/.agents/skills/verify-dotfiles/proof/result-homeConfigurations.Home.activationPackage
+/nix/store/7jfjwga3hbndd9cijs2alc17n5kj8hzg-home-manager-generation
+BUILD_OK

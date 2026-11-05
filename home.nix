@@ -309,6 +309,7 @@ rec {
     ./maestro.nix
     ./omniroute.nix
     ./omnigent.nix
+    ./orca.nix
     ./cloudflare-os-service.nix
   ];
   nixpkgs.config = {

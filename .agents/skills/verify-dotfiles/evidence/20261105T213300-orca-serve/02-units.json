@@ -1,0 +1,80 @@
+[
+  {
+    "unit": "cloudflare-os"
+  },
+  {
+    "unit": "cloudflared-dsh"
+  },
+  {
+    "unit": "cloudflared-omnigent"
+  },
+  {
+    "unit": "cloudflared-omniroute"
+  },
+  {
+    "unit": "cloudflared-opencode"
+  },
+  {
+    "unit": "dsh-web"
+  },
+  {
+    "unit": "emacs@"
+  },
+  {
+    "unit": "emacs@canary"
+  },
+  {
+    "unit": "emacs@coding"
+  },
+  {
+    "unit": "forgejo"
+  },
+  {
+    "unit": "gpg-agent"
+  },
+  {
+    "unit": "hister"
+  },
+  {
+    "unit": "maestro"
+  },
+  {
+    "unit": "niri-scratchpad-daemon"
+  },
+  {
+    "unit": "omnigent"
+  },
+  {
+    "unit": "omniroute"
+  },
+  {
+    "unit": "omniroute-combos"
+  },
+  {
+    "unit": "omniroute-network"
+  },
+  {
+    "unit": "omniroute-pricing"
+  },
+  {
+    "unit": "opencode-server"
+  },
+  {
+    "unit": "orca-serve"
+  },
+  {
+    "unit": "rclone-sync"
+  },
+  {
+    "unit": "set-SSH_AUTH_SOCK"
+  },
+  {
+    "unit": "sops-nix"
+  },
+  {
+    "unit": "spotifyd"
+  },
+  {
+    "unit": "wl-clip-persist"
+  }
+]
