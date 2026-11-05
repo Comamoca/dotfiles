@@ -71,6 +71,9 @@ with pkgs;
   llm-agents.dsh
   llm-agents.maki
   llm-agents.hax
+  # vix と vixd (デーモン) の両バイナリを含む。デーモンは home.nix の
+  # systemd.user.services.vixd で常駐させる。
+  llm-agents.vix
   # llm-agents.codex は programs.codex.package (home.nix) 経由で入る
 
   (import ../pkgs/terminal-browser { inherit pkgs; })

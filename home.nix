@@ -1607,6 +1607,42 @@ rec {
     };
   };
 
+  # vix (AIコーディングエージェント) の常駐デーモン。
+  # 通常は vix クライアントがデーモン不在時に vixd を自動スポーンするが、
+  # ログイン時から常駐させておくことでブレインやジョブスケジューラを
+  # 最初から使える状態にする。既に別の vixd がソケットを握っている場合は
+  # 起動に失敗して再試行する (vix が自動スポーンした古いデーモンは
+  # --exit-with-clients なのでクライアントが切れれば交代できる)。
+  # - ソケット: /tmp/vixd.sock (vix クライアントのデフォルトと同じため、
+  #   追加設定なしで vix がこのデーモンに接続する)
+  # - Mission Control (Web UI): 127.0.0.1:1337
+  # - 設定: ~/.vix (settings.json / agents/ / skills/ / providers.json)
+  # - 認証情報: systemd 経由ではシェルの環境変数が見えないため、
+  #   vix login (OSキーチェイン / ~/.vix/auth.json) で保存したものが使われる
+  # X-SwitchMethod = "keep-old": 実行中のスレッドを中断しない。
+  # vix のバージョン更新は手動再起動 (systemctl --user restart vixd) で反映。
+  systemd.user.services.vixd = {
+    Unit = {
+      Description = "vix daemon (AI coding agent, /tmp/vixd.sock)";
+      After = [ "network-online.target" ];
+      Wants = [ "network-online.target" ];
+      X-SwitchMethod = "keep-old";
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.llm-agents.vix}/bin/vixd";
+      WorkingDirectory = "%h";
+      # ソケット (/tmp/vixd.sock) を所有者以外から接続不可にする。
+      # vixd はデフォルトでソケット認証なしのため、umask が実質的なアクセス制御。
+      UMask = "0077";
+      Restart = "on-failure";
+      RestartSec = 3;
+    };
+    Install = {
+      WantedBy = [ "default.target" ];
+    };
+  };
+
   # opencode.comamoca.dev → OpenCode Server への Cloudflare Tunnel。
   # トークンは sops で復号された ~/.config/cloudflared/opencode-token (0600) を
   # --token-file で読み込むため、ps / プロセスリストにトークンが露出しない。
