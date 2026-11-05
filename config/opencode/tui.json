@@ -11,6 +11,7 @@
         "showCost": true,
         "intervalMs": 1000
       }
-    ]
+    ],
+    "file:///home/coma/.config/opencode/plugins/orca-opencode-status-tui/tui.js"
   ]
 }
