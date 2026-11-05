@@ -74,7 +74,6 @@ Unlicense
 
 - [nix](https://github.com/catppuccin/nix)
 - [fish](https://github.com/catppuccin/fish)
-- [swaync](https://github.com/catppuccin/swaync)
 - [bat](https://github.com/catppuccin/bat)
 - [kitty](https://github.com/catppuccin/kitty)
 - [rofi](https://github.com/catppuccin/rofi)

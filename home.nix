@@ -741,11 +741,6 @@ rec {
       #   recursive = true;
       # };
 
-      ".config/swaync" = {
-        source = (symlink /${dotfiles}/config/swaync);
-        recursive = true;
-      };
-
       # Vim configs.
       ".config/vim" = {
         source = (symlink /${dotfiles}/config/vim);

@@ -256,8 +256,9 @@ spawn-at-startup "dms" "run"
 // 初期フォーカスを term ワークスペースに設定
 spawn-at-startup "bash" "-c" "sleep 0.5 && niri msg action focus-workspace 'term'"
 spawn-at-startup "fcitx5"
-spawn-at-startup "sandsmark-notificationd"
-spawn-at-startup "swaync"
+// 通知サーバは DMS の NotificationServer が担う。swaync と sandsmark-notificationd は
+// org.freedesktop.Notifications を奪い合うため起動しない。
+// (sandsmark-notificationd は Discord の未読バッジ用に試した名残で、現在は使っていない)
 spawn-at-startup "wlsunset" "-t" "5500"
 // xwayland-satellite — DiscordなどのElectronアプリがX11を必要とするため
 spawn-at-startup "xwayland-satellite"
