@@ -140,10 +140,17 @@ jcode_block="$tmp.jcode.toml"
   echo "$JCODE_BEGIN"
   echo "# 自動生成 — omniroute-combos が書き込む。この区間は手で編集しない。"
   echo "# 正本は OmniRoute の GET /v1/models (owned_by == \"combo\")。"
-  # static-thrifty は combo ではないが既定モデルなので必ず残す。combo 側に
-  # 同名が現れても二重定義にならないよう、id で重複を落とす。
-  jq -r --argjson fixed '[{"id":"static-thrifty","contextWindow":65536}]' '
-    (($fixed + .combos) | sort_by(.id) | group_by(.id) | map(.[0]))[]
+  # static-thrifty は既定モデルなので、combo 側に無くなっても必ず残す。
+  # ただし contextWindow は live の combo を正とし、$fixed は live に無い
+  # id への補完にだけ使う。$fixed を先頭に置いて group_by の先頭で勝たせると
+  # 固定値がサーバ側の実測値 (例: context_length 1000000) を黙って上書きし、
+  # jcode の context_window が実態より小さいまま固定されてしまう
+  # (2026-11-05 に 65536 固定で発生)。$fixed の値は補完発動時 (combo 消失)
+  # の最後手段で、直近の実測値に合わせて保つ。
+  jq -r --argjson fixed '[{"id":"static-thrifty","contextWindow":1000000}]' '
+    (.combos | map(.id)) as $live
+    | (($fixed | map(select((.id as $i | $live | index($i)) == null))) + .combos)
+      | sort_by(.id) | group_by(.id) | map(.[0])[]
     | "\n[[providers.omniroute.models]]\nid = \(.id | tojson)"
       + (if .contextWindow == null then "" else "\ncontext_window = \(.contextWindow)" end)
   ' "$tmp"
