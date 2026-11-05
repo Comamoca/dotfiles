@@ -247,9 +247,13 @@
             ./orangepi5/rescue.nix
             ({ ... }: {
               orangepi5.rescue.enable = true;
-              # キーボードが無い実機で DHCP が取れないときの保険。
-              # リンクアップ後にこの IP を直接振る。
-              orangepi5.rescue.fallbackAddress = "192.168.10.50/24";
+              # fallbackAddress は設定しない (既定の null)。
+              # 以前は 192.168.10.50/24 を直接振っていたが、fallback サービスが
+              # `nmcli device set <if> managed no` を実行するため、
+              # NetworkManager の DHCP が走らず、ルータ接続時に IP が取れない
+              # 原因になっていた。有線は NM の DHCP に一本化する。
+              # 復旧用の固定 IP がどうしても必要なときは、コンソールで
+              # 一時的に `ip addr add` する (設定には戻さない)。
             })
             ./orangepi5/configuration.nix
           ];

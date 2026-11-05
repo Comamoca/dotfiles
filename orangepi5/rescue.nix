@@ -4,7 +4,12 @@
 # ためのオプションモジュール。普段は flake.nix の modules に読み込まない。
 # 使うときは orangepi5 の modules に ./orangepi5/rescue.nix を足して
 # イメージを焼き直す。diagnostics.enable = false にすると自動診断だけ消せる。
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   options.orangepi5.rescue = {
@@ -63,6 +68,12 @@
       description = ''
         有線 IF (interface または自動検出) がリンクアップしたら、この CIDR を
         一時的に割り当てる。null なら何もしない。
+
+        注意: このサービスは DHCP との衝突を避けるため
+        `nmcli device set <if> managed no` を実行する。一度有効にすると、
+        サービスを止めてもデバイスは unmanaged のまま残り、再起動するまで
+        NetworkManager の DHCP が走らない。通常運用では null のままにして
+        DHCP に一本化すること。
       '';
     };
   };
@@ -103,213 +114,229 @@
     in
     {
 
-    # tty1 と serial (getty@ttyS2 テンプレート) の両方で自動ログイン。
-    # パスワードが無い coma でもこのモジュール経由なら入れる。
-    services.getty.autologinUser = "coma";
+      # tty1 と serial (getty@ttyS2 テンプレート) の両方で自動ログイン。
+      # パスワードが無い coma でもこのモジュール経由なら入れる。
+      services.getty.autologinUser = "coma";
 
-    # 診断で ethtool / mdio を読むため、救援モードのときだけ入れる。
-    environment.systemPackages = with pkgs; [ ethtool iproute2 usbutils pciutils ]
-      ++ lib.optionals config.orangepi5.rescue.diagnostics.enable [
-        (pkgs.writeShellApplication {
-          name = "orangepi5-diag";
-          runtimeInputs = with pkgs; [
-            iproute2
-            networkmanager
-            ethtool
-            systemd
-            gnugrep
-            gawk
-            coreutils
-          ];
-          text = ''
-            iface=${lib.escapeShellArg iface}
-            ${detectIface}
-            echo "=== orangepi5-diag $(date --iso-8601=seconds) ==="
-            echo "--- iface: ''${iface:-none} ---"
-            ip -br addr || true
-            ip route || true
-            nmcli device status || true
-            if [ -n "$iface" ]; then
-              for f in carrier operstate speed duplex address; do
-                printf '%s: %s\n' "$f" "$(cat "/sys/class/net/$iface/$f" 2>/dev/null || echo n/a)"
+      # 診断で ethtool / mdio を読むため、救援モードのときだけ入れる。
+      environment.systemPackages =
+        with pkgs;
+        [
+          ethtool
+          iproute2
+          usbutils
+          pciutils
+        ]
+        ++ lib.optionals config.orangepi5.rescue.diagnostics.enable [
+          (pkgs.writeShellApplication {
+            name = "orangepi5-diag";
+            runtimeInputs = with pkgs; [
+              iproute2
+              networkmanager
+              ethtool
+              systemd
+              gnugrep
+              gawk
+              coreutils
+            ];
+            text = ''
+              iface=${lib.escapeShellArg iface}
+              ${detectIface}
+              echo "=== orangepi5-diag $(date --iso-8601=seconds) ==="
+              echo "--- iface: ''${iface:-none} ---"
+              ip -br addr || true
+              ip route || true
+              nmcli device status || true
+              if [ -n "$iface" ]; then
+                for f in carrier operstate speed duplex address; do
+                  printf '%s: %s\n' "$f" "$(cat "/sys/class/net/$iface/$f" 2>/dev/null || echo n/a)"
+                done
+                ethtool "$iface" 2>&1 | head -25 || true
+              fi
+              echo "--- mdio bus / phy ---"
+              ls -d /sys/class/mdio_bus/* 2>/dev/null || echo "(no mdio_bus)"
+              for d in /sys/class/mdio_bus/*/*; do
+                [ -d "$d" ] || continue
+                case "$(basename "$d")" in *:*|*.*) continue ;; esac
+                printf '%s phy_id=%s\n' "$d" "$(cat "$d/phy_id" 2>/dev/null || echo n/a)"
               done
-              ethtool "$iface" 2>&1 | head -25 || true
-            fi
-            echo "--- mdio bus / phy ---"
-            ls -d /sys/class/mdio_bus/* 2>/dev/null || echo "(no mdio_bus)"
-            for d in /sys/class/mdio_bus/*/*; do
-              [ -d "$d" ] || continue
-              case "$(basename "$d")" in *:*|*.*) continue ;; esac
-              printf '%s phy_id=%s\n' "$d" "$(cat "$d/phy_id" 2>/dev/null || echo n/a)"
-            done
-            echo "--- dmesg (net) ---"
-            dmesg 2>/dev/null | grep -iE 'eth|stmmac|dwmac|gmac|phy|mdio|link' | tail -40 || true
-          '';
-        })
-      ];
+              echo "--- dmesg (net) ---"
+              dmesg 2>/dev/null | grep -iE 'eth|stmmac|dwmac|gmac|phy|mdio|link' | tail -40 || true
+            '';
+          })
+        ];
 
-    # DHCP が取れないときの保険。NetworkManager を止めてから ip で直接
-    # アドレスを振る。到達確認用の一時処置なので、成功したら
-    # ユーザが nmcli で本来の設定に戻す前提。
-    systemd.services.orangepi5-fallback-ip = lib.mkIf (config.orangepi5.rescue.fallbackAddress != null) {
-      description = "Orange Pi 5 救援用の固定 IP フォールバック";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "NetworkManager.service" ];
-      wants = [ "NetworkManager.service" ];
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = true;
-        ExecStart = pkgs.writeShellScript "orangepi5-fallback-ip" ''
-          set -eu
-          addr=${lib.escapeShellArg config.orangepi5.rescue.fallbackAddress}
+      # DHCP が取れないときの保険。対象デバイスを NM の管理外にしてから ip で
+      # 直接アドレスを振る。到達確認用の一時処置なので、成功したら
+      # ユーザが nmcli で本来の設定に戻す前提。
+      #
+      # 注意: `managed no` はサービス停止では戻らない (再起動するまで残る)。
+      # ルータ配下で DHCP を使いたい通常運用では fallbackAddress を null に
+      # しておくこと。eth0 決め打ちだった旧版では、実機の IF が eth1 のとき
+      # この unmanage だけが残って DHCP が永久に走らない事故になった。
+      systemd.services.orangepi5-fallback-ip =
+        lib.mkIf (config.orangepi5.rescue.fallbackAddress != null)
+          {
+            description = "Orange Pi 5 救援用の固定 IP フォールバック";
+            wantedBy = [ "multi-user.target" ];
+            after = [ "NetworkManager.service" ];
+            wants = [ "NetworkManager.service" ];
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true;
+              ExecStart = pkgs.writeShellScript "orangepi5-fallback-ip" ''
+                set -eu
+                addr=${lib.escapeShellArg config.orangepi5.rescue.fallbackAddress}
+                iface=${lib.escapeShellArg iface}
+
+                # 名前が未指定なら sysfs から有線デバイスを探す。
+                # これは set -eu より前に済ませる必要がある (iface 空のまま
+                # ip link set すると即死するのが今回のバグだった)。
+                ${detectIface}
+
+                if [ -z "$iface" ]; then
+                  echo "fallback ip: no ethernet interface found" \
+                    | ${pkgs.systemd}/bin/systemd-cat -t orangepi5-fallback-ip
+                  exit 0
+                fi
+
+                echo "fallback ip: using interface $iface" \
+                  | ${pkgs.systemd}/bin/systemd-cat -t orangepi5-fallback-ip
+
+                # リンクアップを最大 60 秒待つ。
+                for _ in $(seq 1 60); do
+                  [ "$(cat /sys/class/net/$iface/carrier 2>/dev/null || echo 0)" = "1" ] && break
+                  sleep 1
+                done
+
+                # NetworkManager にこのデバイスを握らせない (DHCP と衝突させない)。
+                ${pkgs.networkmanager}/bin/nmcli device set "$iface" managed no || true
+                ${pkgs.iproute2}/bin/ip addr flush dev "$iface" || true
+                ${pkgs.iproute2}/bin/ip link set "$iface" up
+                ${pkgs.iproute2}/bin/ip addr add "$addr" dev "$iface"
+                echo "fallback ip: $addr on $iface" | ${pkgs.systemd}/bin/systemd-cat -t orangepi5-fallback-ip
+              '';
+            };
+          };
+
+      # 診断は「1 回だけ出して制御を返す」形にする。
+      #
+      # 以前はここで `while :; do ... done` を回し、`trap ':' INT` で Ctrl-C を
+      # 握り潰していた。interactiveShellInit はログインシェルが起動するたびに
+      # 走るため、Ctrl-C も Ctrl-D も効かず端末が操作不能になり、再起動しても
+      # 自動ログインで同じループに入って復旧できない事故になった。
+      #
+      # 対策:
+      #   1. シェル初期化では「その場で 1 回出す」だけにして必ず return する。
+      #   2. 継続監視は systemd の simple サービスで journal に流す。
+      #      シェルとは独立なので、端末が固まることはない。
+      #   3. Ctrl-C を握り潰す trap は置かない。
+      environment.interactiveShellInit = lib.mkIf config.orangepi5.rescue.diagnostics.enable (
+        let
+          credits = toString config.orangepi5.rescue.diagnostics.journalLines;
+        in
+        ''
+          # 対象の有線 IF を決める (未指定なら sysfs から探す)。
           iface=${lib.escapeShellArg iface}
-
-          # 名前が未指定なら sysfs から有線デバイスを探す。
-          # これは set -eu より前に済ませる必要がある (iface 空のまま
-          # ip link set すると即死するのが今回のバグだった)。
           ${detectIface}
 
-          if [ -z "$iface" ]; then
-            echo "fallback ip: no ethernet interface found" \
-              | ${pkgs.systemd}/bin/systemd-cat -t orangepi5-fallback-ip
-            exit 0
+          if [ "$(id -u)" -gt 0 ] && ! sudo -n true 2>/dev/null; then
+            privileged=false
+          else
+            privileged=true
           fi
 
-          echo "fallback ip: using interface $iface" \
-            | ${pkgs.systemd}/bin/systemd-cat -t orangepi5-fallback-ip
-
-          # リンクアップを最大 60 秒待つ。
-          for _ in $(seq 1 60); do
-            [ "$(cat /sys/class/net/$iface/carrier 2>/dev/null || echo 0)" = "1" ] && break
-            sleep 1
+          echo ""
+          echo "=== orangepi5 rescue diagnostics $(date --iso-8601=seconds) ==="
+          echo "--- detected ethernet interface: ''${iface:-none} ---"
+          echo "--- ip -br addr ---"
+          ip -br addr
+          echo "--- ip route ---"
+          ip route
+          echo "--- nmcli device status ---"
+          nmcli device status 2>&1
+          echo "--- nmcli general + connections ---"
+          nmcli general status 2>&1
+          nmcli connection show 2>&1
+          echo "--- ethernet kernel drivers ---"
+          grep -E 'r8169|stmmac|dwmac|rk[0-9]' /proc/modules 2>/dev/null || true
+          echo "--- ''${iface:-none} link state (sysfs) ---"
+          if [ -n "$iface" ]; then
+            for f in carrier operstate speed duplex address; do
+              printf '%s: %s\n' "$f" "$(cat "/sys/class/net/$iface/$f" 2>/dev/null || echo n/a)"
+            done
+            ethtool "$iface" 2>&1 | head -25 || true
+          else
+            echo "(有線 IF が見つからない)"
+          fi
+          echo "--- mdio bus / phy devices ---"
+          ls -d /sys/class/mdio_bus/* 2>/dev/null || echo "(no mdio_bus)"
+          for d in /sys/class/mdio_bus/*/*; do
+            [ -d "$d" ] || continue
+            case "$(basename "$d")" in
+              *:*|*.*) continue ;;
+            esac
+            printf '%s phy_id=%s\n' "$d" "$(cat "$d/phy_id" 2>/dev/null || echo n/a)"
           done
-
-          # NetworkManager にこのデバイスを握らせない (DHCP と衝突させない)。
-          ${pkgs.networkmanager}/bin/nmcli device set "$iface" managed no || true
-          ${pkgs.iproute2}/bin/ip addr flush dev "$iface" || true
-          ${pkgs.iproute2}/bin/ip link set "$iface" up
-          ${pkgs.iproute2}/bin/ip addr add "$addr" dev "$iface"
-          echo "fallback ip: $addr on $iface" | ${pkgs.systemd}/bin/systemd-cat -t orangepi5-fallback-ip
-        '';
-      };
-    };
-
-    # 診断は「1 回だけ出して制御を返す」形にする。
-    #
-    # 以前はここで `while :; do ... done` を回し、`trap ':' INT` で Ctrl-C を
-    # 握り潰していた。interactiveShellInit はログインシェルが起動するたびに
-    # 走るため、Ctrl-C も Ctrl-D も効かず端末が操作不能になり、再起動しても
-    # 自動ログインで同じループに入って復旧できない事故になった。
-    #
-    # 対策:
-    #   1. シェル初期化では「その場で 1 回出す」だけにして必ず return する。
-    #   2. 継続監視は systemd の simple サービスで journal に流す。
-    #      シェルとは独立なので、端末が固まることはない。
-    #   3. Ctrl-C を握り潰す trap は置かない。
-    environment.interactiveShellInit = lib.mkIf config.orangepi5.rescue.diagnostics.enable
-      (let
-        credits = toString config.orangepi5.rescue.diagnostics.journalLines;
-      in
-      ''
-        # 対象の有線 IF を決める (未指定なら sysfs から探す)。
-        iface=${lib.escapeShellArg iface}
-        ${detectIface}
-
-        if [ "$(id -u)" -gt 0 ] && ! sudo -n true 2>/dev/null; then
-          privileged=false
-        else
-          privileged=true
-        fi
-
-        echo ""
-        echo "=== orangepi5 rescue diagnostics $(date --iso-8601=seconds) ==="
-        echo "--- detected ethernet interface: ''${iface:-none} ---"
-        echo "--- ip -br addr ---"
-        ip -br addr
-        echo "--- ip route ---"
-        ip route
-        echo "--- nmcli device status ---"
-        nmcli device status 2>&1
-        echo "--- nmcli general + connections ---"
-        nmcli general status 2>&1
-        nmcli connection show 2>&1
-        echo "--- ethernet kernel drivers ---"
-        grep -E 'r8169|stmmac|dwmac|rk[0-9]' /proc/modules 2>/dev/null || true
-        echo "--- ''${iface:-none} link state (sysfs) ---"
-        if [ -n "$iface" ]; then
-          for f in carrier operstate speed duplex address; do
-            printf '%s: %s\n' "$f" "$(cat "/sys/class/net/$iface/$f" 2>/dev/null || echo n/a)"
-          done
-          ethtool "$iface" 2>&1 | head -25 || true
-        else
-          echo "(有線 IF が見つからない)"
-        fi
-        echo "--- mdio bus / phy devices ---"
-        ls -d /sys/class/mdio_bus/* 2>/dev/null || echo "(no mdio_bus)"
-        for d in /sys/class/mdio_bus/*/*; do
-          [ -d "$d" ] || continue
-          case "$(basename "$d")" in
-            *:*|*.*) continue ;;
-          esac
-          printf '%s phy_id=%s\n' "$d" "$(cat "$d/phy_id" 2>/dev/null || echo n/a)"
-        done
-        if $privileged; then
-          echo "--- dmesg (net/firmware) ---"
-          dmesg | grep -iE 'eth|r8169|stmmac|dwmac|fec|phy|mdio|link|firmware' | tail -40
-          echo "--- dmesg: fe1c0000 / gmac ---"
-          dmesg | grep -iE 'fe1c0000|gmac|rk_gmac' | tail -30
-          echo "--- journal errors (last ${credits} lines) ---"
-          journalctl -b --no-pager -p 3 | tail -${credits}
-          echo "--- NetworkManager journal (last 40 lines) ---"
-          journalctl -b --no-pager -u NetworkManager | tail -40
-        else
-          echo "(sudo 使えないので dmesg / journal は省略)"
-        fi
-        echo "=== rescue diagnostics end ==="
-        echo "継続監視は orangepi5-watch.service (journalctl -t orangepi5-watch -f)。"
-        echo "この診断を出し直すには: orangepi5-diag"
-        unset iface privileged
-      ''
+          if $privileged; then
+            echo "--- dmesg (net/firmware) ---"
+            dmesg | grep -iE 'eth|r8169|stmmac|dwmac|fec|phy|mdio|link|firmware' | tail -40
+            echo "--- dmesg: fe1c0000 / gmac ---"
+            dmesg | grep -iE 'fe1c0000|gmac|rk_gmac' | tail -30
+            echo "--- journal errors (last ${credits} lines) ---"
+            journalctl -b --no-pager -p 3 | tail -${credits}
+            echo "--- NetworkManager journal (last 40 lines) ---"
+            journalctl -b --no-pager -u NetworkManager | tail -40
+          else
+            echo "(sudo 使えないので dmesg / journal は省略)"
+          fi
+          echo "=== rescue diagnostics end ==="
+          echo "継続監視は orangepi5-watch.service (journalctl -t orangepi5-watch -f)。"
+          echo "この診断を出し直すには: orangepi5-diag"
+          unset iface privileged
+        ''
       );
 
-    # 端末を占有せずに状態を追い続けるための監視サービス。
-    # journal に書くので、HDMI に出ていなくても後から `ssh`/`journalctl -t`
-    # で読める。Enable は既定で false。watchInterval = 0 なら生成しない。
-    systemd.services.orangepi5-watch = lib.mkIf
-      (config.orangepi5.rescue.diagnostics.enable
-        && config.orangepi5.rescue.diagnostics.watchInterval > 0)
-      {
-        description = "Orange Pi 5 rescue watch (network state to journal)";
-        wantedBy = [ "multi-user.target" ];
-        after = [ "NetworkManager.service" ];
-        serviceConfig = {
-          Type = "simple";
-          Restart = "always";
-          RestartSec = 5;
-        };
-        script = ''
-          set -u
-          iface=${lib.escapeShellArg iface}
-          ${detectIface}
-          while :; do
-            ts=$(${pkgs.coreutils}/bin/date +%H:%M:%S)
-            addrs=$(${pkgs.iproute2}/bin/ip -o -4 addr show scope global 2>/dev/null | awk '{print $2"="$4}' | tr '\n' ' ')
-            link=$(${pkgs.iproute2}/bin/ip -br link 2>/dev/null | awk '$1 != "lo" {print $1":"$2":"$3}' | tr '\n' ' ')
-            carrier=$(${pkgs.coreutils}/bin/cat "/sys/class/net/$iface/carrier" 2>/dev/null || echo n/a)
-            operstate=$(${pkgs.coreutils}/bin/cat "/sys/class/net/$iface/operstate" 2>/dev/null || echo n/a)
-            speed=$(${pkgs.coreutils}/bin/cat "/sys/class/net/$iface/speed" 2>/dev/null || echo n/a)
-            phys=$(${pkgs.coreutils}/bin/ls -d /sys/class/mdio_bus/*/ 2>/dev/null | tr '\n' ' ')
-            echo "$ts if=$iface carrier=$carrier operstate=$operstate speed=$speed"
-            echo "$ts addr=$addrs link=$link"
-            echo "$ts phy=$phys"
-            sleep ${toString config.orangepi5.rescue.diagnostics.watchInterval}
-          done
-        '';
-        # 標準出力は journal に拾わせる。
-        serviceConfig.StandardOutput = "journal";
-        serviceConfig.StandardError = "journal";
-        serviceConfig.SyslogIdentifier = "orangepi5-watch";
-      };
+      # 端末を占有せずに状態を追い続けるための監視サービス。
+      # journal に書くので、HDMI に出ていなくても後から `ssh`/`journalctl -t`
+      # で読める。Enable は既定で false。watchInterval = 0 なら生成しない。
+      systemd.services.orangepi5-watch =
+        lib.mkIf
+          (
+            config.orangepi5.rescue.diagnostics.enable && config.orangepi5.rescue.diagnostics.watchInterval > 0
+          )
+          {
+            description = "Orange Pi 5 rescue watch (network state to journal)";
+            wantedBy = [ "multi-user.target" ];
+            after = [ "NetworkManager.service" ];
+            serviceConfig = {
+              Type = "simple";
+              Restart = "always";
+              RestartSec = 5;
+            };
+            script = ''
+              set -u
+              iface=${lib.escapeShellArg iface}
+              ${detectIface}
+              while :; do
+                ts=$(${pkgs.coreutils}/bin/date +%H:%M:%S)
+                addrs=$(${pkgs.iproute2}/bin/ip -o -4 addr show scope global 2>/dev/null | awk '{print $2"="$4}' | tr '\n' ' ')
+                link=$(${pkgs.iproute2}/bin/ip -br link 2>/dev/null | awk '$1 != "lo" {print $1":"$2":"$3}' | tr '\n' ' ')
+                carrier=$(${pkgs.coreutils}/bin/cat "/sys/class/net/$iface/carrier" 2>/dev/null || echo n/a)
+                operstate=$(${pkgs.coreutils}/bin/cat "/sys/class/net/$iface/operstate" 2>/dev/null || echo n/a)
+                speed=$(${pkgs.coreutils}/bin/cat "/sys/class/net/$iface/speed" 2>/dev/null || echo n/a)
+                phys=$(${pkgs.coreutils}/bin/ls -d /sys/class/mdio_bus/*/ 2>/dev/null | tr '\n' ' ')
+                echo "$ts if=$iface carrier=$carrier operstate=$operstate speed=$speed"
+                echo "$ts addr=$addrs link=$link"
+                echo "$ts phy=$phys"
+                sleep ${toString config.orangepi5.rescue.diagnostics.watchInterval}
+              done
+            '';
+            # 標準出力は journal に拾わせる。
+            serviceConfig.StandardOutput = "journal";
+            serviceConfig.StandardError = "journal";
+            serviceConfig.SyslogIdentifier = "orangepi5-watch";
+          };
     }
   );
 }
