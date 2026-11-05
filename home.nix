@@ -1629,7 +1629,11 @@ rec {
   systemd.user.services.vixd = {
     Unit = {
       Description = "vix daemon (AI coding agent, /tmp/vixd.sock)";
-      After = [ "network-online.target" ];
+      # sops-nix.service: OMNIROUTE_API_KEY を含む env file の配備順序保証。
+      After = [
+        "network-online.target"
+        "sops-nix.service"
+      ];
       Wants = [ "network-online.target" ];
       X-SwitchMethod = "keep-old";
     };
@@ -1637,6 +1641,14 @@ rec {
       Type = "simple";
       ExecStart = "${pkgs.llm-agents.vix}/bin/vixd";
       WorkingDirectory = "%h";
+      # OmniRoute 経由のチャット用キー。~/.vix/providers.json の omniroute
+      # provider (chat_completions, http://127.0.0.1:20128/v1) は
+      # OMNIROUTE_API_KEY を資格情報として解決する。systemd 経由では
+      # シェルの環境変数が見えないため、sops で配備された omniroute サービス
+      # と同じ env file を読む (探索は env → キーチェーン → .env の順)。
+      # "-" 付きなのでログイン直後にファイルが無くても起動はする (キーなし
+      # 警告のみ。After=sops-nix.service で通常は先に配備される)。
+      EnvironmentFile = [ "-${config.sops.secrets.omniroute.path}" ];
       # ソケット (/tmp/vixd.sock) を所有者以外から接続不可にする。
       # vixd はデフォルトでソケット認証なしのため、umask が実質的なアクセス制御。
       UMask = "0077";
